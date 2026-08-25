@@ -17,6 +17,8 @@ function check(label, condition, detail) {
 const publisherId = "pub-3069814419179785";
 const adsTxt = read("public/ads.txt");
 const layout = read("src/app/layout.tsx");
+const adsenseScript = read("src/components/common/AdSenseScript.tsx");
+const adsenseRoutes = read("src/lib/common/adsense.ts");
 const toolLayout = read("src/components/common/ToolLayout.tsx");
 const privacy = read("src/app/privacy/page.tsx");
 const terms = read("src/app/terms/page.tsx");
@@ -31,9 +33,19 @@ check(
   "public/ads.txt의 게시자 ID 또는 DIRECT 레코드를 확인하세요.",
 );
 check(
-  "AdSense ownership meta and script",
-  layout.includes("google-adsense-account") && layout.includes("pagead2.googlesyndication.com/pagead/js/adsbygoogle.js"),
-  "루트 head의 AdSense 메타/스크립트가 누락되었습니다.",
+  "AdSense ownership meta and route-aware script",
+  layout.includes("google-adsense-account") &&
+    layout.includes("AdSenseScript") &&
+    adsenseScript.includes("pagead2.googlesyndication.com/pagead/js/adsbygoogle.js"),
+  "AdSense 소유권 메타 또는 경로별 광고 스크립트가 누락되었습니다.",
+);
+check(
+  "Policy pages exclude consent-required ad tags",
+  !layout.includes("pagead2.googlesyndication.com/pagead/js/adsbygoogle.js") &&
+    adsenseScript.includes("isAdsenseExcludedPath") &&
+    adsenseRoutes.includes('"/privacy"') &&
+    adsenseRoutes.includes('"/terms"'),
+  "privacy·terms에서 AdSense 광고 태그를 제외하세요.",
 );
 check(
   "No legacy custom consent flow",

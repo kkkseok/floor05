@@ -3,6 +3,7 @@ import { IBM_Plex_Mono } from "next/font/google";
 import localFont from "next/font/local";
 import { Analytics } from "@vercel/analytics/next";
 import { ADSENSE_ID, SITE_URL } from "@/lib/common/constants";
+import AdSenseScript from "@/components/common/AdSenseScript";
 import "./globals.css";
 
 // Organization 구조화 데이터 (브랜드 신뢰 신호 + AI 검색 인용 보조)
@@ -113,21 +114,13 @@ export default function RootLayout({
     <html lang="ko" className={`${pretendard.variable} ${ibmPlexMono.variable}`}>
       <head>
         <meta name="google-adsense-account" content={ADSENSE_ID} />
-        {/* AdSense 공식 스니펫. 심사 시스템이 초기 HTML의 head에서 확인하므로
-            지연 로드 없이 서버 렌더링한다(async라 렌더 블로킹 없음).
-            EEA·영국·스위스 동의 수집은 AdSense Privacy & messaging에서
-            게시한 Google 인증 CMP가 담당한다. */}
-        <script
-          async
-          src={`https://pagead2.googlesyndication.com/pagead/js/adsbygoogle.js?client=${ADSENSE_ID}`}
-          crossOrigin="anonymous"
-        />
         <script
           type="application/ld+json"
           dangerouslySetInnerHTML={{ __html: JSON.stringify(organizationSchema) }}
         />
       </head>
       <body className="font-sans antialiased">
+        <AdSenseScript />
         {children}
         <Analytics />
       </body>

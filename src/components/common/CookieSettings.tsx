@@ -1,5 +1,9 @@
 "use client";
 
+import { useEffect } from "react";
+import { usePathname } from "next/navigation";
+import { isAdsenseExcludedPath } from "@/lib/common/adsense";
+
 declare global {
   interface Window {
     googlefc?: {
@@ -19,7 +23,9 @@ export default function CookieSettings({
 }: {
   className?: string;
 }) {
-  const handleClick = () => {
+  const pathname = usePathname();
+
+  const openConsentSettings = () => {
     const googlefc = (window.googlefc = window.googlefc || {});
 
     if (googlefc.showRevocationMessage) {
@@ -31,6 +37,28 @@ export default function CookieSettings({
     googlefc.callbackQueue.push({
       CONSENT_API_READY: () => window.googlefc?.showRevocationMessage?.(),
     });
+  };
+
+  useEffect(() => {
+    if (isAdsenseExcludedPath(pathname)) return;
+
+    const url = new URL(window.location.href);
+    if (url.searchParams.get("privacy-settings") !== "open") return;
+
+    url.searchParams.delete("privacy-settings");
+    window.history.replaceState(window.history.state, "", `${url.pathname}${url.search}${url.hash}`);
+    openConsentSettings();
+  }, [pathname]);
+
+  const handleClick = () => {
+    // 정책 페이지는 광고/CMP 태그를 싣지 않는다. 직접 진입해 CMP API가 없는
+    // 경우 광고 태그가 허용된 홈으로 완전히 이동한 뒤 설정 창을 연다.
+    if (isAdsenseExcludedPath(pathname) && !window.googlefc?.showRevocationMessage) {
+      window.location.assign("/?privacy-settings=open");
+      return;
+    }
+
+    openConsentSettings();
   };
 
   return (

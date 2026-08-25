@@ -135,6 +135,21 @@ test.describe("라우트 접근", () => {
     assertClean(guards);
   });
 
+  test("AdSense: 정책 페이지에서는 광고 태그를 제외한다", async ({ page }) => {
+    const guards = await installGuards(page);
+    const adScript = 'script[src*="pagead2.googlesyndication.com/pagead/js/adsbygoogle.js"]';
+
+    for (const route of ["/privacy", "/terms"]) {
+      await page.goto(route);
+      await expect(page.locator(adScript), `${route} 광고 태그`).toHaveCount(0);
+      await expect(page.locator('meta[name="google-adsense-account"]')).toHaveCount(1);
+    }
+
+    await page.goto("/tools/calc/salary");
+    await expect(page.locator(adScript), "일반 도구 페이지 광고 태그").toHaveCount(1);
+    assertClean(guards);
+  });
+
   test("금융·건강 신뢰 정보: 공식 출처와 검토일 표시", async ({ page }) => {
     await page.goto("/tools/calc/salary");
     await expect(page.getByRole("heading", { name: "계산 기준·출처" })).toBeVisible();
