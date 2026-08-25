@@ -2,7 +2,6 @@ import type { Metadata } from "next";
 import { IBM_Plex_Mono } from "next/font/google";
 import localFont from "next/font/local";
 import { Analytics } from "@vercel/analytics/next";
-import CookieConsent from "@/components/common/CookieConsent";
 import { ADSENSE_ID, SITE_URL } from "@/lib/common/constants";
 import "./globals.css";
 
@@ -115,8 +114,9 @@ export default function RootLayout({
       <head>
         <meta name="google-adsense-account" content={ADSENSE_ID} />
         {/* AdSense 공식 스니펫. 심사 시스템이 초기 HTML의 head에서 확인하므로
-            지연 로드 없이 여기서 서버 렌더링한다(async라 렌더 블로킹 없음).
-            개인화 여부는 CookieConsent의 NPA 플래그가 제어한다. */}
+            지연 로드 없이 서버 렌더링한다(async라 렌더 블로킹 없음).
+            EEA·영국·스위스 동의 수집은 AdSense Privacy & messaging에서
+            게시한 Google 인증 CMP가 담당한다. */}
         <script
           async
           src={`https://pagead2.googlesyndication.com/pagead/js/adsbygoogle.js?client=${ADSENSE_ID}`}
@@ -129,7 +129,6 @@ export default function RootLayout({
       </head>
       <body className="font-sans antialiased">
         {children}
-        <CookieConsent />
         <Analytics />
       </body>
     </html>

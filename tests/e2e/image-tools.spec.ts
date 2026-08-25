@@ -149,6 +149,7 @@ test.describe("포맷 변환", () => {
 
   test("HEIC → JPG 변환 (실물 HEIC 파일)", async ({ page, browserName }, testInfo) => {
     test.skip(browserName !== "chromium", "heic2any 디코딩은 대표로 Chromium에서 검증");
+    test.skip(!fs.existsSync(fx("sample.heic")), "실물 HEIC 선택 fixture가 있는 환경에서 검증");
     test.setTimeout(120_000);
     const guards = await installGuards(page);
     await page.goto("/tools/image/heic-to-jpg");

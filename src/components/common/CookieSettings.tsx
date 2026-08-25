@@ -1,10 +1,18 @@
 "use client";
 
-import { CONSENT_KEY, CONSENT_RESET_EVENT } from "@/lib/common/constants";
+declare global {
+  interface Window {
+    googlefc?: {
+      callbackQueue?: Array<Record<string, () => void>>;
+      showRevocationMessage?: () => void;
+    };
+  }
+}
 
 /**
- * 쿠키 동의 재설정 진입점.
- * 저장된 동의를 지우고 배너를 다시 띄워, 거부했던 사용자도 결정을 바꿀 수 있게 한다.
+ * Google Privacy & messaging 동의 재설정 진입점.
+ * 인증 CMP가 준비된 뒤 revocation message를 열어 사용자가 언제든 선택을
+ * 변경할 수 있게 한다. CMP 메시지 게시 여부는 AdSense 계정에서 관리한다.
  */
 export default function CookieSettings({
   className = "",
@@ -12,17 +20,27 @@ export default function CookieSettings({
   className?: string;
 }) {
   const handleClick = () => {
-    try {
-      localStorage.removeItem(CONSENT_KEY);
-    } catch {
-      // localStorage 접근 불가 시 무시
+    const googlefc = (window.googlefc = window.googlefc || {});
+
+    if (googlefc.showRevocationMessage) {
+      googlefc.showRevocationMessage();
+      return;
     }
-    window.dispatchEvent(new CustomEvent(CONSENT_RESET_EVENT));
+
+    googlefc.callbackQueue = googlefc.callbackQueue || [];
+    googlefc.callbackQueue.push({
+      CONSENT_API_READY: () => window.googlefc?.showRevocationMessage?.(),
+    });
   };
 
   return (
-    <button type="button" onClick={handleClick} className={className}>
-      쿠키 설정
+    <button
+      type="button"
+      onClick={handleClick}
+      className={className}
+      aria-label="개인정보 및 쿠키 동의 설정 열기"
+    >
+      개인정보·쿠키 설정
     </button>
   );
 }

@@ -5,6 +5,7 @@
   "scripts": {
     "dev": "next dev",
     "build": "next build",
+    "audit:adsense": "node scripts/audit-adsense-readiness.mjs",
     "indexnow": "node scripts/submit-indexnow.mjs",
     "start": "next start",
     "lint": "eslint \"./src/**/*.{ts,tsx}\"",

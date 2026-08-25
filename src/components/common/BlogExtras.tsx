@@ -1,6 +1,8 @@
 import Link from "next/link";
 import BlogAd from "./BlogAd";
-import { buildBlogPostingSchema, getRelatedPosts } from "@/lib/common/blog";
+import SourceDisclosure from "./SourceDisclosure";
+import { buildBlogPostingSchema, getPost, getRelatedPosts } from "@/lib/common/blog";
+import { getBlogReview } from "@/lib/common/content-sources";
 
 /**
  * 블로그 글 하단 공통 요소.
@@ -12,7 +14,9 @@ import { buildBlogPostingSchema, getRelatedPosts } from "@/lib/common/blog";
  */
 export default function BlogExtras({ slug }: { slug: string }) {
   const schema = buildBlogPostingSchema(slug);
+  const post = getPost(slug);
   const related = getRelatedPosts(slug);
+  const review = getBlogReview(slug);
 
   return (
     <>
@@ -21,6 +25,34 @@ export default function BlogExtras({ slug }: { slug: string }) {
           type="application/ld+json"
           dangerouslySetInnerHTML={{ __html: JSON.stringify(schema) }}
         />
+      )}
+
+      {post && (
+        <aside className="mt-14 border-y border-brand-light/20 py-6" aria-label="글 작성 정보">
+          <p className="text-sm leading-6 text-brand-mid">
+            작성·검토: {" "}
+            <Link href="/about" rel="author" className="font-medium text-brand-accent hover:underline">
+              floor05 운영자
+            </Link>
+            <span className="mx-2 text-brand-light" aria-hidden="true">·</span>
+            발행 <time dateTime={post.datePublished}>{post.datePublished}</time>
+            {post.dateModified !== post.datePublished && (
+              <>
+                <span className="mx-2 text-brand-light" aria-hidden="true">·</span>
+                수정 <time dateTime={post.dateModified}>{post.dateModified}</time>
+              </>
+            )}
+          </p>
+          <p className="mt-2 text-sm leading-6 text-brand-light">
+            직접 사용할 수 있는 계산 예시와 공개 자료를 바탕으로 작성하며, 오류 제보는 문의 페이지에서 받습니다.
+          </p>
+        </aside>
+      )}
+
+      {review && (
+        <div className="mt-8">
+          <SourceDisclosure review={review} />
+        </div>
       )}
 
       {/* 본문 종료 직후 인콘텐츠 광고 (마무리 CTA 다음, 관련 글 위).

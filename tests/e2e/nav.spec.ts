@@ -118,15 +118,30 @@ test.describe("라우트 접근", () => {
     }
   });
 
-  test("쿠키 동의 배너: 동의/거부 동작", async ({ page }) => {
-    // installGuards의 사전 주입 없이 직접 진입
-    await page.goto("/tools/calc/vat");
-    const banner = page.getByText("맞춤 광고를 위해 쿠키를 사용합니다");
-    await expect(banner).toBeVisible();
-    await page.getByRole("button", { name: "거부" }).click();
-    await expect(banner).toBeHidden();
-    // 새로고침 후에도 다시 나타나지 않아야 함
-    await page.reload();
-    await expect(banner).toBeHidden();
+  test("Google CMP: 푸터에서 개인정보·쿠키 설정을 다시 연다", async ({ page }) => {
+    const guards = await installGuards(page);
+    await page.goto("/privacy");
+    // 외부 AdSense 스크립트가 없는 로컬 테스트에서 CMP API 준비 상태를 모의한다.
+    await page.evaluate(() => {
+      window.googlefc = {
+        callbackQueue: [],
+        showRevocationMessage: () => {
+          document.documentElement.dataset.cmpOpened = "true";
+        },
+      };
+    });
+    await page.getByRole("button", { name: "개인정보 및 쿠키 동의 설정 열기" }).first().click();
+    await expect(page.locator("html")).toHaveAttribute("data-cmp-opened", "true");
+    assertClean(guards);
+  });
+
+  test("금융·건강 신뢰 정보: 공식 출처와 검토일 표시", async ({ page }) => {
+    await page.goto("/tools/calc/salary");
+    await expect(page.getByRole("heading", { name: "계산 기준·출처" })).toBeVisible();
+    await expect(page.getByRole("link", { name: /국민연금/ })).toHaveAttribute("href", /nps\.or\.kr/);
+
+    await page.goto("/blog/bmi-obesity-guide");
+    await expect(page.getByText("작성·검토:")).toBeVisible();
+    await expect(page.getByRole("link", { name: "floor05 운영자" })).toHaveAttribute("href", "/about");
   });
 });

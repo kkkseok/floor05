@@ -9,13 +9,8 @@ import fs from "fs";
 
 const FIXTURES = path.join(__dirname, "..", "fixtures", "generated");
 
-/** 쿠키 배너 억제 + 파일 전송 감시 */
+/** 파일 전송 감시 */
 async function prep(page: import("@playwright/test").Page) {
-  await page.addInitScript(() => {
-    try {
-      localStorage.setItem("floor05_cookie_consent", "declined");
-    } catch {}
-  });
   const uploads: string[] = [];
   page.on("request", (req) => {
     const size = req.postData()?.length ?? 0;
@@ -82,7 +77,7 @@ test.describe("프로덕션 기본 접근", () => {
     expect(res.status()).toBe(404);
   });
 
-  test("광고 규칙: 메인 0개 · 도구 페이지 최대 3개 (코드가 배치한 슬롯 기준)", async ({ page }) => {
+  test("광고 규칙: 메인 0개 · 도구 페이지 최대 2개 (코드가 배치한 슬롯 기준)", async ({ page }) => {
     // AdSense 자동광고(auto ads)가 런타임에 주입하는 ins는 data-ad-slot이 없다.
     // 코드(AdSlot)가 배치한 슬롯만 세어 프로젝트 규칙을 검증한다.
     // ⚠ 자동광고가 메인에 주입되는 것은 AdSense 대시보드에서 제외 설정 필요 (BASELINE 참조)
@@ -90,7 +85,7 @@ test.describe("프로덕션 기본 접근", () => {
     await page.goto("/");
     expect(await page.locator("ins.adsbygoogle[data-ad-slot]").count()).toBe(0);
     await page.goto("/tools/image/compress");
-    expect(await page.locator("ins.adsbygoogle[data-ad-slot]").count()).toBeLessThanOrEqual(3);
+    expect(await page.locator("ins.adsbygoogle[data-ad-slot]").count()).toBeLessThanOrEqual(2);
   });
 });
 

@@ -4,8 +4,10 @@ import Footer from "./Footer";
 import AdSlot from "./AdSlot";
 import ToolCard from "./ToolCard";
 import ErrorBoundary from "./ErrorBoundary";
+import SourceDisclosure from "./SourceDisclosure";
 import { getOtherTools, getToolByHref } from "@/lib/common/tools";
 import { getPostsBySlugs } from "@/lib/common/blog";
+import { getToolReview } from "@/lib/common/content-sources";
 
 interface FAQ {
   question: string;
@@ -71,9 +73,6 @@ interface ToolLayoutProps {
   // 관련 블로그 글 slug 목록 (도구→블로그 내부링크). blog 레지스트리에서 제목 해석
   relatedPostSlugs?: string[];
 
-  // 광고 슬롯 3 표시 여부 (페이지 길이에 따라)
-  showThirdAd?: boolean;
-
   // Schema.org Markup (JSON-LD)
   schemas?: SchemaMarkup[];
 }
@@ -87,7 +86,6 @@ export default function ToolLayout({
   workflowCTA,
   currentToolHref,
   relatedPostSlugs = [],
-  showThirdAd = true,
   schemas = [],
 }: ToolLayoutProps) {
   // 현재 도구를 제외한 다른 도구들
@@ -98,6 +96,14 @@ export default function ToolLayout({
 
   // 관련 블로그 글 (도구→블로그 내부링크)
   const relatedPosts = getPostsBySlugs(relatedPostSlugs);
+
+  // 공신력 있는 기준이 특히 중요한 금융·건강 도구의 검토 정보.
+  const review = getToolReview(currentToolHref);
+
+  // 짧은 페이지는 1개, 충분한 해설·FAQ가 있는 페이지만 2개로 제한한다.
+  const showSecondAd = Boolean(
+    guide && guide.sections.length >= 3 && faqs.length >= 3,
+  );
 
   return (
     <div className="min-h-screen flex flex-col bg-brand-white">
@@ -211,6 +217,14 @@ export default function ToolLayout({
           </section>
         )}
 
+        {review && (
+          <section className="pb-8">
+            <div className="max-w-3xl mx-auto px-4 sm:px-6 lg:px-8">
+              <SourceDisclosure review={review} />
+            </div>
+          </section>
+        )}
+
         {/* 4. 광고 슬롯 1 */}
         <section className="py-6">
           <div className="max-w-4xl mx-auto px-4 sm:px-6 lg:px-8">
@@ -313,12 +327,14 @@ export default function ToolLayout({
           </section>
         )}
 
-        {/* 7. 광고 슬롯 2 */}
-        <section className="py-6">
-          <div className="max-w-4xl mx-auto px-4 sm:px-6 lg:px-8">
-            <AdSlot slot="cta-below" />
-          </div>
-        </section>
+        {/* 7. 광고 슬롯 2 — 충분한 고유 해설이 있는 긴 페이지에만 표시 */}
+        {showSecondAd && (
+          <section className="py-6">
+            <div className="max-w-4xl mx-auto px-4 sm:px-6 lg:px-8">
+              <AdSlot slot="cta-below" />
+            </div>
+          </section>
+        )}
 
         {/* 8. floor05 다른 도구 */}
         <section className="py-12 bg-brand-paper">
@@ -339,14 +355,6 @@ export default function ToolLayout({
           </div>
         </section>
 
-        {/* 9. 광고 슬롯 3 (선택) */}
-        {showThirdAd && (
-          <section className="py-6">
-            <div className="max-w-4xl mx-auto px-4 sm:px-6 lg:px-8">
-              <AdSlot slot="footer-above" />
-            </div>
-          </section>
-        )}
       </main>
 
       {/* 10. 푸터 */}

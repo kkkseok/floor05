@@ -10,11 +10,6 @@ export const SITE_URL =
     ? ENV_SITE_URL
     : PRIMARY_DOMAIN;
 
-// 쿠키 동의
-export const CONSENT_KEY = "floor05_cookie_consent";
-export const CONSENT_CHANGE_EVENT = "floor05_consent_change";
-export const CONSENT_RESET_EVENT = "floor05_consent_reset";
-
 // 광고 — AdSense 클라이언트 ID (env 우선, 미설정 시 폴백)
 export const ADSENSE_ID =
   process.env.NEXT_PUBLIC_ADSENSE_CLIENT_ID || "ca-pub-3069814419179785";

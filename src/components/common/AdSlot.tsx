@@ -10,9 +10,7 @@ import {
 
 declare global {
   interface Window {
-    adsbygoogle: Record<string, unknown>[] & {
-      requestNonPersonalizedAds?: number;
-    };
+    adsbygoogle: Record<string, unknown>[];
   }
 }
 
@@ -51,8 +49,8 @@ export default function AdSlot({ slot, className = "" }: AdSlotProps) {
     // AdSense 광고 로드. 스크립트는 루트 layout <head>에서 로드되며,
     // adsbygoogle 큐는 스크립트 로드 전 push도 버퍼링하므로(공식 스니펫과
     // 동일 패턴) 준비 상태를 기다릴 필요가 없다.
-    // 개인화 여부(NPA)는 CookieConsent가 전역 플래그로 제어하므로, 동의와 무관하게
-    // 광고를 노출한다. 미동의 시에는 자동으로 비개인화 광고가 게재된다.
+    // 지역별 동의 신호와 광고 개인화 여부는 Google 인증 CMP와 AdSense가
+    // 처리한다. 슬롯은 공식 스니펫과 같은 방식으로 요청만 큐에 넣는다.
     if (!isDev && ADSENSE_SLOT_ID && adRef.current && !adPushed) {
       try {
         window.adsbygoogle = window.adsbygoogle || [];

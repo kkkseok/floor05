@@ -51,13 +51,6 @@ export interface Guards {
 export async function installGuards(page: Page): Promise<Guards> {
   const guards: Guards = { errors: [], requests: [], badResponses: [] };
 
-  // 쿠키 동의 배너 억제 (배너 자체 테스트는 별도 스펙에서 수행)
-  await page.addInitScript(() => {
-    try {
-      localStorage.setItem("floor05_cookie_consent", "declined");
-    } catch {}
-  });
-
   // 요청 기록은 리스너로만 (인터셉션 없음 — WebKit에서 same-origin RSC 프리페치가
   // 인터셉션을 거치면 access control 오류로 깨지는 문제 회피)
   page.on("request", (req) => {
