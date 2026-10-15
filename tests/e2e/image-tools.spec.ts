@@ -441,4 +441,16 @@ test.describe("크롭", () => {
     expect(dims.height).toBeLessThanOrEqual(900);
     assertClean(guards);
   });
+
+  test("투명 PNG를 자르면 PNG로 저장 (JPG 흰 배경으로 바꾸지 않음)", async ({ page }, testInfo) => {
+    await page.goto("/tools/image/crop");
+    await uploadToDropzone(page, [fx("transparent-400x300.png")]);
+    await page.getByRole("button", { name: "이미지 크롭", exact: true }).click();
+    await expect(page.getByText(/크롭 완료/)).toBeVisible({ timeout: 30_000 });
+    const file = await saveDownload(page, testInfo, () =>
+      page.getByRole("button", { name: "다운로드" }).click(),
+    );
+    expect(detectKind(file)).toBe("png");
+    expect(path.extname(file)).toBe(".png");
+  });
 });
