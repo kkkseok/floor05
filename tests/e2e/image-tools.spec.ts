@@ -5,6 +5,7 @@
 import { test, expect } from "@playwright/test";
 import fs from "fs";
 import path from "path";
+import UPNG from "upng-js";
 import {
   installGuards,
   assertClean,
@@ -402,6 +403,46 @@ test.describe("파비콘 만들기", () => {
     const p512 = await zipExtract(file, "android-chrome-512x512.png", testInfo.outputPath("512.png"));
     expect(imageDims(p512)).toEqual({ width: 512, height: 512 });
     assertClean(guards);
+  });
+
+  test("3px 주기 줄무늬 1024px → 16px는 균일한 회색 (한 번에 줄인 계단·줄무늬 없음)", async ({ page }, testInfo) => {
+    // 검정 2px + 흰색 1px 세로 줄무늬(3px 주기): 제대로 줄이면 어디서나 1/3 밝기 회색(≈85).
+    // 픽셀을 건너뛰며 줄이면 64px 간격 샘플의 위상이 3px 주기와 어긋나 칸마다 밝기가 달라진다.
+    // (2px 주기는 샘플이 흑백 정중앙에 떨어져 우연히 회색이 되므로 판별이 안 된다)
+    const S = 1024;
+    const rgba = new Uint8Array(S * S * 4);
+    for (let y = 0; y < S; y++) {
+      for (let x = 0; x < S; x++) {
+        const v = x % 3 === 2 ? 255 : 0;
+        const i = (y * S + x) * 4;
+        rgba[i] = rgba[i + 1] = rgba[i + 2] = v;
+        rgba[i + 3] = 255;
+      }
+    }
+    const stripes = testInfo.outputPath("stripes-1024.png");
+    fs.mkdirSync(path.dirname(stripes), { recursive: true });
+    fs.writeFileSync(stripes, Buffer.from(UPNG.encode([rgba.buffer], S, S, 0)));
+
+    await page.goto("/tools/image/favicon");
+    await uploadToDropzone(page, [stripes]);
+    const file = await saveDownload(
+      page,
+      testInfo,
+      () => page.getByRole("button", { name: "파비콘 생성 (ZIP 다운로드)" }).click(),
+      45_000,
+    );
+    const p16 = await zipExtract(file, "favicon-16x16.png", testInfo.outputPath("16.png"));
+    const raw = fs.readFileSync(p16);
+    // Buffer.buffer는 공유 풀이라 오프셋이 있다 — 이 파일 구간만 잘라 넘긴다
+    const img = UPNG.decode(raw.buffer.slice(raw.byteOffset, raw.byteOffset + raw.length) as ArrayBuffer);
+    const px = new Uint8Array(UPNG.toRGBA8(img)[0]);
+    const greens: number[] = [];
+    for (let i = 0; i < px.length; i += 4) greens.push(px[i + 1]);
+    const mean = greens.reduce((a, v) => a + v, 0) / greens.length;
+    const spread = Math.max(...greens) - Math.min(...greens);
+    expect(mean).toBeGreaterThan(65);
+    expect(mean).toBeLessThan(105);
+    expect(spread, "16px 결과에 흑백 줄무늬가 남으면 안 됨").toBeLessThan(40);
   });
 });
 
