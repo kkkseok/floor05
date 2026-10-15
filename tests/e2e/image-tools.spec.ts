@@ -84,6 +84,29 @@ test.describe("이미지 압축", () => {
     expect(width / height).toBeCloseTo(1200 / 900, 1);
   });
 
+  test("목표 용량: 투명 PNG는 PNG(투명 유지)로 맞추고, 불가능하면 JPG로 바꾸며 안내", async ({ page }, testInfo) => {
+    await page.goto("/tools/image/compress");
+    await uploadToDropzone(page, [fx("transparent-400x300.png")]); // 약 53KB
+    await page.getByRole("button", { name: "목표 용량" }).click();
+    await page.getByPlaceholder("직접 입력").fill("40");
+    await page.getByRole("button", { name: "1개 이미지 압축하기" }).click();
+    await expect(page.getByRole("button", { name: "다운로드" })).toBeVisible({ timeout: 45_000 });
+    const png = await saveDownload(page, testInfo, () => page.getByRole("button", { name: "다운로드" }).click());
+    expect(detectKind(png)).toBe("png");
+    expect(fs.statSync(png).size).toBeLessThanOrEqual(40 * 1024);
+    await expect(page.getByText(/흰색으로 채운 JPG로 저장/)).toHaveCount(0);
+
+    await page.goto("/tools/image/compress");
+    await uploadToDropzone(page, [fx("transparent-400x300.png")]);
+    await page.getByRole("button", { name: "목표 용량" }).click();
+    await page.getByPlaceholder("직접 입력").fill("2");
+    await page.getByRole("button", { name: "1개 이미지 압축하기" }).click();
+    await expect(page.getByRole("button", { name: "다운로드" })).toBeVisible({ timeout: 45_000 });
+    await expect(page.getByText(/흰색으로 채운 JPG로 저장/)).toBeVisible();
+    const jpg = await saveDownload(page, testInfo, () => page.getByRole("button", { name: "다운로드" }).click());
+    expect(detectKind(jpg)).toBe("jpeg");
+  });
+
   test("2장 일괄 압축 → ZIP에 2개 파일", async ({ page }, testInfo) => {
     await page.goto("/tools/image/compress");
     await uploadToDropzone(page, [fx("photo-1200x900.jpg"), fx("photo-small-100x75.jpg")]);

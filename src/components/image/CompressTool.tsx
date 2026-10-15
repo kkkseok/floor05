@@ -20,7 +20,7 @@ import {
   CompressionResult,
 } from "@/lib/image/compress";
 import { compressImageSmart } from "@/lib/image/processPool";
-import { compressPng } from "@/lib/image/pngCompress";
+import { compressPng, compressPngToTarget } from "@/lib/image/pngCompress";
 import { useBeforeUnload, useMaxBatchSize } from "@/lib/common/hooks";
 import { trackToolUse } from "@/lib/common/analytics";
 
@@ -47,6 +47,19 @@ function wantsPng(file: File, outputMode: OutputMode): boolean {
   if (outputMode === "png") return true;
   if (outputMode === "jpg") return false;
   return isPngFile(file);
+}
+
+/**
+ * 목표 용량 모드: PNG는 먼저 투명도를 유지한 채(PNG) 맞춰 보고, 안 되면 JPG로 대체하면서 그 사실을 표시한다.
+ */
+async function compressToTarget(file: File, targetSizeKB: number): Promise<CompressionResult> {
+  if (isPngFile(file)) {
+    const png = await compressPngToTarget(file, targetSizeKB);
+    if (png) return png;
+    const jpg = await compressToTargetSize(file, targetSizeKB, { outputFormat: "image/jpeg" });
+    return { ...jpg, alphaDropped: true };
+  }
+  return compressToTargetSize(file, targetSizeKB, { outputFormat: "image/jpeg" });
 }
 
 export default function CompressTool() {
@@ -238,9 +251,7 @@ export default function CompressTool() {
         try {
           const result =
             mode === "target"
-              ? await compressToTargetSize(img.file, targetSizeKB, {
-                  outputFormat: "image/jpeg",
-                })
+              ? await compressToTarget(img.file, targetSizeKB)
               : wantsPng(img.file, outputMode)
               ? await compressPng(img.file, quality)
               : await compressImageSmart(img.file, {
@@ -578,7 +589,7 @@ export default function CompressTool() {
                 </div>
                 <p className="text-xs text-brand-mid">
                   품질을 자동으로 맞춰 목표 용량 이하로 압축합니다. 품질을 60% 아래로 내려야 하면
-                  대신 해상도를 줄입니다. 사진이 깨지는 것보다 조금 작아지는 편이 낫기 때문입니다.
+                  대신 해상도를 줄입니다. PNG는 먼저 투명 배경을 유지한 채 색 수를 줄여 맞춰 봅니다.
                 </p>
               </div>
             )}
@@ -673,6 +684,12 @@ export default function CompressTool() {
                     />
                   </div>
                 </div>
+                {selectedImage.result.alphaDropped && (
+                  <p className="text-sm text-brand-mid leading-relaxed">
+                    투명 배경을 유지한 PNG로는 목표 용량까지 줄일 수 없어, 투명한 부분을 흰색으로 채운 JPG로 저장했습니다.
+                    투명 배경이 꼭 필요하다면 목표 용량을 조금 늘려 보세요.
+                  </p>
+                )}
                 {selectedImage.result.resizedFrom && (
                   <p className="text-sm text-brand-mid leading-relaxed">
                     품질을 60% 아래로 낮추는 대신 해상도를{" "}
