@@ -318,7 +318,7 @@ test.describe("이미지 합치기", () => {
 });
 
 test.describe("워터마크", () => {
-  test("텍스트 워터마크 적용 → PNG(기본 출력) · 치수 유지", async ({ page }, testInfo) => {
+  test("텍스트 워터마크 적용 → JPG 사진은 JPG(기본 '자동') · 치수 유지", async ({ page }, testInfo) => {
     const guards = await installGuards(page);
     await page.goto("/tools/image/watermark");
     await uploadToDropzone(page, [fx("photo-1200x900.jpg")]);
@@ -328,12 +328,22 @@ test.describe("워터마크", () => {
     const file = await saveDownload(page, testInfo, () =>
       page.getByRole("button", { name: "다운로드" }).click(),
     );
-    // 기본 출력 형식은 PNG (제품 기본값)
-    expect(detectKind(file)).toBe("png");
+    // 기본 '자동': JPG 사진은 JPG (예전 기본 PNG는 15.8MB JPG를 47.2MB PNG로 만들었다)
+    expect(detectKind(file)).toBe("jpeg");
     expect(imageDims(file)).toEqual({ width: 1200, height: 900 });
     // 워터마크가 실제로 합성됐다면 바이트가 원본과 달라야 함
     expect(fs.readFileSync(file).equals(fs.readFileSync(fx("photo-1200x900.jpg")))).toBe(false);
     assertClean(guards);
+  });
+
+  test("기본 '자동'에서 투명 PNG는 PNG로 저장(투명 유지)", async ({ page }, testInfo) => {
+    await page.goto("/tools/image/watermark");
+    await uploadToDropzone(page, [fx("transparent-400x300.png")]);
+    await page.getByPlaceholder("예: © 내 이름, @아이디").fill("© floor05");
+    await page.getByRole("button", { name: "워터마크 적용", exact: true }).click();
+    await expect(page.getByRole("button", { name: "다운로드" })).toBeVisible({ timeout: 30_000 });
+    const file = await saveDownload(page, testInfo, () => page.getByRole("button", { name: "다운로드" }).click());
+    expect(detectKind(file)).toBe("png");
   });
 });
 
