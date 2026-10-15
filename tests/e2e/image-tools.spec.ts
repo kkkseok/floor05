@@ -228,6 +228,26 @@ test.describe("이미지 합치기", () => {
     assertClean(guards);
   });
 
+  test("PNG끼리 합치면 기본 출력이 PNG, JPG가 섞이면 JPG", async ({ page }, testInfo) => {
+    await page.goto("/tools/image/merge");
+    await uploadToDropzone(page, [fx("opaque-800x600.png"), fx("transparent-400x300.png")]);
+    await page.getByRole("button", { name: "2개 이미지 합치기" }).click();
+    await expect(page.getByRole("button", { name: "다운로드" })).toBeVisible({ timeout: 30_000 });
+    const png = await saveDownload(page, testInfo, () =>
+      page.getByRole("button", { name: "다운로드" }).click(),
+    );
+    expect(detectKind(png)).toBe("png");
+
+    await page.goto("/tools/image/merge");
+    await uploadToDropzone(page, [fx("opaque-800x600.png"), fx("photo-1200x900.jpg")]);
+    await page.getByRole("button", { name: "2개 이미지 합치기" }).click();
+    await expect(page.getByRole("button", { name: "다운로드" })).toBeVisible({ timeout: 30_000 });
+    const jpg = await saveDownload(page, testInfo, () =>
+      page.getByRole("button", { name: "다운로드" }).click(),
+    );
+    expect(detectKind(jpg)).toBe("jpeg");
+  });
+
   test("1장만 업로드 시 합치기 비활성 안내", async ({ page }) => {
     await page.goto("/tools/image/merge");
     await uploadToDropzone(page, [fx("photo-1200x900.jpg")]);
