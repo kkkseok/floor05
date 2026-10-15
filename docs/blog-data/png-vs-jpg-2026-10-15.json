@@ -1,0 +1,132 @@
+{
+  "browser": "151.0.7922.34",
+  "measuredAt": "2026-10-15T12:34:43.838Z",
+  "result": {
+    "photo": {
+      "width": 1920,
+      "height": 1499,
+      "formats": {
+        "png": {
+          "bytes": 6391324,
+          "psnr": null
+        },
+        "jpg90": {
+          "bytes": 727006,
+          "psnr": 38.14
+        },
+        "jpg80": {
+          "bytes": 473405,
+          "psnr": 35.68
+        },
+        "jpg60": {
+          "bytes": 309733,
+          "psnr": 33.47
+        },
+        "webp90": {
+          "bytes": 628524,
+          "psnr": 39.5
+        },
+        "webp80": {
+          "bytes": 356540,
+          "psnr": 36.33
+        }
+      },
+      "generations": {
+        "1": {
+          "bytes": 727006,
+          "psnr": 38.14
+        },
+        "5": {
+          "bytes": 726259,
+          "psnr": 37.59
+        },
+        "10": {
+          "bytes": 726142,
+          "psnr": 37.17
+        },
+        "20": {
+          "bytes": 726036,
+          "psnr": 36.65
+        }
+      }
+    },
+    "screenshot": {
+      "width": 1920,
+      "height": 1080,
+      "formats": {
+        "png": {
+          "bytes": 176491,
+          "psnr": null
+        },
+        "jpg90": {
+          "bytes": 125082,
+          "psnr": 47.8
+        },
+        "jpg80": {
+          "bytes": 99350,
+          "psnr": 43.5
+        },
+        "jpg60": {
+          "bytes": 77166,
+          "psnr": 39.53
+        },
+        "webp90": {
+          "bytes": 65090,
+          "psnr": 51.48
+        },
+        "webp80": {
+          "bytes": 51956,
+          "psnr": 47.11
+        }
+      },
+      "generations": {
+        "1": {
+          "bytes": 125082,
+          "psnr": 47.8
+        },
+        "5": {
+          "bytes": 125089,
+          "psnr": 47.73
+        },
+        "10": {
+          "bytes": 125087,
+          "psnr": 47.73
+        },
+        "20": {
+          "bytes": 125087,
+          "psnr": 47.73
+        }
+      }
+    },
+    "graphic": {
+      "width": 1200,
+      "height": 630,
+      "formats": {
+        "png": {
+          "bytes": 28643,
+          "psnr": null
+        },
+        "jpg90": {
+          "bytes": 17221,
+          "psnr": 49.49
+        },
+        "jpg80": {
+          "bytes": 14273,
+          "psnr": 47.08
+        },
+        "jpg60": {
+          "bytes": 11848,
+          "psnr": 43.1
+        },
+        "webp90": {
+          "bytes": 7354,
+          "psnr": 50.69
+        },
+        "webp80": {
+          "bytes": 5888,
+          "psnr": 49.04
+        }
+      }
+    }
+  }
+}
