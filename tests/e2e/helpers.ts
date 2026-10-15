@@ -306,3 +306,19 @@ export function pngGreenStats(file: string): { mean: number; spread: number } {
   return { mean: sum / (px.length / 4), spread: max - min };
 }
 
+/** PNG를 RGBA 픽셀로 읽는다 */
+export function pngPixels(file: string): { width: number; height: number; data: Uint8Array } {
+  const raw = fs.readFileSync(file);
+  const img = UPNG.decode(raw.buffer.slice(raw.byteOffset, raw.byteOffset + raw.length) as ArrayBuffer);
+  return { width: img.width, height: img.height, data: new Uint8Array(UPNG.toRGBA8(img)[0]) };
+}
+
+/** y행의 x0~x1 구간에서 초록 채널 값이 바뀌는 횟수 (줄무늬는 많고, 모자이크 블록은 적다) */
+export function rowTransitions(p: { width: number; data: Uint8Array }, y: number, x0: number, x1: number): number {
+  let n = 0;
+  for (let x = x0 + 1; x < x1; x++) {
+    if (p.data[(y * p.width + x) * 4 + 1] !== p.data[(y * p.width + x - 1) * 4 + 1]) n++;
+  }
+  return n;
+}
+

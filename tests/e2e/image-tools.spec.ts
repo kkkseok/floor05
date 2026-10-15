@@ -18,6 +18,8 @@ import {
   fx,
   writeStripesPng,
   pngGreenStats,
+  pngPixels,
+  rowTransitions,
 } from "./helpers";
 
 test.describe("이미지 압축", () => {
@@ -492,6 +494,32 @@ test.describe("모자이크", () => {
     expect(imageDims(file)).toEqual({ width: 1200, height: 900 });
     expect(fs.readFileSync(file).equals(fs.readFileSync(fx("photo-1200x900.jpg")))).toBe(false);
     assertClean(guards);
+  });
+
+  test("편집 화면보다 큰 원본(2400px)은 원본 해상도로 저장하고, 칠한 곳만 모자이크", async ({ page }, testInfo) => {
+    // 편집 캔버스는 긴 변 2000px로 줄여 보여준다. 예전에는 저장도 2000px로 줄어 나갔다.
+    const stripes = writeStripesPng(testInfo.outputPath("stripes-2400.png"), 2400);
+    await page.goto("/tools/image/mosaic");
+    await uploadToDropzone(page, [stripes]);
+    const canvas = page.locator("main canvas").first();
+    await expect(canvas).toBeVisible({ timeout: 15_000 });
+    const box = (await canvas.boundingBox())!;
+    await page.mouse.move(box.x + box.width * 0.2, box.y + box.height * 0.2);
+    await page.mouse.down();
+    await page.mouse.move(box.x + box.width * 0.6, box.y + box.height * 0.6, { steps: 8 });
+    await page.mouse.up();
+    await expect(page.getByText(/1곳 적용됨/)).toBeVisible();
+    const file = await saveDownload(page, testInfo, () =>
+      page.getByRole("button", { name: /다운로드/ }).first().click(),
+    );
+    expect(detectKind(file)).toBe("png");
+    const px = pngPixels(file);
+    expect({ width: px.width, height: px.height }).toEqual({ width: 2400, height: 2400 });
+    const y = Math.round(2400 * 0.4);
+    const inside = rowTransitions(px, y, Math.round(2400 * 0.3), Math.round(2400 * 0.5)); // 칠한 영역 안
+    const outside = rowTransitions(px, y, Math.round(2400 * 0.75), Math.round(2400 * 0.95)); // 칠하지 않은 곳
+    expect(outside, "칠하지 않은 곳은 원래 줄무늬(3px마다 2번 바뀜)").toBeGreaterThan(250);
+    expect(inside, "칠한 곳은 모자이크 블록이라 거의 바뀌지 않음").toBeLessThan(60);
   });
 });
 
