@@ -322,3 +322,28 @@ export function rowTransitions(p: { width: number; data: Uint8Array }, y: number
   return n;
 }
 
+/** 브라우저에서 반투명 원이 있는 투명 WebP(200×100)를 만들어 저장한다(WebP 인코딩 미지원이면 null) */
+export async function writeTransparentWebp(page: Page, file: string): Promise<string | null> {
+  await page.goto("about:blank");
+  const b64 = await page.evaluate(async () => {
+    const c = document.createElement("canvas");
+    c.width = 200;
+    c.height = 100;
+    const x = c.getContext("2d")!;
+    x.fillStyle = "rgba(196,92,44,0.7)";
+    x.beginPath();
+    x.arc(100, 50, 40, 0, Math.PI * 2);
+    x.fill();
+    const blob: Blob | null = await new Promise((ok) => c.toBlob(ok, "image/webp", 0.9));
+    if (!blob || blob.type !== "image/webp") return null;
+    const u = new Uint8Array(await blob.arrayBuffer());
+    let s = "";
+    u.forEach((v) => (s += String.fromCharCode(v)));
+    return btoa(s);
+  });
+  if (!b64) return null;
+  fs.mkdirSync(path.dirname(file), { recursive: true });
+  fs.writeFileSync(file, Buffer.from(b64, "base64"));
+  return file;
+}
+

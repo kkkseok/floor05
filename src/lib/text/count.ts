@@ -46,7 +46,7 @@ function byte2Length(s: string): number {
 // 공백 제외 때 지우는 문자: 공백류(\s — 띄어쓰기·탭·U+00A0 줄바꿈 없는 공백·U+3000 전각 공백 등)와
 // 보이지 않는 폭 없는 공백(U+200B). 예전에는 띄어쓰기·탭만 지워 웹에서 복사한 U+00A0, 한글 문서의
 // U+3000이 '공백 제외' 글자수에 그대로 세어졌다(실측: docs/blog-data/char-count-2026-10-16.json).
-const SPACE_LIKE = /[\s​]/gu;
+const SPACE_LIKE = /[\s\u200B]/gu;
 
 export function analyzeText(input: string, mode: CountMode = "naver"): TextStats {
   if (!input) return { ...EMPTY_STATS };

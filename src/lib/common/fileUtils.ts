@@ -266,3 +266,18 @@ export function canvasToBlob(
     );
   });
 }
+
+export type OutputImageType = "image/jpeg" | "image/png" | "image/webp";
+
+/**
+ * 결과 이미지 형식은 입력을 따른다: PNG→PNG, WebP→WebP, 그 외→JPG.
+ * 투명을 담을 수 있는 PNG·WebP를 JPG로 바꾸면 투명 영역이 검게(또는 흰색으로) 칠해진다.
+ * WebKit은 .webp 파일의 File.type을 비워 두므로 확장자도 함께 본다.
+ * WebP 인코딩을 못 하는 브라우저는 PNG를 돌려주므로, 확장자는 결과 blob.type으로 정할 것.
+ */
+export function outputTypeFor(file: File): OutputImageType {
+  const ext = getFileExtension(file.name);
+  if (file.type === "image/png" || ext === "png") return "image/png";
+  if (file.type === "image/webp" || ext === "webp") return "image/webp";
+  return "image/jpeg";
+}

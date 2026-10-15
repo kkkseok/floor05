@@ -3,10 +3,10 @@
 import { useState, useEffect, useRef, useCallback } from "react";
 import { saveAs } from "file-saver";
 import FileDropzone from "@/components/common/FileDropzone";
-import { canvasToBlob, getFileExtension, getFileNameWithoutExtension } from "@/lib/common/fileUtils";
+import { canvasToBlob, getFileNameWithoutExtension, outputTypeFor, type OutputImageType } from "@/lib/common/fileUtils";
 import { trackToolUse, trackDownload } from "@/lib/common/analytics";
 
-type OutputType = "image/jpeg" | "image/png" | "image/webp";
+type OutputType = OutputImageType;
 const EXTENSIONS: Record<string, string> = { "image/jpeg": "jpg", "image/png": "png", "image/webp": "webp" };
 
 export default function RotateTool() {
@@ -29,11 +29,7 @@ export default function RotateTool() {
       const bmp = await createImageBitmap(f, { imageOrientation: "from-image" });
       setBitmap(bmp);
       setName(getFileNameWithoutExtension(f.name));
-      // 일부 브라우저(WebKit)는 .webp 파일의 type을 비워 두므로 확장자로도 판단한다.
-      const ext = getFileExtension(f.name).toLowerCase();
-      const isPng = f.type === "image/png" || ext === "png";
-      const isWebp = f.type === "image/webp" || ext === "webp";
-      setOutputType(isPng ? "image/png" : isWebp ? "image/webp" : "image/jpeg");
+      setOutputType(outputTypeFor(f));
       setRotation(0);
       setFlipH(false);
       setFlipV(false);
