@@ -36,6 +36,20 @@ const nextConfig: NextConfig = {
         destination: "/tools/image/heic-to-jpg",
         permanent: true,
       },
+      // 2026-10 사이트 범위 정리: 범용 변환기와 같은 컴포넌트를 쓰던 변환쌍 랜딩과,
+      // 근로 계산기 허브로 옮겨갈 수 있는 금융 계산기만 301로 보낸다.
+      // 대체 페이지가 없는 건강·단위·날짜·색상·랜덤 도구는 404로 둔다
+      // (무관한 페이지로 보내면 soft 404로 처리되기 때문).
+      ...["/tools/image/jpg-to-png", "/tools/image/webp-to-jpg"].map((source) => ({
+        source,
+        destination: "/tools/image/convert",
+        permanent: true,
+      })),
+      ...["/tools/calc/loan", "/tools/calc/savings", "/tools/calc/vat"].map((source) => ({
+        source,
+        destination: "/tools/calc",
+        permanent: true,
+      })),
     ];
   },
 };

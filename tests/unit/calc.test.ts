@@ -10,9 +10,6 @@ import { describe, it, expect } from "vitest";
 import { calcSalary } from "@/lib/calc/salary";
 import { calcSeverance } from "@/lib/calc/severance";
 import { calcWage } from "@/lib/calc/wage";
-import { vatFromSupply, vatFromTotal } from "@/lib/calc/vat";
-import { calcLoan } from "@/lib/calc/loan";
-import { calcSavings } from "@/lib/calc/savings";
 
 describe("연봉 실수령액 (calcSalary)", () => {
   it("연봉 5,000만 · 비과세 월 20만 · 본인 1인 · 자녀 0 — 법정 산식 수기 검산", () => {
@@ -174,100 +171,5 @@ describe("주휴수당 (calcWage)", () => {
   it("0 입력은 null", () => {
     expect(calcWage({ hourlyWage: 0, weeklyHours: 40 })).toBeNull();
     expect(calcWage({ hourlyWage: 10_320, weeklyHours: 0 })).toBeNull();
-  });
-});
-
-describe("부가세 (vat)", () => {
-  it("공급가 → 세액 10%", () => {
-    expect(vatFromSupply(10_000)).toEqual({ supply: 10_000, vat: 1_000, total: 11_000 });
-    expect(vatFromSupply(1_234_567)).toEqual({ supply: 1_234_567, vat: 123_457, total: 1_358_024 });
-  });
-
-  it("합계 → 공급가 역산 (÷1.1)", () => {
-    expect(vatFromTotal(11_000)).toEqual({ supply: 10_000, vat: 1_000, total: 11_000 });
-    expect(vatFromTotal(1_000_000)).toEqual({ supply: 909_091, vat: 90_909, total: 1_000_000 });
-  });
-
-  it("역산 후 공급가+세액=합계 불변식", () => {
-    for (const t of [1, 55, 999, 12_345, 98_765_432]) {
-      const r = vatFromTotal(t);
-      expect(r.supply + r.vat).toBe(r.total);
-    }
-  });
-
-  it("음수는 0으로 처리", () => {
-    expect(vatFromSupply(-100).supply).toBe(0);
-    expect(vatFromTotal(-100).total).toBe(0);
-  });
-});
-
-describe("대출이자 (calcLoan)", () => {
-  // golden: 표준 원리금균등 공식 별도 산출 (1억 · 연 4.8% · 12개월)
-  it("원리금균등: 1억 · 4.8% · 12개월 → 월 8,551,586", () => {
-    const r = calcLoan({ principal: 100_000_000, annualRatePct: 4.8, months: 12, method: "equalPayment" })!;
-    expect(r.firstPayment).toBe(8_551_586);
-    expect(r.lastPayment).toBe(8_551_586);
-    expect(r.totalInterest).toBe(2_619_028);
-    expect(r.totalPayment).toBe(102_619_028);
-  });
-
-  it("원금균등: 첫달 8,733,333 · 마지막달 8,366,667 · 총이자 260만", () => {
-    const r = calcLoan({ principal: 100_000_000, annualRatePct: 4.8, months: 12, method: "equalPrincipal" })!;
-    expect(r.firstPayment).toBe(8_733_333);
-    expect(r.lastPayment).toBe(8_366_667);
-    expect(r.totalInterest).toBe(2_600_000);
-  });
-
-  it("만기일시: 매월 40만 이자 · 총이자 480만", () => {
-    const r = calcLoan({ principal: 100_000_000, annualRatePct: 4.8, months: 12, method: "bullet" })!;
-    expect(r.firstPayment).toBe(400_000);
-    expect(r.lastPayment).toBe(100_400_000);
-    expect(r.totalInterest).toBe(4_800_000);
-  });
-
-  it("금리 0% 원리금균등 = 원금/개월", () => {
-    const r = calcLoan({ principal: 12_000_000, annualRatePct: 0, months: 12, method: "equalPayment" })!;
-    expect(r.firstPayment).toBe(1_000_000);
-    expect(r.totalInterest).toBe(0);
-  });
-
-  it("원금 0·기간 0·음수 금리는 null", () => {
-    expect(calcLoan({ principal: 0, annualRatePct: 4, months: 12, method: "equalPayment" })).toBeNull();
-    expect(calcLoan({ principal: 1000, annualRatePct: 4, months: 0, method: "equalPayment" })).toBeNull();
-    expect(calcLoan({ principal: 1000, annualRatePct: -1, months: 12, method: "equalPayment" })).toBeNull();
-  });
-});
-
-describe("예적금 이자 (calcSavings)", () => {
-  it("예금 단리: 1,000만 · 3% · 12개월 → 세전 30만 · 세후 253,800", () => {
-    const r = calcSavings({ amount: 10_000_000, annualRatePct: 3, months: 12, product: "deposit", interest: "simple" })!;
-    expect(r.principal).toBe(10_000_000);
-    expect(r.interest).toBe(300_000);
-    expect(r.tax).toBe(46_200); // 15.4%
-    expect(r.afterTaxInterest).toBe(253_800);
-    expect(r.afterTaxTotal).toBe(10_253_800);
-  });
-
-  it("예금 월복리: 1,000만 · 3% · 12개월 → 세전 304,160", () => {
-    const r = calcSavings({ amount: 10_000_000, annualRatePct: 3, months: 12, product: "deposit", interest: "compound" })!;
-    expect(r.interest).toBe(304_160);
-  });
-
-  it("적금 단리: 월 100만 · 3.65% · 12개월 → 세전 237,250 (n(n+1)/2 검산)", () => {
-    const r = calcSavings({ amount: 1_000_000, annualRatePct: 3.65, months: 12, product: "installment", interest: "simple" })!;
-    expect(r.principal).toBe(12_000_000);
-    expect(r.interest).toBe(237_250);
-    expect(r.tax).toBe(36_537);
-  });
-
-  it("적금 월복리(월초 납입): 월 100만 · 3% · 12개월 → 세전 196,799", () => {
-    const r = calcSavings({ amount: 1_000_000, annualRatePct: 3, months: 12, product: "installment", interest: "compound" })!;
-    expect(r.interest).toBe(196_799);
-  });
-
-  it("0·음수 입력은 null", () => {
-    expect(calcSavings({ amount: 0, annualRatePct: 3, months: 12, product: "deposit", interest: "simple" })).toBeNull();
-    expect(calcSavings({ amount: 100, annualRatePct: -1, months: 12, product: "deposit", interest: "simple" })).toBeNull();
-    expect(calcSavings({ amount: 100, annualRatePct: 3, months: 0, product: "deposit", interest: "simple" })).toBeNull();
   });
 });

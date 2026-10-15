@@ -2,7 +2,7 @@
 
 import { useState, useRef, useCallback } from "react";
 import FileDropzone from "@/components/common/FileDropzone";
-import { rgbToHex, rgbString, type RGB } from "@/lib/color/convert";
+import { rgbToHex, rgbString, type RGB } from "@/lib/image/color-convert";
 import { extractPalette } from "@/lib/image/palette";
 import { trackToolUse } from "@/lib/common/analytics";
 

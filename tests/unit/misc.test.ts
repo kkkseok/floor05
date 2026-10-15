@@ -1,14 +1,10 @@
 /**
- * 단위변환·색상·텍스트·랜덤·PDF 범위 파싱·파일 유틸 단위 테스트
+ * 색상·텍스트·PDF 범위 파싱·파일 유틸 단위 테스트
  * expected는 표준 환산계수·WCAG 공식·수기 검산으로 별도 산출한 값
  */
 import { describe, it, expect } from "vitest";
-import { UNIT_SETS, formatUnitValue } from "@/lib/unit/units";
-import { parseColor, rgbToHex, rgbToHsl, hslToRgb, rgbToCmyk } from "@/lib/color/convert";
-import { contrastRatio, judgeContrast, relativeLuminance } from "@/lib/color/contrast";
+import { parseColor, rgbToHex, rgbToHsl, hslToRgb, rgbToCmyk } from "@/lib/image/color-convert";
 import { analyzeText, manuscriptSheets } from "@/lib/text/count";
-import { randomInt, shuffle, weightedIndex } from "@/lib/random/core";
-import { generateLadder, traceAll, traceLadder } from "@/lib/random/ladder";
 import { parsePageRanges } from "@/lib/pdf/split";
 import { computeResizeDimensions } from "@/lib/image/resizeDims";
 import { buildIco } from "@/lib/image/ico";
@@ -21,47 +17,8 @@ import {
   calculateCompressionRate,
 } from "@/lib/common/fileUtils";
 
-// ---------- 단위 변환 ----------
-describe("단위 변환 (UNIT_SETS)", () => {
-  const conv = (set: string, from: string, to: string, v: number) => {
-    const s = UNIT_SETS[set];
-    const f = s.units.find((u) => u.key === from)!;
-    const t = s.units.find((u) => u.key === to)!;
-    return t.fromBase(f.toBase(v));
-  };
-
-  it("길이: 1인치 = 2.54cm, 1피트 = 30.48cm, 1km = 100,000cm", () => {
-    expect(conv("length", "inch", "cm", 1)).toBeCloseTo(2.54, 10);
-    expect(conv("length", "ft", "cm", 1)).toBeCloseTo(30.48, 10);
-    expect(conv("length", "km", "cm", 1)).toBeCloseTo(100_000, 6);
-    expect(conv("length", "cm", "inch", 170)).toBeCloseTo(66.9291, 3);
-  });
-
-  it("면적: 1평 = 3.305785㎡ (400/121), 32평 = 105.785㎡", () => {
-    expect(conv("area", "pyeong", "sqm", 1)).toBeCloseTo(400 / 121, 10);
-    expect(conv("area", "pyeong", "sqm", 32)).toBeCloseTo(105.7851, 3);
-    expect(conv("area", "sqm", "pyeong", 84.9)).toBeCloseTo(25.68, 2); // 국민평형 84.9㎡ ≈ 25.7평
-    expect(conv("area", "sqft", "sqm", 1)).toBeCloseTo(0.09290304, 10);
-  });
-
-  it("온도: 100°C=212°F, 0°C=273.15K, −40°F=−40°C, 화씨↔켈빈", () => {
-    expect(conv("temperature", "c", "f", 100)).toBeCloseTo(212, 10);
-    expect(conv("temperature", "c", "k", 0)).toBeCloseTo(273.15, 10);
-    expect(conv("temperature", "f", "c", -40)).toBeCloseTo(-40, 10);
-    expect(conv("temperature", "f", "k", 32)).toBeCloseTo(273.15, 10);
-  });
-
-  it("formatUnitValue: 유효숫자 6자리·잔차 제거", () => {
-    expect(formatUnitValue(0)).toBe("0");
-    expect(formatUnitValue(1e-12)).toBe("0");
-    expect(formatUnitValue(2.5400000000001)).toBe("2.54");
-    expect(formatUnitValue(NaN)).toBe("");
-    expect(formatUnitValue(Infinity)).toBe("");
-  });
-});
-
 // ---------- 색상 ----------
-describe("색상 변환 (color/convert)", () => {
+describe("색상 변환 (image/color-convert)", () => {
   it("HEX 파싱: #RGB·#RRGGBB·대소문자", () => {
     expect(parseColor("#FF8000")).toEqual({ r: 255, g: 128, b: 0 });
     expect(parseColor("ff8000")).toEqual({ r: 255, g: 128, b: 0 });
@@ -89,28 +46,6 @@ describe("색상 변환 (color/convert)", () => {
     const back = rgbToHsl(rgb);
     expect(back.h).toBeGreaterThanOrEqual(209);
     expect(back.h).toBeLessThanOrEqual(211);
-  });
-});
-
-describe("색상 대비 (WCAG 2.1)", () => {
-  it("흑↔백 = 21:1, 동일 색 = 1:1", () => {
-    const black = { r: 0, g: 0, b: 0 };
-    const white = { r: 255, g: 255, b: 255 };
-    expect(contrastRatio(black, white)).toBeCloseTo(21, 5);
-    expect(contrastRatio(white, white)).toBeCloseTo(1, 5);
-  });
-
-  it("#777777 on white = 4.48:1 → AA 일반 텍스트 불합격 (WebAIM 검산값)", () => {
-    const r = judgeContrast({ r: 119, g: 119, b: 119 }, { r: 255, g: 255, b: 255 });
-    expect(r.ratio).toBeCloseTo(4.48, 2);
-    expect(r.aaNormal).toBe(false);
-    expect(r.aaLarge).toBe(true);
-  });
-
-  it("상대 명도: 흰색=1, 검정=0, 빨강=0.2126", () => {
-    expect(relativeLuminance({ r: 255, g: 255, b: 255 })).toBeCloseTo(1, 5);
-    expect(relativeLuminance({ r: 0, g: 0, b: 0 })).toBeCloseTo(0, 5);
-    expect(relativeLuminance({ r: 255, g: 0, b: 0 })).toBeCloseTo(0.2126, 4);
   });
 });
 
@@ -149,62 +84,6 @@ describe("글자수 세기 (analyzeText)", () => {
     expect(manuscriptSheets(1000, 200)).toEqual({ sheets: 5, remainingCells: 0 });
     expect(manuscriptSheets(1001, 200)).toEqual({ sheets: 6, remainingCells: 199 });
     expect(manuscriptSheets(0, 200)).toEqual({ sheets: 0, remainingCells: 0 });
-  });
-});
-
-// ---------- 랜덤 ----------
-describe("랜덤 (random/core·ladder)", () => {
-  it("randomInt: 범위 준수 (0 ≤ x < max)", () => {
-    for (let i = 0; i < 500; i++) {
-      const x = randomInt(7);
-      expect(x).toBeGreaterThanOrEqual(0);
-      expect(x).toBeLessThan(7);
-      expect(Number.isInteger(x)).toBe(true);
-    }
-    expect(randomInt(1)).toBe(0);
-    expect(randomInt(0)).toBe(0);
-  });
-
-  it("shuffle: 순열 보존(원소 동일)·원본 불변", () => {
-    const arr = [1, 2, 3, 4, 5];
-    const s = shuffle(arr);
-    expect([...s].sort()).toEqual([1, 2, 3, 4, 5]);
-    expect(arr).toEqual([1, 2, 3, 4, 5]);
-  });
-
-  it("weightedIndex: 0 가중치는 절대 선택되지 않는다", () => {
-    for (let i = 0; i < 200; i++) {
-      expect(weightedIndex([0, 0, 5])).toBe(2);
-      expect(weightedIndex([3, 0, 0])).toBe(0);
-    }
-  });
-
-  it("사다리: 같은 단 인접 가로줄 금지 + 도착지는 순열", () => {
-    // 결정적 rng 주입 (테스트 재현성)
-    let seed = 42;
-    const rng = (n: number) => {
-      seed = (seed * 1103515245 + 12345) % 2147483648;
-      return seed % n;
-    };
-    for (let trial = 0; trial < 20; trial++) {
-      const ladder = generateLadder(2 + (trial % 11), 8 + trial, rng);
-      for (const line of ladder.rungs) {
-        for (let c = 0; c < line.length - 1; c++) {
-          expect(line[c] && line[c + 1]).toBe(false); // 인접 겹침 금지
-        }
-      }
-      const ends = traceAll(ladder);
-      expect([...ends].sort((a, b) => a - b)).toEqual(
-        Array.from({ length: ladder.cols }, (_, i) => i),
-      );
-    }
-  });
-
-  it("사다리 추적: 경로 길이 = rows+1, 시작 클램프", () => {
-    const ladder = generateLadder(4, 8);
-    const t = traceLadder(ladder, 0);
-    expect(t.seq).toHaveLength(ladder.rows + 1);
-    expect(traceLadder(ladder, 99).seq[0]).toBe(3); // 클램프
   });
 });
 

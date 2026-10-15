@@ -12,31 +12,28 @@ import { getToolsByCategory } from "@/lib/common/tools";
 const PAGE_URL = `${SITE_URL}/tools/calc`;
 
 export const metadata: Metadata = {
-  title: "금융 계산기 모음 - 연봉·퇴직금·이자, 숫자만 넣으면 끝",
+  title: "급여·퇴직 계산기 - 연봉 실수령액·퇴직금·주휴수당",
   description:
-    "연봉 실수령액, 퇴직금, 주휴수당, 대출이자, 예적금 이자, 부가세 계산기를 한곳에서 확인하세요.",
+    "2026년 4대보험 요율과 최저임금을 반영한 연봉 실수령액, 퇴직금, 주휴수당 계산기. 일하는 사람이 월급명세서를 볼 때 필요한 세 가지 숫자를 모았습니다.",
   keywords: [
-    "금융 계산기",
+    "급여 계산기",
     "연봉 실수령액 계산기",
     "퇴직금 계산기",
     "주휴수당 계산기",
-    "대출이자 계산기",
-    "예적금 이자 계산기",
-    "부가세 계산기",
   ],
   openGraph: {
-    title: "금융 계산기 모음 - 연봉·퇴직금·이자, 숫자만 넣으면 끝",
+    title: "급여·퇴직 계산기 - 연봉 실수령액·퇴직금·주휴수당",
     description:
-      "월급, 퇴사, 아르바이트 급여, 대출, 저축, 견적 작성에 필요한 계산기를 목적별로 모았습니다.",
+      "입사·이직, 퇴사, 아르바이트 급여 확인처럼 일과 관련된 돈 계산을 상황별로 모았습니다.",
     url: PAGE_URL,
     type: "website",
     images: [{ url: "/og-image.png", width: 1200, height: 630 }],
   },
   twitter: {
     card: "summary_large_image",
-    title: "금융 계산기 모음 - 연봉·퇴직금·이자, 숫자만 넣으면 끝",
+    title: "급여·퇴직 계산기 - 연봉 실수령액·퇴직금·주휴수당",
     description:
-      "2026년 기준으로 자주 확인하는 돈 계산을 빠르게 비교하고 정리할 수 있습니다.",
+      "월급에서 떼는 돈, 퇴사할 때 받는 돈, 시급에 붙는 수당을 2026년 기준으로 확인합니다.",
   },
   alternates: {
     canonical: PAGE_URL,
@@ -57,10 +54,10 @@ export default function CalcToolsPage() {
     {
       "@context": "https://schema.org",
       "@type": "CollectionPage",
-      name: "금융 계산기 모음",
+      name: "급여·퇴직 계산기",
       url: PAGE_URL,
       description:
-        "연봉, 퇴직금, 주휴수당, 대출이자, 예적금 이자, 부가세 계산기를 상황별로 찾아볼 수 있는 페이지입니다.",
+        "연봉 실수령액, 퇴직금, 주휴수당 계산기를 상황별로 찾아볼 수 있는 페이지입니다.",
       mainEntity: {
         "@type": "ItemList",
         itemListElement: tools.map((tool, index) => ({
@@ -76,7 +73,7 @@ export default function CalcToolsPage() {
       "@type": "BreadcrumbList",
       itemListElement: [
         { "@type": "ListItem", position: 1, name: "홈", item: SITE_URL },
-        { "@type": "ListItem", position: 2, name: "금융 계산기", item: PAGE_URL },
+        { "@type": "ListItem", position: 2, name: "급여·퇴직 계산기", item: PAGE_URL },
       ],
     },
   ];
@@ -100,24 +97,6 @@ export default function CalcToolsPage() {
       href: getToolHref(["주휴"], "/tools/calc/wage"),
       label: "주휴수당 계산기",
     },
-    {
-      title: "대출 갈아타기를 고민할 때",
-      body: "금리, 기간, 상환 방식을 바꿔 월 납입액과 총 이자를 비교하면 체감 부담을 숫자로 볼 수 있습니다.",
-      href: getToolHref(["대출"], "/tools/calc/loan"),
-      label: "대출이자 계산기",
-    },
-    {
-      title: "목돈을 어디에 둘지 따져볼 때",
-      body: "예금과 적금의 기간, 금리, 세후 이자를 같이 계산해 보면 실제로 남는 금액 차이가 더 선명해집니다.",
-      href: getToolHref(["예적금", "예금", "적금"], "/tools/calc/savings"),
-      label: "예적금 이자 계산기",
-    },
-    {
-      title: "견적서나 세금계산서를 맞출 때",
-      body: "공급가액과 부가세 포함 금액을 오가며 계산해야 한다면 항목별 금액 확인부터 끝내는 편이 좋습니다.",
-      href: getToolHref(["부가세"], "/tools/calc/vat"),
-      label: "부가세 계산기",
-    },
   ];
 
   return (
@@ -135,10 +114,10 @@ export default function CalcToolsPage() {
           <div className="mx-auto max-w-6xl px-4 text-center sm:px-6 lg:px-8">
             <p className="mb-3 font-mono text-sm text-brand-accent">CALCULATORS</p>
             <h1 className="text-4xl font-bold tracking-tight text-brand-paper sm:text-5xl">
-              금융 계산기 모음
+              급여·퇴직 계산기
             </h1>
             <p className="mx-auto mt-4 max-w-2xl text-lg text-brand-light">
-              연봉, 퇴직금, 수당, 이자, 부가세처럼 자주 확인하는 금액을 빠르게 계산합니다.
+              월급명세서, 퇴직금 정산, 아르바이트 수당. 일하면서 한 번쯤 직접 맞춰보게 되는 숫자들입니다.
             </p>
           </div>
         </section>
@@ -146,12 +125,12 @@ export default function CalcToolsPage() {
         <section className="mx-auto max-w-6xl px-4 py-12 sm:px-6 lg:px-8">
           <div className="mx-auto max-w-3xl space-y-4 text-base leading-8 text-brand-mid">
             <p>
-              금융 계산기 6종은 2026년 요율과 세율을 기준으로 일상적인 돈 계산을
-              정리합니다. 연봉 실수령액, 퇴직금, 주휴수당, 대출이자, 예적금 이자,
-              부가세처럼 자주 묻는 숫자를 상황에 맞게 확인할 수 있습니다.
+              세 계산기는 모두 근로자 입장에서 출발합니다. 연봉 실수령액은 국민연금·건강보험·
+              고용보험·소득세를 뗀 월급을, 퇴직금은 근로자퇴직급여 보장법의 평균임금 공식을,
+              주휴수당은 2026년 최저임금 10,320원과 주 15시간 기준을 적용합니다.
             </p>
             <p>
-              계산에 넣은 연봉이나 대출 원금 같은 숫자는 화면에 결과를 그리는 데만
+              계산에 넣은 연봉이나 시급 같은 숫자는 화면에 결과를 그리는 데만
               쓰이고, 탭을 닫는 순간 함께 사라집니다. 민감한 금액일수록 마음 편히
               넣어보세요.
             </p>

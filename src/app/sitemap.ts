@@ -18,12 +18,7 @@ export default function sitemap(): MetadataRoute.Sitemap {
   const pages: MetadataRoute.Sitemap = [
     { url: `${SITE_URL}/tools/image`, changeFrequency: "weekly", priority: 0.8 },
     { url: `${SITE_URL}/tools/calc`, changeFrequency: "weekly", priority: 0.8 },
-    { url: `${SITE_URL}/tools/date`, changeFrequency: "weekly", priority: 0.8 },
-    { url: `${SITE_URL}/tools/health`, changeFrequency: "weekly", priority: 0.8 },
-    { url: `${SITE_URL}/tools/unit`, changeFrequency: "weekly", priority: 0.8 },
     { url: `${SITE_URL}/tools/pdf`, changeFrequency: "weekly", priority: 0.8 },
-    { url: `${SITE_URL}/tools/color`, changeFrequency: "weekly", priority: 0.8 },
-    { url: `${SITE_URL}/tools/random`, changeFrequency: "weekly", priority: 0.8 },
     {
       url: SITE_URL,
       changeFrequency: "daily",

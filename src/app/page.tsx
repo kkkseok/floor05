@@ -10,12 +10,7 @@ import { SITE_URL } from "@/lib/common/constants";
 const CATEGORY_HUBS: Partial<Record<ToolCategory, { href: string; label: string }>> = {
   image: { href: "/tools/image", label: "이미지 도구 전체 보기" },
   calc: { href: "/tools/calc", label: "금융 계산기 전체 보기" },
-  date: { href: "/tools/date", label: "날짜 계산기 전체 보기" },
-  health: { href: "/tools/health", label: "건강 계산기 전체 보기" },
-  unit: { href: "/tools/unit", label: "단위 변환기 전체 보기" },
   pdf: { href: "/tools/pdf", label: "PDF 도구 전체 보기" },
-  color: { href: "/tools/color", label: "색상 도구 전체 보기" },
-  random: { href: "/tools/random", label: "랜덤 뽑기 도구 전체 보기" },
 };
 
 export const metadata: Metadata = {
@@ -44,7 +39,7 @@ const homeFaqs = [
   {
     question: "어떤 도구가 있나요?",
     answer:
-      "이미지 압축·리사이즈·포맷 변환·크롭·워터마크 같은 이미지 도구, PDF 합치기·분할, 글자수 세기, 연봉·퇴직금·대출이자 계산기, 만 나이·D-Day 같은 날짜 도구, 단위·색상 변환, 사다리타기까지 40여 개를 제공합니다. 필요한 도구는 검색해서 바로 들어와 쓰면 됩니다.",
+      "압축·리사이즈·포맷 변환·크롭·워터마크·EXIF 삭제 같은 이미지 도구가 중심이고, 이미지 PDF 변환과 PDF 합치기·분할, 글자수 세기, 연봉 실수령액·퇴직금·주휴수당 계산기가 있습니다. 여러 가지를 얕게 늘리기보다 파일을 다루는 도구를 깊게 다듬는 쪽을 택했습니다.",
   },
 ];
 

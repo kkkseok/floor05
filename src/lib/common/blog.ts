@@ -27,84 +27,6 @@ export interface BlogPost {
  * datePublished/dateModified는 검색엔진 신선도 신호(BlogPosting)로 사용된다.
  */
 export const POSTS: BlogPost[] = [
-  // ── 신규 (2026-07-22) ───────────────────────────────────────────
-  {
-    slug: "loan-interest-guide",
-    title: "대출 이자 계산법: 상환방식 3가지 비교",
-    description:
-      "원리금균등, 원금균등, 만기일시 상환의 월 납입액과 총이자 차이를 실제 숫자로 비교해 대출 이자 구조를 정리합니다.",
-    datePublished: "2026-07-22",
-    dateModified: "2026-07-22",
-    readTime: "7분",
-    keywords: [
-      "대출 이자 계산법",
-      "원리금균등 상환",
-      "원금균등 상환",
-      "만기일시 상환",
-      "주택담보대출 이자",
-      "신용대출 이자 계산",
-      "대출 상환 방식 비교",
-    ],
-    related: ["savings-interest-guide", "vat-calculation-guide", "salary-net-pay-guide"],
-  },
-  {
-    slug: "ovulation-calculation-guide",
-    title: "배란일 계산하는 법과 가임기",
-    description:
-      "마지막 생리 시작일과 생리 주기로 배란 예정일과 가임기를 추정하는 방법, 오차가 커지는 경우와 참고 한계를 함께 설명합니다.",
-    datePublished: "2026-07-22",
-    dateModified: "2026-07-22",
-    readTime: "6분",
-    keywords: [
-      "배란일 계산법",
-      "가임기 계산",
-      "생리주기 계산",
-      "임신 가능 기간",
-      "배란 예정일",
-      "불규칙 생리 배란일",
-      "임신 준비 계산기",
-    ],
-    related: ["bmi-obesity-guide", "mannai-age-guide"],
-  },
-  {
-    slug: "vat-calculation-guide",
-    title: "부가세 계산법: 공급가액·합계금액 관계",
-    description:
-      "부가세 별도와 포함 금액을 구분해 공급가액, 부가세, 합계금액을 계산하고 역산하는 방법을 정리합니다.",
-    datePublished: "2026-07-22",
-    dateModified: "2026-07-22",
-    readTime: "6분",
-    keywords: [
-      "부가세 계산법",
-      "공급가액 계산",
-      "부가세 포함 계산",
-      "합계금액 역산",
-      "부가가치세 10%",
-      "세금계산서 공급가액",
-      "부가세 별도 포함",
-    ],
-    related: ["savings-interest-guide", "loan-interest-guide", "salary-net-pay-guide"],
-  },
-  {
-    slug: "savings-interest-guide",
-    title: "예금·적금 이자 계산법: 단리와 복리 차이",
-    description:
-      "예금과 적금의 납입 방식 차이, 단리와 월복리 계산식, 이자소득세를 반영한 세후이자 흐름을 설명합니다.",
-    datePublished: "2026-07-22",
-    dateModified: "2026-07-22",
-    readTime: "6분",
-    keywords: [
-      "예금 이자 계산법",
-      "적금 이자 계산법",
-      "단리 복리 차이",
-      "월복리 계산",
-      "세후이자 계산",
-      "이자소득세 15.4%",
-      "적금 만기 이자",
-    ],
-    related: ["vat-calculation-guide", "loan-interest-guide", "salary-net-pay-guide"],
-  },
-
   // ── 신규 (2026-06-29) ───────────────────────────────────────────
   {
     slug: "exif-removal-guide",
@@ -145,44 +67,6 @@ export const POSTS: BlogPost[] = [
     readTime: "5분",
   },
   {
-    slug: "random-picker-guide",
-    title: "사다리타기·룰렛으로 공정하게 정하기",
-    description:
-      "점심 메뉴, 내기, 당첨자를 정할 때 사다리타기와 룰렛을 쓰는 법과, 결과가 정말 공정한지(난수·확률)까지 한 번에 정리했습니다.",
-    keywords: [
-      "사다리타기",
-      "룰렛 돌리기",
-      "돌림판",
-      "점심 메뉴 정하기",
-      "랜덤 뽑기",
-      "공정한 추첨",
-      "제비뽑기",
-    ],
-    datePublished: "2026-06-29",
-    dateModified: "2026-07-23",
-    related: ["weekly-holiday-pay-guide", "mannai-age-guide", "pyeong-conversion-guide"],
-    readTime: "6분",
-  },
-  {
-    slug: "color-code-guide",
-    title: "HEX·RGB·HSL 색상 코드 차이와 변환",
-    description:
-      "HEX·RGB·HSL·CMYK가 각각 무엇이고 어떻게 변환하는지, 그리고 글자 가독성을 위한 색상 대비(WCAG)까지 — 색을 코드로 다루는 기본을 정리했습니다.",
-    keywords: [
-      "색상 코드",
-      "hex rgb 변환",
-      "rgb hex 변환",
-      "hsl 색상",
-      "cmyk 변환",
-      "색상 대비",
-      "웹 색상 코드",
-    ],
-    datePublished: "2026-06-29",
-    dateModified: "2026-07-23",
-    related: ["transparent-background", "png-vs-jpg", "image-to-pdf-guide"],
-    readTime: "5분",
-  },
-  {
     slug: "image-to-pdf-guide",
     title: "사진을 PDF로 만들고 합치는 법",
     description:
@@ -220,64 +104,6 @@ export const POSTS: BlogPost[] = [
     readTime: "7분",
     related: ["salary-net-pay-guide", "severance-pay-guide"],
   },
-  {
-    slug: "pyeong-conversion-guide",
-    title: "평수 계산법과 전용·분양면적 차이",
-    description:
-      "평과 제곱미터(㎡) 변환법, 84㎡가 몇 평인지, 그리고 전용면적·공급(분양)면적·공용면적이 어떻게 다른지 한 번에 정리했습니다.",
-    keywords: [
-      "평수 계산법",
-      "제곱미터 평 변환",
-      "84제곱미터 평",
-      "전용면적 분양면적 차이",
-      "공급면적",
-      "평수 변환",
-      "전용면적 평수",
-    ],
-    datePublished: "2026-06-29",
-    dateModified: "2026-07-23",
-    readTime: "6분",
-    related: ["bmi-obesity-guide", "salary-net-pay-guide"],
-  },
-  {
-    slug: "bmi-obesity-guide",
-    title: "BMI 계산법과 비만도 기준",
-    description:
-      "체질량지수(BMI) 계산법과 한국(대한비만학회)·WHO 비만도 기준의 차이, 정상 체중 범위, 그리고 BMI로 알 수 없는 것까지 한 번에 정리했습니다.",
-    keywords: [
-      "BMI 계산법",
-      "비만도 기준",
-      "BMI 정상 범위",
-      "체질량지수",
-      "대한비만학회 기준",
-      "표준체중",
-      "BMI 계산",
-    ],
-    datePublished: "2026-06-29",
-    dateModified: "2026-07-23",
-    readTime: "6분",
-    related: ["mannai-age-guide", "salary-net-pay-guide"],
-  },
-  {
-    slug: "mannai-age-guide",
-    title: "만 나이 계산하는 법",
-    description:
-      "2023년 만 나이 통일법 이후 만 나이·연 나이·세는 나이의 차이, 계산법, 그리고 띠와 음력 생일까지 헷갈리는 나이 셈을 한 번에 정리했습니다.",
-    keywords: [
-      "만나이 계산",
-      "만 나이 계산법",
-      "만나이 통일",
-      "연 나이",
-      "세는 나이",
-      "만나이 계산기",
-      "나이 계산",
-    ],
-    datePublished: "2026-06-29",
-    dateModified: "2026-07-23",
-    readTime: "5분",
-    related: ["salary-net-pay-guide", "character-count-guide"],
-  },
-
   // ── 신규 (2026-06-23) ───────────────────────────────────────────
   {
     slug: "avif-guide",
@@ -471,12 +297,7 @@ export const POSTS: BlogPost[] = [
     datePublished: "2026-06-11",
     dateModified: "2026-07-22",
     readTime: "7분",
-    related: [
-      "image-compression-guide",
-      "image-merge-guide",
-      "image-watermark-guide",
-      "browser-image-tools-privacy",
-    ],
+    related: ["image-compression-guide", "image-merge-guide", "image-watermark-guide", "browser-image-tools-privacy"],
   },
   {
     slug: "browser-image-tools-privacy",
@@ -494,11 +315,7 @@ export const POSTS: BlogPost[] = [
     datePublished: "2026-06-11",
     dateModified: "2026-07-23",
     readTime: "5분",
-    related: [
-      "image-compression-guide",
-      "heic-to-jpg-guide",
-      "photo-editing-without-photoshop",
-    ],
+    related: ["image-compression-guide", "heic-to-jpg-guide", "photo-editing-without-photoshop"],
   },
 
   // ── 기존 (2026-03) ──────────────────────────────────────────────

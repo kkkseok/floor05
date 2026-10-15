@@ -28,7 +28,7 @@ test.describe("프로덕션 기본 접근", () => {
       "/tools/image/compress",
       "/tools/calc/salary",
       "/tools/pdf/merge",
-      "/tools/date/lunar",
+      "/tools/image/heic-to-jpg",
       "/blog",
       "/about",
       "/privacy",
@@ -56,16 +56,16 @@ test.describe("프로덕션 기본 접근", () => {
 
   test("canonical: 도구 페이지가 자기 www URL을 가리킴", async ({ page }) => {
     await prep(page);
-    await page.goto("/tools/calc/vat");
+    await page.goto("/tools/calc/wage");
     const canonical = await page.locator('link[rel="canonical"]').getAttribute("href");
-    expect(canonical).toBe("https://www.floor05.com/tools/calc/vat");
+    expect(canonical).toBe("https://www.floor05.com/tools/calc/wage");
   });
 
   test("리다이렉트: non-www → www(308 영구) · /tools/image/heic → heic-to-jpg", async ({ request }) => {
     // apex → www 는 Vercel 도메인 레벨(redirectStatusCode=308)에서 처리 — 영구 리다이렉트여야 SEO 신호가 통합된다
-    const naked = await request.get("https://floor05.com/tools/calc/vat", { maxRedirects: 0 });
+    const naked = await request.get("https://floor05.com/tools/calc/wage", { maxRedirects: 0 });
     expect([301, 308]).toContain(naked.status());
-    expect(naked.headers()["location"]).toContain("https://www.floor05.com/tools/calc/vat");
+    expect(naked.headers()["location"]).toContain("https://www.floor05.com/tools/calc/wage");
 
     const heic = await request.get("https://www.floor05.com/tools/image/heic", { maxRedirects: 0 });
     expect([301, 308]).toContain(heic.status());
@@ -90,12 +90,24 @@ test.describe("프로덕션 기본 접근", () => {
 });
 
 test.describe("프로덕션 기능 smoke", () => {
-  test("부가세 계산기: 100만 → 10만·110만 (실계산 검증)", async ({ page }) => {
+  test("주휴수당 계산기: 2026 최저시급·주 40시간 → 82,560원 (실계산 검증)", async ({ page }) => {
     await prep(page);
-    await page.goto("/tools/calc/vat");
+    await page.goto("/tools/calc/wage");
     const main = page.locator("main");
-    await expect(main.getByText("100,000").first()).toBeVisible();
-    await expect(main.getByText("1,100,000").first()).toBeVisible();
+    await expect(main.getByText("82,560").first()).toBeVisible();
+    await expect(main.getByText("2,152,339").first()).toBeVisible();
+  });
+
+  test("범위 정리: 변환쌍·금융 계산기는 301, 건강 도구는 404", async ({ request }) => {
+    for (const [from, to] of [
+      ["/tools/image/jpg-to-png", "/tools/image/convert"],
+      ["/tools/calc/vat", "/tools/calc"],
+    ]) {
+      const res = await request.get(from, { maxRedirects: 0 });
+      expect([301, 308], from).toContain(res.status());
+      expect(res.headers()["location"], from).toContain(to);
+    }
+    expect((await request.get("/tools/health/bmi")).status()).toBe(404);
   });
 
   test("이미지 압축 1건: 다운로드 성공 + 파일 외부 전송 없음 (브라우저 로컬 처리)", async ({ page }, testInfo) => {

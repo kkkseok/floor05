@@ -80,7 +80,7 @@ check(
   `ToolLayout의 수동 슬롯 호출 수: ${toolAdCalls}`,
 );
 
-for (const category of ["image", "calc", "date", "health", "unit", "pdf", "color", "random"]) {
+for (const category of ["image", "calc", "pdf"]) {
   const page = read(`src/app/tools/${category}/page.tsx`);
   const count = [...page.matchAll(/<AdSlot\s/g)].length;
   check(`${category} hub has at most one manual slot`, count <= 1, `현재 ${count}개`);
@@ -90,13 +90,6 @@ for (const route of [
   "/tools/calc/salary",
   "/tools/calc/wage",
   "/tools/calc/severance",
-  "/tools/calc/vat",
-  "/tools/calc/savings",
-  "/tools/calc/loan",
-  "/tools/health/bmi",
-  "/tools/health/bmr",
-  "/tools/health/ovulation",
-  "/tools/health/pregnancy",
 ]) {
   check(`Source review: ${route}`, sources.includes(`"${route}"`), "출처 레지스트리 누락");
 }

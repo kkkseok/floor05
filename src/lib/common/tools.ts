@@ -4,7 +4,7 @@
  * - Header, Footer, ToolLayout, 메인 페이지에서 공통 사용
  */
 
-export type ToolCategory = "image" | "text" | "calc" | "date" | "health" | "unit" | "pdf" | "color" | "random";
+export type ToolCategory = "image" | "text" | "calc" | "pdf";
 
 export interface Tool {
   name: string;
@@ -43,20 +43,6 @@ export const TOOLS: Tool[] = [
     href: "/tools/image/heic-to-jpg",
     description: "아이폰 사진을 JPG로 변환. 회원가입 없이 무제한 무료.",
     shortDescription: "아이폰 사진",
-    category: "image",
-  },
-  {
-    name: "JPG → PNG",
-    href: "/tools/image/jpg-to-png",
-    description: "JPG를 무손실 PNG로. 투명 배경이 필요한 편집 작업 전에.",
-    shortDescription: "JPG를 PNG로",
-    category: "image",
-  },
-  {
-    name: "WebP → JPG",
-    href: "/tools/image/webp-to-jpg",
-    description: "안 열리는 WebP를 JPG·PNG로. 웹에서 받은 이미지를 바로 열게.",
-    shortDescription: "WebP를 JPG로",
     category: "image",
   },
   {
@@ -151,97 +137,6 @@ export const TOOLS: Tool[] = [
     category: "calc",
   },
   {
-    name: "대출이자 계산기",
-    href: "/tools/calc/loan",
-    description: "원금·금리·기간으로 월 상환액과 총이자를. 원리금균등·원금균등·만기일시 비교.",
-    shortDescription: "월 상환액·총이자",
-    category: "calc",
-  },
-  {
-    name: "예적금 이자 계산기",
-    href: "/tools/calc/savings",
-    description: "예금·적금 만기 수령액을 단리·복리로. 이자소득세 15.4% 뗀 세후 금액까지.",
-    shortDescription: "예금·적금 이자",
-    category: "calc",
-  },
-  {
-    name: "부가세 계산기",
-    href: "/tools/calc/vat",
-    description: "공급가액에 부가세 10%를 더하고, 합계금액에서 역산까지 양방향으로.",
-    shortDescription: "부가세 10%",
-    category: "calc",
-  },
-  {
-    name: "만 나이 계산기",
-    href: "/tools/date/age",
-    description: "생년월일만 넣으면 만 나이·연 나이·띠를 바로. 다음 생일 D-Day까지.",
-    shortDescription: "만 나이·띠",
-    category: "date",
-  },
-  {
-    name: "D-Day 계산기",
-    href: "/tools/date/dday",
-    description: "목표일까지 며칠 남았는지, 그날부터 며칠 지났는지. 100일·1000일·기념일까지.",
-    shortDescription: "디데이·기념일",
-    category: "date",
-  },
-  {
-    name: "음력 양력 변환",
-    href: "/tools/date/lunar",
-    description: "음력 생일을 올해 양력으로, 양력을 음력으로. 윤달·간지까지 반영.",
-    shortDescription: "음력↔양력",
-    category: "date",
-  },
-  {
-    name: "BMI 계산기",
-    href: "/tools/health/bmi",
-    description: "키·몸무게로 체질량지수와 비만도를. 대한비만학회 기준 구간·표준체중 범위까지.",
-    shortDescription: "체질량지수·비만도",
-    category: "health",
-  },
-  {
-    name: "기초대사량 계산기",
-    href: "/tools/health/bmr",
-    description: "기초대사량(BMR)과 하루 권장 칼로리(TDEE). 감량·유지·증량 목표 칼로리까지.",
-    shortDescription: "BMR·TDEE",
-    category: "health",
-  },
-  {
-    name: "배란일 계산기",
-    href: "/tools/health/ovulation",
-    description: "마지막 생리일과 주기로 배란 예정일·가임기·다음 생리일을. 입력은 저장되지 않습니다.",
-    shortDescription: "배란일·가임기",
-    category: "health",
-  },
-  {
-    name: "임신 주수 계산기",
-    href: "/tools/health/pregnancy",
-    description: "마지막 생리일로 현재 임신 주수와 출산예정일을. 삼분기·진행률까지.",
-    shortDescription: "임신주수·출산예정일",
-    category: "health",
-  },
-  {
-    name: "평수 변환",
-    href: "/tools/unit/pyeong",
-    description: "평을 제곱미터(㎡)로, ㎡를 평으로 양방향 즉시 변환. 분양·전용면적 안내까지.",
-    shortDescription: "평↔㎡",
-    category: "unit",
-  },
-  {
-    name: "길이 변환",
-    href: "/tools/unit/length",
-    description: "cm·인치·m·피트·mm·km를 한 화면에서 즉시 변환. 어느 칸에 넣어도 바로.",
-    shortDescription: "cm·인치·m",
-    category: "unit",
-  },
-  {
-    name: "온도 변환",
-    href: "/tools/unit/temperature",
-    description: "섭씨·화씨·켈빈을 양방향 즉시 변환. 화씨 100도가 몇 도인지 바로.",
-    shortDescription: "섭씨·화씨·켈빈",
-    category: "unit",
-  },
-  {
     name: "이미지 PDF 변환",
     href: "/tools/pdf/image-to-pdf",
     description: "여러 사진을 한 PDF로. 순서 조정, 용지(A4)·여백 옵션까지. 서버 전송 없이.",
@@ -261,41 +156,6 @@ export const TOOLS: Tool[] = [
     description: "원하는 페이지만 추출하거나, 모든 페이지를 낱장으로. ZIP 일괄 다운로드.",
     shortDescription: "PDF 나누기",
     category: "pdf",
-  },
-  {
-    name: "색상 코드 변환",
-    href: "/tools/color/converter",
-    description: "HEX·RGB·HSL·CMYK를 양방향 즉시 변환. 색을 고르면 코드가 바로, 복사도 한 번에.",
-    shortDescription: "HEX·RGB·HSL",
-    category: "color",
-  },
-  {
-    name: "색상 대비 검사",
-    href: "/tools/color/contrast",
-    description: "두 색의 명도 대비를 WCAG 기준으로. 글자 가독성·웹접근성 AA·AAA 통과 여부까지.",
-    shortDescription: "WCAG 대비",
-    category: "color",
-  },
-  {
-    name: "CSS 그라데이션",
-    href: "/tools/color/gradient",
-    description: "색을 고르면 CSS 그라데이션 코드를. 방향·색 정지점 조절, 실시간 미리보기.",
-    shortDescription: "그라데이션 코드",
-    category: "color",
-  },
-  {
-    name: "사다리타기",
-    href: "/tools/random/ladder",
-    description: "이름과 결과를 넣고 한 번에. 경로 애니메이션으로 공정하게, 조작 없이.",
-    shortDescription: "사다리 게임",
-    category: "random",
-  },
-  {
-    name: "룰렛 돌리기",
-    href: "/tools/random/roulette",
-    description: "점심 메뉴·벌칙·당첨자를 돌림판으로. 항목만 넣으면 바로, 가중치도.",
-    shortDescription: "돌림판",
-    category: "random",
   },
 ];
 
@@ -327,40 +187,10 @@ export const TOOL_CATEGORIES: {
     tagline: "복잡한 세금·요율은 우리가. 숫자만 넣으면 바로 계산됩니다.",
   },
   {
-    id: "date",
-    room: "Room 04",
-    label: "Date Tools",
-    tagline: "날짜만 넣으면 끝. 입력은 저장·전송되지 않습니다.",
-  },
-  {
-    id: "health",
-    room: "Room 05",
-    label: "Health Tools",
-    tagline: "참고용 추정치예요. 입력은 저장·전송되지 않습니다.",
-  },
-  {
-    id: "unit",
-    room: "Room 06",
-    label: "Unit Tools",
-    tagline: "어느 칸에 넣어도 나머지가 바로. 양방향 즉시 변환.",
-  },
-  {
     id: "pdf",
-    room: "Room 07",
+    room: "Room 04",
     label: "PDF Tools",
     tagline: "서버에 올리지 않고 브라우저에서 바로. 파일이 전송되지 않습니다.",
-  },
-  {
-    id: "color",
-    room: "Room 08",
-    label: "Color Tools",
-    tagline: "색을 고르면 코드가 바로. HEX·RGB·CSS 즉시 복사.",
-  },
-  {
-    id: "random",
-    room: "Room 09",
-    label: "Random Picker",
-    tagline: "결과는 브라우저에서 즉석 생성. 조작 없이 공정하게.",
   },
 ];
 

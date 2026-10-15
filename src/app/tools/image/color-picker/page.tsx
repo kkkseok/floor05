@@ -41,7 +41,7 @@ const guide = {
       heading: "색 추출과 팔레트",
       paragraphs: [
         "사진을 올리면 자동으로 대표 색 6가지를 팔레트로 보여줍니다. 이미지에서 가장 많이 쓰인 색들이라, 디자인의 색 조합을 참고하기 좋습니다. 팔레트의 색을 누르면 HEX 코드가 복사됩니다.",
-        "특정 지점의 색이 궁금하면 사진의 그 부분을 클릭하세요. 클릭한 픽셀의 정확한 색이 HEX와 RGB로 표시되고, 복사 버튼으로 바로 가져올 수 있습니다. 추출한 코드는 색상 변환 도구에서 다른 형식으로 바꿀 수도 있습니다.",
+        "특정 지점의 색이 궁금하면 사진의 그 부분을 클릭하세요. 클릭한 픽셀의 정확한 색이 HEX와 RGB로 표시되고, 복사 버튼으로 바로 가져올 수 있습니다.",
       ],
     },
     {
@@ -80,7 +80,7 @@ const faqs = [
   {
     question: "추출한 색을 다른 형식으로 바꿀 수 있나요?",
     answer:
-      "HEX 코드를 복사해 색상 코드 변환 도구에 넣으면 RGB·HSL·CMYK로 바꿀 수 있습니다.",
+      "클릭한 색은 HEX와 RGB로 함께 표시되니 필요한 형식을 골라 복사하면 됩니다. HSL·CMYK가 필요하면 피그마나 포토샵 색상 선택창에 HEX를 붙여넣으세요. 나머지 값은 그쪽에서 자동으로 환산해 줍니다.",
   },
   {
     question: "클릭할 때마다 색 코드가 조금씩 다르게 나와요.",
@@ -119,19 +119,19 @@ const workflowCTA = {
   message: "색을 뽑았다면, 다음은 이런 작업입니다.",
   tools: [
     {
-      name: "색상 코드 변환",
-      href: "/tools/color/converter",
-      description: "HEX를 RGB·HSL·CMYK로",
+      name: "워터마크 넣기",
+      href: "/tools/image/watermark",
+      description: "뽑은 브랜드 색으로 로고·문구 얹기",
     },
     {
-      name: "색상 대비 검사",
-      href: "/tools/color/contrast",
-      description: "글자색으로 써도 되는지 확인",
+      name: "파비콘 만들기",
+      href: "/tools/image/favicon",
+      description: "같은 색감으로 사이트 아이콘까지",
     },
     {
-      name: "CSS 그라데이션",
-      href: "/tools/color/gradient",
-      description: "뽑은 색으로 그라데이션 만들기",
+      name: "이미지 합치기",
+      href: "/tools/image/merge",
+      description: "팔레트와 원본을 한 장에 나란히",
     },
   ],
 };
@@ -145,7 +145,6 @@ export default function ColorPickerPage() {
       faqs={faqs}
       workflowCTA={workflowCTA}
       currentToolHref="/tools/image/color-picker"
-      relatedPostSlugs={["color-code-guide"]}
       schemas={schemas}
     >
       <ColorPickerTool />

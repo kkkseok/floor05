@@ -4,7 +4,7 @@
  * - 컴포넌트가 작은 캔버스로 다운스케일한 ImageData를 넘겨준다
  */
 
-import type { RGB } from "@/lib/color/convert";
+import type { RGB } from "@/lib/image/color-convert";
 
 interface Bucket {
   count: number;

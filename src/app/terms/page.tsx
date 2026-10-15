@@ -19,7 +19,7 @@ export default function TermsPage() {
       <main className="flex-1">
         <article className="max-w-3xl mx-auto px-4 sm:px-6 lg:px-8 py-16">
           <h1 className="text-3xl font-bold text-brand-black mb-2">이용약관</h1>
-          <p className="text-sm text-brand-light mb-12">시행·최종 수정일: 2026년 8월 25일</p>
+          <p className="text-sm text-brand-light mb-12">시행·최종 수정일: 2026년 10월 15일</p>
 
           <div className="prose prose-lg max-w-none space-y-10 text-brand-mid">
             <section>
@@ -37,8 +37,8 @@ export default function TermsPage() {
               </p>
               <ul className="list-disc pl-5 space-y-2 marker:text-brand-accent">
                 <li>이미지 압축·변환·크롭·편집 및 PDF 처리</li>
-                <li>급여·세금·이자·건강·날짜·단위 계산</li>
-                <li>색상·텍스트·무작위 추첨 도구</li>
+                <li>급여·퇴직금·주휴수당 계산</li>
+                <li>글자수 세기 등 텍스트 도구</li>
                 <li>도구 사용법과 계산 기준을 설명하는 가이드</li>
               </ul>
               <p className="leading-relaxed mt-4">
@@ -69,18 +69,14 @@ export default function TermsPage() {
             </section>
 
             <section>
-              <h2 className="text-xl font-bold text-brand-black mb-4">4. 계산·건강 정보의 한계</h2>
+              <h2 className="text-xl font-bold text-brand-black mb-4">4. 계산 정보의 한계</h2>
               <ul className="list-disc pl-5 space-y-3 marker:text-brand-accent">
                 <li>
-                  금융·급여·세금 계산 결과는 입력값과 공개된 기준에 따른 예상치입니다. 회사 규정,
+                  급여·퇴직금·수당 계산 결과는 입력값과 공개된 기준에 따른 예상치입니다. 회사 규정,
                   계약 조건, 과세 유형, 반올림 방식과 최신 법령에 따라 실제 금액이 달라질 수 있습니다.
                 </li>
                 <li>
-                  BMI, 기초대사량, 배란일과 임신 주수 등 건강 결과는 일반 공식에 따른 참고 정보이며
-                  의학적 진단·치료·피임 판단을 대신하지 않습니다.
-                </li>
-                <li>
-                  신고·계약·치료처럼 중요한 결정에는 해당 기관의 최신 자료나 자격을 갖춘 전문가의
+                  신고·계약·정산처럼 중요한 결정에는 해당 기관의 최신 자료나 자격을 갖춘 전문가의
                   확인을 우선해야 합니다.
                 </li>
               </ul>

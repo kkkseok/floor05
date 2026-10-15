@@ -8,24 +8,17 @@ import { installGuards, assertClean, assertNoHorizontalScroll } from "./helpers"
 
 const TOOL_ROUTES = [
   "/tools/image/compress", "/tools/image/resize", "/tools/image/convert",
-  "/tools/image/heic-to-jpg", "/tools/image/jpg-to-png", "/tools/image/webp-to-jpg",
+  "/tools/image/heic-to-jpg",
   "/tools/image/crop", "/tools/image/merge", "/tools/image/watermark",
   "/tools/image/rotate", "/tools/image/mosaic", "/tools/image/grid",
   "/tools/image/color-picker", "/tools/image/exif-remove", "/tools/image/favicon",
   "/tools/text/counter",
   "/tools/calc/salary", "/tools/calc/severance", "/tools/calc/wage",
-  "/tools/calc/loan", "/tools/calc/savings", "/tools/calc/vat",
-  "/tools/date/age", "/tools/date/dday", "/tools/date/lunar",
-  "/tools/health/bmi", "/tools/health/bmr", "/tools/health/ovulation", "/tools/health/pregnancy",
-  "/tools/unit/pyeong", "/tools/unit/length", "/tools/unit/temperature",
   "/tools/pdf/image-to-pdf", "/tools/pdf/merge", "/tools/pdf/split",
-  "/tools/color/converter", "/tools/color/contrast", "/tools/color/gradient",
-  "/tools/random/ladder", "/tools/random/roulette",
 ];
 
 const HUB_ROUTES = [
-  "/tools/image", "/tools/calc", "/tools/date", "/tools/health",
-  "/tools/unit", "/tools/pdf", "/tools/color", "/tools/random",
+  "/tools/image", "/tools/calc", "/tools/pdf",
 ];
 
 const STATIC_ROUTES = ["/", "/about", "/contact", "/privacy", "/terms", "/blog"];
@@ -33,13 +26,13 @@ const STATIC_ROUTES = ["/", "/about", "/contact", "/privacy", "/terms", "/blog"]
 const BLOG_SAMPLE = [
   "/blog/image-compression-guide",
   "/blog/salary-net-pay-guide",
-  "/blog/loan-interest-guide",
+  "/blog/severance-pay-guide",
   "/blog/heic-to-jpg-guide",
-  "/blog/vat-calculation-guide",
+  "/blog/exif-removal-guide",
 ];
 
 test.describe("라우트 접근", () => {
-  test("도구 40개 전부 200 + h1 + canonical", async ({ page }) => {
+  test("도구 20개 전부 200 + h1 + canonical", async ({ page }) => {
     test.setTimeout(180_000);
     const guards = await installGuards(page);
     for (const route of TOOL_ROUTES) {
@@ -83,6 +76,23 @@ test.describe("라우트 접근", () => {
     expect(res?.status()).toBe(404);
   });
 
+  test("범위 정리: 변환쌍·금융 계산기는 301, 대체 없는 도구는 404", async ({ request }) => {
+    for (const [from, to] of [
+      ["/tools/image/jpg-to-png", "/tools/image/convert"],
+      ["/tools/image/webp-to-jpg", "/tools/image/convert"],
+      ["/tools/calc/loan", "/tools/calc"],
+      ["/tools/calc/savings", "/tools/calc"],
+      ["/tools/calc/vat", "/tools/calc"],
+    ]) {
+      const res = await request.get(from, { maxRedirects: 0 });
+      expect([301, 308], from).toContain(res.status());
+      expect(res.headers()["location"], from).toContain(to);
+    }
+    for (const gone of ["/tools/health/bmi", "/tools/random/ladder", "/blog/bmi-obesity-guide"]) {
+      expect((await request.get(gone)).status(), gone).toBe(404);
+    }
+  });
+
   test("리다이렉트: /tools/image/heic → /tools/image/heic-to-jpg", async ({ page }) => {
     await page.goto("/tools/image/heic");
     await expect(page).toHaveURL(/\/tools\/image\/heic-to-jpg$/);
@@ -112,7 +122,7 @@ test.describe("라우트 접근", () => {
 
   test("모바일: 대표 페이지 가로 스크롤 없음", async ({ page }, testInfo) => {
     test.skip(!testInfo.project.name.includes("mobile"), "모바일 프로젝트 전용");
-    for (const route of ["/", "/tools/image/compress", "/tools/calc/salary", "/tools/random/roulette", "/blog/image-compression-guide"]) {
+    for (const route of ["/", "/tools/image/compress", "/tools/calc/salary", "/tools/pdf/merge", "/blog/image-compression-guide"]) {
       await page.goto(route);
       await assertNoHorizontalScroll(page);
     }
@@ -150,12 +160,12 @@ test.describe("라우트 접근", () => {
     assertClean(guards);
   });
 
-  test("금융·건강 신뢰 정보: 공식 출처와 검토일 표시", async ({ page }) => {
+  test("급여 계산 신뢰 정보: 공식 출처와 검토일 표시", async ({ page }) => {
     await page.goto("/tools/calc/salary");
     await expect(page.getByRole("heading", { name: "계산 기준·출처" })).toBeVisible();
     await expect(page.getByRole("link", { name: /국민연금/ })).toHaveAttribute("href", /nps\.or\.kr/);
 
-    await page.goto("/blog/bmi-obesity-guide");
+    await page.goto("/blog/salary-net-pay-guide");
     await expect(page.getByText("작성·검토:")).toBeVisible();
     await expect(page.getByRole("link", { name: "floor05 운영자" })).toHaveAttribute("href", "/about");
   });

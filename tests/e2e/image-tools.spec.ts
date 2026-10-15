@@ -134,8 +134,8 @@ test.describe("포맷 변환", () => {
     expect(imageDims(file)).toEqual({ width: 1200, height: 900 });
   });
 
-  test("WebP → PNG 변환 (webp-to-jpg 랜딩)", async ({ page }, testInfo) => {
-    await page.goto("/tools/image/webp-to-jpg");
+  test("WebP → PNG 변환", async ({ page }, testInfo) => {
+    await page.goto("/tools/image/convert");
     await uploadToDropzone(page, [fx("photo-800x600.webp")]);
     await page.getByRole("button", { name: "PNG", exact: true }).click();
     await page.getByRole("button", { name: /1개 이미지 PNG로 변환/ }).click();
