@@ -1,0 +1,70 @@
+# 예약 발행: 화·금 09:00(KST)에 날짜가 된 scheduled/YYYY-MM-DD-<slug> 브랜치를 main에 병합한다.
+# - 한 번 실행에 한 편만 발행한다(하루 대량 발행 방지).
+# - 병합 결과가 lint·tsc·build를 통과해야만 push한다. 실패하면 job이 실패로 남는다.
+# - 브랜치는 이전 예약 브랜치 위에 쌓아(stack) 만들어 blog.ts 충돌을 피한다.
+name: Scheduled publish
+
+on:
+  schedule:
+    - cron: "0 0 * * 2,5" # UTC 00:00 = KST 09:00, 화·금
+  workflow_dispatch:
+
+permissions:
+  contents: write
+
+concurrency:
+  group: scheduled-publish
+  cancel-in-progress: false
+
+jobs:
+  publish:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+        with:
+          ref: main
+          fetch-depth: 0
+
+      - name: 발행할 브랜치 선택
+        id: pick
+        run: |
+          today=$(TZ=Asia/Seoul date +%F)
+          branch=$(git branch -r --format='%(refname:short)' \
+            | sed -n 's#^origin/scheduled/##p' \
+            | awk -v t="$today" 'substr($0,1,10) <= t' \
+            | sort | head -n 1)
+          if [ -z "$branch" ]; then
+            echo "오늘($today) 발행할 예약 브랜치가 없습니다."
+            echo "branch=" >> "$GITHUB_OUTPUT"
+          else
+            echo "발행 대상: scheduled/$branch"
+            echo "branch=scheduled/$branch" >> "$GITHUB_OUTPUT"
+          fi
+
+      - name: main에 병합
+        if: steps.pick.outputs.branch != ''
+        run: |
+          git config user.name "floor05-publisher"
+          git config user.email "assagaori00@gmail.com"
+          git merge --no-ff --no-edit "origin/${{ steps.pick.outputs.branch }}" \
+            -m "publish: ${{ steps.pick.outputs.branch }}"
+
+      - uses: actions/setup-node@v4
+        if: steps.pick.outputs.branch != ''
+        with:
+          node-version: 24
+          cache: npm
+
+      - name: 검증 (lint · tsc · build)
+        if: steps.pick.outputs.branch != ''
+        run: |
+          npm ci
+          npm run lint
+          npx tsc --noEmit
+          npm run build
+
+      - name: push 후 예약 브랜치 삭제
+        if: steps.pick.outputs.branch != ''
+        run: |
+          git push origin main
+          git push origin --delete "${{ steps.pick.outputs.branch }}"
