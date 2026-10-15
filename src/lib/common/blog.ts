@@ -27,6 +27,25 @@ export interface BlogPost {
  * datePublished/dateModified는 검색엔진 신선도 신호(BlogPosting)로 사용된다.
  */
 export const POSTS: BlogPost[] = [
+  // ── 신규 (2026-11-13) ───────────────────────────────────────────
+  {
+    slug: "favicon-browser-requests",
+    title: "파비콘, 브라우저는 무엇을 받아 갈까 — 요청 기록 실측",
+    description:
+      "파비콘 세트를 올린 테스트 사이트에서 브라우저 요청을 기록했습니다. Chromium은 favicon.ico 하나, Firefox는 애플 터치 아이콘까지 받았고, 16px 축소 화질 문제도 고쳤습니다.",
+    keywords: [
+      "파비콘 만들기",
+      "favicon.ico 크기",
+      "파비콘 사이즈",
+      "apple-touch-icon",
+      "파비콘 깨짐",
+      "favicon 브라우저",
+    ],
+    datePublished: "2026-11-13",
+    dateModified: "2026-11-13",
+    readTime: "6분",
+    related: ["transparent-background", "png-vs-jpg", "browser-image-encoders"],
+  },
   // ── 신규 (2026-11-06) ───────────────────────────────────────────
   {
     slug: "browser-image-encoders",
