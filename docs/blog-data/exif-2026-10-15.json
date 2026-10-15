@@ -1,0 +1,316 @@
+{
+ "measuredAt": "2026-10-15",
+ "sources": {
+  "tortoise.jpg": "NASA KSC-20210121-PH-JBS01_0079 (public domain)",
+  "flower.jpg": "NASA KSC-20230613-PH-FMX01-0075 (public domain)"
+ },
+ "xmpFound": {
+  "tortoise.jpg": {
+   "photoshop:City": "KSC",
+   "Iptc4xmpCore:Location": "KSC",
+   "aux:SerialNumber": "302057001789",
+   "xmpMM:History events": 6,
+   "crs (Camera Raw settings)": true
+  },
+  "flower.jpg": {
+   "photoshop:City": "KSC",
+   "Iptc4xmpCore:Location": "KSC",
+   "aux:SerialNumber": "032021000280",
+   "xmpMM:History events": 2,
+   "GPS IFD": "version tag only, no coordinates"
+  }
+ },
+ "before": {
+  "tortoise.jpg": {
+   "fileBytes": 15781842,
+   "segments": [
+    {
+     "marker": "APP1(Exif)",
+     "bytes": 17646
+    },
+    {
+     "marker": "APP1(XMP)",
+     "bytes": 11363
+    },
+    {
+     "marker": "APP13(IPTC)",
+     "bytes": 16870
+    },
+    {
+     "marker": "APP2(ICC)",
+     "bytes": 3162
+    },
+    {
+     "marker": "DQT",
+     "bytes": 134
+    },
+    {
+     "marker": "DRI",
+     "bytes": 6
+    },
+    {
+     "marker": "APP14(Adobe)",
+     "bytes": 16
+    },
+    {
+     "marker": "SOF0",
+     "bytes": 19
+    },
+    {
+     "marker": "DHT",
+     "bytes": 219
+    },
+    {
+     "marker": "SOS+이미지 데이터",
+     "bytes": 15732405
+    }
+   ],
+   "exif": {
+    "ResolutionUnit": "2",
+    "ExifOffset": "396",
+    "ImageDescription": "A tortoise makes its way along a gravel parking area at NASA's Kennedy Space Center in Florida on Jan. 21, 2021. In view",
+    "Make": "Canon",
+    "Model": "Canon EOS 5D Mark IV",
+    "Software": "Adobe Photoshop Lightroom Classic 10.1.1 (Windows)",
+    "Orientation": "1",
+    "DateTime": "2021:01:26 13:53:00",
+    "YResolution": "240.0",
+    "Copyright": "For copyright and restrictions, refer to http://www.nasa.gov/multimedia/guidelines/index.html",
+    "XResolution": "240.0",
+    "Artist": "NASA/Ben Smegelsky",
+    "Exif.ExifVersion": "b'0231'",
+    "Exif.ShutterSpeedValue": "8.321928",
+    "Exif.ApertureValue": "8.918863",
+    "Exif.DateTimeOriginal": "2021:01:21 12:31:37",
+    "Exif.DateTimeDigitized": "2021:01:21 12:31:37",
+    "Exif.ExposureBiasValue": "0.0",
+    "Exif.MaxApertureValue": "3.0",
+    "Exif.MeteringMode": "6",
+    "Exif.ColorSpace": "1",
+    "Exif.Flash": "16",
+    "Exif.FocalLength": "29.0",
+    "Exif.ExposureMode": "1",
+    "Exif.WhiteBalance": "0",
+    "Exif.SceneCaptureType": "0",
+    "Exif.FocalPlaneXResolution": "1866.6666564941406",
+    "Exif.FocalPlaneYResolution": "1866.6666564941406",
+    "Exif.OffsetTime": "-05:00",
+    "Exif.OffsetTimeOriginal": "-05:00",
+    "Exif.OffsetTimeDigitized": "-05:00",
+    "Exif.SubsecTimeOriginal": "91",
+    "Exif.SubsecTimeDigitized": "91",
+    "Exif.FocalPlaneResolutionUnit": "3",
+    "Exif.ExposureTime": "0.003125",
+    "Exif.FNumber": "22.0",
+    "Exif.ExposureProgram": "1",
+    "Exif.CustomRendered": "0",
+    "Exif.ISOSpeedRatings": "320",
+    "Exif.SensitivityType": "2",
+    "Exif.BodySerialNumber": "302057001789",
+    "Exif.RecommendedExposureIndex": "320",
+    "Exif.LensSpecification": "(16.0, 35.0, nan, nan)",
+    "Exif.LensModel": "EF16-35mm f/2.8L III USM",
+    "Exif.LensSerialNumber": "7230000200"
+   }
+  },
+  "flower.jpg": {
+   "fileBytes": 9177109,
+   "segments": [
+    {
+     "marker": "APP1(Exif)",
+     "bytes": 39662
+    },
+    {
+     "marker": "APP1(XMP)",
+     "bytes": 5413
+    },
+    {
+     "marker": "APP13(IPTC)",
+     "bytes": 872
+    },
+    {
+     "marker": "APP2",
+     "bytes": 512
+    },
+    {
+     "marker": "DQT",
+     "bytes": 134
+    },
+    {
+     "marker": "SOF0",
+     "bytes": 19
+    },
+    {
+     "marker": "DHT",
+     "bytes": 420
+    },
+    {
+     "marker": "SOS+이미지 데이터",
+     "bytes": 9130075
+    }
+   ],
+   "exif": {
+    "GPSInfo": "28781",
+    "ResolutionUnit": "2",
+    "ExifOffset": "360",
+    "ImageDescription": "An orange blister beetle sits on a wildflower called Cirsium nuttallii (Nuttallâs thistle) in a field at NASAâs Kenn",
+    "Make": "Canon",
+    "Model": "Canon EOS R5",
+    "YResolution": "72.0",
+    "Orientation": "1",
+    "DateTime": "2023:06:13 13:57:14",
+    "YCbCrPositioning": "2",
+    "Copyright": "For copyright and restrictions, refer to http://www.nasa.gov/multimedia/guidelines/index.html",
+    "XResolution": "72.0",
+    "Artist": "NASA/Frank Michaux",
+    "Exif.ExifVersion": "b'0231'",
+    "Exif.ComponentsConfiguration": "b'\\x01\\x02\\x03\\x00'",
+    "Exif.ShutterSpeedValue": "7.375",
+    "Exif.DateTimeOriginal": "2023:06:13 13:57:14",
+    "Exif.DateTimeDigitized": "2023:06:13 13:57:14",
+    "Exif.ApertureValue": "5.0",
+    "Exif.ExposureBiasValue": "0.0",
+    "Exif.MaxApertureValue": "5.0",
+    "Exif.MeteringMode": "5",
+    "Exif.Flash": "0",
+    "Exif.FocalLength": "400.0",
+    "Exif.ColorSpace": "1",
+    "Exif.ExifImageWidth": "8192",
+    "Exif.ExifInteroperabilityOffset": "28468",
+    "Exif.FocalPlaneXResolution": "5773.079633544749",
+    "Exif.FocalPlaneYResolution": "5769.799366420275",
+    "Exif.OffsetTime": "-05:00",
+    "Exif.OffsetTimeOriginal": "-05:00",
+    "Exif.OffsetTimeDigitized": "-05:00",
+    "Exif.SubsecTime": "22",
+    "Exif.SubsecTimeOriginal": "22",
+    "Exif.SubsecTimeDigitized": "22",
+    "Exif.ExifImageHeight": "5464",
+    "Exif.FocalPlaneResolutionUnit": "2",
+    "Exif.ExposureTime": "0.00625",
+    "Exif.FNumber": "5.6",
+    "Exif.ExposureProgram": "1",
+    "Exif.CustomRendered": "0",
+    "Exif.ISOSpeedRatings": "100",
+    "Exif.ExposureMode": "1",
+    "Exif.FlashPixVersion": "b'0100'",
+    "Exif.SensitivityType": "2",
+    "Exif.WhiteBalance": "0",
+    "Exif.RecommendedExposureIndex": "100",
+    "Exif.CameraOwnerName": "",
+    "Exif.BodySerialNumber": "032021000280",
+    "Exif.LensSpecification": "(140.0, 400.0, 0.0, 0.0)",
+    "Exif.LensModel": "EF70-200mm f/2.8L IS II USM +2x",
+    "Exif.LensSerialNumber": "0000016570",
+    "Exif.SceneCaptureType": "0",
+    "GPS.GPSVersionID": "b'\\x02\\x03\\x00\\x00'"
+   }
+  }
+ },
+ "afterFloor05ExifRemove": {
+  "tortoise-noexif.jpg": {
+   "fileBytes": 8758827,
+   "segments": [
+    {
+     "marker": "APP0(JFIF)",
+     "bytes": 18
+    },
+    {
+     "marker": "APP2(ICC)",
+     "bytes": 474
+    },
+    {
+     "marker": "DQT",
+     "bytes": 69
+    },
+    {
+     "marker": "DQT",
+     "bytes": 69
+    },
+    {
+     "marker": "SOF0",
+     "bytes": 19
+    },
+    {
+     "marker": "DHT",
+     "bytes": 32
+    },
+    {
+     "marker": "DHT",
+     "bytes": 88
+    },
+    {
+     "marker": "DHT",
+     "bytes": 31
+    },
+    {
+     "marker": "DHT",
+     "bytes": 72
+    },
+    {
+     "marker": "SOS+이미지 데이터",
+     "bytes": 8757953
+    }
+   ],
+   "exif": {}
+  },
+  "flower-noexif.jpg": {
+   "fileBytes": 5546099,
+   "segments": [
+    {
+     "marker": "APP0(JFIF)",
+     "bytes": 18
+    },
+    {
+     "marker": "APP2(ICC)",
+     "bytes": 474
+    },
+    {
+     "marker": "DQT",
+     "bytes": 69
+    },
+    {
+     "marker": "DQT",
+     "bytes": 69
+    },
+    {
+     "marker": "SOF0",
+     "bytes": 19
+    },
+    {
+     "marker": "DHT",
+     "bytes": 32
+    },
+    {
+     "marker": "DHT",
+     "bytes": 76
+    },
+    {
+     "marker": "DHT",
+     "bytes": 30
+    },
+    {
+     "marker": "DHT",
+     "bytes": 61
+    },
+    {
+     "marker": "SOS+이미지 데이터",
+     "bytes": 5545249
+    }
+   ],
+   "exif": {}
+  }
+ },
+ "toolRun": {
+  "tortoise": {
+   "ms": 882,
+   "outBytes": 8758827
+  },
+  "flower": {
+   "ms": 841,
+   "outBytes": 5546099
+  },
+  "note": "re-encoded JPEG q0.95, only APP0(JFIF)+APP2(sRGB ICC 474B) remain"
+ },
+ "detectionBug": "old byte-pattern scan flagged '위치정보(GPS) 포함' for both; tortoise has no GPS IFD, flower has GPS IFD without lat/lon"
+}
