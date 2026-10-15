@@ -27,6 +27,25 @@ export interface BlogPost {
  * datePublished/dateModified는 검색엔진 신선도 신호(BlogPosting)로 사용된다.
  */
 export const POSTS: BlogPost[] = [
+  // ── 신규 (2026-10-30) ───────────────────────────────────────────
+  {
+    slug: "image-rotate-quality",
+    title: "사진 회전하면 화질이 떨어질까 — 20번 실측",
+    description:
+      "카메라 원본 사진을 90°씩 20번 돌려 저장하며 화질을 쟀습니다. 한 번은 재저장과 같았지만, 반복하면 손실이 12배 빨리 쌓였고 원인은 16픽셀 칸이었습니다.",
+    keywords: [
+      "사진 회전 화질",
+      "이미지 회전 화질 저하",
+      "jpg 회전 손실",
+      "사진 돌리기",
+      "이미지 90도 회전",
+      "jpg 재저장 화질",
+    ],
+    datePublished: "2026-10-30",
+    dateModified: "2026-10-30",
+    readTime: "6분",
+    related: ["image-compression-guide", "png-vs-jpg", "image-crop-guide"],
+  },
   // ── 신규 (2026-06-29) ───────────────────────────────────────────
   {
     slug: "exif-removal-guide",

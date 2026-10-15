@@ -144,7 +144,7 @@ export default function RotatePage() {
       faqs={faqs}
       workflowCTA={workflowCTA}
       currentToolHref="/tools/image/rotate"
-      relatedPostSlugs={["photo-editing-without-photoshop", "image-crop-guide"]}
+      relatedPostSlugs={["image-rotate-quality", "photo-editing-without-photoshop", "image-crop-guide"]}
       schemas={schemas}
     >
       <RotateTool />
