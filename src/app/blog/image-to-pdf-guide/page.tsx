@@ -15,7 +15,7 @@ const faqs = [
   {
     question: "사진 10장을 PDF로 만들면 용량이 얼마나 되나요?",
     answer:
-      "해상도에 따라 크게 다릅니다. 카메라 원본 사진 10장을 원본 해상도·품질 92%로 넣으니 48.0MB였고, 긴 변 3508px(A4 300dpi)로 줄이면 10.1MB, 1754px(A4 150dpi)로 줄이면 2.9MB였습니다.",
+      "해상도에 따라 크게 다릅니다. 카메라 원본 사진 10장을 원본 해상도·품질 92%로 넣으니 48.0MB였고, 긴 변 3508px(A4 300dpi)로 줄이면 9.77MB, 1754px(A4 150dpi)로 줄이면 2.78MB였습니다.",
   },
   {
     question: "A4로 만들면 '이미지 맞춤'보다 용량이 작아지나요?",
@@ -47,10 +47,10 @@ const faqSchema = {
 // 2026-10-15 측정 (원자료: docs/blog-data/photo-pdf-size-2026-10-15.json)
 const tenPageRows = [
   { label: "원본 해상도 · 92%", note: "기존 기본값", mb: 47.97 },
-  { label: "긴 변 4032px · 92%", note: "1200만 화소 폰 사진 수준", mb: 19.75 },
-  { label: "긴 변 3508px · 85%", note: "인쇄용 (A4 300dpi)", mb: 10.09 },
-  { label: "긴 변 2339px · 85%", note: "A4 200dpi", mb: 4.49 },
-  { label: "긴 변 1754px · 85%", note: "제출용 (A4 150dpi)", mb: 2.88 },
+  { label: "긴 변 4032px · 92%", note: "1200만 화소 폰 사진 수준", mb: 19.76 },
+  { label: "긴 변 3508px · 85%", note: "인쇄용 (A4 300dpi)", mb: 9.77 },
+  { label: "긴 변 2339px · 85%", note: "A4 200dpi", mb: 4.62 },
+  { label: "긴 변 1754px · 85%", note: "제출용 (A4 150dpi)", mb: 2.78 },
 ];
 const MAX_MB = 47.97;
 
@@ -113,7 +113,7 @@ export default function ImageToPdfGuidePage() {
 
             <h2 className="text-2xl font-bold text-brand-black mt-12 mb-4">측정 결과: 사진 10장 PDF</h2>
             <figure className="my-8">
-              <div role="img" aria-label="화질 설정별 사진 10장 PDF 용량: 원본 해상도 47.97MB, 긴 변 4032px 19.75MB, 3508px 10.09MB, 2339px 4.49MB, 1754px 2.88MB" className="space-y-4">
+              <div role="img" aria-label="화질 설정별 사진 10장 PDF 용량: 원본 해상도 47.97MB, 긴 변 4032px 19.76MB, 3508px 9.77MB, 2339px 4.62MB, 1754px 2.78MB" className="space-y-4">
                 {tenPageRows.map((row, i) => (
                   <div key={row.label}>
                     <div className="flex flex-wrap items-baseline justify-between gap-x-3 text-sm">
@@ -139,8 +139,8 @@ export default function ImageToPdfGuidePage() {
               </figcaption>
             </figure>
             <p className="text-brand-mid leading-relaxed mb-6">
-              원본 해상도 그대로면 47.97MB, 긴 변을 1754px로 줄이면 2.88MB였습니다. 17배 차이입니다.
-              인쇄용 기준인 3508px도 10.09MB로, 10MB 한도에 걸리는 수준이었습니다.
+              원본 해상도 그대로면 47.97MB, 긴 변을 1754px로 줄이면 2.78MB였습니다. 17배 차이입니다.
+              인쇄용 기준인 3508px는 9.77MB로, 10MB 한도를 아슬아슬하게 넘지 않았습니다. 사진이 더 많다면 인쇄용으로도 한도를 넘습니다.
             </p>
 
             <h2 className="text-2xl font-bold text-brand-black mt-12 mb-4">
@@ -197,13 +197,13 @@ export default function ImageToPdfGuidePage() {
                   <tr className="border-b border-brand-light/20">
                     <td className="py-2 pr-4 font-medium text-brand-black">인쇄용</td>
                     <td className="py-2 pr-4">긴 변 3508px · 85%</td>
-                    <td className="py-2 pr-4">10.09MB</td>
+                    <td className="py-2 pr-4">9.77MB</td>
                     <td className="py-2 pr-4">A4로 출력할 문서</td>
                   </tr>
                   <tr>
                     <td className="py-2 pr-4 font-medium text-brand-black">제출용</td>
                     <td className="py-2 pr-4">긴 변 1754px · 85%</td>
-                    <td className="py-2 pr-4">2.88MB</td>
+                    <td className="py-2 pr-4">2.78MB</td>
                     <td className="py-2 pr-4">화면으로 확인하는 제출 서류</td>
                   </tr>
                 </tbody>

@@ -70,7 +70,7 @@ export const POSTS: BlogPost[] = [
     slug: "image-to-pdf-guide",
     title: "사진을 PDF로 만들기 — 화질별 용량 실측",
     description:
-      "카메라 사진 10장을 PDF로 묶으니 원본 그대로는 48MB, 긴 변 1754px로 줄이면 2.9MB였습니다. PDF 용량이 정해지는 원리와 화질 옵션 고르는 법.",
+      "카메라 사진 10장을 PDF로 묶으니 원본 그대로는 48MB, 긴 변 1754px로 줄이면 2.8MB였습니다. PDF 용량이 정해지는 원리와 화질 옵션 고르는 법.",
     keywords: [
       "사진 pdf 만들기",
       "jpg pdf 변환",
