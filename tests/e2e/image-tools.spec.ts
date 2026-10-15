@@ -16,6 +16,8 @@ import {
   zipEntries,
   zipExtract,
   fx,
+  writeStripesPng,
+  pngGreenStats,
 } from "./helpers";
 
 test.describe("이미지 압축", () => {
@@ -211,6 +213,40 @@ test.describe("리사이즈", () => {
     );
     expect(imageDims(file)).toEqual({ width: 600, height: 450 });
   });
+
+  test("투명 PNG를 줄이면 PNG로 저장 (JPG 흰 배경으로 바꾸지 않음)", async ({ page }, testInfo) => {
+    await page.goto("/tools/image/resize");
+    await uploadToDropzone(page, [fx("transparent-400x300.png")]);
+    await page.locator("#resize-width").fill("200");
+    await page.getByRole("button", { name: "1개 이미지 리사이즈" }).click();
+    await expect(page.getByRole("button", { name: "다운로드" })).toBeVisible({ timeout: 30_000 });
+    const file = await saveDownload(page, testInfo, () =>
+      page.getByRole("button", { name: "다운로드" }).click(),
+    );
+    expect(detectKind(file)).toBe("png");
+    expect(path.extname(file)).toBe(".png");
+    expect(imageDims(file)).toEqual({ width: 200, height: 150 });
+  });
+
+  test("3px 줄무늬 1024px → 64px 축소가 균일한 회색 (큰 비율 축소 깨짐 없음)", async ({ page }, testInfo) => {
+    const stripes = writeStripesPng(testInfo.outputPath("stripes-1024.png"));
+    await page.goto("/tools/image/resize");
+    await uploadToDropzone(page, [stripes]);
+    await page.locator("#resize-width").fill("64");
+    await expect(page.locator("#resize-height")).toHaveValue("64");
+    await page.getByRole("button", { name: "1개 이미지 리사이즈" }).click();
+    await expect(page.getByRole("button", { name: "다운로드" })).toBeVisible({ timeout: 30_000 });
+    const file = await saveDownload(page, testInfo, () =>
+      page.getByRole("button", { name: "다운로드" }).click(),
+    );
+    expect(detectKind(file)).toBe("png");
+    expect(imageDims(file)).toEqual({ width: 64, height: 64 });
+    const { mean, spread } = pngGreenStats(file);
+    expect(mean).toBeGreaterThan(65);
+    expect(mean).toBeLessThan(105);
+    // 실측 편차: Chromium 16 / WebKit 46(캔버스 필터가 정확한 평균이 아님) / 수정 전 WebKit 143
+    expect(spread, "64px 결과에 줄무늬가 남으면 안 됨").toBeLessThan(60);
+  });
 });
 
 test.describe("이미지 합치기", () => {
@@ -226,6 +262,26 @@ test.describe("이미지 합치기", () => {
     // match 전략: trackW=1200, 두번째는 800→1200 스케일 시 높이 600×1.5=900 → 총 1800
     expect(imageDims(file)).toEqual({ width: 1200, height: 1800 });
     assertClean(guards);
+  });
+
+  test("PNG끼리 합치면 기본 출력이 PNG, JPG가 섞이면 JPG", async ({ page }, testInfo) => {
+    await page.goto("/tools/image/merge");
+    await uploadToDropzone(page, [fx("opaque-800x600.png"), fx("transparent-400x300.png")]);
+    await page.getByRole("button", { name: "2개 이미지 합치기" }).click();
+    await expect(page.getByRole("button", { name: "다운로드" })).toBeVisible({ timeout: 30_000 });
+    const png = await saveDownload(page, testInfo, () =>
+      page.getByRole("button", { name: "다운로드" }).click(),
+    );
+    expect(detectKind(png)).toBe("png");
+
+    await page.goto("/tools/image/merge");
+    await uploadToDropzone(page, [fx("opaque-800x600.png"), fx("photo-1200x900.jpg")]);
+    await page.getByRole("button", { name: "2개 이미지 합치기" }).click();
+    await expect(page.getByRole("button", { name: "다운로드" })).toBeVisible({ timeout: 30_000 });
+    const jpg = await saveDownload(page, testInfo, () =>
+      page.getByRole("button", { name: "다운로드" }).click(),
+    );
+    expect(detectKind(jpg)).toBe("jpeg");
   });
 
   test("1장만 업로드 시 합치기 비활성 안내", async ({ page }) => {
@@ -279,6 +335,27 @@ test.describe("회전·반전", () => {
       page.getByRole("button", { name: "다운로드" }).click(),
     );
     expect(imageDims(file)).toEqual({ width: 900, height: 1200 });
+  });
+
+  test("투명 PNG는 PNG로, WebP는 WebP(미지원 시 PNG)로 저장 — JPG로 바꿔 투명을 검게 칠하지 않음", async ({ page }, testInfo) => {
+    await page.goto("/tools/image/rotate");
+    await uploadToDropzone(page, [fx("transparent-400x300.png")]);
+    await page.getByRole("button", { name: /오른쪽 90°/ }).click();
+    const png = await saveDownload(page, testInfo, () =>
+      page.getByRole("button", { name: "다운로드" }).click(),
+    );
+    expect(detectKind(png)).toBe("png");
+    expect(path.extname(png)).toBe(".png");
+    expect(imageDims(png)).toEqual({ width: 300, height: 400 });
+
+    await page.goto("/tools/image/rotate");
+    await uploadToDropzone(page, [fx("photo-800x600.webp")]);
+    const webp = await saveDownload(page, testInfo, () =>
+      page.getByRole("button", { name: "다운로드" }).click(),
+    );
+    const kind = detectKind(webp);
+    expect(["webp", "png"]).toContain(kind);
+    expect(path.extname(webp)).toBe(`.${kind}`);
   });
 });
 
@@ -362,6 +439,22 @@ test.describe("파비콘 만들기", () => {
     expect(imageDims(p512)).toEqual({ width: 512, height: 512 });
     assertClean(guards);
   });
+
+  test("3px 주기 줄무늬 1024px → 16px는 균일한 회색 (한 번에 줄인 계단·줄무늬 없음)", async ({ page }, testInfo) => {
+    const stripes = writeStripesPng(testInfo.outputPath("stripes-1024.png"));
+
+    await page.goto("/tools/image/favicon");
+    await uploadToDropzone(page, [stripes]);
+    const file = await saveDownload(
+      page,
+      testInfo,
+      () => page.getByRole("button", { name: "파비콘 생성 (ZIP 다운로드)" }).click(),
+      45_000,
+    );
+    const p16 = await zipExtract(file, "favicon-16x16.png", testInfo.outputPath("16.png"));
+    const { mean, spread } = pngGreenStats(p16);
+    expect(spread, "16px 결과에 흑백 줄무늬가 남으면 안 됨").toBeLessThan(40);
+  });
 });
 
 test.describe("색상 추출", () => {
@@ -419,5 +512,17 @@ test.describe("크롭", () => {
     expect(dims.width).toBeLessThanOrEqual(1200);
     expect(dims.height).toBeLessThanOrEqual(900);
     assertClean(guards);
+  });
+
+  test("투명 PNG를 자르면 PNG로 저장 (JPG 흰 배경으로 바꾸지 않음)", async ({ page }, testInfo) => {
+    await page.goto("/tools/image/crop");
+    await uploadToDropzone(page, [fx("transparent-400x300.png")]);
+    await page.getByRole("button", { name: "이미지 크롭", exact: true }).click();
+    await expect(page.getByText(/크롭 완료/)).toBeVisible({ timeout: 30_000 });
+    const file = await saveDownload(page, testInfo, () =>
+      page.getByRole("button", { name: "다운로드" }).click(),
+    );
+    expect(detectKind(file)).toBe("png");
+    expect(path.extname(file)).toBe(".png");
   });
 });
