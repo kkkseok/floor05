@@ -280,6 +280,27 @@ test.describe("회전·반전", () => {
     );
     expect(imageDims(file)).toEqual({ width: 900, height: 1200 });
   });
+
+  test("투명 PNG는 PNG로, WebP는 WebP(미지원 시 PNG)로 저장 — JPG로 바꿔 투명을 검게 칠하지 않음", async ({ page }, testInfo) => {
+    await page.goto("/tools/image/rotate");
+    await uploadToDropzone(page, [fx("transparent-400x300.png")]);
+    await page.getByRole("button", { name: /오른쪽 90°/ }).click();
+    const png = await saveDownload(page, testInfo, () =>
+      page.getByRole("button", { name: "다운로드" }).click(),
+    );
+    expect(detectKind(png)).toBe("png");
+    expect(path.extname(png)).toBe(".png");
+    expect(imageDims(png)).toEqual({ width: 300, height: 400 });
+
+    await page.goto("/tools/image/rotate");
+    await uploadToDropzone(page, [fx("photo-800x600.webp")]);
+    const webp = await saveDownload(page, testInfo, () =>
+      page.getByRole("button", { name: "다운로드" }).click(),
+    );
+    const kind = detectKind(webp);
+    expect(["webp", "png"]).toContain(kind);
+    expect(path.extname(webp)).toBe(`.${kind}`);
+  });
 });
 
 test.describe("인스타 9분할", () => {

@@ -3,13 +3,17 @@
 import { useState, useEffect, useRef, useCallback } from "react";
 import { saveAs } from "file-saver";
 import FileDropzone from "@/components/common/FileDropzone";
-import { canvasToBlob, getFileNameWithoutExtension } from "@/lib/common/fileUtils";
+import { canvasToBlob, getFileExtension, getFileNameWithoutExtension } from "@/lib/common/fileUtils";
 import { trackToolUse, trackDownload } from "@/lib/common/analytics";
+
+type OutputType = "image/jpeg" | "image/png" | "image/webp";
+const EXTENSIONS: Record<string, string> = { "image/jpeg": "jpg", "image/png": "png", "image/webp": "webp" };
 
 export default function RotateTool() {
   const [bitmap, setBitmap] = useState<ImageBitmap | null>(null);
   const [name, setName] = useState("image");
-  const [isJpeg, setIsJpeg] = useState(true);
+  // 출력 형식은 입력을 따른다. 투명을 담을 수 있는 PNG·WebP를 JPG로 바꾸면 투명 영역이 검게 칠해진다.
+  const [outputType, setOutputType] = useState<OutputType>("image/jpeg");
   const [rotation, setRotation] = useState(0); // 0/90/180/270
   const [flipH, setFlipH] = useState(false);
   const [flipV, setFlipV] = useState(false);
@@ -25,7 +29,11 @@ export default function RotateTool() {
       const bmp = await createImageBitmap(f, { imageOrientation: "from-image" });
       setBitmap(bmp);
       setName(getFileNameWithoutExtension(f.name));
-      setIsJpeg(f.type !== "image/png");
+      // 일부 브라우저(WebKit)는 .webp 파일의 type을 비워 두므로 확장자로도 판단한다.
+      const ext = getFileExtension(f.name).toLowerCase();
+      const isPng = f.type === "image/png" || ext === "png";
+      const isWebp = f.type === "image/webp" || ext === "webp";
+      setOutputType(isPng ? "image/png" : isWebp ? "image/webp" : "image/jpeg");
       setRotation(0);
       setFlipH(false);
       setFlipV(false);
@@ -63,9 +71,13 @@ export default function RotateTool() {
       usedRef.current = true;
       trackToolUse("rotate");
     }
-    const type = isJpeg ? "image/jpeg" : "image/png";
-    const blob = await canvasToBlob(canvas, type, isJpeg ? 0.92 : undefined);
-    saveAs(blob, `${name}_회전.${isJpeg ? "jpg" : "png"}`);
+    const blob = await canvasToBlob(
+      canvas,
+      outputType,
+      outputType === "image/png" ? undefined : 0.92,
+    );
+    // WebP 인코딩을 지원하지 않는 브라우저는 PNG를 돌려주므로 실제 결과 형식으로 확장자를 정한다.
+    saveAs(blob, `${name}_회전.${EXTENSIONS[blob.type] ?? "png"}`);
     trackDownload("rotate", "single");
   }
 
