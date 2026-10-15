@@ -43,8 +43,15 @@ function byte2Length(s: string): number {
   return n;
 }
 
-export function analyzeText(text: string, mode: CountMode = "naver"): TextStats {
-  if (!text) return { ...EMPTY_STATS };
+// 공백 제외 때 지우는 문자: 공백류(\s — 띄어쓰기·탭·U+00A0 줄바꿈 없는 공백·U+3000 전각 공백 등)와
+// 보이지 않는 폭 없는 공백(U+200B). 예전에는 띄어쓰기·탭만 지워 웹에서 복사한 U+00A0, 한글 문서의
+// U+3000이 '공백 제외' 글자수에 그대로 세어졌다(실측: docs/blog-data/char-count-2026-10-16.json).
+const SPACE_LIKE = /[\s​]/gu;
+
+export function analyzeText(input: string, mode: CountMode = "naver"): TextStats {
+  if (!input) return { ...EMPTY_STATS };
+  // 맥에서 복사한 파일 이름처럼 자모가 분리된(NFD) 한글을 합쳐 센다('한글'이 6자로 세어지던 문제)
+  const text = input.normalize("NFC");
 
   // 줄바꿈 처리: NAVER=공백 1개로 치환, HWP=제거(글자수 미포함)
   const normalized =
@@ -52,8 +59,8 @@ export function analyzeText(text: string, mode: CountMode = "naver"): TextStats 
       ? text.replace(/\r\n|\r|\n/g, " ")
       : text.replace(/\r\n|\r|\n/g, "");
 
-  // 공백 제외: 띄어쓰기·탭 제거 (NAVER에서 줄바꿈→공백된 것도 함께 제거됨)
-  const noSpace = normalized.replace(/[ \t]/g, "");
+  // 공백 제외: 공백류 전부 제거 (NAVER에서 줄바꿈→공백된 것도 함께 제거됨)
+  const noSpace = normalized.replace(SPACE_LIKE, "");
 
   const hasContent = text.trim().length > 0;
 
