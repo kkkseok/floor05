@@ -514,6 +514,28 @@ test.describe("크롭", () => {
     assertClean(guards);
   });
 
+  test("증명사진 크기(2×2, 600px)로 큰 이미지를 줄여도 줄무늬가 남지 않음", async ({ page }, testInfo) => {
+    // 4800px → 600px(8배): 4800→2400→1200→600으로 마지막 단계가 정확히 2배가 되는 비율.
+    // 줄무늬 편차는 마지막 단계가 2배일 때만 판정에 쓸 수 있다(6.8배 같은 비율은 이상적인
+    // 면적 평균 결과도 칸마다 밝기가 달라진다). 8배 실측 편차: Chromium 32 / Firefox 64 / WebKit 98,
+    // 수정 전(한 번에 축소) WebKit은 143.
+    const stripes = writeStripesPng(testInfo.outputPath("stripes-4800.png"), 4800);
+    await page.goto("/tools/image/crop");
+    await uploadToDropzone(page, [stripes]);
+    await page.getByRole("button", { name: "미국 비자 2×2" }).click();
+    await page.getByRole("button", { name: "이미지 크롭", exact: true }).click();
+    await expect(page.getByText(/크롭 완료/)).toBeVisible({ timeout: 60_000 });
+    const file = await saveDownload(page, testInfo, () =>
+      page.getByRole("button", { name: "다운로드" }).click(),
+    );
+    expect(detectKind(file)).toBe("png");
+    expect(imageDims(file)).toEqual({ width: 600, height: 600 });
+    const { mean, spread } = pngGreenStats(file);
+    expect(mean).toBeGreaterThan(65);
+    expect(mean).toBeLessThan(105);
+    expect(spread, "600px 결과에 줄무늬가 남으면 안 됨").toBeLessThan(110);
+  });
+
   test("투명 PNG를 자르면 PNG로 저장 (JPG 흰 배경으로 바꾸지 않음)", async ({ page }, testInfo) => {
     await page.goto("/tools/image/crop");
     await uploadToDropzone(page, [fx("transparent-400x300.png")]);
