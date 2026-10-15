@@ -1,0 +1,106 @@
+{
+  "measuredAt": "2026-10-15T13:48:35.994Z",
+  "result": {
+    "Chromium": {
+      "shot": "1080x2340",
+      "capacity": {
+        "image/png": {
+          "maxCount": 28,
+          "maxHeight": 65520
+        },
+        "image/jpeg": {
+          "maxCount": 28,
+          "maxHeight": 65520
+        }
+      },
+      "five": {
+        "image/png": 1319156,
+        "image/jpeg": 1144264
+      },
+      "mixed": {
+        "match": {
+          "width": 1920,
+          "height": 5659,
+          "bytes": 1246367,
+          "shotScale": 1.778
+        },
+        "keep": {
+          "width": 1920,
+          "height": 3839,
+          "bytes": 1075488,
+          "shotScale": 1
+        }
+      },
+      "version": "151.0.7922.34"
+    },
+    "WebKit": {
+      "shot": "1080x2340",
+      "capacity": {
+        "image/png": {
+          "maxCount": 60,
+          "maxHeight": 140400
+        },
+        "image/jpeg": {
+          "maxCount": 27,
+          "maxHeight": 63180
+        }
+      },
+      "five": {
+        "image/png": 909316,
+        "image/jpeg": 1144264
+      },
+      "mixed": {
+        "match": {
+          "width": 1920,
+          "height": 5659,
+          "bytes": 1260148,
+          "shotScale": 1.778
+        },
+        "keep": {
+          "width": 1920,
+          "height": 3839,
+          "bytes": 1075488,
+          "shotScale": 1
+        }
+      },
+      "version": "26.5"
+    },
+    "Firefox": {
+      "shot": "1080x2340",
+      "capacity": {
+        "image/png": {
+          "maxCount": 28,
+          "maxHeight": 65520
+        },
+        "image/jpeg": {
+          "maxCount": 27,
+          "maxHeight": 63180
+        }
+      },
+      "five": {
+        "image/png": 1009078,
+        "image/jpeg": 1440928
+      },
+      "mixed": {
+        "match": {
+          "width": 1920,
+          "height": 5659,
+          "bytes": 1567157,
+          "shotScale": 1.778
+        },
+        "keep": {
+          "width": 1920,
+          "height": 3839,
+          "bytes": 1319532,
+          "shotScale": 1
+        }
+      },
+      "version": "153.0"
+    }
+  },
+  "sources": {
+    "screenshot": "floor05 /blog/png-vs-jpg mobile capture 360x780 @3x = 1080x2340 PNG",
+    "photo": "NASA KSC-20210121-PH-JBS01_0079 (public domain) as 1920x1499 PNG"
+  },
+  "note": "capacity = max count of vertically stacked 1080x2340 screenshots where toBlob succeeded (tested up to 60). floor05 caps batch at 10 (desktop) / 5 (mobile)."
+}

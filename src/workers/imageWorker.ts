@@ -3,6 +3,7 @@
 // 미지원 브라우저나 오류 시에는 호출측(processPool)이 메인 스레드 함수로 폴백한다.
 
 import { computeResizeDimensions } from "../lib/image/resizeDims";
+import { drawImageDownscaled } from "../lib/image/downscale";
 
 type ResizeInstruction =
   | { mode: "fit"; width: number; height: number; maintainAspectRatio: boolean }
@@ -71,7 +72,8 @@ ctx.onmessage = async (e: MessageEvent<RenderMessage>) => {
       context.fillRect(0, 0, w, h);
     }
 
-    context.drawImage(bitmap, 0, 0, w, h);
+    // 크게 줄일 때는 절반씩 나눠 그린다(Firefox는 high 품질을 무시해 한 번에 줄이면 깨짐)
+    drawImageDownscaled(context, bitmap, 0, 0, bitmap.width, bitmap.height, 0, 0, w, h);
     bitmap.close();
 
     const blob = await canvas.convertToBlob({
