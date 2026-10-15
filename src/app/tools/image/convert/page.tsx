@@ -183,7 +183,7 @@ export default function ConvertPage() {
       faqs={faqs}
       workflowCTA={workflowCTA}
       currentToolHref="/tools/image/convert"
-      relatedPostSlugs={["avif-guide", "webp-guide", "png-vs-jpg"]}
+      relatedPostSlugs={["png-vs-jpg", "browser-image-encoders", "webp-guide"]}
       schemas={schemas}
     >
       <ConvertTool />

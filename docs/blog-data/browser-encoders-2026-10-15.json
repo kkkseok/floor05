@@ -1,0 +1,273 @@
+{
+  "measuredAt": "2026-10-15",
+  "machine": "Windows PC, Playwright 1.62.1 browsers",
+  "note": "WebKit is Playwright's Windows build of the Safari engine",
+  "photo": {
+    "source": "NASA KSC-20210121-PH-JBS01_0079 (public domain) downscaled to 1920x1499 PNG",
+    "result": {
+      "Chromium": {
+        "version": "151.0.7922.34",
+        "rows": [
+          {
+            "asked": "jpeg 92%",
+            "gotType": "image/jpeg",
+            "bytes": 808110,
+            "ms": 26,
+            "psnr": 38.92,
+            "subsampling": "4:2:0"
+          },
+          {
+            "asked": "jpeg 80%",
+            "gotType": "image/jpeg",
+            "bytes": 473405,
+            "ms": 14,
+            "psnr": 35.68,
+            "subsampling": "4:2:0"
+          },
+          {
+            "asked": "jpeg 60%",
+            "gotType": "image/jpeg",
+            "bytes": 309733,
+            "ms": 12,
+            "psnr": 33.47,
+            "subsampling": "4:2:0"
+          },
+          {
+            "asked": "webp 80%",
+            "gotType": "image/webp",
+            "bytes": 356540,
+            "ms": 222,
+            "psnr": 36.33
+          },
+          {
+            "asked": "png",
+            "gotType": "image/png",
+            "bytes": 6391324,
+            "ms": 121,
+            "psnr": null
+          }
+        ]
+      },
+      "WebKit": {
+        "version": "26.5",
+        "rows": [
+          {
+            "asked": "jpeg 92%",
+            "gotType": "image/jpeg",
+            "bytes": 808110,
+            "ms": 58,
+            "psnr": 38.92,
+            "subsampling": "4:2:0"
+          },
+          {
+            "asked": "jpeg 80%",
+            "gotType": "image/jpeg",
+            "bytes": 473405,
+            "ms": 24,
+            "psnr": 35.68,
+            "subsampling": "4:2:0"
+          },
+          {
+            "asked": "jpeg 60%",
+            "gotType": "image/jpeg",
+            "bytes": 309733,
+            "ms": 25,
+            "psnr": 33.47,
+            "subsampling": "4:2:0"
+          },
+          {
+            "asked": "webp 80%",
+            "gotType": "image/webp",
+            "bytes": 356540,
+            "ms": 445,
+            "psnr": 36.33
+          },
+          {
+            "asked": "png",
+            "gotType": "image/png",
+            "bytes": 4973415,
+            "ms": 544,
+            "psnr": null
+          }
+        ]
+      },
+      "Firefox": {
+        "version": "153.0",
+        "rows": [
+          {
+            "asked": "jpeg 92%",
+            "gotType": "image/jpeg",
+            "bytes": 977408,
+            "ms": 19,
+            "psnr": 40.31,
+            "subsampling": "4:4:4"
+          },
+          {
+            "asked": "jpeg 80%",
+            "gotType": "image/jpeg",
+            "bytes": 475600,
+            "ms": 13,
+            "psnr": 35.68,
+            "subsampling": "4:2:0"
+          },
+          {
+            "asked": "jpeg 60%",
+            "gotType": "image/jpeg",
+            "bytes": 314084,
+            "ms": 13,
+            "psnr": 33.47,
+            "subsampling": "4:2:0"
+          },
+          {
+            "asked": "webp 80%",
+            "gotType": "image/webp",
+            "bytes": 356304,
+            "ms": 273,
+            "psnr": 36.32
+          },
+          {
+            "asked": "png",
+            "gotType": "image/png",
+            "bytes": 5309251,
+            "ms": 139,
+            "psnr": null
+          }
+        ]
+      }
+    }
+  },
+  "screenshot": {
+    "source": "floor05 /tools/image/compress page capture 1920x1080 PNG",
+    "result": {
+      "Chromium": {
+        "version": "151.0.7922.34",
+        "rows": [
+          {
+            "asked": "jpeg 92%",
+            "gotType": "image/jpeg",
+            "bytes": 132911,
+            "ms": 10,
+            "psnr": 49.26,
+            "subsampling": "4:2:0"
+          },
+          {
+            "asked": "jpeg 80%",
+            "gotType": "image/jpeg",
+            "bytes": 99350,
+            "ms": 7,
+            "psnr": 43.5,
+            "subsampling": "4:2:0"
+          },
+          {
+            "asked": "jpeg 60%",
+            "gotType": "image/jpeg",
+            "bytes": 77166,
+            "ms": 7,
+            "psnr": 39.53,
+            "subsampling": "4:2:0"
+          },
+          {
+            "asked": "webp 80%",
+            "gotType": "image/webp",
+            "bytes": 51956,
+            "ms": 90,
+            "psnr": 47.11
+          },
+          {
+            "asked": "png",
+            "gotType": "image/png",
+            "bytes": 176491,
+            "ms": 7,
+            "psnr": null
+          }
+        ]
+      },
+      "WebKit": {
+        "version": "26.5",
+        "rows": [
+          {
+            "asked": "jpeg 92%",
+            "gotType": "image/jpeg",
+            "bytes": 132911,
+            "ms": 13,
+            "psnr": 49.26,
+            "subsampling": "4:2:0"
+          },
+          {
+            "asked": "jpeg 80%",
+            "gotType": "image/jpeg",
+            "bytes": 99350,
+            "ms": 11,
+            "psnr": 43.5,
+            "subsampling": "4:2:0"
+          },
+          {
+            "asked": "jpeg 60%",
+            "gotType": "image/jpeg",
+            "bytes": 77166,
+            "ms": 10,
+            "psnr": 39.53,
+            "subsampling": "4:2:0"
+          },
+          {
+            "asked": "webp 80%",
+            "gotType": "image/webp",
+            "bytes": 51956,
+            "ms": 162,
+            "psnr": 47.11
+          },
+          {
+            "asked": "png",
+            "gotType": "image/png",
+            "bytes": 117560,
+            "ms": 39,
+            "psnr": null
+          }
+        ]
+      },
+      "Firefox": {
+        "version": "153.0",
+        "rows": [
+          {
+            "asked": "jpeg 92%",
+            "gotType": "image/jpeg",
+            "bytes": 174054,
+            "ms": 10,
+            "psnr": 49.29,
+            "subsampling": "4:4:4"
+          },
+          {
+            "asked": "jpeg 80%",
+            "gotType": "image/jpeg",
+            "bytes": 114308,
+            "ms": 8,
+            "psnr": 43.5,
+            "subsampling": "4:2:0"
+          },
+          {
+            "asked": "jpeg 60%",
+            "gotType": "image/jpeg",
+            "bytes": 91331,
+            "ms": 7,
+            "psnr": 39.53,
+            "subsampling": "4:2:0"
+          },
+          {
+            "asked": "webp 80%",
+            "gotType": "image/webp",
+            "bytes": 51484,
+            "ms": 109,
+            "psnr": 47.44
+          },
+          {
+            "asked": "png",
+            "gotType": "image/png",
+            "bytes": 121776,
+            "ms": 12,
+            "psnr": null
+          }
+        ]
+      }
+    }
+  }
+}

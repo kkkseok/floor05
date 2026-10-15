@@ -27,6 +27,25 @@ export interface BlogPost {
  * datePublished/dateModified는 검색엔진 신선도 신호(BlogPosting)로 사용된다.
  */
 export const POSTS: BlogPost[] = [
+  // ── 신규 (2026-11-06) ───────────────────────────────────────────
+  {
+    slug: "browser-image-encoders",
+    title: "같은 품질 92%, 브라우저마다 다를까 — 3개 엔진 실측",
+    description:
+      "같은 사진을 Chromium·WebKit·Firefox로 JPG·WebP·PNG 저장해 비교했습니다. JPG는 크롬과 사파리 엔진이 바이트까지 같았고, 무손실 PNG가 오히려 1.3~1.5배 달랐습니다.",
+    keywords: [
+      "브라우저 이미지 저장 차이",
+      "크롬 파이어폭스 jpg 용량",
+      "canvas toBlob 품질",
+      "jpg 4:2:0 4:4:4",
+      "png 용량 브라우저",
+      "webp 인코딩 속도",
+    ],
+    datePublished: "2026-11-06",
+    dateModified: "2026-11-06",
+    readTime: "6분",
+    related: ["png-vs-jpg", "image-compression-guide", "webp-guide"],
+  },
   // ── 신규 (2026-10-30) ───────────────────────────────────────────
   {
     slug: "image-rotate-quality",
