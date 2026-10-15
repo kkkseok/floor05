@@ -204,21 +204,21 @@ export const POSTS: BlogPost[] = [
   },
   {
     slug: "image-watermark-guide",
-    title: "사진에 워터마크 넣는 법",
+    title: "사진 워터마크 — 모서리 vs 전체 반복 실측",
     description:
-      "텍스트·로고 워터마크를 사진에 넣는 방법. 위치·투명도·전체 반복으로 도용을 막고, 여러 장에 일괄로 넣는 법까지 정리했습니다.",
+      "모서리 워터마크는 75% 크기로 잘라도 58.7%가 사라졌고, 전체 반복은 어떻게 잘라도 남았지만 사진의 7%를 덮었습니다. 441곳을 잘라 보고 투명도별로 잰 결과입니다.",
     keywords: [
       "워터마크 넣기",
       "사진 워터마크",
-      "이미지 워터마크",
-      "워터마크 만들기",
-      "사진 로고 넣기",
+      "워터마크 투명도",
+      "워터마크 위치",
       "사진 도용 방지",
+      "전체 반복 워터마크",
       "저작권 표시",
     ],
     datePublished: "2026-06-20",
-    dateModified: "2026-07-23",
-    readTime: "5분",
+    dateModified: "2026-11-24",
+    readTime: "6분",
     related: ["prevent-photo-theft", "image-merge-guide", "browser-image-tools-privacy"],
   },
 

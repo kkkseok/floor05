@@ -8,39 +8,56 @@ import { buildBlogMetadata } from "@/lib/common/blog";
 
 export const metadata: Metadata = {
   ...buildBlogMetadata("image-watermark-guide"),
-  title: "사진에 워터마크 넣는 법 - 텍스트·로고·도용 방지까지",
+  title: "사진 워터마크 넣기 - 모서리 vs 전체 반복, 잘라 보고 재본 결과",
 };
+
+const faqs = [
+  {
+    question: "모서리에 넣은 워터마크는 잘라내면 사라지나요?",
+    answer:
+      "꽤 쉽게 사라집니다. 오른쪽 아래 워터마크를 넣은 사진을 원본의 75% 크기로 441곳에서 잘라 보니 58.7%에서 워터마크가 완전히 빠졌고, 50% 크기로 자르면 88.2%에서 빠졌습니다. 90% 크기로 자를 때만 모두 남았습니다.",
+  },
+  {
+    question: "전체 반복 워터마크는 사진을 얼마나 가리나요?",
+    answer:
+      "투명도 30%에서 사진 픽셀의 6.9%가 바뀌었고, 원본 대비 PSNR이 30.3dB였습니다. 모서리 워터마크(투명도 30%)는 0.5%만 바꾸고 41.9dB였습니다. 대신 전체 반복은 어떤 크기로 잘라도 워터마크가 남았습니다.",
+  },
+  {
+    question: "워터마크를 넣었더니 파일이 너무 커졌어요.",
+    answer:
+      "저장 형식 때문입니다. 15.8MB 카메라 JPG를 PNG로 저장하니 47.2MB가 됐고, JPG로 저장하니 6.5MB였습니다. floor05 워터마크는 지금 기본값 '자동'이 JPG 사진을 JPG로 저장합니다.",
+  },
+  {
+    question: "로고와 사진이 다른 곳에 저장되나요?",
+    answer:
+      "저장되지 않습니다. 사진 위에 글자나 로고를 겹쳐 그리는 일은 이 브라우저의 캔버스가 하고, 여러 장을 묶는 ZIP도 이 탭 안에서 만들어집니다. 내려받기 전까지 결과는 메모리에만 있습니다.",
+  },
+];
 
 const faqSchema = {
   "@context": "https://schema.org",
   "@type": "FAQPage",
-  mainEntity: [
-    {
-      "@type": "Question",
-      name: "사진에 워터마크를 어떻게 넣나요?",
-      acceptedAnswer: {
-        "@type": "Answer",
-        text: "사진을 올리고 텍스트를 입력하거나 로고 이미지를 추가한 뒤, 위치와 투명도를 정하고 적용하면 됩니다. 합성은 이 브라우저가 직접 처리하며, 원본과 로고는 기기 밖으로 나가지 않습니다.",
-      },
-    },
-    {
-      "@type": "Question",
-      name: "사진 도용을 막는 워터마크는 어떻게 만드나요?",
-      acceptedAnswer: {
-        "@type": "Answer",
-        text: "'전체 반복'을 켜면 워터마크가 사진 전체에 깔려 일부를 잘라내도 지우기 어렵습니다. 투명도를 30~50%로 낮추고 살짝 회전시키면 보기에 방해되지 않으면서 보호 효과가 큽니다.",
-      },
-    },
-    {
-      "@type": "Question",
-      name: "상품 사진 수십 장에 같은 워터마크를 붙이려면?",
-      acceptedAnswer: {
-        "@type": "Answer",
-        text: "여러 장을 한 번에 올리면 지정한 워터마크가 모든 사진에 똑같이 얹힙니다. 결과는 ZIP으로 묶여 내려오고, 크기 값이 % 기준이라 해상도가 제각각이어도 워터마크 비율은 그대로 유지됩니다.",
-      },
-    },
-  ],
+  mainEntity: faqs.map((faq) => ({
+    "@type": "Question",
+    name: faq.question,
+    acceptedAnswer: { "@type": "Answer", text: faq.answer },
+  })),
 };
+
+// 2026-10-16 측정 (원자료: docs/blog-data/watermark-crop-2026-10-16.json, watermark-2026-10-16.json)
+const cropRows = [
+  { keep: "90%", corner: "0%", tile: "0%" },
+  { keep: "75%", corner: "58.7%", tile: "0%" },
+  { keep: "60%", corner: "83.0%", tile: "0%" },
+  { keep: "50%", corner: "88.2%", tile: "0%" },
+];
+
+const coverRows = [
+  { op: "20%", corner: "45.8dB · 0.5%", tile: "34.1dB · 6.2%" },
+  { op: "30%", corner: "41.9dB · 0.5%", tile: "30.3dB · 6.9%" },
+  { op: "50%", corner: "37.0dB · 0.6%", tile: "25.5dB · 7.5%" },
+  { op: "80%", corner: "32.4dB · 0.6%", tile: "20.9dB · 8.3%" },
+];
 
 export default function ImageWatermarkGuidePage() {
   return (
@@ -54,211 +71,219 @@ export default function ImageWatermarkGuidePage() {
 
       <main className="flex-1">
         <article className="max-w-3xl mx-auto px-4 sm:px-6 lg:px-8 py-16">
-          {/* 브레드크럼 */}
           <nav className="mb-8 text-sm text-brand-light">
             <Link href="/blog" className="hover:text-brand-mid">
               블로그
             </Link>
             <span className="mx-2">›</span>
-            <span className="text-brand-mid">워터마크 넣기</span>
+            <span className="text-brand-mid">사진 워터마크</span>
           </nav>
 
-          {/* 제목 */}
           <header className="mb-12">
             <h1 className="text-3xl sm:text-4xl font-bold text-brand-black mb-4 leading-tight">
-              사진에 워터마크 넣는 법
+              모서리 워터마크 vs 전체 반복
             </h1>
-            <p className="text-lg text-brand-mid">
-              텍스트로, 로고로, 도용 방지 반복까지 — 설치 없이 브라우저에서
-            </p>
+            <p className="text-lg text-brand-mid">441곳을 잘라 보고 얼마나 남는지 셌습니다</p>
             <div className="mt-4 flex items-center gap-4 text-sm text-brand-light">
-              <time dateTime="2026-06-20">2026-06-20</time>
+              <time dateTime="2026-10-16">2026-10-16 측정</time>
               <span>·</span>
-              <span>5분 읽기</span>
+              <span>6분 읽기</span>
             </div>
           </header>
 
-          <div className="prose prose-lg max-w-none">
-            {/* 도입 */}
-            <p className="text-brand-mid text-lg leading-relaxed mb-8">
-              블로그·중고거래·포트폴리오에 사진을 올릴 때, 누가 가져다 써도
-              출처가 남도록 워터마크를 넣고 싶을 때가 있습니다. 비싼 편집
-              프로그램 없이도 됩니다. 이 글은 텍스트와 로고 워터마크를 넣는
-              방법과, 도용을 막는 설정을 정리합니다.
+          <div className="max-w-none">
+            <p className="text-brand-mid text-lg leading-relaxed mb-6">
+              워터마크는 늘 같은 고민 사이에 있습니다. 작게 넣으면 잘려 나가고, 크게 넣으면 사진을 가립니다. 그 사이
+              어디쯤에 서야 하는지 감으로 정하는 대신, 같은 사진에 모서리 워터마크와 전체 반복 워터마크를 넣고 잘라 보고,
+              얼마나 가리는지 쟀습니다.
+            </p>
+            <p className="text-brand-mid leading-relaxed mb-8">
+              재다가 floor05 워터마크의 기본 저장 형식 때문에 카메라 사진이 세 배로 불어나는 문제도 찾아 고쳤습니다.
             </p>
 
-            {/* CTA 박스 */}
-            <div className="bg-brand-paper rounded-lg p-6 mb-10 border border-brand-light/20">
-              <p className="font-medium text-brand-black mb-3">
-                💡 바로 넣고 싶다면?
-              </p>
-              <p className="text-brand-mid text-sm mb-4">
-                설치도 로그인도 없이, 브라우저에서 바로 워터마크를 얹는 무료 도구입니다.
-              </p>
-              <Link
-                href="/tools/image/watermark"
-                className="inline-block bg-brand-accent text-brand-white px-4 py-2 rounded-md text-sm font-medium hover:bg-brand-accent-light transition-colors"
-              >
-                워터마크 도구 사용하기 →
-              </Link>
+            <h2 className="text-2xl font-bold text-brand-black mt-12 mb-4">어떻게 측정했나</h2>
+            <ul className="list-disc pl-5 text-brand-mid space-y-2 mb-8 leading-relaxed">
+              <li>사진: NASA 공공 도메인 거북이 사진을 1920×1499로 줄여 사용</li>
+              <li>
+                워터마크: floor05{" "}
+                <Link href="/tools/image/watermark" className="text-brand-accent hover:underline">
+                  워터마크 넣기
+                </Link>
+                의 그리기 코드를 그대로 써서 글자 &lsquo;© floor05&rsquo;를 넣었습니다. 글자 크기(짧은 변의 6%)와 여백은
+                기본값입니다.
+              </li>
+              <li>
+                잘라내기: 원본의 90·75·60·50% 크기 창을 가로세로 5% 간격으로 441곳에 놓고, 창 안에 워터마크 픽셀이 하나도
+                없으면 &lsquo;사라짐&rsquo;으로 셌습니다.
+              </li>
+              <li>가림 정도: 투명도별로 합성한 사진을 원본과 비교한 PSNR과 바뀐 픽셀 비율</li>
+            </ul>
+
+            <figure className="my-8">
+              <img
+                src="/images/blog/image-watermark-guide/corner-vs-tile.jpg"
+                alt="왼쪽은 오른쪽 아래 모서리 워터마크에 75% 크기 크롭 영역을 점선으로 표시한 사진, 오른쪽은 전체 반복 워터마크 사진"
+                width={1320}
+                height={558}
+                loading="lazy"
+                className="block w-full border border-brand-light/30"
+              />
+              <figcaption className="mt-3 text-sm text-brand-mid text-center">
+                점선 안만 잘라 쓰면 모서리 워터마크는 남지 않습니다
+              </figcaption>
+            </figure>
+
+            <h2 className="text-2xl font-bold text-brand-black mt-12 mb-4">
+              1. 모서리 워터마크는 4분의 3만 잘라도 절반 넘게 사라진다
+            </h2>
+            <div className="overflow-x-auto mb-4">
+              <table className="w-full text-sm border-collapse">
+                <thead>
+                  <tr className="border-b border-brand-light/40 text-left">
+                    <th className="py-2 pr-4 text-brand-black">잘라낸 크기</th>
+                    <th className="py-2 pr-4 text-brand-black">모서리: 사라진 비율</th>
+                    <th className="py-2 pr-4 text-brand-black">전체 반복: 사라진 비율</th>
+                  </tr>
+                </thead>
+                <tbody className="text-brand-mid">
+                  {cropRows.map((row) => (
+                    <tr key={row.keep} className="border-b border-brand-light/20">
+                      <td className="py-2 pr-4 font-medium text-brand-black">원본의 {row.keep}</td>
+                      <td className="py-2 pr-4">{row.corner}</td>
+                      <td className="py-2 pr-4">{row.tile}</td>
+                    </tr>
+                  ))}
+                </tbody>
+              </table>
             </div>
-
-            {/* 섹션 1 */}
-            <h2 className="text-2xl font-bold text-brand-black mt-12 mb-4">
-              1. 텍스트 vs 로고, 무엇을 넣을까
-            </h2>
-            <ul className="list-disc list-inside text-brand-mid space-y-2 mb-6">
-              <li>
-                <strong>텍스트 워터마크</strong>: 이름·아이디·© 표기를 빠르게. 글자
-                크기·색·굵기만 정하면 됩니다. 가장 간단합니다.
-              </li>
-              <li>
-                <strong>로고 워터마크</strong>: 브랜드·채널 로고를 올려 합성. 배경이
-                투명한 PNG를 쓰면 사진 위에 자연스럽게 얹힙니다.
-              </li>
-            </ul>
-
-            {/* 섹션 2 */}
-            <h2 className="text-2xl font-bold text-brand-black mt-12 mb-4">
-              2. 위치와 투명도, 이렇게 정하세요
-            </h2>
-            <p className="text-brand-mid leading-relaxed mb-4">
-              워터마크는 &ldquo;보이되 거슬리지 않게&rdquo;가 핵심입니다.
+            <p className="text-brand-mid leading-relaxed mb-6">
+              모서리 워터마크는 사진 면적의 0.8%만 차지합니다. 그래서 가장자리를 조금만 덜어내도 쉽게 빠집니다. 원본의 75%
+              크기로 자르는 441가지 경우 중 58.7%에서 워터마크가 한 픽셀도 남지 않았습니다. 사진의 주인공만 남기는 흔한
+              자르기라면 거의 확실히 사라진다고 보는 게 맞습니다. 반대로 전체 반복은 50%로 잘라도 모든 경우에 남았습니다.
             </p>
-            <ul className="list-disc list-inside text-brand-mid space-y-2 mb-6">
-              <li>
-                <strong>위치</strong>: 모서리(주로 오른쪽 아래)는 사진을 가장 덜
-                가립니다. 9개 위치 중에서 고르세요.
-              </li>
-              <li>
-                <strong>투명도</strong>: 30~50%가 무난합니다. 너무 진하면 사진을
-                해치고, 너무 옅으면 잘려도 표시가 안 남습니다.
-              </li>
-              <li>
-                <strong>여백</strong>: 가장자리에서 살짝 띄우면 잘림 없이 안정적으로
-                보입니다.
-              </li>
-            </ul>
 
-            {/* 인라인 CTA */}
+            <h2 className="text-2xl font-bold text-brand-black mt-12 mb-4">
+              2. 대신 전체 반복은 사진의 7%를 덮는다
+            </h2>
+            <div className="overflow-x-auto mb-4">
+              <table className="w-full text-sm border-collapse">
+                <thead>
+                  <tr className="border-b border-brand-light/40 text-left">
+                    <th className="py-2 pr-4 text-brand-black">투명도</th>
+                    <th className="py-2 pr-4 text-brand-black">모서리 (PSNR · 바뀐 픽셀)</th>
+                    <th className="py-2 pr-4 text-brand-black">전체 반복 (PSNR · 바뀐 픽셀)</th>
+                  </tr>
+                </thead>
+                <tbody className="text-brand-mid">
+                  {coverRows.map((row) => (
+                    <tr key={row.op} className="border-b border-brand-light/20">
+                      <td className="py-2 pr-4 font-medium text-brand-black">{row.op}</td>
+                      <td className="py-2 pr-4">{row.corner}</td>
+                      <td className="py-2 pr-4">{row.tile}</td>
+                    </tr>
+                  ))}
+                </tbody>
+              </table>
+            </div>
+            <p className="text-brand-mid leading-relaxed mb-6">
+              전체 반복은 투명도 30%에서도 PSNR 30.3dB였습니다. 같은 1920px 사진을 JPG 품질 60%로 저장했을 때(33.5dB,{" "}
+              <Link href="/blog/png-vs-jpg" className="text-brand-accent hover:underline">
+                PNG vs JPG 실측
+              </Link>
+              )보다도 원본에서 멀어지는 셈입니다. 투명도를 20%로 낮추면 34.1dB까지 올라가지만, 그만큼 글자가 옅어집니다. 모서리
+              워터마크는 투명도를 80%까지 올려도 바뀐 픽셀이 0.6%에 그쳤습니다. 사진을 감상용으로 보여주는 게 중요하다면
+              모서리, 퍼 가는 것을 막는 게 중요하다면 전체 반복입니다.
+            </p>
+
             <BlogInlineCTA href="/tools/image/watermark" label="워터마크 넣기 →">
-              감이 왔다면, 미리보기를 보며 바로 맞춰봐도 됩니다.
+              위치 9곳과 전체 반복을 고르고, 미리보기로 투명도를 맞춥니다. 여러 장은 ZIP으로 받습니다.
             </BlogInlineCTA>
 
-            {/* 섹션 3 */}
             <h2 className="text-2xl font-bold text-brand-black mt-12 mb-4">
-              3. 도용을 막는 워터마크 (전체 반복)
+              3. 측정하다 고친 것: 워터마크를 넣으면 세 배로 커지던 파일
             </h2>
             <p className="text-brand-mid leading-relaxed mb-4">
-              모서리에 한 번만 넣은 워터마크는 잘라내면 끝입니다. 도용이 걱정된다면
-              <strong> 전체 반복</strong>을 켜세요.
+              floor05 워터마크는 저장 형식의 기본값이 PNG였습니다. 15.8MB짜리 카메라 JPG에 기본 설정으로 워터마크를
+              넣으니 47.2MB PNG가 나왔습니다. 같은 사진을 JPG로 저장하면 6.5MB였습니다. 사진을 PNG로 저장하면 크게
+              불어난다는 것은{" "}
+              <Link href="/blog/png-vs-jpg" className="text-brand-accent hover:underline">
+                PNG vs JPG 실측
+              </Link>
+              에서도 확인했는데, 정작 도구 기본값이 그 반대였던 셈입니다.
             </p>
-            <ul className="list-disc list-inside text-brand-mid space-y-2 mb-6">
-              <li>워터마크가 사진 전체에 바둑판처럼 깔려, 일부를 잘라도 남습니다.</li>
-              <li>투명도를 20~40%로 낮추면 사진 감상은 살리고 보호는 유지됩니다.</li>
-              <li>약 30° 회전시키면 자연스러우면서 제거가 더 까다로워집니다.</li>
-            </ul>
-
-            {/* 섹션 4 */}
-            <h2 className="text-2xl font-bold text-brand-black mt-12 mb-4">
-              4. 여러 장에 한 번에 넣기
-            </h2>
-            <p className="text-brand-mid leading-relaxed mb-4">
-              상품 사진 수십 장, 포트폴리오 묶음처럼 여러 장에 같은 워터마크가
-              필요할 때가 많습니다. 한 장씩 작업할 필요 없습니다.
+            <p className="text-brand-mid leading-relaxed mb-6">
+              지금은 기본값이 &lsquo;자동&rsquo;입니다. JPG 사진은 JPG로, PNG·WebP 사진은 투명 배경을 지키도록 PNG로
+              저장합니다. 여러 장을 한꺼번에 넣어도 사진마다 원래 형식을 따릅니다. 원하면 PNG나 JPG로 직접 고를 수
+              있습니다.
             </p>
-            <ul className="list-disc list-inside text-brand-mid space-y-2 mb-6">
-              <li>여러 장을 한 번에 올리면 같은 설정이 모두에 적용됩니다.</li>
-              <li>
-                크기 옵션이 사진 크기에 비례한 %라, 크기가 제각각이어도 워터마크
-                비율이 일정합니다.
-              </li>
-              <li>완료되면 ZIP으로 한 번에 내려받습니다.</li>
-            </ul>
 
-            {/* 섹션 5 - 사용 방법 */}
-            <h2 className="text-2xl font-bold text-brand-black mt-12 mb-4">
-              5. 브라우저에서 넣는 법 (4단계)
-            </h2>
-            <ol className="list-decimal list-inside text-brand-mid space-y-2 mb-6">
-              <li>워터마크를 넣을 사진을 올립니다. (여러 장 가능)</li>
-              <li>텍스트를 입력하거나 로고 이미지를 추가합니다.</li>
-              <li>미리보기를 보며 위치·투명도·회전·반복을 맞춥니다.</li>
-              <li>적용을 누르고 결과를 다운로드합니다.</li>
-            </ol>
+            <h2 className="text-2xl font-bold text-brand-black mt-12 mb-4">글자와 로고, 크기는 비율로</h2>
+            <p className="text-brand-mid leading-relaxed mb-6">
+              floor05 워터마크의 글자 크기는 사진 짧은 변의 %로, 로고 크기는 사진 너비의 %로 정합니다. 기본값은 각각
+              6%와 20%입니다. 그래서 크기가 제각각인 사진 여러 장에 같은 설정을 적용해도 워터마크가 차지하는 비율이
+              같습니다. 로고는 배경이 투명한 PNG를 쓰면 사진 위에 깔끔하게 얹힙니다. 투명 배경이 도구를 거치며 어떻게
+              되는지는{" "}
+              <Link href="/blog/transparent-background" className="text-brand-accent hover:underline">
+                투명 배경 실측
+              </Link>
+              에 정리했습니다.
+            </p>
 
-            {/* 섹션 6 - 팁 */}
-            <h2 className="text-2xl font-bold text-brand-black mt-12 mb-4">
-              6. 알아두면 좋은 점
-            </h2>
-            <ul className="list-disc list-inside text-brand-mid space-y-2 mb-6">
-              <li>
-                <strong>포맷</strong>: 투명 로고나 또렷한 글자는 PNG, 용량이 중요하면
-                JPG로 저장하세요.
-              </li>
-              <li>
-                넣은 뒤 용량이 크면{" "}
-                <Link href="/tools/image/compress" className="text-brand-accent hover:underline">
-                  이미지 압축
-                </Link>
-                으로 줄이고, 업로드 규격이 있으면{" "}
-                <Link href="/tools/image/resize" className="text-brand-accent hover:underline">
-                  리사이즈
-                </Link>
-                로 맞추면 됩니다.
-              </li>
-              <li>
-                합성부터 저장까지 브라우저 안에서 끝나, 사진과 로고를 어디에도 올리지
-                않습니다.
-              </li>
-            </ul>
+            <h2 className="text-2xl font-bold text-brand-black mt-12 mb-4">측정으로 정리한 선택 기준</h2>
+            <div className="overflow-x-auto mb-8">
+              <table className="w-full text-sm border-collapse">
+                <thead>
+                  <tr className="border-b border-brand-light/40 text-left">
+                    <th className="py-2 pr-4 text-brand-black">상황</th>
+                    <th className="py-2 pr-4 text-brand-black">이렇게</th>
+                    <th className="py-2 pr-4 text-brand-black">근거 (이번 측정)</th>
+                  </tr>
+                </thead>
+                <tbody className="text-brand-mid">
+                  <tr className="border-b border-brand-light/20">
+                    <td className="py-2 pr-4 font-medium text-brand-black">포트폴리오·작품 감상</td>
+                    <td className="py-2 pr-4">모서리, 투명도 50% 안팎</td>
+                    <td className="py-2 pr-4">바뀐 픽셀 0.6%, 대신 75% 자르기에 58.7% 사라짐</td>
+                  </tr>
+                  <tr className="border-b border-brand-light/20">
+                    <td className="py-2 pr-4 font-medium text-brand-black">중고거래·상품 사진 퍼가기 방지</td>
+                    <td className="py-2 pr-4">전체 반복, 투명도 20~30%</td>
+                    <td className="py-2 pr-4">50%로 잘라도 0% 사라짐, PSNR 30~34dB</td>
+                  </tr>
+                  <tr>
+                    <td className="py-2 pr-4 font-medium text-brand-black">카메라 사진에 넣을 때</td>
+                    <td className="py-2 pr-4">저장 형식 &lsquo;자동&rsquo; 또는 JPG</td>
+                    <td className="py-2 pr-4">PNG로 저장하면 15.8MB → 47.2MB</td>
+                  </tr>
+                </tbody>
+              </table>
+            </div>
+            <p className="text-brand-mid leading-relaxed mb-8">
+              워터마크는 도용을 어렵게 만들 뿐 막지는 못합니다. 원본 해상도를 그대로 올리지 않는 것, 출처를 남기는 것 같은
+              다른 방법은{" "}
+              <Link href="/blog/prevent-photo-theft" className="text-brand-accent hover:underline">
+                사진 도용 막는 법
+              </Link>
+              에 모았습니다.
+            </p>
 
-            {/* FAQ */}
-            <h2 className="text-2xl font-bold text-brand-black mt-12 mb-6">
-              자주 묻는 질문
-            </h2>
+            <h2 className="text-2xl font-bold text-brand-black mt-12 mb-6">자주 묻는 질문</h2>
             <div className="space-y-6">
-              <div className="border-b border-brand-light/20 pb-6">
-                <h3 className="text-lg font-semibold text-brand-black mb-2">
-                  Q. 사진에 워터마크를 어떻게 넣나요?
-                </h3>
-                <p className="text-brand-mid">
-                  사진을 올리고 텍스트를 입력하거나 로고 이미지를 추가한 뒤, 위치와
-                  투명도를 정하고 적용하면 됩니다. 합성은 이 브라우저가 직접 처리하며,
-                  원본과 로고는 기기 밖으로 나가지 않습니다.
-                </p>
-              </div>
-              <div className="border-b border-brand-light/20 pb-6">
-                <h3 className="text-lg font-semibold text-brand-black mb-2">
-                  Q. 사진 도용을 막는 워터마크는 어떻게 만드나요?
-                </h3>
-                <p className="text-brand-mid">
-                  &lsquo;전체 반복&rsquo;을 켜면 워터마크가 사진 전체에 깔려 일부를
-                  잘라내도 지우기 어렵습니다. 투명도를 낮추고 살짝 회전시키면
-                  보기에 방해되지 않으면서 보호 효과가 큽니다.
-                </p>
-              </div>
-              <div className="pb-6">
-                <h3 className="text-lg font-semibold text-brand-black mb-2">
-                  Q. 상품 사진 수십 장에 같은 워터마크를 붙이려면?
-                </h3>
-                <p className="text-brand-mid">
-                  여러 장을 한 번에 올리면 지정한 워터마크가 모든 사진에 똑같이
-                  얹힙니다. 결과는 ZIP으로 묶여 내려오고, 크기 값이 % 기준이라
-                  해상도가 제각각이어도 워터마크 비율은 그대로 유지됩니다.
-                </p>
-              </div>
+              {faqs.map((faq, i) => (
+                <div
+                  key={faq.question}
+                  className={i < faqs.length - 1 ? "border-b border-brand-light/20 pb-6" : "pb-6"}
+                >
+                  <h3 className="text-lg font-semibold text-brand-black mb-2">Q. {faq.question}</h3>
+                  <p className="text-brand-mid leading-relaxed">{faq.answer}</p>
+                </div>
+              ))}
             </div>
 
-            {/* 마무리 CTA */}
             <div className="bg-brand-black rounded-lg p-8 mt-12 text-center">
-              <h3 className="text-xl font-bold text-brand-paper mb-3">
-                지금 바로 워터마크 넣기
-              </h3>
+              <h3 className="text-xl font-bold text-brand-paper mb-3">보여줄지, 지킬지 고르기</h3>
               <p className="text-brand-light mb-6">
-                워터마크 넣기도 무료, 가입은 빼고요.
-                <br />
-                로고를 올려도 원본은 브라우저 안에서만 합성됩니다.
+                모서리 한 곳에 넣거나 사진 전체에 반복해서, 미리보기를 보며 정하세요.
               </p>
               <div className="flex flex-col sm:flex-row gap-3 justify-center">
                 <Link
@@ -268,22 +293,15 @@ export default function ImageWatermarkGuidePage() {
                   워터마크 넣기
                 </Link>
                 <Link
-                  href="/tools/image/merge"
+                  href="/tools/image/crop"
                   className="inline-block bg-brand-dark text-brand-paper px-6 py-3 rounded-md font-medium hover:bg-brand-mid transition-colors"
                 >
-                  사진 합치기
-                </Link>
-                <Link
-                  href="/tools/image/compress"
-                  className="inline-block bg-brand-dark text-brand-paper px-6 py-3 rounded-md font-medium hover:bg-brand-mid transition-colors"
-                >
-                  이미지 압축
+                  이미지 크롭
                 </Link>
               </div>
             </div>
-
-            <BlogExtras slug="image-watermark-guide" />
           </div>
+          <BlogExtras slug="image-watermark-guide" />
         </article>
       </main>
 
