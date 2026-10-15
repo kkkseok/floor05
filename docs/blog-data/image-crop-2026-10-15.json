@@ -1,0 +1,98 @@
+{
+  "browser": "151.0.7922.34",
+  "measuredAt": "2026-10-15T13:36:59.991Z",
+  "result": {
+    "W": 5522,
+    "H": 4312,
+    "ratios": [
+      {
+        "name": "자유(원본 그대로)",
+        "w": 5522,
+        "h": 4312,
+        "keptPct": 100,
+        "bytes": 6512958,
+        "psnr": 40.57
+      },
+      {
+        "name": "1:1",
+        "w": 4312,
+        "h": 4312,
+        "keptPct": 78.1,
+        "bytes": 5009807,
+        "psnr": 40.59
+      },
+      {
+        "name": "4:3",
+        "w": 5522,
+        "h": 4142,
+        "keptPct": 96.1,
+        "bytes": 6229293,
+        "psnr": 40.6
+      },
+      {
+        "name": "3:4",
+        "w": 3234,
+        "h": 4312,
+        "keptPct": 58.6,
+        "bytes": 3671635,
+        "psnr": 40.73
+      },
+      {
+        "name": "16:9",
+        "w": 5522,
+        "h": 3106,
+        "keptPct": 72,
+        "bytes": 4595389,
+        "psnr": 40.83
+      },
+      {
+        "name": "9:16",
+        "w": 2426,
+        "h": 4312,
+        "keptPct": 43.9,
+        "bytes": 2699701,
+        "psnr": 40.82
+      }
+    ],
+    "fixed": [
+      {
+        "name": "1:1 → 1080×1080 (JPG)",
+        "w": 1080,
+        "h": 1080,
+        "bytes": 370841
+      },
+      {
+        "name": "1:1 → 600×600 (JPG)",
+        "w": 600,
+        "h": 600,
+        "bytes": 120869
+      },
+      {
+        "name": "3.5:4.5 → 413×531 (JPG)",
+        "w": 413,
+        "h": 531,
+        "bytes": 66293
+      },
+      {
+        "name": "3:4 → 354×472 (JPG)",
+        "w": 354,
+        "h": 472,
+        "bytes": 53630
+      }
+    ],
+    "circle": [
+      {
+        "size": 1080,
+        "circlePng": 2095779,
+        "squareJpg": 370841
+      },
+      {
+        "size": 600,
+        "circlePng": 648284,
+        "squareJpg": 120869
+      }
+    ]
+  },
+  "source": "NASA KSC-20210121-PH-JBS01_0079 (public domain), 5522x4312",
+  "alsoFound": "CropTool saved all non-circle crops as JPEG; transparent PNG got white background — fixed in 64d479e"
+}
