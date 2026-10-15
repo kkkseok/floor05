@@ -284,20 +284,20 @@ export const POSTS: BlogPost[] = [
   // ── 신규 (2026-06-11) ───────────────────────────────────────────
   {
     slug: "image-merge-guide",
-    title: "사진 여러 장 한 장으로 합치기",
+    title: "캡처·사진 합치기 — 몇 장·몇 MB 실측",
     description:
-      "여러 사진을 세로·가로로 이어붙이는 방법. 카카오톡 캡처 합치기부터 상품 비교 이미지까지 한 번에.",
+      "휴대폰 캡처는 크롬에서 28장(65,520px)까지 이어졌고, 5장을 합치면 PNG가 JPG보다 15% 클 뿐이었습니다. 폭이 다른 이미지를 합칠 때 생기는 일까지 실측했습니다.",
     keywords: [
       "사진 합치기",
       "이미지 합치기",
       "캡처 합치기",
-      "사진 여러장 한장으로",
-      "사진 세로로 합치기",
       "카톡 캡처 합치기",
+      "사진 세로로 합치기",
+      "캡처 이어붙이기 png jpg",
       "사진 이어붙이기",
     ],
     datePublished: "2026-06-11",
-    dateModified: "2026-07-23",
+    dateModified: "2026-11-10",
     readTime: "6분",
     related: ["image-crop-guide", "image-compression-guide", "youtube-thumbnail-size"],
   },
