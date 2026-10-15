@@ -22,6 +22,8 @@ export interface CompressionResult {
   dataUrl: string;
   /** 목표 용량을 맞추려고 해상도를 줄였을 때의 원본 치수 */
   resizedFrom?: { width: number; height: number };
+  /** 투명 PNG를 목표 용량에 맞추지 못해 JPG(흰 배경)로 바꿔 저장했을 때 true */
+  alphaDropped?: boolean;
 }
 
 /**
