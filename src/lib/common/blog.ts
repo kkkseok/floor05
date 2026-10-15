@@ -589,7 +589,7 @@ export function buildBlogPostingSchema(slug: string): Record<string, unknown> | 
     dateModified: post.dateModified,
     inLanguage: "ko-KR",
     mainEntityOfPage: { "@type": "WebPage", "@id": url },
-    author: { "@type": "Organization", name: "floor05", url: `${SITE_URL}/about` },
+    author: { "@type": "Organization", name: "floor05 팀", url: `${SITE_URL}/about#team` },
     publisher: {
       "@type": "Organization",
       name: "floor05",

@@ -31,8 +31,8 @@ export default function BlogExtras({ slug }: { slug: string }) {
         <aside className="mt-14 border-y border-brand-light/20 py-6" aria-label="글 작성 정보">
           <p className="text-sm leading-6 text-brand-mid">
             작성·검토: {" "}
-            <Link href="/about" rel="author" className="font-medium text-brand-accent hover:underline">
-              floor05 운영자
+            <Link href="/about#team" rel="author" className="font-medium text-brand-accent hover:underline">
+              floor05 팀
             </Link>
             <span className="mx-2 text-brand-light" aria-hidden="true">·</span>
             발행 <time dateTime={post.datePublished}>{post.datePublished}</time>
@@ -44,7 +44,7 @@ export default function BlogExtras({ slug }: { slug: string }) {
             )}
           </p>
           <p className="mt-2 text-sm leading-6 text-brand-light">
-            직접 사용할 수 있는 계산 예시와 공개 자료를 바탕으로 작성하며, 오류 제보는 문의 페이지에서 받습니다.
+            직접 측정한 결과와 출처를 밝힐 수 있는 공개 자료만으로 작성합니다. 틀린 내용은 문의 페이지로 알려주세요.
           </p>
         </aside>
       )}

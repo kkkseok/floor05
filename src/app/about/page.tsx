@@ -1,5 +1,6 @@
 import type { Metadata } from "next";
 import Link from "next/link";
+import { CONTACT_EMAIL } from "@/lib/common/constants";
 import Header from "@/components/common/Header";
 import Footer from "@/components/common/Footer";
 import { TOOLS, TOOL_CATEGORIES, getToolsByCategory } from "@/lib/common/tools";
@@ -28,6 +29,31 @@ const trustItems = [
     title: "참고용 결과",
     description:
       "floor05의 계산 결과는 법적 효력이 있는 산정서나 전문 상담을 대체하지 않습니다. 제출, 신고, 계약처럼 중요한 결정에는 해당 기관의 최신 기준을 다시 확인해주세요.",
+  },
+];
+
+const teamFacts = [
+  { label: "운영", value: "floor05 팀 (플로어공오)" },
+  { label: "시작", value: "2026년 3월, 이미지 압축 도구 공개" },
+  { label: "다루는 일", value: "브라우저 안에서 끝나는 이미지·PDF 처리, 근로 소득 계산" },
+  { label: "연락", value: CONTACT_EMAIL, href: `mailto:${CONTACT_EMAIL}` },
+];
+
+const workSteps = [
+  {
+    title: "도구는 직접 써보고 자동 테스트로 묶습니다",
+    description:
+      "압축·변환·자르기·PDF 합치기처럼 결과 파일이 나오는 도구는 실제 샘플 파일을 넣어 출력 형식, 치수, 용량을 확인하는 자동 테스트로 검증합니다. 파일이 외부로 전송되지 않는지도 같은 테스트에서 검사합니다.",
+  },
+  {
+    title: "계산기는 원문과 대조합니다",
+    description:
+      "연봉 실수령액·퇴직금·주휴수당은 국민연금공단, 국민건강보험공단, 국세청, 고용노동부, 국가법령정보센터의 원문 기준을 옮겨 쓰고, 각 도구 아래에 출처 링크와 검토일을 남깁니다. 요율이 바뀌면 기준 연도와 함께 고칩니다.",
+  },
+  {
+    title: "가이드는 도구를 쓰다 생긴 질문에서 시작합니다",
+    description:
+      "블로그 글은 도구를 만들고 확인하는 과정에서 나온 질문을 정리한 것입니다. 수치는 직접 측정했거나 출처를 밝힐 수 있는 것만 적고, 틀린 내용이 확인되면 수정일을 남기고 고칩니다.",
   },
 ];
 
@@ -97,8 +123,8 @@ export default function AboutPage() {
               </div>
               <div className="space-y-5 text-base leading-8 text-brand-mid">
                 <p>
-                  도구 페이지를 여는 순간 필요한 처리 코드가 함께 내려갑니다. 이후 압축, 변환, 계산,
-                  추첨 같은 작업은 사용자의 기기 안에서 실행되며, 결과도 그 자리에서 만들어집니다.
+                  도구 페이지를 여는 순간 필요한 처리 코드가 함께 내려갑니다. 이후 압축, 변환, 계산 같은
+                  작업은 사용자의 기기 안에서 실행되며, 결과도 그 자리에서 만들어집니다.
                 </p>
                 <p>
                   floor05 서버는 페이지를 보여주는 일을 맡고, 사용자가 고른 파일이나 입력한 값을 받아
@@ -164,6 +190,50 @@ export default function AboutPage() {
           </div>
         </section>
 
+        <section id="team" className="mx-auto max-w-5xl scroll-mt-20 px-4 py-14 sm:px-6">
+          <div className="grid gap-10 lg:grid-cols-[0.8fr_1.2fr]">
+            <div>
+              <h2 className="text-2xl font-semibold text-brand-black">만드는 사람들</h2>
+              <p className="mt-3 text-base leading-7 text-brand-mid">
+                floor05는 floor05 팀이 기획하고 만들고 고칩니다. 블로그와 도구 설명의
+                &lsquo;작성·검토&rsquo;도 이 팀입니다.
+              </p>
+            </div>
+            <div className="space-y-8">
+              <dl className="grid gap-px overflow-hidden rounded-md border border-brand-black/10 bg-brand-black/10 sm:grid-cols-2">
+                {teamFacts.map((fact) => (
+                  <div key={fact.label} className="bg-brand-white p-4">
+                    <dt className="font-mono text-xs uppercase tracking-wider text-brand-light">{fact.label}</dt>
+                    <dd className="mt-1 text-sm font-medium text-brand-black">
+                      {fact.href ? (
+                        <a href={fact.href} className="text-brand-accent hover:underline">
+                          {fact.value}
+                        </a>
+                      ) : (
+                        fact.value
+                      )}
+                    </dd>
+                  </div>
+                ))}
+              </dl>
+              <p className="text-base leading-8 text-brand-mid">
+                파일을 다루는 무료 도구는 대부분 파일을 서버에 올려야 동작합니다. 신분증 사진이나
+                계약서 PDF처럼 밖으로 내보내기 꺼려지는 파일도 같은 길을 거쳐야 한다는 점이 floor05의
+                출발점이었습니다. 그래서 처리 코드를 브라우저로 보내고, 파일은 사용자 기기에 그대로
+                두는 방식으로 만듭니다.
+              </p>
+              <div className="space-y-5">
+                {workSteps.map((step) => (
+                  <article key={step.title} className="border-l-2 border-brand-accent pl-4">
+                    <h3 className="text-base font-semibold text-brand-black">{step.title}</h3>
+                    <p className="mt-1 text-sm leading-7 text-brand-mid">{step.description}</p>
+                  </article>
+                ))}
+              </div>
+            </div>
+          </div>
+        </section>
+
         <section className="bg-brand-paper">
           <div className="mx-auto max-w-5xl px-4 py-14 sm:px-6">
             <div className="grid gap-10 lg:grid-cols-[0.8fr_1.2fr]">
@@ -201,10 +271,10 @@ export default function AboutPage() {
           <div className="mx-auto max-w-5xl px-4 py-14 sm:px-6">
             <div className="grid gap-8 lg:grid-cols-[1fr_auto] lg:items-center">
               <div>
-                <h2 className="text-2xl font-semibold">운영·문의</h2>
+                <h2 className="text-2xl font-semibold">문의</h2>
                 <p className="mt-3 max-w-2xl text-base leading-8 text-brand-light">
-                  floor05는 개인이 운영하는 서비스입니다. 쓰다가 어색한 부분, 틀린 기준, 있으면 좋을
-                  도구가 보이면 알려주세요. 0.5층은 엘리베이터가 없어서, 문의가 계단입니다.
+                  쓰다가 어색한 부분, 틀린 기준, 있으면 좋을 기능이 보이면 알려주세요. 메일은 {CONTACT_EMAIL}
+                  로 받습니다. 0.5층은 엘리베이터가 없어서, 문의가 계단입니다.
                 </p>
               </div>
               <Link

@@ -167,6 +167,6 @@ test.describe("라우트 접근", () => {
 
     await page.goto("/blog/salary-net-pay-guide");
     await expect(page.getByText("작성·검토:")).toBeVisible();
-    await expect(page.getByRole("link", { name: "floor05 운영자" })).toHaveAttribute("href", "/about");
+    await expect(page.getByRole("link", { name: "floor05 팀" })).toHaveAttribute("href", "/about#team");
   });
 });
