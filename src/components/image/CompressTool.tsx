@@ -577,7 +577,8 @@ export default function CompressTool() {
                   />
                 </div>
                 <p className="text-xs text-brand-mid">
-                  이미지 품질을 자동 조절하여 목표 용량 이하로 압축합니다.
+                  품질을 자동으로 맞춰 목표 용량 이하로 압축합니다. 품질을 60% 아래로 내려야 하면
+                  대신 해상도를 줄입니다. 사진이 깨지는 것보다 조금 작아지는 편이 낫기 때문입니다.
                 </p>
               </div>
             )}
@@ -672,6 +673,19 @@ export default function CompressTool() {
                     />
                   </div>
                 </div>
+                {selectedImage.result.resizedFrom && (
+                  <p className="text-sm text-brand-mid leading-relaxed">
+                    품질을 60% 아래로 낮추는 대신 해상도를{" "}
+                    <span className="font-mono text-brand-black">
+                      {selectedImage.result.resizedFrom.width}×{selectedImage.result.resizedFrom.height}
+                    </span>
+                    에서{" "}
+                    <span className="font-mono text-brand-black">
+                      {selectedImage.result.width}×{selectedImage.result.height}
+                    </span>
+                    로 줄여 목표 용량에 맞췄습니다.
+                  </p>
+                )}
               </div>
             </div>
           )}

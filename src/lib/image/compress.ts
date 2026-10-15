@@ -19,6 +19,8 @@ export interface CompressionResult {
   originalSize: number;
   compressedSize: number;
   dataUrl: string;
+  /** 목표 용량을 맞추려고 해상도를 줄였을 때의 원본 치수 */
+  resizedFrom?: { width: number; height: number };
 }
 
 /**
@@ -93,8 +95,17 @@ export async function compressImage(
   };
 }
 
+/** 목표 용량 모드에서 허용하는 최저 품질. 이보다 낮춰야 하면 해상도를 줄인다. */
+export const TARGET_QUALITY_FLOOR = 0.6;
+const TARGET_QUALITY_CEIL = 0.92;
+const TARGET_SCALES = [1, 0.9, 0.8, 0.7, 0.6, 0.5, 0.45, 0.4, 0.35, 0.3, 0.25, 0.2, 0.15, 0.1];
+
 /**
- * 목표 용량으로 압축 (Binary Search)
+ * 목표 용량으로 압축.
+ * 품질만 끝까지 낮추면 용량은 맞아도 사진이 깨진다(실측: 5522px 사진 200KB 목표 → 품질 1.8%).
+ * 그래서 품질은 TARGET_QUALITY_FLOOR 아래로 내리지 않고, 그래도 크면 해상도를 단계적으로 줄인다.
+ * 각 해상도에서는 [FLOOR, CEIL] 구간을 이진 탐색해 목표 이하 중 가장 높은 품질을 고른다.
+ * 근거: docs/blog-data/compress-target-2026-10-15.json (1920px 화면 기준 PSNR 비교)
  */
 export async function compressToTargetSize(
   file: File,
@@ -102,11 +113,11 @@ export async function compressToTargetSize(
   options: Omit<CompressionOptions, "quality"> = {}
 ): Promise<CompressionResult> {
   const targetBytes = targetSizeKB * 1024;
+  const dataUrl = await fileToDataUrl(file);
+  const img = await loadImage(dataUrl);
 
   // 이미 목표보다 작으면 그대로 반환
   if (file.size <= targetBytes) {
-    const dataUrl = await fileToDataUrl(file);
-    const img = await loadImage(dataUrl);
     return {
       blob: file,
       width: img.width,
@@ -117,63 +128,49 @@ export async function compressToTargetSize(
     };
   }
 
-  // Binary Search로 최적 품질 찾기
-  let low = 0.01;
-  let high = 1.0;
-  let bestResult: CompressionResult | null = null;
-  let attempts = 0;
-  const maxAttempts = 10; // 최대 10번 시도
+  const baseWidth = Math.min(img.width, options.maxWidth ?? img.width);
+  const baseHeight = Math.min(img.height, options.maxHeight ?? img.height);
+  let last: CompressionResult | null = null;
 
-  while (attempts < maxAttempts && high - low > 0.01) {
-    const mid = (low + high) / 2;
-
-    const result = await compressImage(file, {
+  for (const scale of TARGET_SCALES) {
+    const sized = {
       ...options,
-      quality: mid,
-    });
-
-    if (result.compressedSize <= targetBytes) {
-      // 이전 bestResult의 object URL 해제
-      if (bestResult) {
-        URL.revokeObjectURL(bestResult.dataUrl);
-      }
-      bestResult = result;
-      low = mid;
-    } else {
-      // 목표 미달 결과의 object URL 즉시 해제
-      URL.revokeObjectURL(result.dataUrl);
-      high = mid;
+      maxWidth: Math.max(1, Math.round(baseWidth * scale)),
+      maxHeight: Math.max(1, Math.round(baseHeight * scale)),
+    };
+    const atFloor = await compressImage(file, { ...sized, quality: TARGET_QUALITY_FLOOR });
+    if (atFloor.compressedSize > targetBytes) {
+      if (last) URL.revokeObjectURL(last.dataUrl);
+      last = atFloor;
+      continue;
     }
 
-    attempts++;
+    let best = atFloor;
+    let low = TARGET_QUALITY_FLOOR;
+    let high = TARGET_QUALITY_CEIL;
+    for (let i = 0; i < 7 && high - low > 0.01; i++) {
+      const mid = (low + high) / 2;
+      const result = await compressImage(file, { ...sized, quality: mid });
+      if (result.compressedSize <= targetBytes) {
+        URL.revokeObjectURL(best.dataUrl);
+        best = result;
+        low = mid;
+      } else {
+        URL.revokeObjectURL(result.dataUrl);
+        high = mid;
+      }
+    }
+    if (last) URL.revokeObjectURL(last.dataUrl);
+    return withResizeInfo(best, img);
   }
 
-  // 품질 탐색으로 목표를 맞췄으면 반환
-  if (bestResult && bestResult.compressedSize <= targetBytes) {
-    return bestResult;
-  }
-  if (bestResult) {
-    URL.revokeObjectURL(bestResult.dataUrl);
-  }
+  // 가장 작은 해상도에서도 목표를 넘으면 그 결과를 돌려준다(호출측이 용량을 표시).
+  return withResizeInfo(last!, img);
+}
 
-  // 품질만으로 목표 미달 → 해상도를 단계적으로 축소하며 목표 이하를 시도
-  // (과거: 초과 결과를 그대로 성공 반환하던 문제 해결)
-  const baseImg = await loadImage(await fileToDataUrl(file));
-  let best = await compressImage(file, { ...options, quality: 0.5 });
-  let scale = 1;
-  for (let i = 0; i < 8 && best.compressedSize > targetBytes; i++) {
-    scale *= 0.8;
-    const candidate = await compressImage(file, {
-      ...options,
-      quality: 0.5,
-      maxWidth: Math.max(1, Math.round(baseImg.width * scale)),
-      maxHeight: Math.max(1, Math.round(baseImg.height * scale)),
-    });
-    URL.revokeObjectURL(best.dataUrl);
-    best = candidate;
-  }
-
-  return best;
+function withResizeInfo(result: CompressionResult, img: HTMLImageElement): CompressionResult {
+  if (result.width === img.width && result.height === img.height) return result;
+  return { ...result, resizedFrom: { width: img.width, height: img.height } };
 }
 
 /**

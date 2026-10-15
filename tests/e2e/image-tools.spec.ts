@@ -63,6 +63,23 @@ test.describe("이미지 압축", () => {
     expect(fs.statSync(file).size).toBeLessThanOrEqual(30 * 1024);
   });
 
+  test("목표 용량이 품질 하한(60%)으로 안 맞으면 해상도를 줄이고 안내", async ({ page }, testInfo) => {
+    await page.goto("/tools/image/compress");
+    await uploadToDropzone(page, [fx("photo-1200x900.jpg")]);
+    await page.getByRole("button", { name: "목표 용량" }).click();
+    await page.getByPlaceholder("직접 입력").fill("8");
+    await page.getByRole("button", { name: "1개 이미지 압축하기" }).click();
+    await expect(page.getByRole("button", { name: "다운로드" })).toBeVisible({ timeout: 45_000 });
+    await expect(page.getByText(/해상도를\s*1200×900\s*에서/)).toBeVisible();
+    const file = await saveDownload(page, testInfo, () =>
+      page.getByRole("button", { name: "다운로드" }).click(),
+    );
+    expect(fs.statSync(file).size).toBeLessThanOrEqual(8 * 1024);
+    const { width, height } = imageDims(file);
+    expect(width).toBeLessThan(1200);
+    expect(width / height).toBeCloseTo(1200 / 900, 1);
+  });
+
   test("2장 일괄 압축 → ZIP에 2개 파일", async ({ page }, testInfo) => {
     await page.goto("/tools/image/compress");
     await uploadToDropzone(page, [fx("photo-1200x900.jpg"), fx("photo-small-100x75.jpg")]);
