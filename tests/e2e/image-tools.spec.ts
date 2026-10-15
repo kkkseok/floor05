@@ -227,6 +227,26 @@ test.describe("리사이즈", () => {
     expect(path.extname(file)).toBe(".png");
     expect(imageDims(file)).toEqual({ width: 200, height: 150 });
   });
+
+  test("3px 줄무늬 1024px → 64px 축소가 균일한 회색 (큰 비율 축소 깨짐 없음)", async ({ page }, testInfo) => {
+    const stripes = writeStripesPng(testInfo.outputPath("stripes-1024.png"));
+    await page.goto("/tools/image/resize");
+    await uploadToDropzone(page, [stripes]);
+    await page.locator("#resize-width").fill("64");
+    await expect(page.locator("#resize-height")).toHaveValue("64");
+    await page.getByRole("button", { name: "1개 이미지 리사이즈" }).click();
+    await expect(page.getByRole("button", { name: "다운로드" })).toBeVisible({ timeout: 30_000 });
+    const file = await saveDownload(page, testInfo, () =>
+      page.getByRole("button", { name: "다운로드" }).click(),
+    );
+    expect(detectKind(file)).toBe("png");
+    expect(imageDims(file)).toEqual({ width: 64, height: 64 });
+    const { mean, spread } = pngGreenStats(file);
+    expect(mean).toBeGreaterThan(65);
+    expect(mean).toBeLessThan(105);
+    // 실측 편차: Chromium 16 / WebKit 46(캔버스 필터가 정확한 평균이 아님) / 수정 전 WebKit 143
+    expect(spread, "64px 결과에 줄무늬가 남으면 안 됨").toBeLessThan(60);
+  });
 });
 
 test.describe("이미지 합치기", () => {
