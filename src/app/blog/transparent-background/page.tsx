@@ -3,62 +3,72 @@ import Link from "next/link";
 import Header from "@/components/common/Header";
 import Footer from "@/components/common/Footer";
 import BlogExtras from "@/components/common/BlogExtras";
+import BlogInlineCTA from "@/components/common/BlogInlineCTA";
+import { buildBlogMetadata } from "@/lib/common/blog";
 
 export const metadata: Metadata = {
-  title: "이미지 배경 투명하게 만들기 - PNG 투명 배경 가이드",
-  description:
-    "이미지의 배경을 투명하게 만드는 방법. PNG 포맷의 투명도(알파 채널)를 활용해 배경 없는 이미지를 만들어보세요.",
-  keywords: [
-    "이미지 배경 투명",
-    "PNG 투명 배경",
-    "배경 없는 이미지",
-    "투명 PNG",
-    "알파 채널",
-    "로고 배경 투명",
-    "사진 배경 제거",
-  ],
-  alternates: { canonical: "/blog/transparent-background" },
-  openGraph: {
-    title: "이미지 배경 투명하게 만들기 - PNG 투명 배경 가이드",
-    description: "PNG 투명 배경의 원리와 활용법",
-  },
+  ...buildBlogMetadata("transparent-background"),
+  title: "투명 배경 이미지 - 도구를 거쳐도 투명이 남을까, 10가지 실측",
 };
+
+const faqs = [
+  {
+    question: "투명 PNG를 JPG로 바꾸면 어떻게 되나요?",
+    answer:
+      "투명한 부분이 모두 단색으로 채워집니다. 측정한 로고는 투명 67.5%·반투명 7.1%였는데 JPG로 바꾸니 100% 불투명이 됐고, 반투명 그림자는 흰 바탕 위의 회색 덩어리가 됐습니다. floor05 포맷 변환은 채울 색을 고를 수 있습니다.",
+  },
+  {
+    question: "투명도를 유지하면서 용량을 줄이려면?",
+    answer:
+      "WebP로 바꾸거나 PNG 압축을 쓰세요. 23.0KB 투명 로고가 WebP로 9.1KB, floor05 이미지 압축(PNG 유지)으로 6.8KB가 됐고, 두 경우 모두 투명·반투명 픽셀 비율이 원본과 같았습니다.",
+  },
+  {
+    question: "JPG를 PNG로 바꾸면 배경이 투명해지나요?",
+    answer:
+      "아닙니다. PNG는 투명을 담을 수 있는 형식일 뿐이라, 형식만 바꾸면 원래 배경이 그대로 남습니다. 배경을 지우는 작업은 floor05에 없고, 배경 제거 기능이 있는 편집 프로그램이 필요합니다.",
+  },
+  {
+    question: "투명 로고를 다루는 동안 파일이 업로드되나요?",
+    answer:
+      "되지 않습니다. 투명도를 읽고 다시 저장하는 일은 로고를 고른 이 브라우저 탭 안의 캔버스가 처리합니다. 결과 파일은 다운로드 버튼을 누를 때 내 기기에만 생깁니다.",
+  },
+];
 
 const faqSchema = {
   "@context": "https://schema.org",
   "@type": "FAQPage",
-  mainEntity: [
-    {
-      "@type": "Question",
-      name: "JPG를 PNG로 변환하면 배경이 투명해지나요?",
-      acceptedAnswer: {
-        "@type": "Answer",
-        text: "아니요, 단순히 포맷만 바꾸면 투명해지지 않습니다. 배경을 투명하게 만들려면 배경 제거 작업이 먼저 필요합니다. PNG는 투명도를 '저장'할 수 있는 포맷일 뿐입니다.",
-      },
-    },
-    {
-      "@type": "Question",
-      name: "투명 배경 이미지는 어디에 사용하나요?",
-      acceptedAnswer: {
-        "@type": "Answer",
-        text: "로고, 아이콘, 제품 사진, 스티커, 워터마크 등에 사용됩니다. 배경이 투명하면 어떤 배경 위에 올려도 자연스럽게 합성됩니다.",
-      },
-    },
-    {
-      "@type": "Question",
-      name: "투명 PNG를 JPG로 변환하면 어떻게 되나요?",
-      acceptedAnswer: {
-        "@type": "Answer",
-        text: "JPG는 투명도를 지원하지 않으므로, 투명 영역이 흰색(또는 검은색) 배경으로 채워집니다. 투명도를 유지하려면 PNG나 WebP 형식을 사용하세요.",
-      },
-    },
-  ],
+  mainEntity: faqs.map((faq) => ({
+    "@type": "Question",
+    name: faq.question,
+    acceptedAnswer: { "@type": "Answer", text: faq.answer },
+  })),
 };
+
+// 2026-10-16 측정 (원자료: docs/blog-data/alpha-2026-10-16.json). 원본: PNG 23.0KB, 투명 67.5%·반투명 7.1%
+const rows = [
+  { tool: "포맷 변환 → WebP", fmt: "WebP", alpha: "유지", kb: "9.1KB" },
+  { tool: "이미지 압축 (품질)", fmt: "PNG", alpha: "유지", kb: "6.8KB" },
+  { tool: "이미지 압축 (목표 20KB)", fmt: "PNG", alpha: "유지", kb: "12.1KB" },
+  { tool: "리사이즈 (절반)", fmt: "PNG", alpha: "유지", kb: "10.3KB" },
+  { tool: "크롭", fmt: "PNG", alpha: "유지", kb: "23.0KB" },
+  { tool: "회전 90°", fmt: "PNG", alpha: "유지", kb: "22.7KB" },
+  { tool: "합치기 (2장 세로)", fmt: "PNG", alpha: "유지", kb: "45.8KB" },
+  { tool: "모자이크", fmt: "PNG", alpha: "유지", kb: "23.0KB" },
+  { tool: "워터마크", fmt: "PNG", alpha: "유지", kb: "27.2KB" },
+  { tool: "포맷 변환 → JPG", fmt: "JPG", alpha: "사라짐 (흰색으로 채움)", kb: "14.2KB" },
+];
+
+const fixedRows = [
+  { tool: "리사이즈", before: "입력과 무관하게 JPG(흰 배경)", after: "PNG→PNG, WebP→WebP" },
+  { tool: "크롭", before: "원형이 아니면 JPG(흰 배경)", after: "입력 형식 유지" },
+  { tool: "회전", before: "PNG가 아니면 JPG — 투명 WebP가 검은 배경", after: "입력 형식 유지" },
+  { tool: "모자이크·9분할", before: "PNG가 아니면 JPG — 투명 WebP가 검은 배경", after: "입력 형식 유지" },
+  { tool: "압축 (목표 용량)", before: "무조건 JPG — 20KB 목표에 14.8KB JPG", after: "PNG로 먼저 맞추고, 안 되면 JPG + 안내" },
+];
 
 export default function TransparentBackgroundPage() {
   return (
     <div className="min-h-screen flex flex-col bg-brand-white">
-      {/* Schema Markup */}
       <script
         type="application/ld+json"
         dangerouslySetInnerHTML={{ __html: JSON.stringify(faqSchema) }}
@@ -68,277 +78,201 @@ export default function TransparentBackgroundPage() {
 
       <main className="flex-1">
         <article className="max-w-3xl mx-auto px-4 sm:px-6 lg:px-8 py-16">
-          {/* 브레드크럼 */}
           <nav className="mb-8 text-sm text-brand-light">
             <Link href="/blog" className="hover:text-brand-mid">
               블로그
             </Link>
             <span className="mx-2">›</span>
-            <span className="text-brand-mid">이미지 배경 투명하게</span>
+            <span className="text-brand-mid">투명 배경 이미지</span>
           </nav>
 
-          {/* 제목 */}
           <header className="mb-12">
             <h1 className="text-3xl sm:text-4xl font-bold text-brand-black mb-4 leading-tight">
-              이미지 배경 투명하게 만들기
+              도구를 거쳐도 투명 배경이 남을까
             </h1>
-            <p className="text-lg text-brand-mid">
-              PNG 투명 배경의 원리와 활용법
-            </p>
+            <p className="text-lg text-brand-mid">투명 로고 하나를 10가지 작업에 넣어 봤습니다</p>
             <div className="mt-4 flex items-center gap-4 text-sm text-brand-light">
-              <time dateTime="2026-03-10">2026-03-10</time>
+              <time dateTime="2026-10-16">2026-10-16 측정</time>
               <span>·</span>
-              <span>5분 읽기</span>
+              <span>6분 읽기</span>
             </div>
           </header>
 
-          {/* 본문 */}
-          <div className="prose prose-lg max-w-none">
-            {/* 도입 */}
-            <p className="text-brand-mid text-lg leading-relaxed mb-8">
-              로고나 제품 컷을 어떤 배경에 올려도 겉돌지 않게 하려면 배경이 투명해야
-              합니다. 그 투명함이 파일 안에서 어떻게 저장되고, 포맷을 바꿀 때 왜
-              사라지기도 하는지 정리했습니다. 배경을 &lsquo;지우는&rsquo; 방법이 아니라 &lsquo;투명도를 다루는&rsquo; 관점의 글입니다.
+          <div className="max-w-none">
+            <p className="text-brand-mid text-lg leading-relaxed mb-6">
+              배경을 지운 로고를 줄이고, 자르고, 압축하다 보면 어느새 흰 바탕이나 검은 바탕이 붙어 나올 때가 있습니다.
+              어느 단계에서 투명이 사라지는지 알아보려고, 반투명 그림자가 있는 투명 로고를 floor05 도구 10가지에
+              실제로 넣고 결과 파일의 픽셀을 셌습니다.
+            </p>
+            <p className="text-brand-mid leading-relaxed mb-8">
+              솔직하게 먼저 적습니다. 이 글의 예전 버전은 &lsquo;리사이즈·크롭도 투명도를 유지한다&rsquo;고 했지만,
+              재보니 사실이 아니었습니다. 이번 측정에서 투명을 지우던 도구 다섯 군데를 찾아 고쳤고, 아래 결과는 고친
+              뒤의 값입니다.
             </p>
 
-            {/* 안내 박스 */}
-            <div className="bg-brand-paper rounded-lg p-6 mb-10 border border-brand-light/20">
-              <p className="font-medium text-brand-black mb-3">
-                ⚠️ 참고: floor05는 배경 제거 기능을 제공하지 않습니다
-              </p>
-              <p className="text-brand-mid text-sm mb-4">
-                floor05 포맷 변환 도구는 <strong>이미 투명한 PNG</strong>를 다른 포맷으로
-                변환할 때 투명도를 유지/처리하는 기능을 제공합니다.
-                배경 제거는 포토샵, remove.bg 등 전문 도구를 이용하세요.
-              </p>
-              <Link
-                href="/tools/image/convert"
-                className="inline-block bg-brand-accent text-brand-white px-4 py-2 rounded-md text-sm font-medium hover:bg-brand-accent-light transition-colors"
-              >
-                이미지 포맷 변환 도구 →
-              </Link>
-            </div>
+            <h2 className="text-2xl font-bold text-brand-black mt-12 mb-4">어떻게 측정했나</h2>
+            <ul className="list-disc pl-5 text-brand-mid space-y-2 mb-8 leading-relaxed">
+              <li>
+                로고: 측정용으로 직접 그린 600×400 PNG(23.0KB). 완전 투명 67.5%, 반투명 7.1%(그림자와 원의 가장자리),
+                불투명 25.4%로 이루어져 있습니다.
+              </li>
+              <li>
+                방식: floor05 도구 화면을 실제로 조작해(Chromium 151) 결과를 내려받고, 형식과 알파 채널, 투명·반투명
+                픽셀 비율을 Pillow로 셌습니다.
+              </li>
+              <li>AVIF 변환은 이 브라우저가 AVIF 저장을 지원하지 않아 빠졌습니다.</li>
+            </ul>
 
-            {/* 투명 배경이란 */}
-            <h2 className="text-2xl font-bold text-brand-black mt-12 mb-4">
-              1. 투명 배경이란?
-            </h2>
-            <p className="text-brand-mid leading-relaxed mb-4">
-              이미지에서 &quot;투명&quot;이란 픽셀이 없는 것처럼 보이는 상태입니다.
-              실제로는 &quot;알파 채널(Alpha Channel)&quot;이라는 투명도 정보가 저장되어 있습니다.
-            </p>
-            <p className="text-brand-mid leading-relaxed mb-6">
-              알파 채널은 각 픽셀의 불투명도를 0%(완전 투명)~100%(완전 불투명)로 기록합니다.
-              이 정보가 있어야 다른 배경 위에 이미지를 올렸을 때 배경이 비쳐 보입니다.
-            </p>
-
-            {/* 포맷별 투명도 지원 */}
-            <h2 className="text-2xl font-bold text-brand-black mt-12 mb-4">
-              2. 포맷별 투명도 지원
-            </h2>
-
-            <div className="overflow-x-auto mb-6">
+            <h2 className="text-2xl font-bold text-brand-black mt-12 mb-4">측정 결과</h2>
+            <div className="overflow-x-auto mb-4">
               <table className="w-full text-sm border-collapse">
                 <thead>
-                  <tr className="border-b border-brand-light/30">
-                    <th className="text-left py-3 px-4 text-brand-black font-semibold">포맷</th>
-                    <th className="text-left py-3 px-4 text-brand-black font-semibold">투명도</th>
-                    <th className="text-left py-3 px-4 text-brand-black font-semibold">설명</th>
+                  <tr className="border-b border-brand-light/40 text-left">
+                    <th className="py-2 pr-4 text-brand-black">작업</th>
+                    <th className="py-2 pr-4 text-brand-black">결과 형식</th>
+                    <th className="py-2 pr-4 text-brand-black">투명도</th>
+                    <th className="py-2 pr-4 text-brand-black">용량</th>
                   </tr>
                 </thead>
                 <tbody className="text-brand-mid">
-                  <tr className="border-b border-brand-light/20 bg-brand-accent/5">
-                    <td className="py-3 px-4 font-medium">PNG</td>
-                    <td className="py-3 px-4 text-green-600 font-medium">지원</td>
-                    <td className="py-3 px-4">투명 배경의 표준 포맷, 무손실 압축</td>
-                  </tr>
-                  <tr className="border-b border-brand-light/20">
-                    <td className="py-3 px-4 font-medium">WebP</td>
-                    <td className="py-3 px-4 text-green-600 font-medium">지원</td>
-                    <td className="py-3 px-4">PNG보다 용량 작음, 웹에 최적</td>
-                  </tr>
-                  <tr className="border-b border-brand-light/20">
-                    <td className="py-3 px-4 font-medium">GIF</td>
-                    <td className="py-3 px-4 text-yellow-600 font-medium">부분 지원</td>
-                    <td className="py-3 px-4">1색만 투명 가능 (반투명 불가)</td>
-                  </tr>
-                  <tr>
-                    <td className="py-3 px-4 font-medium">JPG</td>
-                    <td className="py-3 px-4 text-red-500 font-medium">미지원</td>
-                    <td className="py-3 px-4">투명 영역이 흰색으로 채워짐</td>
-                  </tr>
+                  {rows.map((row) => (
+                    <tr key={row.tool} className="border-b border-brand-light/20">
+                      <td className="py-2 pr-4 font-medium text-brand-black whitespace-nowrap">{row.tool}</td>
+                      <td className="py-2 pr-4">{row.fmt}</td>
+                      <td className="py-2 pr-4">{row.alpha}</td>
+                      <td className="py-2 pr-4 whitespace-nowrap">{row.kb}</td>
+                    </tr>
+                  ))}
                 </tbody>
               </table>
             </div>
-
-            {/* 투명 배경 활용 예시 */}
-            <h2 className="text-2xl font-bold text-brand-black mt-12 mb-4">
-              3. 투명 배경 활용 예시
-            </h2>
-
-            <ul className="list-disc list-inside text-brand-mid space-y-3 mb-6">
-              <li>
-                <strong>로고</strong> — 명함, 웹사이트, 영상 등 다양한 배경에 올려도 자연스러움
-              </li>
-              <li>
-                <strong>제품 사진</strong> — 쇼핑몰 상세페이지에서 배경 색상 자유롭게 변경 가능
-              </li>
-              <li>
-                <strong>스티커/이모티콘</strong> — 메신저나 SNS에서 배경 없이 표시
-              </li>
-              <li>
-                <strong>아이콘</strong> — 앱, 웹사이트 UI에 배경 없이 배치
-              </li>
-              <li>
-                <strong>워터마크</strong> — 사진 위에 반투명하게 겹쳐서 저작권 표시
-              </li>
-            </ul>
-
-            {/* 투명 PNG 만드는 방법 */}
-            <h2 className="text-2xl font-bold text-brand-black mt-12 mb-4">
-              4. 투명 PNG 만드는 방법
-            </h2>
-
-            <h3 className="text-lg font-semibold text-brand-black mt-6 mb-3">
-              방법 1: 배경 제거 도구 사용
-            </h3>
-            <p className="text-brand-mid leading-relaxed mb-4">
-              remove.bg, Canva, 포토샵 등에서 배경 제거 기능을 사용한 뒤
-              PNG로 저장하면 투명 배경 이미지가 됩니다.
+            <p className="text-sm text-brand-light mb-8">
+              &lsquo;유지&rsquo;는 결과에 알파 채널이 있고 투명·반투명 픽셀 비율이 원본과 같은 경우입니다. 리사이즈는 크기가
+              바뀌어 투명 비율이 0.3%p, 반투명 비율이 0.5%p 안쪽으로 달라졌고, 워터마크는 글자를 얹은 만큼 달라졌습니다. KB는 1,000바이트 기준.
             </p>
 
-            <h3 className="text-lg font-semibold text-brand-black mt-6 mb-3">
-              방법 2: 처음부터 투명 캔버스에서 작업
-            </h3>
-            <p className="text-brand-mid leading-relaxed mb-4">
-              포토샵이나 일러스트레이터에서 새 파일 생성 시
-              배경을 &quot;투명&quot;으로 설정하고 작업하면 됩니다.
-              저장할 때 PNG 형식을 선택하세요.
-            </p>
-
-            <h3 className="text-lg font-semibold text-brand-black mt-6 mb-3">
-              방법 3: 기존 투명 PNG 활용
-            </h3>
+            <h2 className="text-2xl font-bold text-brand-black mt-12 mb-4">
+              1. 형식만 맞으면 투명도는 픽셀 그대로 남는다
+            </h2>
             <p className="text-brand-mid leading-relaxed mb-6">
-              이미 투명 배경으로 제작된 PNG 파일이 있다면,
-              floor05 포맷 변환 도구에서 WebP로 변환해 용량을 줄일 수 있습니다.
-              투명도는 그대로 유지됩니다.
+              크롭·회전·합치기·모자이크는 결과의 투명 67.52%, 반투명 7.10%가 원본과 소수점 둘째 자리까지 같았습니다.
+              투명을 담을 수 있는 형식(PNG·WebP)으로 저장하기만 하면, 픽셀을 옮기거나 자르는 작업은 투명도를 건드리지
+              않습니다. 문제는 늘 저장 형식에서 생겼습니다.
             </p>
 
-            {/* 주의사항 */}
             <h2 className="text-2xl font-bold text-brand-black mt-12 mb-4">
-              5. 투명 이미지 다룰 때 주의사항
+              2. JPG는 투명을 버린다, 반투명은 회색이 된다
             </h2>
+            <figure className="my-8">
+              <img
+                src="/images/blog/transparent-background/format-compare.png"
+                alt="체크무늬 위에 놓은 원본 PNG, JPG 변환, WebP 변환 결과. JPG만 배경이 흰색으로 채워지고 그림자가 회색 덩어리가 됐다"
+                width={956}
+                height={256}
+                loading="lazy"
+                className="block w-full border border-brand-light/30"
+              />
+              <figcaption className="mt-3 text-sm text-brand-mid text-center">
+                체크무늬가 보이는 곳이 투명한 부분입니다
+              </figcaption>
+            </figure>
+            <p className="text-brand-mid leading-relaxed mb-6">
+              JPG로 바꾸니 픽셀 100%가 불투명이 됐습니다. 완전히 투명했던 곳은 흰색이 되고, 50% 투명했던 그림자는 흰
+              바탕과 섞인 회색 덩어리로 굳었습니다. 이렇게 굳은 그림자는 어두운 배경에 올리면 회색 판처럼 보입니다.
+              JPG가 꼭 필요하다면 floor05 포맷 변환에서 채울 색을 올릴 배경색과 같게 고르세요.
+            </p>
 
-            <div className="space-y-4 text-brand-mid">
-              <div className="flex items-start gap-3">
-                <span className="text-brand-accent font-bold shrink-0">1.</span>
-                <p className="text-brand-mid leading-relaxed mb-4">
-                  <strong>JPG로 변환하면 투명 영역이 채워집니다</strong> —
-                  floor05에서는 흰색으로 채워지며, 다른 도구에서는 검은색이 될 수도 있습니다.
-                </p>
-              </div>
-              <div className="flex items-start gap-3">
-                <span className="text-brand-accent font-bold shrink-0">2.</span>
-                <p className="text-brand-mid leading-relaxed mb-4">
-                  <strong>투명 PNG는 용량이 큽니다</strong> —
-                  웹에서 사용할 때는 WebP로 변환하면 투명도를 유지하면서 용량을 줄일 수 있습니다.
-                </p>
-              </div>
-              <div className="flex items-start gap-3">
-                <span className="text-brand-accent font-bold shrink-0">3.</span>
-                <p className="text-brand-mid leading-relaxed mb-4">
-                  <strong>SNS 업로드 시 확인하세요</strong> —
-                  일부 플랫폼은 투명 PNG를 업로드하면 배경을 자동으로 채웁니다.
-                </p>
-              </div>
-            </div>
-
-            {/* floor05에서 할 수 있는 것 */}
             <h2 className="text-2xl font-bold text-brand-black mt-12 mb-4">
-              6. floor05에서 할 수 있는 작업
+              3. 투명을 지키면서 가장 가벼운 건 PNG 압축과 WebP
             </h2>
+            <p className="text-brand-mid leading-relaxed mb-6">
+              23.0KB 로고가 WebP로 9.1KB(60% 감소), floor05 이미지 압축의 PNG 유지로 6.8KB(71% 감소)가 됐습니다. 둘 다
+              투명·반투명 비율이 그대로였습니다. 이 로고처럼 색 수가 적은 그래픽에서는 색 수를 줄이는 PNG 압축이 WebP보다도
+              작았습니다. 사진처럼 색이 많은 투명 이미지는 이번에 재지 않았으니 두 가지를 모두 시도해 작은 쪽을 고르세요.
+            </p>
 
-            <div className="bg-brand-paper rounded-lg p-6 mb-8">
-              <ul className="space-y-3 text-brand-mid">
-                <li className="flex items-start gap-3">
-                  <span className="text-green-600 font-bold">✓</span>
-                  <span>투명 PNG → WebP 변환 (투명도 유지, 용량 절감)</span>
-                </li>
-                <li className="flex items-start gap-3">
-                  <span className="text-green-600 font-bold">✓</span>
-                  <span>투명 PNG → JPG 변환 (투명 영역을 흰색으로 채움)</span>
-                </li>
-                <li className="flex items-start gap-3">
-                  <span className="text-green-600 font-bold">✓</span>
-                  <span>투명 PNG 리사이즈 (투명도 유지)</span>
-                </li>
-                <li className="flex items-start gap-3">
-                  <span className="text-green-600 font-bold">✓</span>
-                  <span>투명 PNG 크롭 (투명도 유지)</span>
-                </li>
-                <li className="flex items-start gap-3">
-                  <span className="text-red-500 font-bold">✗</span>
-                  <span>배경 제거 (포토샵, remove.bg 등 전문 도구 필요)</span>
-                </li>
-              </ul>
-            </div>
+            <BlogInlineCTA href="/tools/image/compress" label="이미지 압축 →">
+              PNG는 투명 배경을 유지한 채 압축합니다. 목표 용량을 넣어도 먼저 PNG로 맞춰 봅니다.
+            </BlogInlineCTA>
 
-            {/* FAQ 섹션 */}
-            <h2 className="text-2xl font-bold text-brand-black mt-12 mb-6">
-              자주 묻는 질문
+            <h2 className="text-2xl font-bold text-brand-black mt-12 mb-4">
+              4. 측정하다 고친 것: 투명을 지우던 다섯 곳
             </h2>
-
-            <div className="space-y-6">
-              <div className="border-b border-brand-light/20 pb-6">
-                <h3 className="text-lg font-semibold text-brand-black mb-2">
-                  Q. 투명 배경인지 어떻게 확인하나요?
-                </h3>
-                <p className="text-brand-mid">
-                  Windows에서는 파일 미리보기에서 체크무늬 패턴이 보이면 투명입니다.
-                  또는 파일 속성에서 PNG/WebP 형식인지 확인하세요.
-                  JPG라면 투명 영역이 없습니다.
-                </p>
-              </div>
-
-              <div className="border-b border-brand-light/20 pb-6">
-                <h3 className="text-lg font-semibold text-brand-black mb-2">
-                  Q. 카카오톡에 투명 배경 이미지를 보내면 어떻게 되나요?
-                </h3>
-                <p className="text-brand-mid">
-                  카카오톡에서는 투명 PNG도 정상적으로 전송됩니다.
-                  받는 사람도 투명 배경 그대로 볼 수 있습니다.
-                </p>
-              </div>
-
-              <div className="pb-6">
-                <h3 className="text-lg font-semibold text-brand-black mb-2">
-                  Q. 투명 배경 이미지를 인쇄할 수 있나요?
-                </h3>
-                <p className="text-brand-mid">
-                  인쇄 시 투명 영역은 종이 색(보통 흰색)이 됩니다.
-                  스티커 인쇄처럼 실제로 투명하게 인쇄하려면
-                  전문 인쇄 업체에 문의하세요.
-                </p>
-              </div>
+            <div className="overflow-x-auto mb-4">
+              <table className="w-full text-sm border-collapse">
+                <thead>
+                  <tr className="border-b border-brand-light/40 text-left">
+                    <th className="py-2 pr-4 text-brand-black">도구</th>
+                    <th className="py-2 pr-4 text-brand-black">고치기 전</th>
+                    <th className="py-2 pr-4 text-brand-black">지금</th>
+                  </tr>
+                </thead>
+                <tbody className="text-brand-mid">
+                  {fixedRows.map((row) => (
+                    <tr key={row.tool} className="border-b border-brand-light/20">
+                      <td className="py-2 pr-4 font-medium text-brand-black whitespace-nowrap">{row.tool}</td>
+                      <td className="py-2 pr-4">{row.before}</td>
+                      <td className="py-2 pr-4">{row.after}</td>
+                    </tr>
+                  ))}
+                </tbody>
+              </table>
             </div>
+            <p className="text-brand-mid leading-relaxed mb-6">
+              원인은 모두 같았습니다. &lsquo;PNG가 아니면 JPG&rsquo;처럼 저장 형식을 대충 정하고 있었고, 투명을 담을 수 있는
+              WebP도 JPG로 바뀌었습니다. JPG로 저장할 때 바탕을 칠하지 않은 도구에서는 투명한 곳이 검은색이 됐습니다.
+              지금은 모든 도구가 같은 규칙(PNG는 PNG, WebP는 WebP, 그 외는 JPG)을 따르고, 테스트로 이 규칙을 매번 확인합니다.
+              목표 용량 압축은 투명 PNG를 끝내 목표까지 줄일 수 없을 때만 JPG로 바꾸고, 그때는 화면에 그렇다고 알립니다.
+            </p>
 
-            {/* 마무리 CTA */}
-            <div className="bg-brand-black rounded-lg p-8 mt-12 text-center">
-              <h3 className="text-xl font-bold text-brand-paper mb-3">
-                투명 PNG를 WebP로 변환하기
-              </h3>
-              <p className="text-brand-light mb-6">
-                투명도 유지하면서 용량 절감.
-                <br />
-                투명 PNG와 로고 이미지는 기기 안에서 WebP로 바뀝니다.
-              </p>
-              <Link
-                href="/tools/image/convert"
-                className="inline-block bg-brand-accent text-brand-white px-6 py-3 rounded-md font-medium hover:bg-brand-accent-light transition-colors"
-              >
-                이미지 포맷 변환 도구 사용하기
+            <h2 className="text-2xl font-bold text-brand-black mt-12 mb-4">투명 배경의 기본</h2>
+            <p className="text-brand-mid leading-relaxed mb-4">
+              투명도는 픽셀마다 붙는 알파 값으로 저장됩니다. 0이면 완전 투명, 255면 완전 불투명이고, 그 사이가 그림자나
+              부드러운 가장자리 같은 반투명입니다. PNG와 WebP는 이 값을 픽셀마다 담고, GIF는 &lsquo;완전 투명인 색 하나&rsquo;만
+              지정할 수 있어 반투명 그림자를 표현하지 못합니다. JPG는 알파 값을 담지 못합니다.
+            </p>
+            <p className="text-brand-mid leading-relaxed mb-8">
+              PDF로 묶을 때는 floor05 이미지 PDF 변환이 투명한 곳을 흰색으로 채워 넣습니다. 인쇄물에서는 종이 색이 되므로
+              대부분 문제가 없지만, 투명 로고를 그대로 보관할 용도라면 PDF가 아닌 PNG로 남겨 두세요. 사이트 아이콘으로 쓸
+              때는{" "}
+              <Link href="/blog/favicon-browser-requests" className="text-brand-accent hover:underline">
+                파비콘 실측
               </Link>
+              도 참고하세요.
+            </p>
+
+            <h2 className="text-2xl font-bold text-brand-black mt-12 mb-6">자주 묻는 질문</h2>
+            <div className="space-y-6">
+              {faqs.map((faq, i) => (
+                <div
+                  key={faq.question}
+                  className={i < faqs.length - 1 ? "border-b border-brand-light/20 pb-6" : "pb-6"}
+                >
+                  <h3 className="text-lg font-semibold text-brand-black mb-2">Q. {faq.question}</h3>
+                  <p className="text-brand-mid leading-relaxed">{faq.answer}</p>
+                </div>
+              ))}
+            </div>
+
+            <div className="bg-brand-black rounded-lg p-8 mt-12 text-center">
+              <h3 className="text-xl font-bold text-brand-paper mb-3">투명 배경 그대로 가볍게</h3>
+              <p className="text-brand-light mb-6">
+                PNG 압축이나 WebP 변환으로 투명도는 남기고 용량만 줄입니다.
+              </p>
+              <div className="flex flex-col sm:flex-row gap-3 justify-center">
+                <Link
+                  href="/tools/image/compress"
+                  className="inline-block bg-brand-accent text-brand-white px-6 py-3 rounded-md font-medium hover:bg-brand-accent-light transition-colors"
+                >
+                  이미지 압축
+                </Link>
+                <Link
+                  href="/tools/image/convert"
+                  className="inline-block bg-brand-dark text-brand-paper px-6 py-3 rounded-md font-medium hover:bg-brand-mid transition-colors"
+                >
+                  포맷 변환
+                </Link>
+              </div>
             </div>
           </div>
           <BlogExtras slug="transparent-background" />

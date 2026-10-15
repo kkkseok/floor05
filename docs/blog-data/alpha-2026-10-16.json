@@ -1,0 +1,163 @@
+{
+ "source": {
+  "format": "PNG",
+  "mode": "RGBA",
+  "size": [
+   600,
+   400
+  ],
+  "hasAlpha": true,
+  "bytes": 23001,
+  "transparent": 0.6752,
+  "semi": 0.071,
+  "opaque": 0.2539
+ },
+ "outputs": {
+  "01-convert-webp": {
+   "file": "01-convert-webp__alpha-logo.webp",
+   "format": "WEBP",
+   "mode": "RGBA",
+   "size": [
+    600,
+    400
+   ],
+   "hasAlpha": true,
+   "bytes": 9114,
+   "transparent": 0.6752,
+   "semi": 0.071,
+   "opaque": 0.2539
+  },
+  "03-convert-jpg": {
+   "file": "03-convert-jpg__alpha-logo.jpg",
+   "format": "JPEG",
+   "mode": "RGB",
+   "size": [
+    600,
+    400
+   ],
+   "hasAlpha": false,
+   "bytes": 14229,
+   "transparent": 0.0,
+   "semi": 0.0,
+   "opaque": 1.0
+  },
+  "04-compress-quality": {
+   "file": "04-compress-quality__alpha-logo_compressed.png",
+   "format": "PNG",
+   "mode": "P",
+   "size": [
+    600,
+    400
+   ],
+   "hasAlpha": true,
+   "bytes": 6767,
+   "transparent": 0.6752,
+   "semi": 0.071,
+   "opaque": 0.2539
+  },
+  "05-compress-target": {
+   "file": "05-compress-target__alpha-logo_compressed.png",
+   "format": "PNG",
+   "mode": "RGBA",
+   "size": [
+    600,
+    400
+   ],
+   "hasAlpha": true,
+   "bytes": 12142,
+   "transparent": 0.6752,
+   "semi": 0.071,
+   "opaque": 0.2539
+  },
+  "06-resize": {
+   "file": "06-resize__alpha-logo_resized.png",
+   "format": "PNG",
+   "mode": "RGBA",
+   "size": [
+    300,
+    200
+   ],
+   "hasAlpha": true,
+   "bytes": 10306,
+   "transparent": 0.6724,
+   "semi": 0.0762,
+   "opaque": 0.2514
+  },
+  "07-crop": {
+   "file": "07-crop__alpha-logo_cropped.png",
+   "format": "PNG",
+   "mode": "RGBA",
+   "size": [
+    600,
+    400
+   ],
+   "hasAlpha": true,
+   "bytes": 23001,
+   "transparent": 0.6752,
+   "semi": 0.071,
+   "opaque": 0.2539
+  },
+  "08-rotate": {
+   "file": "08-rotate__alpha-logo_회전.png",
+   "format": "PNG",
+   "mode": "RGBA",
+   "size": [
+    400,
+    600
+   ],
+   "hasAlpha": true,
+   "bytes": 22716,
+   "transparent": 0.6752,
+   "semi": 0.071,
+   "opaque": 0.2539
+  },
+  "09-merge": {
+   "file": "09-merge__floor05-merged.png",
+   "format": "PNG",
+   "mode": "RGBA",
+   "size": [
+    600,
+    800
+   ],
+   "hasAlpha": true,
+   "bytes": 45846,
+   "transparent": 0.6752,
+   "semi": 0.071,
+   "opaque": 0.2539
+  },
+  "10-watermark": {
+   "file": "10-watermark__alpha-logo_watermark.png",
+   "format": "PNG",
+   "mode": "RGBA",
+   "size": [
+    600,
+    400
+   ],
+   "hasAlpha": true,
+   "bytes": 27177,
+   "transparent": 0.6685,
+   "semi": 0.0776,
+   "opaque": 0.2539
+  },
+  "11-mosaic": {
+   "file": "11-mosaic__alpha-logo_모자이크.png",
+   "format": "PNG",
+   "mode": "RGBA",
+   "size": [
+    600,
+    400
+   ],
+   "hasAlpha": true,
+   "bytes": 23001,
+   "transparent": 0.6752,
+   "semi": 0.071,
+   "opaque": 0.2539
+  }
+ },
+ "measuredAt": "2026-10-16",
+ "browser": "Playwright Chromium 151 (headless shell), 로컬 next start에서 실제 도구 화면 조작",
+ "before_fix": {
+  "05-compress-target": "JPEG 14,774B, 알파 없음(수정 d66d410 전)",
+  "note": "AVIF 출력은 이 브라우저에서 미지원(버튼 비활성)이라 측정 제외"
+ }
+}
