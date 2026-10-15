@@ -1,26 +1,33 @@
-# QA Baseline — 2026-08-13 기준
+# QA Baseline — 2026-10-16 기준
+
+> 2026-10-15 AdSense '가치가 별로 없는 콘텐츠' 반려 대응으로 사이트 범위를 축소했다(도구 40→20, 블로그 34→25).
+> 이전 기준(2026-08-13, 도구 40·E2E 106)은 git 기록 참조.
 
 ## 기능 총량
 
 | 구분 | 수 | 비고 |
 |------|----|------|
-| 사용자 도구 | **40** | image 15 · text 1 · calc 6 · date 3 · health 4 · unit 3 · pdf 3 · color 3 · random 2 |
-| 카테고리 허브 | 8 | /tools/{image,calc,date,health,unit,pdf,color,random} (text는 허브 없음 — 정상) |
-| 블로그 | 39 | 인덱스 1 + 글 38 |
+| 사용자 도구 | **20** | image 13 · text 1 · calc 3(연봉·퇴직금·주휴수당) · pdf 3 |
+| 카테고리 허브 | 3 | /tools/{image,calc,pdf} (text는 허브 없음 — 정상) |
+| 블로그 | 26 | 인덱스 1 + 글 25 (예약 발행 브랜치에 신규 3편 대기, `docs/PUBLISHING.md`) |
 | 정적 페이지 | 5 | / · /about · /contact · /privacy · /terms |
-| SEO 인프라 | 3 | sitemap.xml(동적) · robots · llms.txt |
+| SEO 인프라 | 3 | sitemap.xml(동적, 54 URL) · robots · llms.txt |
 
-코드 라우트와 프로덕션 sitemap 교차 확인 완료 — 불일치 0건.
+삭제한 도구의 처리: jpg-to-png·webp-to-jpg → /tools/image/convert, 대출·예적금·부가세 → /tools/calc 301.
+건강·단위·날짜·색상·랜덤 도구와 관련 블로그 9편은 404(대체 페이지 없음). E2E로 고정.
 
 ## 테스트 현황
 
 | 스위트 | 개수 | 상태 |
 |--------|------|------|
-| Unit (Vitest) | 95 | 전부 PASS |
-| E2E chromium | 106 | 105 PASS + 1 skip(모바일 전용) |
-| E2E mobile-chromium | 106 | 전부 PASS |
-| E2E webkit | 106 | 102 PASS + 3 skip(HEIC·클립보드·모바일 전용) + 간헐 flaky ≤1 (retry로 통과) |
-| Prod smoke | 8 | 전부 PASS (2026-08-13 수정 배포 후 재실행) |
+| Unit (Vitest) | 39 | 전부 PASS |
+| E2E chromium | 75 | PASS (skip 1: 모바일 전용) |
+| E2E mobile-chromium | 75 | PASS |
+| E2E webkit | 75 | PASS (skip 2: HEIC·클립보드) · 전체 병렬 실행 시 간헐 flaky ≤1 (retry로 통과) |
+| Prod smoke | 9 | 전부 PASS |
+
+축소 화질 E2E는 `writeStripesPng`/`pngGreenStats`/`pngPixels`(tests/e2e/helpers.ts) 사용 — 줄무늬 편차는
+마지막 축소 단계가 정확히 2배인 비율에서만 판정에 쓴다. 새 화질 테스트는 수정 전 코드에서 실패하는지 확인한다.
 
 ## 계산 공식 검증 결과 (2026-08-13, 공공 기준 대조)
 
@@ -42,7 +49,9 @@
 - **국민연금 하한**: 기준소득월액 하한(41만) 미만 소득은 실무와 달리 비례 계산 (코드 주석에 명시된 단순화).
 - **인스타 9분할**: 중앙 정사각 크롭 후 분할 (인스타 그리드 특성상 의도된 동작).
 - **워터마크 기본 출력**: PNG (품질 무손실 우선 설계).
-- **음력 변환**: 양력 1391~2050년 (korean-lunar-calendar 라이브러리 한계, UI에 명시).
+- **WebKit 축소 화질**: 절반씩 단계 축소(src/lib/image/downscale.ts)를 써도, 마지막 단계가 2배가 아닌 비율에서는
+  WebKit 캔버스 필터가 정확한 평균을 내지 않아 일부 깨짐이 남는다(Chromium·Firefox는 양호). JS 픽셀 평균은 메모리 부담으로 보류.
+- **모자이크 편집 화면**: 긴 변 2000px로 줄여 보여주지만 저장은 원본 해상도로 다시 적용(2026-10-16부터).
 
 ## Manual Verification Required
 
@@ -70,4 +79,7 @@
 ## 테스트 환경 flaky 메모
 
 - WebKit + 병렬 4워커: hydration 경합으로 간헐 실패 → `--workers=2` + `fillStable` 헬퍼로 완화, retries=1.
+- 2026-10-16: 글자수 자동저장 테스트를 fillStable + localStorage poll로 고침(단독 10회 통과).
+  퇴직금 WebKit 테스트는 단독 15회 반복 150회 전부 통과 — 전체 병렬 부하에서만 간헐 재시도. 테스트 로직 문제 아님.
+- 2026-10-16: 모자이크 300×150 결과는 테스트 흔들림이 아니라 제품 경합 버그였다(수정 7b2fb5f). 간헐 실패도 재현해 원인을 본다.
 - 로컬 `next start`에는 `/_vercel/insights` 스크립트가 없어 404 — 테스트 가드에서 필터 (프로덕션에는 존재).
