@@ -34,6 +34,22 @@ test.describe("이미지 PDF 변환", () => {
     assertClean(guards);
   });
 
+  test("화질 '제출용' → 긴 변 1754px로 축소 (fit 페이지 크기로 확인)", async ({ page }, testInfo) => {
+    await page.goto("/tools/pdf/image-to-pdf");
+    await uploadToDropzone(page, [fx("wide-3000x500.jpg"), fx("photo-1200x900.jpg")]);
+    await page.getByRole("button", { name: "제출용", exact: true }).click();
+    await expect(page.getByText(/긴 변 1754px/)).toBeVisible();
+    const file = await saveDownload(
+      page,
+      testInfo,
+      () => page.getByRole("button", { name: /PDF로 변환 \(2장\)/ }).click(),
+      60_000,
+    );
+    const sizes = await pdfPageSizes(file);
+    expect(sizes[0]).toEqual({ w: 1754, h: 292 }); // 3000×500 → 1754×292
+    expect(sizes[1]).toEqual({ w: 1200, h: 900 }); // 이미 작으면 확대하지 않음
+  });
+
   test("A4 자동 방향 → 가로 이미지는 가로 A4", async ({ page }, testInfo) => {
     await page.goto("/tools/pdf/image-to-pdf");
     await uploadToDropzone(page, [fx("wide-3000x500.jpg"), fx("tall-500x3000.jpg")]);
