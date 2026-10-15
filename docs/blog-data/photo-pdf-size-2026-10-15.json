@@ -1,0 +1,105 @@
+{
+  "browser": "151.0.7922.34",
+  "measuredAt": "2026-10-15T13:02:49.400Z",
+  "files": [
+    "tortoise.jpg",
+    "flower.jpg"
+  ],
+  "result": [
+    {
+      "label": "원본 해상도 · 92% (현재 도구)",
+      "long": null,
+      "q": 0.92,
+      "dims": [
+        "5522x4312",
+        "8192x5464"
+      ],
+      "jpegBytesPerPhoto": [
+        6512958,
+        3080998
+      ],
+      "pdf1_fit": 6513912,
+      "pdf1_a4": 6513945,
+      "pdfAll_fit": 9595259,
+      "jpegSum": 9593956,
+      "pdf10_a4": 47974099
+    },
+    {
+      "label": "긴 변 4032px · 92% (1200만 화소 폰 수준)",
+      "long": 4032,
+      "q": 0.92,
+      "dims": [
+        "4032x3148",
+        "4032x2689"
+      ],
+      "jpegBytesPerPhoto": [
+        3366594,
+        583005
+      ],
+      "pdf1_fit": 3367547,
+      "pdf1_a4": 3367590,
+      "pdfAll_fit": 3950893,
+      "jpegSum": 3949599,
+      "pdf10_a4": 19752340
+    },
+    {
+      "label": "긴 변 3508px · 85% (A4 300dpi)",
+      "long": 3508,
+      "q": 0.85,
+      "dims": [
+        "3508x2739",
+        "3508x2340"
+      ],
+      "jpegBytesPerPhoto": [
+        1778093,
+        239189
+      ],
+      "pdf1_fit": 1779046,
+      "pdf1_a4": 1779089,
+      "pdfAll_fit": 2018577,
+      "jpegSum": 2017282,
+      "pdf10_a4": 10090766
+    },
+    {
+      "label": "긴 변 2339px · 85% (A4 200dpi)",
+      "long": 2339,
+      "q": 0.85,
+      "dims": [
+        "2339x1826",
+        "2339x1560"
+      ],
+      "jpegBytesPerPhoto": [
+        771662,
+        126077
+      ],
+      "pdf1_fit": 772612,
+      "pdf1_a4": 772655,
+      "pdfAll_fit": 899031,
+      "jpegSum": 897739,
+      "pdf10_a4": 4493041
+    },
+    {
+      "label": "긴 변 1754px · 85% (A4 150dpi)",
+      "long": 1754,
+      "q": 0.85,
+      "dims": [
+        "1754x1370",
+        "1754x1170"
+      ],
+      "jpegBytesPerPhoto": [
+        494232,
+        81867
+      ],
+      "pdf1_fit": 495180,
+      "pdf1_a4": 495223,
+      "pdfAll_fit": 577387,
+      "jpegSum": 576099,
+      "pdf10_a4": 2884825
+    }
+  ],
+  "sources": {
+    "tortoise.jpg": "NASA KSC-20210121-PH-JBS01_0079 (public domain)",
+    "flower.jpg": "NASA KSC-20230613-PH-FMX01-0075 (public domain)"
+  },
+  "note": "pdf10_a4 = 10 pages alternating the two photos; PDF bytes ≈ sum of embedded JPEG bytes + ~1KB/page"
+}
