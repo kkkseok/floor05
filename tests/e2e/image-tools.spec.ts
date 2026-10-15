@@ -20,6 +20,7 @@ import {
   pngGreenStats,
   pngPixels,
   rowTransitions,
+  writeTransparentWebp,
 } from "./helpers";
 
 test.describe("이미지 압축", () => {
@@ -599,3 +600,37 @@ test.describe("크롭", () => {
     expect(path.extname(file)).toBe(".png");
   });
 });
+
+test.describe("투명 WebP 형식 유지", () => {
+  // 예전에는 모자이크·9분할이 PNG가 아니면 전부 JPG로 저장해 투명 영역이 검게 칠해졌다.
+  // WebP 인코딩을 못 하는 브라우저는 PNG로 대체하므로 webp·png 둘 다 허용하고 jpeg만 금지한다.
+  test("모자이크·9분할·EXIF 삭제가 투명 WebP를 JPG로 바꾸지 않음", async ({ page }, testInfo) => {
+    const webp = await writeTransparentWebp(page, testInfo.outputPath("alpha.webp"));
+    test.skip(!webp, "이 브라우저는 WebP를 만들 수 없음");
+
+    await page.goto("/tools/image/mosaic");
+    await uploadToDropzone(page, [webp!]);
+    const canvas = page.locator("main canvas").first();
+    await expect(canvas).toBeVisible({ timeout: 15_000 });
+    const box = (await canvas.boundingBox())!;
+    await page.mouse.move(box.x + box.width * 0.1, box.y + box.height * 0.1);
+    await page.mouse.down();
+    await page.mouse.move(box.x + box.width * 0.4, box.y + box.height * 0.6, { steps: 6 });
+    await page.mouse.up();
+    const mosaic = await saveDownload(page, testInfo, () => page.getByRole("button", { name: /다운로드/ }).first().click());
+    expect(["webp", "png"]).toContain(detectKind(mosaic));
+
+    await page.goto("/tools/image/grid");
+    await uploadToDropzone(page, [webp!]);
+    const grid = await saveDownload(page, testInfo, () => page.getByRole("button", { name: /9칸으로 분할 \(ZIP\)/ }).click());
+    const names = await zipEntries(grid);
+    expect(names.length).toBeGreaterThan(0);
+    expect(names.every((n) => /\.(webp|png)$/.test(n)), names.join(",")).toBe(true);
+
+    await page.goto("/tools/image/exif-remove");
+    await uploadToDropzone(page, [webp!]);
+    const exif = await saveDownload(page, testInfo, () => page.getByRole("button", { name: "EXIF 제거하고 다운로드" }).click());
+    expect(["webp", "png"]).toContain(detectKind(exif));
+  });
+});
+

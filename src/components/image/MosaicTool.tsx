@@ -3,7 +3,13 @@
 import { useState, useRef, useCallback, useEffect } from "react";
 import { saveAs } from "file-saver";
 import FileDropzone from "@/components/common/FileDropzone";
-import { canvasToBlob, getFileNameWithoutExtension } from "@/lib/common/fileUtils";
+import {
+  canvasToBlob,
+  getFileNameWithoutExtension,
+  mimeToExtension,
+  outputTypeFor,
+  type OutputImageType,
+} from "@/lib/common/fileUtils";
 import { trackToolUse, trackDownload } from "@/lib/common/analytics";
 
 const MAX_DIM = 2000;
@@ -28,7 +34,8 @@ interface Sel {
 export default function MosaicTool() {
   const [loaded, setLoaded] = useState(false);
   const [name, setName] = useState("image");
-  const [isJpeg, setIsJpeg] = useState(true);
+  // 출력 형식은 입력을 따른다(투명 WebP를 JPG로 바꾸면 투명 영역이 검게 칠해졌다)
+  const [outputType, setOutputType] = useState<OutputImageType>("image/jpeg");
   const [mode, setMode] = useState<Mode>("mosaic");
   const [strength, setStrength] = useState(12);
   const [sel, setSel] = useState<Sel | null>(null);
@@ -68,7 +75,7 @@ export default function MosaicTool() {
         const bmp = await createImageBitmap(f, { imageOrientation: "from-image" });
         bitmapRef.current = bmp;
         setName(getFileNameWithoutExtension(f.name));
-        setIsJpeg(f.type !== "image/png");
+        setOutputType(outputTypeFor(f));
         setApplied(0);
         regionsRef.current = [];
         setLoaded(true);
@@ -187,9 +194,8 @@ export default function MosaicTool() {
   async function download() {
     const canvas = renderFullResolution();
     if (!canvas) return;
-    const type = isJpeg ? "image/jpeg" : "image/png";
-    const blob = await canvasToBlob(canvas, type, isJpeg ? 0.92 : undefined);
-    saveAs(blob, `${name}_모자이크.${isJpeg ? "jpg" : "png"}`);
+    const blob = await canvasToBlob(canvas, outputType, outputType === "image/png" ? undefined : 0.92);
+    saveAs(blob, `${name}_모자이크.${mimeToExtension(blob.type)}`);
     trackDownload("mosaic", "single");
   }
 

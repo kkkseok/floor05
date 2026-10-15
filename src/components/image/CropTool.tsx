@@ -10,7 +10,7 @@ import {
   loadImage,
   validateImageFiles,
   mimeToExtension,
-  getFileExtension,
+  outputTypeFor,
 } from "@/lib/common/fileUtils";
 import {
   cropImage,
@@ -27,16 +27,6 @@ import { trackToolUse } from "@/lib/common/analytics";
 
 const ACCEPT_IMAGE = "image/jpeg,image/png,image/webp";
 
-/**
- * 출력 형식은 입력을 따른다. 예전처럼 전부 JPG로 저장하면 투명 PNG 로고는 배경이 흰색으로
- * 채워지고, 글자 캡처는 손실 압축된다. WebKit은 .webp의 File.type을 비워 두므로 확장자도 본다.
- */
-function outputFormatFor(file: File): "image/jpeg" | "image/png" | "image/webp" {
-  const ext = getFileExtension(file.name);
-  if (file.type === "image/png" || ext === "png") return "image/png";
-  if (file.type === "image/webp" || ext === "webp") return "image/webp";
-  return "image/jpeg";
-}
 
 interface ImageData {
   file: File;
@@ -398,7 +388,7 @@ export default function CropTool() {
     try {
       const cropResult = await cropImage(imageData.file, {
         area: cropArea,
-        outputFormat: outputFormatFor(imageData.file),
+        outputFormat: outputTypeFor(imageData.file),
         rotation,
         flipHorizontal,
         flipVertical,
