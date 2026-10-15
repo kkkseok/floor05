@@ -263,21 +263,21 @@ export const POSTS: BlogPost[] = [
   },
   {
     slug: "character-count-guide",
-    title: "자소서 글자수 세는 법",
+    title: "글자수 세기 — 사이트마다 다른 이유 실측",
     description:
-      "공백 포함/제외, 바이트(2·3바이트), 원고지 매수까지 — 자소서·리포트 글자수를 정확히 맞추는 방법을 정리했습니다.",
+      "이모지·분리된 한글·줄바꿈·특수 공백 등 11가지 입력을 방식별로 세어 봤습니다. 입력란 글자 제한은 세 브라우저 모두 UTF-16으로 세서 이모지를 중간에서 잘랐습니다.",
     keywords: [
       "글자수 세기",
       "자소서 글자수",
-      "글자수 공백 포함",
       "공백 제외 글자수",
+      "이모지 글자수",
       "바이트 계산",
       "원고지 매수",
       "글자수 계산기",
     ],
     datePublished: "2026-06-12",
-    dateModified: "2026-07-23",
-    readTime: "5분",
+    dateModified: "2026-11-17",
+    readTime: "7분",
     related: ["id-photo-size-guide", "passport-photo-size"],
   },
   {
