@@ -5,7 +5,6 @@
 import { test, expect } from "@playwright/test";
 import fs from "fs";
 import path from "path";
-import UPNG from "upng-js";
 import {
   installGuards,
   assertClean,
@@ -17,6 +16,10 @@ import {
   zipEntries,
   zipExtract,
   fx,
+  writeStripesPng,
+  pngGreenStats,
+  pngPixels,
+  rowTransitions,
 } from "./helpers";
 
 test.describe("이미지 압축", () => {
@@ -212,6 +215,40 @@ test.describe("리사이즈", () => {
     );
     expect(imageDims(file)).toEqual({ width: 600, height: 450 });
   });
+
+  test("투명 PNG를 줄이면 PNG로 저장 (JPG 흰 배경으로 바꾸지 않음)", async ({ page }, testInfo) => {
+    await page.goto("/tools/image/resize");
+    await uploadToDropzone(page, [fx("transparent-400x300.png")]);
+    await page.locator("#resize-width").fill("200");
+    await page.getByRole("button", { name: "1개 이미지 리사이즈" }).click();
+    await expect(page.getByRole("button", { name: "다운로드" })).toBeVisible({ timeout: 30_000 });
+    const file = await saveDownload(page, testInfo, () =>
+      page.getByRole("button", { name: "다운로드" }).click(),
+    );
+    expect(detectKind(file)).toBe("png");
+    expect(path.extname(file)).toBe(".png");
+    expect(imageDims(file)).toEqual({ width: 200, height: 150 });
+  });
+
+  test("3px 줄무늬 1024px → 64px 축소가 균일한 회색 (큰 비율 축소 깨짐 없음)", async ({ page }, testInfo) => {
+    const stripes = writeStripesPng(testInfo.outputPath("stripes-1024.png"));
+    await page.goto("/tools/image/resize");
+    await uploadToDropzone(page, [stripes]);
+    await page.locator("#resize-width").fill("64");
+    await expect(page.locator("#resize-height")).toHaveValue("64");
+    await page.getByRole("button", { name: "1개 이미지 리사이즈" }).click();
+    await expect(page.getByRole("button", { name: "다운로드" })).toBeVisible({ timeout: 30_000 });
+    const file = await saveDownload(page, testInfo, () =>
+      page.getByRole("button", { name: "다운로드" }).click(),
+    );
+    expect(detectKind(file)).toBe("png");
+    expect(imageDims(file)).toEqual({ width: 64, height: 64 });
+    const { mean, spread } = pngGreenStats(file);
+    expect(mean).toBeGreaterThan(65);
+    expect(mean).toBeLessThan(105);
+    // 실측 편차: Chromium 16 / WebKit 46(캔버스 필터가 정확한 평균이 아님) / 수정 전 WebKit 143
+    expect(spread, "64px 결과에 줄무늬가 남으면 안 됨").toBeLessThan(60);
+  });
 });
 
 test.describe("이미지 합치기", () => {
@@ -406,22 +443,7 @@ test.describe("파비콘 만들기", () => {
   });
 
   test("3px 주기 줄무늬 1024px → 16px는 균일한 회색 (한 번에 줄인 계단·줄무늬 없음)", async ({ page }, testInfo) => {
-    // 검정 2px + 흰색 1px 세로 줄무늬(3px 주기): 제대로 줄이면 어디서나 1/3 밝기 회색(≈85).
-    // 픽셀을 건너뛰며 줄이면 64px 간격 샘플의 위상이 3px 주기와 어긋나 칸마다 밝기가 달라진다.
-    // (2px 주기는 샘플이 흑백 정중앙에 떨어져 우연히 회색이 되므로 판별이 안 된다)
-    const S = 1024;
-    const rgba = new Uint8Array(S * S * 4);
-    for (let y = 0; y < S; y++) {
-      for (let x = 0; x < S; x++) {
-        const v = x % 3 === 2 ? 255 : 0;
-        const i = (y * S + x) * 4;
-        rgba[i] = rgba[i + 1] = rgba[i + 2] = v;
-        rgba[i + 3] = 255;
-      }
-    }
-    const stripes = testInfo.outputPath("stripes-1024.png");
-    fs.mkdirSync(path.dirname(stripes), { recursive: true });
-    fs.writeFileSync(stripes, Buffer.from(UPNG.encode([rgba.buffer], S, S, 0)));
+    const stripes = writeStripesPng(testInfo.outputPath("stripes-1024.png"));
 
     await page.goto("/tools/image/favicon");
     await uploadToDropzone(page, [stripes]);
@@ -432,16 +454,7 @@ test.describe("파비콘 만들기", () => {
       45_000,
     );
     const p16 = await zipExtract(file, "favicon-16x16.png", testInfo.outputPath("16.png"));
-    const raw = fs.readFileSync(p16);
-    // Buffer.buffer는 공유 풀이라 오프셋이 있다 — 이 파일 구간만 잘라 넘긴다
-    const img = UPNG.decode(raw.buffer.slice(raw.byteOffset, raw.byteOffset + raw.length) as ArrayBuffer);
-    const px = new Uint8Array(UPNG.toRGBA8(img)[0]);
-    const greens: number[] = [];
-    for (let i = 0; i < px.length; i += 4) greens.push(px[i + 1]);
-    const mean = greens.reduce((a, v) => a + v, 0) / greens.length;
-    const spread = Math.max(...greens) - Math.min(...greens);
-    expect(mean).toBeGreaterThan(65);
-    expect(mean).toBeLessThan(105);
+    const { mean, spread } = pngGreenStats(p16);
     expect(spread, "16px 결과에 흑백 줄무늬가 남으면 안 됨").toBeLessThan(40);
   });
 });
@@ -482,6 +495,32 @@ test.describe("모자이크", () => {
     expect(fs.readFileSync(file).equals(fs.readFileSync(fx("photo-1200x900.jpg")))).toBe(false);
     assertClean(guards);
   });
+
+  test("편집 화면보다 큰 원본(2400px)은 원본 해상도로 저장하고, 칠한 곳만 모자이크", async ({ page }, testInfo) => {
+    // 편집 캔버스는 긴 변 2000px로 줄여 보여준다. 예전에는 저장도 2000px로 줄어 나갔다.
+    const stripes = writeStripesPng(testInfo.outputPath("stripes-2400.png"), 2400);
+    await page.goto("/tools/image/mosaic");
+    await uploadToDropzone(page, [stripes]);
+    const canvas = page.locator("main canvas").first();
+    await expect(canvas).toBeVisible({ timeout: 15_000 });
+    const box = (await canvas.boundingBox())!;
+    await page.mouse.move(box.x + box.width * 0.2, box.y + box.height * 0.2);
+    await page.mouse.down();
+    await page.mouse.move(box.x + box.width * 0.6, box.y + box.height * 0.6, { steps: 8 });
+    await page.mouse.up();
+    await expect(page.getByText(/1곳 적용됨/)).toBeVisible();
+    const file = await saveDownload(page, testInfo, () =>
+      page.getByRole("button", { name: /다운로드/ }).first().click(),
+    );
+    expect(detectKind(file)).toBe("png");
+    const px = pngPixels(file);
+    expect({ width: px.width, height: px.height }).toEqual({ width: 2400, height: 2400 });
+    const y = Math.round(2400 * 0.4);
+    const inside = rowTransitions(px, y, Math.round(2400 * 0.3), Math.round(2400 * 0.5)); // 칠한 영역 안
+    const outside = rowTransitions(px, y, Math.round(2400 * 0.75), Math.round(2400 * 0.95)); // 칠하지 않은 곳
+    expect(outside, "칠하지 않은 곳은 원래 줄무늬(3px마다 2번 바뀜)").toBeGreaterThan(250);
+    expect(inside, "칠한 곳은 모자이크 블록이라 거의 바뀌지 않음").toBeLessThan(60);
+  });
 });
 
 test.describe("크롭", () => {
@@ -501,6 +540,28 @@ test.describe("크롭", () => {
     expect(dims.width).toBeLessThanOrEqual(1200);
     expect(dims.height).toBeLessThanOrEqual(900);
     assertClean(guards);
+  });
+
+  test("증명사진 크기(2×2, 600px)로 큰 이미지를 줄여도 줄무늬가 남지 않음", async ({ page }, testInfo) => {
+    // 4800px → 600px(8배): 4800→2400→1200→600으로 마지막 단계가 정확히 2배가 되는 비율.
+    // 줄무늬 편차는 마지막 단계가 2배일 때만 판정에 쓸 수 있다(6.8배 같은 비율은 이상적인
+    // 면적 평균 결과도 칸마다 밝기가 달라진다). 8배 실측 편차: Chromium 32 / Firefox 64 / WebKit 98,
+    // 수정 전(한 번에 축소) WebKit은 143.
+    const stripes = writeStripesPng(testInfo.outputPath("stripes-4800.png"), 4800);
+    await page.goto("/tools/image/crop");
+    await uploadToDropzone(page, [stripes]);
+    await page.getByRole("button", { name: "미국 비자 2×2" }).click();
+    await page.getByRole("button", { name: "이미지 크롭", exact: true }).click();
+    await expect(page.getByText(/크롭 완료/)).toBeVisible({ timeout: 60_000 });
+    const file = await saveDownload(page, testInfo, () =>
+      page.getByRole("button", { name: "다운로드" }).click(),
+    );
+    expect(detectKind(file)).toBe("png");
+    expect(imageDims(file)).toEqual({ width: 600, height: 600 });
+    const { mean, spread } = pngGreenStats(file);
+    expect(mean).toBeGreaterThan(65);
+    expect(mean).toBeLessThan(105);
+    expect(spread, "600px 결과에 줄무늬가 남으면 안 됨").toBeLessThan(110);
   });
 
   test("투명 PNG를 자르면 PNG로 저장 (JPG 흰 배경으로 바꾸지 않음)", async ({ page }, testInfo) => {

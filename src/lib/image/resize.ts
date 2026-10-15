@@ -5,6 +5,7 @@
 
 import { loadImage, fileToDataUrl, canvasToBlob } from "../common/fileUtils";
 import { computeResizeDimensions } from "./resizeDims";
+import { drawImageDownscaled } from "./downscale";
 
 export interface ResizeOptions {
   width: number;
@@ -155,7 +156,8 @@ export async function resizeImage(
     ctx.fillRect(0, 0, newWidth, newHeight);
   }
 
-  ctx.drawImage(img, 0, 0, newWidth, newHeight);
+  // 크게 줄일 때는 절반씩 나눠 그린다(Firefox·WebKit은 high 품질을 무시해 한 번에 줄이면 깨짐)
+  drawImageDownscaled(ctx, img, 0, 0, img.naturalWidth || img.width, img.naturalHeight || img.height, 0, 0, newWidth, newHeight);
 
   // Blob 생성 (단일 인코딩 — toDataURL 중복 제거, 호출측에서 objectURL 해제)
   const blob = await canvasToBlob(

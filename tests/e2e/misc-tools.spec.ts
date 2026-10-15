@@ -28,8 +28,11 @@ test.describe("글자수 세기", () => {
   test("지우기 + 입력 유지(localStorage 복원)", async ({ page }) => {
     await page.goto("/tools/text/counter");
     const ta = page.getByLabel("글자수를 셀 텍스트 입력");
-    await ta.fill("복원 테스트 텍스트");
-    await page.waitForTimeout(600); // 자동저장 디바운스
+    // WebKit은 hydration 전에 입력하면 값이 되돌아가므로 fillStable, 저장은 고정 대기 대신 실제 저장을 확인
+    await fillStable(ta, "복원 테스트 텍스트");
+    await expect
+      .poll(() => page.evaluate(() => localStorage.getItem("floor05_text_counter")), { timeout: 5_000 })
+      .toBe("복원 테스트 텍스트");
     await page.reload();
     await expect(ta).toHaveValue("복원 테스트 텍스트");
     await page.getByRole("button", { name: "지우기" }).click();

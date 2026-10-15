@@ -6,6 +6,7 @@
 import { Page, TestInfo, expect } from "@playwright/test";
 import path from "path";
 import fs from "fs";
+import UPNG from "upng-js";
 
 export const FIXTURES = path.join(__dirname, "..", "fixtures", "generated");
 export const fx = (name: string) => path.join(FIXTURES, name);
@@ -267,3 +268,57 @@ export async function assertNoHorizontalScroll(page: Page) {
   );
   expect(overflow, "가로 스크롤 없어야 함").toBeLessThanOrEqual(1);
 }
+
+/**
+ * 축소 화질 판별용 줄무늬 PNG: 검정 2px + 흰색 1px 세로 줄(3px 주기).
+ * 제대로 줄이면 어디서나 1/3 밝기 회색(≈85), 픽셀을 건너뛰며 줄이면 칸마다 밝기가 달라진다.
+ * (2px 주기는 한 번에 줄여도 샘플이 흑백 정중앙에 떨어져 우연히 회색이 되므로 쓰지 않는다)
+ */
+export function writeStripesPng(file: string, size = 1024): string {
+  const rgba = new Uint8Array(size * size * 4);
+  for (let y = 0; y < size; y++) {
+    for (let x = 0; x < size; x++) {
+      const v = x % 3 === 2 ? 255 : 0;
+      const i = (y * size + x) * 4;
+      rgba[i] = rgba[i + 1] = rgba[i + 2] = v;
+      rgba[i + 3] = 255;
+    }
+  }
+  fs.mkdirSync(path.dirname(file), { recursive: true });
+  fs.writeFileSync(file, Buffer.from(UPNG.encode([rgba.buffer], size, size, 0)));
+  return file;
+}
+
+/** PNG의 초록 채널 평균과 최대-최소 폭 (줄무늬 축소 결과 판정용) */
+export function pngGreenStats(file: string): { mean: number; spread: number } {
+  const raw = fs.readFileSync(file);
+  // Buffer.buffer는 공유 풀이라 오프셋이 있다 — 이 파일 구간만 잘라 넘긴다
+  const img = UPNG.decode(raw.buffer.slice(raw.byteOffset, raw.byteOffset + raw.length) as ArrayBuffer);
+  const px = new Uint8Array(UPNG.toRGBA8(img)[0]);
+  let sum = 0;
+  let min = 255;
+  let max = 0;
+  for (let i = 1; i < px.length; i += 4) {
+    sum += px[i];
+    if (px[i] < min) min = px[i];
+    if (px[i] > max) max = px[i];
+  }
+  return { mean: sum / (px.length / 4), spread: max - min };
+}
+
+/** PNG를 RGBA 픽셀로 읽는다 */
+export function pngPixels(file: string): { width: number; height: number; data: Uint8Array } {
+  const raw = fs.readFileSync(file);
+  const img = UPNG.decode(raw.buffer.slice(raw.byteOffset, raw.byteOffset + raw.length) as ArrayBuffer);
+  return { width: img.width, height: img.height, data: new Uint8Array(UPNG.toRGBA8(img)[0]) };
+}
+
+/** y행의 x0~x1 구간에서 초록 채널 값이 바뀌는 횟수 (줄무늬는 많고, 모자이크 블록은 적다) */
+export function rowTransitions(p: { width: number; data: Uint8Array }, y: number, x0: number, x1: number): number {
+  let n = 0;
+  for (let x = x0 + 1; x < x1; x++) {
+    if (p.data[(y * p.width + x) * 4 + 1] !== p.data[(y * p.width + x - 1) * 4 + 1]) n++;
+  }
+  return n;
+}
+

@@ -12,6 +12,8 @@ import {
   loadImage,
   validateImageFiles,
   revokeObjectUrl,
+  getFileExtension,
+  mimeToExtension,
 } from "@/lib/common/fileUtils";
 import {
   SNS_PRESETS,
@@ -23,6 +25,17 @@ import { useBeforeUnload, useMaxBatchSize } from "@/lib/common/hooks";
 import { trackToolUse } from "@/lib/common/analytics";
 
 const ACCEPT_IMAGE = "image/jpeg,image/png,image/webp";
+
+/**
+ * 출력 형식은 입력을 따른다. 예전처럼 전부 JPG로 저장하면 투명 PNG는 흰 배경이 되고
+ * 글자 캡처는 손실 압축된다. WebKit은 .webp의 File.type을 비워 두므로 확장자도 본다.
+ */
+function outputFormatFor(file: File): "image/jpeg" | "image/png" | "image/webp" {
+  const ext = getFileExtension(file.name);
+  if (file.type === "image/png" || ext === "png") return "image/png";
+  if (file.type === "image/webp" || ext === "webp") return "image/webp";
+  return "image/jpeg";
+}
 
 interface ProcessedImage {
   id: string;
@@ -248,6 +261,7 @@ export default function ResizeTool() {
             width: reqWidth,
             height: reqHeight,
             maintainAspectRatio: maintain,
+            outputFormat: outputFormatFor(img.file),
           });
 
           // 이전 결과 URL 해제 (재리사이즈 시 누수 방지)
@@ -301,7 +315,7 @@ export default function ResizeTool() {
     return completedImages
       .filter((img) => img.result)
       .map((img) => ({
-        name: createNewFileName(img.file.name, "_resized", "jpg"),
+        name: createNewFileName(img.file.name, "_resized", mimeToExtension(img.result!.blob.type)),
         blob: img.result!.blob,
       }));
   }, [completedImages]);
