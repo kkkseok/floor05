@@ -6,14 +6,14 @@ import { test, expect } from "@playwright/test";
 import { installGuards, assertClean, fillStable } from "./helpers";
 
 test.describe("연봉 실수령액", () => {
-  test("연봉 5,000만 → 월 실수령 3,571,547원 + 공제 내역 (간이세액표 원표)", async ({ page }) => {
+  test("연봉 5,000만 → 월 실수령 3,571,577원 + 공제 내역 (간이세액표 원표)", async ({ page }) => {
     const guards = await installGuards(page);
     await page.goto("/tools/calc/salary");
     await fillStable(page.getByLabel("연봉(만원)"), "5000");
 
     const main = page.locator("main");
-    await expect(main.getByText("3,571,547")).toBeVisible();
-    await expect(main.getByText("188,410")).toBeVisible(); // 국민연금
+    await expect(main.getByText("3,571,577")).toBeVisible();
+    await expect(main.getByText("188,380")).toBeVisible(); // 국민연금 (기준소득월액 천원 미만 버림)
     await expect(main.getByText("142,600")).toBeVisible(); // 건강보험
     await expect(main.getByText("18,730")).toBeVisible(); // 장기요양
     await expect(main.getByText("35,700")).toBeVisible(); // 고용보험 (floor10 FP 수정 검증)
@@ -84,15 +84,28 @@ test.describe("퇴직금", () => {
 });
 
 test.describe("주휴수당", () => {
-  test("2026 최저시급 · 주 40시간 → 주휴수당 82,560원 · 월 2,152,339원", async ({ page }) => {
+  test("2026 최저시급 · 주 40시간 → 주휴수당 82,560원 · 월 2,156,880원(209시간)", async ({ page }) => {
     const guards = await installGuards(page);
     await page.goto("/tools/calc/wage");
     const main = page.locator("main");
     await expect(main.getByText("82,560").first()).toBeVisible();
     await expect(main.getByText("412,800").first()).toBeVisible();
     await expect(main.getByText("495,360").first()).toBeVisible();
-    await expect(main.getByText("2,152,339").first()).toBeVisible();
+    await expect(main.getByText("2,156,880").first()).toBeVisible();
     assertClean(guards);
+  });
+
+  test("주 40시간 초과 → 연장근로 가산 미반영 안내", async ({ page }) => {
+    await page.goto("/tools/calc/wage");
+    await fillStable(page.getByLabel("1주 소정근로시간"), "45");
+    await expect(page.getByText(/주 40시간을 넘는 5시간은 연장근로입니다/)).toBeVisible();
+  });
+
+  test("2027-01-01부터는 기본 시급이 2027 최저시급 10,700원", async ({ page }) => {
+    await page.clock.install({ time: new Date("2027-01-02T09:00:00+09:00") });
+    await page.goto("/tools/calc/wage");
+    await expect(page.getByLabel("시급(원)")).toHaveValue("10700");
+    await expect(page.locator("main").getByText("2,236,300").first()).toBeVisible();
   });
 
   test("주 14시간 → 주휴수당 미발생", async ({ page }) => {

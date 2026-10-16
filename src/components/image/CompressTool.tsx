@@ -13,7 +13,9 @@ import {
   validateImageFiles,
   revokeObjectUrl,
   mimeToExtension,
+  outputTypeFor,
 } from "@/lib/common/fileUtils";
+import { isWebPSupported } from "@/lib/image/convert";
 import {
   compressToTargetSize,
   quickCompress,
@@ -43,11 +45,20 @@ function isPngFile(file: File): boolean {
   return file.type === "image/png" || file.name.toLowerCase().endsWith(".png");
 }
 
-// 이 파일을 PNG로 저장할지 결정 (auto: PNG 입력만 PNG 유지, 나머지는 JPG)
+// WebP 입력을 WebP로 다시 저장할 수 있는지 (WebP 인코딩을 못 하는 브라우저는 PNG로 투명을 지킨다)
+function keepsWebp(file: File): boolean {
+  return outputTypeFor(file) === "image/webp" && isWebPSupported();
+}
+
+// 이 파일을 PNG로 저장할지 결정 (auto: PNG 입력은 PNG, WebP는 WebP(못 만들면 PNG), 나머지는 JPG)
 function wantsPng(file: File, outputMode: OutputMode): boolean {
   if (outputMode === "png") return true;
   if (outputMode === "jpg") return false;
-  return isPngFile(file);
+  return isPngFile(file) || (outputTypeFor(file) === "image/webp" && !isWebPSupported());
+}
+
+function wantsWebp(file: File, outputMode: OutputMode): boolean {
+  return outputMode === "auto" && keepsWebp(file);
 }
 
 /**
@@ -59,6 +70,10 @@ async function compressToTarget(file: File, targetSizeKB: number): Promise<Compr
     if (png) return png;
     const jpg = await compressToTargetSize(file, targetSizeKB, { outputFormat: "image/jpeg" });
     return { ...jpg, alphaDropped: true };
+  }
+  if (keepsWebp(file)) {
+    // WebP는 투명을 지킨 채 품질·해상도로 맞춘다
+    return compressToTargetSize(file, targetSizeKB, { outputFormat: "image/webp" });
   }
   return compressToTargetSize(file, targetSizeKB, { outputFormat: "image/jpeg" });
 }
@@ -175,7 +190,12 @@ export default function CompressTool() {
 
   // 품질 슬라이더 실시간 예상 용량 (선택 이미지 기준, 디바운스)
   useEffect(() => {
-    if (mode !== "quality" || !selectedImage || wantsPng(selectedImage.file, outputMode)) {
+    if (
+      mode !== "quality" ||
+      !selectedImage ||
+      wantsPng(selectedImage.file, outputMode) ||
+      wantsWebp(selectedImage.file, outputMode)
+    ) {
       setEstimatedSize(null);
       return;
     }
@@ -292,7 +312,7 @@ export default function CompressTool() {
               ? await compressPng(img.file, quality)
               : await compressImageSmart(img.file, {
                   quality: quality / 100,
-                  outputFormat: "image/jpeg",
+                  outputFormat: wantsWebp(img.file, outputMode) ? "image/webp" : "image/jpeg",
                 });
           const result = await finalize(img.file, raw);
 
@@ -550,7 +570,7 @@ export default function CompressTool() {
                 </div>
                 <p className="text-xs text-brand-mid">
                   {outputMode === "auto" &&
-                    "PNG는 투명을 유지한 채 압축하고, 나머지는 JPG로 더 작게 만듭니다."}
+                    "PNG는 PNG로, WebP는 WebP로 투명을 유지한 채 압축하고, 나머지는 JPG로 더 작게 만듭니다."}
                   {outputMode === "jpg" &&
                     "모두 JPG로 저장합니다. 투명 배경은 흰색으로 채워집니다."}
                   {outputMode === "png" &&

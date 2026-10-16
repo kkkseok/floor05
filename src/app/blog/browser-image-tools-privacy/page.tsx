@@ -53,7 +53,7 @@ export default function BrowserImageToolsPrivacyPage() {
 
       <main className="flex-1">
         <article className="max-w-3xl mx-auto px-4 sm:px-6 lg:px-8 py-16">
-          <nav className="mb-8 text-sm text-brand-light">
+          <nav className="mb-8 text-sm text-brand-subtle">
             <Link href="/blog" className="hover:text-brand-mid">
               블로그
             </Link>
@@ -68,7 +68,7 @@ export default function BrowserImageToolsPrivacyPage() {
             <p className="text-lg text-brand-mid">
               브라우저에서 처리한다는 건 무슨 뜻일까 — 개인정보 관점에서
             </p>
-            <div className="mt-4 flex items-center gap-4 text-sm text-brand-light">
+            <div className="mt-4 flex items-center gap-4 text-sm text-brand-subtle">
               <time dateTime="2026-06-11">2026-06-11</time>
               <span>·</span>
               <span>5분 읽기</span>
