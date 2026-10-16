@@ -21,6 +21,8 @@ import {
   pngPixels,
   rowTransitions,
   writeTransparentWebp,
+  writeQuadrantPng,
+  isRedAt,
 } from "./helpers";
 
 test.describe("이미지 압축", () => {
@@ -392,6 +394,34 @@ test.describe("회전·반전", () => {
     expect(detectKind(file)).toBe("jpeg");
     expect(imageDims(file)).toEqual({ width: 900, height: 1200 });
     assertClean(guards);
+  });
+
+  test("오른쪽 90° 뒤 좌우 반전은 화면 기준 좌우로 뒤집는다", async ({ page }, testInfo) => {
+    const src = writeQuadrantPng(testInfo.outputPath("quad.png"));
+    await page.goto("/tools/image/rotate");
+    await uploadToDropzone(page, [src]);
+    await page.getByRole("button", { name: /오른쪽 90°/ }).click(); // 빨강: 오른쪽 위
+    await page.getByRole("button", { name: "좌우 반전" }).click(); // 빨강: 왼쪽 위
+    const file = await saveDownload(page, testInfo, () => page.getByRole("button", { name: "다운로드" }).click());
+    const p = pngPixels(file);
+    expect([p.width, p.height]).toEqual([100, 200]);
+    expect(isRedAt(p, 10, 10)).toBe(true);
+    expect(isRedAt(p, 90, 10)).toBe(false);
+    expect(isRedAt(p, 90, 190)).toBe(false);
+  });
+
+  test("좌우 반전 뒤 오른쪽 90°는 반전된 그림을 그대로 돌린다", async ({ page }, testInfo) => {
+    const src = writeQuadrantPng(testInfo.outputPath("quad.png"));
+    await page.goto("/tools/image/rotate");
+    await uploadToDropzone(page, [src]);
+    await page.getByRole("button", { name: "좌우 반전" }).click(); // 빨강: 오른쪽 위
+    await page.getByRole("button", { name: /오른쪽 90°/ }).click(); // 빨강: 오른쪽 아래
+    const file = await saveDownload(page, testInfo, () => page.getByRole("button", { name: "다운로드" }).click());
+    const p = pngPixels(file);
+    expect([p.width, p.height]).toEqual([100, 200]);
+    expect(isRedAt(p, 90, 190)).toBe(true);
+    expect(isRedAt(p, 10, 10)).toBe(false);
+    expect(isRedAt(p, 90, 10)).toBe(false);
   });
 
   test("좌우 반전 → 치수 유지 · 초기화 동작", async ({ page }, testInfo) => {

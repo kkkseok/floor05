@@ -306,6 +306,29 @@ export function pngGreenStats(file: string): { mean: number; spread: number } {
   return { mean: sum / (px.length / 4), spread: max - min };
 }
 
+/** 왼쪽 위 사분면만 빨강, 나머지는 파랑인 PNG (회전·반전 방향 판별용) */
+export function writeQuadrantPng(file: string, width = 200, height = 100): string {
+  const rgba = new Uint8Array(width * height * 4);
+  for (let y = 0; y < height; y++) {
+    for (let x = 0; x < width; x++) {
+      const i = (y * width + x) * 4;
+      const red = x < width / 2 && y < height / 2;
+      rgba[i] = red ? 255 : 0;
+      rgba[i + 2] = red ? 0 : 255;
+      rgba[i + 3] = 255;
+    }
+  }
+  fs.mkdirSync(path.dirname(file), { recursive: true });
+  fs.writeFileSync(file, Buffer.from(UPNG.encode([rgba.buffer], width, height, 0)));
+  return file;
+}
+
+/** (x, y) 픽셀이 빨강 쪽인지 */
+export function isRedAt(p: { width: number; data: Uint8Array }, x: number, y: number): boolean {
+  const i = (y * p.width + x) * 4;
+  return p.data[i] > 128 && p.data[i + 2] < 128;
+}
+
 /** PNG를 RGBA 픽셀로 읽는다 */
 export function pngPixels(file: string): { width: number; height: number; data: Uint8Array } {
   const raw = fs.readFileSync(file);
