@@ -3,10 +3,10 @@
 import { useState, useEffect, useRef, useCallback } from "react";
 import { saveAs } from "file-saver";
 import FileDropzone from "@/components/common/FileDropzone";
-import { canvasToBlob, getFileExtension, getFileNameWithoutExtension } from "@/lib/common/fileUtils";
+import { canvasToBlob, getFileNameWithoutExtension, outputTypeFor, type OutputImageType } from "@/lib/common/fileUtils";
 import { trackToolUse, trackDownload } from "@/lib/common/analytics";
 
-type OutputType = "image/jpeg" | "image/png" | "image/webp";
+type OutputType = OutputImageType;
 const EXTENSIONS: Record<string, string> = { "image/jpeg": "jpg", "image/png": "png", "image/webp": "webp" };
 
 export default function RotateTool() {
@@ -29,11 +29,7 @@ export default function RotateTool() {
       const bmp = await createImageBitmap(f, { imageOrientation: "from-image" });
       setBitmap(bmp);
       setName(getFileNameWithoutExtension(f.name));
-      // 일부 브라우저(WebKit)는 .webp 파일의 type을 비워 두므로 확장자로도 판단한다.
-      const ext = getFileExtension(f.name).toLowerCase();
-      const isPng = f.type === "image/png" || ext === "png";
-      const isWebp = f.type === "image/webp" || ext === "webp";
-      setOutputType(isPng ? "image/png" : isWebp ? "image/webp" : "image/jpeg");
+      setOutputType(outputTypeFor(f));
       setRotation(0);
       setFlipH(false);
       setFlipV(false);
@@ -41,6 +37,12 @@ export default function RotateTool() {
       setError("이미지를 불러오지 못했습니다. JPG·PNG·WebP 파일인지 확인해 주세요.");
     }
   }, []);
+
+  // 화면에 보이는 그림을 돌린다. 한쪽만 반전된 상태에서는 '반전 → 회전'이 '반대 방향 회전 → 반전'과 같다.
+  function rotateBy(deg: 90 | -90) {
+    const dir = flipH !== flipV ? -1 : 1;
+    setRotation((r) => (r + dir * deg + 360) % 360);
+  }
 
   const render = useCallback(
     (canvas: HTMLCanvasElement) => {
@@ -51,9 +53,11 @@ export default function RotateTool() {
       const ctx = canvas.getContext("2d");
       if (!ctx) return;
       ctx.save();
+      // 반전은 회전한 결과(화면)를 기준으로 한다. scale을 rotate 뒤에 두면 원본 기준으로 뒤집혀서
+      // 90° 회전 후 '좌우 반전'이 상하로 뒤집혔다.
       ctx.translate(canvas.width / 2, canvas.height / 2);
-      ctx.rotate((rotation * Math.PI) / 180);
       ctx.scale(flipH ? -1 : 1, flipV ? -1 : 1);
+      ctx.rotate((rotation * Math.PI) / 180);
       ctx.drawImage(bitmap, -bitmap.width / 2, -bitmap.height / 2);
       ctx.restore();
     },
@@ -92,8 +96,8 @@ export default function RotateTool() {
           </div>
 
           <div className="grid grid-cols-2 sm:grid-cols-4 gap-2">
-            <Btn onClick={() => setRotation((r) => (r + 270) % 360)}>↺ 왼쪽 90°</Btn>
-            <Btn onClick={() => setRotation((r) => (r + 90) % 360)}>↻ 오른쪽 90°</Btn>
+            <Btn onClick={() => rotateBy(-90)}>↺ 왼쪽 90°</Btn>
+            <Btn onClick={() => rotateBy(90)}>↻ 오른쪽 90°</Btn>
             <Btn active={flipH} onClick={() => setFlipH((v) => !v)}>좌우 반전</Btn>
             <Btn active={flipV} onClick={() => setFlipV((v) => !v)}>상하 반전</Btn>
           </div>

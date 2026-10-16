@@ -1,6 +1,6 @@
 "use client";
 
-import { useState, useRef, useCallback } from "react";
+import { useState, useRef, useCallback, useEffect } from "react";
 import { saveAs } from "file-saver";
 import JSZip from "jszip";
 import FileDropzone from "@/components/common/FileDropzone";
@@ -52,6 +52,11 @@ export default function FaviconTool() {
     ctx?.drawImage(downscaleToCanvas(bmp, sx, sy, side, side, 96, 96), 0, 0);
   }, []);
 
+  // 미리보기 캔버스는 loaded 이후에 생기므로 렌더가 끝난 뒤 그린다(requestAnimationFrame 경합 제거)
+  useEffect(() => {
+    if (loaded) drawPreview();
+  }, [loaded, drawPreview]);
+
   const onSelect = useCallback(
     async (files: File[]) => {
       const f = files[0];
@@ -61,7 +66,6 @@ export default function FaviconTool() {
         const bmp = await createImageBitmap(f, { imageOrientation: "from-image" });
         bitmapRef.current = bmp;
         setLoaded(true);
-        requestAnimationFrame(drawPreview);
       } catch {
         setError("이미지를 불러오지 못했습니다. JPG·PNG·WebP 파일인지 확인해 주세요.");
       }

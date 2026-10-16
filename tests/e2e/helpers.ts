@@ -306,3 +306,67 @@ export function pngGreenStats(file: string): { mean: number; spread: number } {
   return { mean: sum / (px.length / 4), spread: max - min };
 }
 
+/** 왼쪽 위 redW×redH(기본: 사분면)만 빨강, 나머지는 파랑인 PNG (회전·반전·자르기 판별용) */
+export function writeQuadrantPng(file: string, width = 200, height = 100, redW = width / 2, redH = height / 2): string {
+  const rgba = new Uint8Array(width * height * 4);
+  for (let y = 0; y < height; y++) {
+    for (let x = 0; x < width; x++) {
+      const i = (y * width + x) * 4;
+      const red = x < redW && y < redH;
+      rgba[i] = red ? 255 : 0;
+      rgba[i + 2] = red ? 0 : 255;
+      rgba[i + 3] = 255;
+    }
+  }
+  fs.mkdirSync(path.dirname(file), { recursive: true });
+  fs.writeFileSync(file, Buffer.from(UPNG.encode([rgba.buffer], width, height, 0)));
+  return file;
+}
+
+/** (x, y) 픽셀이 빨강 쪽인지 */
+export function isRedAt(p: { width: number; data: Uint8Array }, x: number, y: number): boolean {
+  const i = (y * p.width + x) * 4;
+  return p.data[i] > 128 && p.data[i + 2] < 128;
+}
+
+/** PNG를 RGBA 픽셀로 읽는다 */
+export function pngPixels(file: string): { width: number; height: number; data: Uint8Array } {
+  const raw = fs.readFileSync(file);
+  const img = UPNG.decode(raw.buffer.slice(raw.byteOffset, raw.byteOffset + raw.length) as ArrayBuffer);
+  return { width: img.width, height: img.height, data: new Uint8Array(UPNG.toRGBA8(img)[0]) };
+}
+
+/** y행의 x0~x1 구간에서 초록 채널 값이 바뀌는 횟수 (줄무늬는 많고, 모자이크 블록은 적다) */
+export function rowTransitions(p: { width: number; data: Uint8Array }, y: number, x0: number, x1: number): number {
+  let n = 0;
+  for (let x = x0 + 1; x < x1; x++) {
+    if (p.data[(y * p.width + x) * 4 + 1] !== p.data[(y * p.width + x - 1) * 4 + 1]) n++;
+  }
+  return n;
+}
+
+/** 브라우저에서 반투명 원이 있는 투명 WebP(200×100)를 만들어 저장한다(WebP 인코딩 미지원이면 null) */
+export async function writeTransparentWebp(page: Page, file: string): Promise<string | null> {
+  await page.goto("about:blank");
+  const b64 = await page.evaluate(async () => {
+    const c = document.createElement("canvas");
+    c.width = 200;
+    c.height = 100;
+    const x = c.getContext("2d")!;
+    x.fillStyle = "rgba(196,92,44,0.7)";
+    x.beginPath();
+    x.arc(100, 50, 40, 0, Math.PI * 2);
+    x.fill();
+    const blob: Blob | null = await new Promise((ok) => c.toBlob(ok, "image/webp", 0.9));
+    if (!blob || blob.type !== "image/webp") return null;
+    const u = new Uint8Array(await blob.arrayBuffer());
+    let s = "";
+    u.forEach((v) => (s += String.fromCharCode(v)));
+    return btoa(s);
+  });
+  if (!b64) return null;
+  fs.mkdirSync(path.dirname(file), { recursive: true });
+  fs.writeFileSync(file, Buffer.from(b64, "base64"));
+  return file;
+}
+

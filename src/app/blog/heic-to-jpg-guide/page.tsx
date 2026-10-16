@@ -20,6 +20,8 @@ export const metadata: Metadata = {
   ],
   alternates: { canonical: "/blog/heic-to-jpg-guide" },
   openGraph: {
+    url: "/blog/heic-to-jpg-guide",
+    images: [{ url: "/og-image.png", width: 1200, height: 630 }],
     title: "아이폰 HEIC 사진 JPG 변환 방법",
     description:
       "아이폰에서 찍은 HEIC 사진을 JPG로 변환하는 가장 쉬운 방법을 소개합니다.",
