@@ -13,6 +13,7 @@ export default function ColorPickerTool() {
   const [copied, setCopied] = useState<string | null>(null);
   const [error, setError] = useState<string | null>(null);
   const canvasRef = useRef<HTMLCanvasElement>(null);
+  const bitmapRef = useRef<ImageBitmap | null>(null);
   const usedRef = useRef(false);
 
   const onSelect = useCallback(async (files: File[]) => {
@@ -23,6 +24,8 @@ export default function ColorPickerTool() {
       const bmp = await createImageBitmap(f, { imageOrientation: "from-image" });
       const canvas = canvasRef.current;
       if (!canvas) return;
+      bitmapRef.current?.close();
+      bitmapRef.current = bmp;
       const maxW = 520;
       const scale = Math.min(1, maxW / bmp.width);
       canvas.width = Math.round(bmp.width * scale);
@@ -49,15 +52,24 @@ export default function ColorPickerTool() {
     }
   }, []);
 
+  // 화면의 미리보기(최대 520px로 줄인 것)가 아니라 원본 이미지에서 그 지점의 픽셀 하나를 읽는다.
+  // 미리보기에서 읽으면 주변 픽셀과 섞인 평균색이 나왔다(1px 흑백 줄무늬 → #7F7F7F).
   function pickAt(e: React.PointerEvent) {
     const canvas = canvasRef.current;
-    if (!canvas) return;
-    const ctx = canvas.getContext("2d", { willReadFrequently: true });
-    if (!ctx) return;
+    const bmp = bitmapRef.current;
+    if (!canvas || !bmp) return;
     const rect = canvas.getBoundingClientRect();
-    const x = Math.round(((e.clientX - rect.left) * canvas.width) / rect.width);
-    const y = Math.round(((e.clientY - rect.top) * canvas.height) / rect.height);
-    const d = ctx.getImageData(Math.max(0, x), Math.max(0, y), 1, 1).data;
+    const clamp = (v: number, max: number) => Math.min(max - 1, Math.max(0, Math.floor(v)));
+    const x = clamp(((e.clientX - rect.left) / rect.width) * bmp.width, bmp.width);
+    const y = clamp(((e.clientY - rect.top) / rect.height) * bmp.height, bmp.height);
+    const one = document.createElement("canvas");
+    one.width = 1;
+    one.height = 1;
+    const octx = one.getContext("2d", { willReadFrequently: true });
+    if (!octx) return;
+    octx.imageSmoothingEnabled = false;
+    octx.drawImage(bmp, x, y, 1, 1, 0, 0, 1, 1);
+    const d = octx.getImageData(0, 0, 1, 1).data;
     setPicked({ r: d[0], g: d[1], b: d[2] });
     if (!usedRef.current) {
       usedRef.current = true;

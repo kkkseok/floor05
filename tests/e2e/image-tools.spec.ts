@@ -643,6 +643,28 @@ test.describe("색상 추출", () => {
     await expect(page.locator("main").getByText(/^rgb\(\d+, \d+, \d+\)$/).first()).toBeVisible();
     assertClean(guards);
   });
+
+  test("1px 줄무늬에서도 클릭한 픽셀의 정확한 색 (미리보기 평균색 아님) · 오른쪽 끝도 정상", async ({ page }, testInfo) => {
+    const stripes = writeStripesPng(testInfo.outputPath("stripes-1040.png"), 1040);
+    await page.goto("/tools/image/color-picker");
+    await uploadToDropzone(page, [stripes]);
+    const canvas = page.locator("main canvas").first();
+    await expect(canvas).toBeVisible({ timeout: 15_000 });
+    const box = (await canvas.boundingBox())!;
+    const rgb = page.locator("main").getByText(/^rgb\(\d+, \d+, \d+\)$/).first();
+    for (const fx_ of [0.13, 0.37, 0.61, 0.88]) {
+      await canvas.click({ position: { x: box.width * fx_, y: box.height / 2 } });
+      await expect(rgb).toHaveText(/^rgb\((0, 0, 0|255, 255, 255)\)$/);
+    }
+
+    const red = writeQuadrantPng(testInfo.outputPath("red.png"), 400, 200, 400, 200);
+    await page.goto("/tools/image/color-picker");
+    await uploadToDropzone(page, [red]);
+    await expect(canvas).toBeVisible({ timeout: 15_000 });
+    const b2 = (await canvas.boundingBox())!;
+    await canvas.click({ position: { x: b2.width - 0.5, y: b2.height / 2 } });
+    await expect(rgb).toHaveText("rgb(255, 0, 0)");
+  });
 });
 
 test.describe("모자이크", () => {
