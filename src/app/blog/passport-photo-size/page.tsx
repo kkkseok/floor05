@@ -72,7 +72,7 @@ export default function PassportPhotoSizePage() {
       <main className="flex-1">
         <article className="max-w-3xl mx-auto px-4 sm:px-6 lg:px-8 py-16">
           {/* 브레드크럼 */}
-          <nav className="mb-8 text-sm text-brand-light">
+          <nav className="mb-8 text-sm text-brand-subtle">
             <Link href="/blog" className="hover:text-brand-mid">
               블로그
             </Link>
@@ -88,7 +88,7 @@ export default function PassportPhotoSizePage() {
             <p className="text-lg text-brand-mid">
               200KB, 500KB 용량 제한 맞추는 가장 쉬운 방법
             </p>
-            <div className="mt-4 flex items-center gap-4 text-sm text-brand-light">
+            <div className="mt-4 flex items-center gap-4 text-sm text-brand-subtle">
               <time dateTime="2026-03-10">2026-03-10</time>
               <span>·</span>
               <span>4분 읽기</span>
