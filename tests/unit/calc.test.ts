@@ -215,7 +215,13 @@ describe("주휴수당 (calcWage)", () => {
     expect(r.weeklyBasePay).toBe(412_800);
     expect(r.weeklyTotalPay).toBe(495_360);
     // 월 환산 = 48h × 4.345주 × 10,320 = 2,152,339.2 → 2,152,339
-    expect(r.monthlyPay).toBe(2_152_339);
+    expect(r.monthlyHours).toBe(209);
+    expect(r.monthlyPay).toBe(2_156_880); // 209 × 10,320 — 고용노동부 고시 월 환산액과 같음
+  });
+
+  it("2027 최저시급 10,700원 · 주 40시간 → 월 209시간 2,236,300원 (고시 월 환산액)", () => {
+    const r = calcWage({ hourlyWage: 10_700, weeklyHours: 40 })!;
+    expect(r.monthlyPay).toBe(2_236_300);
   });
 
   it("주 20시간 — 주휴 = 20/40×8 = 4시간", () => {
