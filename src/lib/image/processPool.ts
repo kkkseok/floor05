@@ -91,7 +91,7 @@ interface RenderOp {
   quality?: number;
   background?: string;
   resize?:
-    | { mode: "fit"; width: number; height: number; maintainAspectRatio: boolean }
+    | { mode: "fit"; width: number; height: number; maintainAspectRatio: boolean; cover?: boolean; noEnlarge?: boolean }
     | { mode: "max"; maxWidth?: number; maxHeight?: number };
 }
 
@@ -156,6 +156,8 @@ export async function resizeImageSmart(
         width: options.width,
         height: options.height,
         maintainAspectRatio: options.maintainAspectRatio ?? true,
+        cover: options.cover,
+        noEnlarge: options.noEnlarge,
       },
     });
     return {

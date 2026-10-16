@@ -4,12 +4,13 @@
  */
 
 import { PDFDocument } from "pdf-lib";
+import { loadPdf } from "./load";
 
 export async function mergePdfs(buffers: ArrayBuffer[]): Promise<Uint8Array> {
   const out = await PDFDocument.create();
 
   for (const buf of buffers) {
-    const src = await PDFDocument.load(buf, { ignoreEncryption: true });
+    const src = await loadPdf(buf);
     const pages = await out.copyPages(src, src.getPageIndices());
     pages.forEach((p) => out.addPage(p));
   }
@@ -19,6 +20,6 @@ export async function mergePdfs(buffers: ArrayBuffer[]): Promise<Uint8Array> {
 
 /** PDF의 페이지 수를 읽는다 (업로드 직후 미리보기용) */
 export async function getPageCount(buffer: ArrayBuffer): Promise<number> {
-  const doc = await PDFDocument.load(buffer, { ignoreEncryption: true });
+  const doc = await loadPdf(buffer);
   return doc.getPageCount();
 }

@@ -20,6 +20,8 @@ export const metadata: Metadata = {
   ],
   alternates: { canonical: "/blog/png-vs-jpg" },
   openGraph: {
+    url: "/blog/png-vs-jpg",
+    images: [{ url: "/og-image.png", width: 1200, height: 630 }],
     title: "PNG vs JPG 차이점 - 같은 이미지 세 장으로 직접 재봤습니다",
     description:
       "사진은 8.8배, 스크린샷은 1.4배. 포맷별 용량 차이는 이미지 종류에 따라 크게 달랐습니다.",

@@ -4,7 +4,7 @@ import { useState, useCallback } from "react";
 import { saveAs } from "file-saver";
 import JSZip from "jszip";
 import FileDropzone from "@/components/common/FileDropzone";
-import { canvasToBlob, fileToArrayBuffer, getFileNameWithoutExtension, getFileExtension, mimeToExtension, outputTypeFor } from "@/lib/common/fileUtils";
+import { canvasToBlob, fileToArrayBuffer, getFileNameWithoutExtension, getFileExtension, mimeToExtension, outputTypeFor, uniqueFileName } from "@/lib/common/fileUtils";
 import { scanExif } from "@/lib/image/exifScan";
 import { trackToolUse, trackDownload } from "@/lib/common/analytics";
 
@@ -67,9 +67,10 @@ export default function ExifRemoveTool() {
         trackDownload("exif-remove", "single");
       } else {
         const zip = new JSZip();
+        const usedNames = new Set<string>();
         for (const it of items) {
           const { blob, ext } = await strip(it.file);
-          zip.file(`${getFileNameWithoutExtension(it.file.name)}_noexif.${ext}`, blob);
+          zip.file(uniqueFileName(`${getFileNameWithoutExtension(it.file.name)}_noexif.${ext}`, usedNames), blob);
         }
         const out = await zip.generateAsync({ type: "blob" });
         saveAs(out, "exif_removed.zip");
