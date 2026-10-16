@@ -122,8 +122,7 @@ export default function RotateTool() {
       {error && <p className="text-sm text-red-600">{error}</p>}
 
       <p className="text-xs text-brand-mid leading-relaxed">
-        세로로 찍힌 사진의 방향을 바로잡거나 좌우·상하로 뒤집습니다. 모든 처리는 브라우저에서
-        이루어지며, 파일이 서버로 전송되지 않습니다.
+        세로로 찍힌 사진의 방향을 바로잡거나 좌우·상하로 뒤집습니다. 돌리고 뒤집는 일은 이 브라우저가 직접 하므로 사진을 어디에도 올리지 않습니다.
       </p>
     </div>
   );

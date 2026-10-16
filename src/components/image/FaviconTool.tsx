@@ -179,8 +179,7 @@ export default function FaviconTool() {
 
       <p className="text-xs text-brand-mid leading-relaxed">
         favicon.ico에 16·32·48px를 함께 담고, 모바일·PWA용 아이콘과 site.webmanifest까지 ZIP으로
-        만듭니다. 압축을 풀어 사이트 루트에 올리고 위 코드를 &lt;head&gt;에 넣으면 됩니다. 모든
-        처리는 브라우저에서 이루어지며, 파일이 서버로 전송되지 않습니다.
+        만듭니다. 압축을 풀어 사이트 루트에 올리고 위 코드를 &lt;head&gt;에 넣으면 됩니다. 로고는 이 브라우저 안에서만 줄이고 묶으므로, 공개 전 디자인이 밖으로 나가지 않습니다.
       </p>
     </div>
   );
