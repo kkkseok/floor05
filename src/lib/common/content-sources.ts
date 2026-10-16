@@ -37,6 +37,11 @@ const SOURCES = {
     publisher: "고용노동부",
     url: "https://www.moel.go.kr/news/enews/report/enewsView.do?news_seq=18144",
   },
+  minimumWage2027: {
+    title: "2027년도 적용 최저임금 시간급 10,700원",
+    publisher: "고용노동부",
+    url: "https://www.moel.go.kr/news/enews/report/enewsView.do?news_seq=19744",
+  },
   retirementBenefitAct: {
     title: "근로자퇴직급여 보장법",
     publisher: "국가법령정보센터",
@@ -55,7 +60,7 @@ const TOOL_REVIEWS: Record<string, ContentReview> = {
     SOURCES.healthInsurance2026,
     SOURCES.earnedIncomeTax,
   ]),
-  "/tools/calc/wage": finance([SOURCES.minimumWage2026]),
+  "/tools/calc/wage": finance([SOURCES.minimumWage2026, SOURCES.minimumWage2027]),
   "/tools/calc/severance": finance([SOURCES.retirementBenefitAct]),
 };
 

@@ -47,7 +47,7 @@ export default function BlogPage() {
                     {post.title}
                   </h2>
                   <p className="text-brand-mid mb-3">{post.description}</p>
-                  <div className="flex items-center gap-4 text-sm text-brand-light">
+                  <div className="flex items-center gap-4 text-sm text-brand-subtle">
                     <time dateTime={post.datePublished}>{post.datePublished}</time>
                     <span>·</span>
                     <span>{post.readTime} 읽기</span>
