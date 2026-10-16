@@ -425,6 +425,20 @@ test.describe("워터마크", () => {
     const file = await saveDownload(page, testInfo, () => page.getByRole("button", { name: "다운로드" }).click());
     expect(detectKind(file)).toBe("png");
   });
+
+  test("기본 '자동'에서 WebP는 WebP로 (PNG로 바꿔 몇 배 키우지 않음) · 기본 문구는 비어 있음", async ({ page }, testInfo) => {
+    const webp = await writeTransparentWebp(page, testInfo.outputPath("alpha.webp"));
+    test.skip(!webp, "이 브라우저는 WebP를 만들 수 없음");
+    await page.goto("/tools/image/watermark");
+    await uploadToDropzone(page, [webp!]);
+    const input = page.getByPlaceholder("예: © 내 이름, @아이디");
+    await expect(input).toHaveValue("");
+    await input.fill("© test");
+    await page.getByRole("button", { name: "워터마크 적용", exact: true }).click();
+    await expect(page.getByRole("button", { name: "다운로드" })).toBeVisible({ timeout: 30_000 });
+    const file = await saveDownload(page, testInfo, () => page.getByRole("button", { name: "다운로드" }).click());
+    expect(detectKind(file)).toBe("webp");
+  });
 });
 
 test.describe("회전·반전", () => {
