@@ -306,13 +306,13 @@ export function pngGreenStats(file: string): { mean: number; spread: number } {
   return { mean: sum / (px.length / 4), spread: max - min };
 }
 
-/** 왼쪽 위 사분면만 빨강, 나머지는 파랑인 PNG (회전·반전 방향 판별용) */
-export function writeQuadrantPng(file: string, width = 200, height = 100): string {
+/** 왼쪽 위 redW×redH(기본: 사분면)만 빨강, 나머지는 파랑인 PNG (회전·반전·자르기 판별용) */
+export function writeQuadrantPng(file: string, width = 200, height = 100, redW = width / 2, redH = height / 2): string {
   const rgba = new Uint8Array(width * height * 4);
   for (let y = 0; y < height; y++) {
     for (let x = 0; x < width; x++) {
       const i = (y * width + x) * 4;
-      const red = x < width / 2 && y < height / 2;
+      const red = x < redW && y < redH;
       rgba[i] = red ? 255 : 0;
       rgba[i + 2] = red ? 0 : 255;
       rgba[i + 3] = 255;

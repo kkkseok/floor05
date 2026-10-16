@@ -226,6 +226,7 @@ export default function ResizeTool() {
           let reqWidth: number;
           let reqHeight: number;
           let maintain: boolean;
+          let cover = false;
 
           if (mode === "percentage") {
             reqWidth = Math.round(img.originalWidth * (percentage / 100));
@@ -235,6 +236,8 @@ export default function ResizeTool() {
             reqWidth = selectedPreset.width;
             reqHeight = selectedPreset.height || 0;
             maintain = selectedPreset.height === 0;
+            // 가로·세로가 정해진 프리셋은 가운데를 잘라 채운다(늘리면 찌그러짐)
+            cover = selectedPreset.height > 0;
           } else {
             reqWidth = customWidth;
             reqHeight = customHeight;
@@ -242,7 +245,7 @@ export default function ResizeTool() {
           }
 
           // 확대 안 함: 요청 크기를 원본 이하로 제한 (업스케일 방지)
-          if (doNotEnlarge) {
+          if (doNotEnlarge && !cover) {
             reqWidth = Math.min(reqWidth, img.originalWidth);
             if (reqHeight > 0) reqHeight = Math.min(reqHeight, img.originalHeight);
           }
@@ -251,6 +254,8 @@ export default function ResizeTool() {
             width: reqWidth,
             height: reqHeight,
             maintainAspectRatio: maintain,
+            cover,
+            noEnlarge: doNotEnlarge,
             outputFormat: outputTypeFor(img.file),
           });
 
@@ -672,6 +677,7 @@ export default function ResizeTool() {
                         ? `${selectedPreset.width} × ${selectedPreset.height}`
                         : `너비 ${selectedPreset.width}px (높이 자동)`}
                     </span>
+                    {selectedPreset.height > 0 && " · 비율이 다른 사진은 가운데를 기준으로 잘라 맞춥니다"}
                   </p>
                 )}
               </div>

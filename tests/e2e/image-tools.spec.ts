@@ -275,6 +275,21 @@ test.describe("리사이즈", () => {
     expect(imageDims(file)).toEqual({ width: 600, height: 450 });
   });
 
+  test("SNS 정방형 프리셋은 가로 사진을 늘리지 않고 가운데를 잘라 1080×1080으로", async ({ page }, testInfo) => {
+    // 400×200, 왼쪽 100px 세로 띠만 빨강 → 가운데 200×200을 자르면 빨강이 없어야 한다(늘리면 왼쪽 1/4이 빨강)
+    const src = writeQuadrantPng(testInfo.outputPath("strip.png"), 400, 200, 100, 200);
+    await page.goto("/tools/image/resize");
+    await uploadToDropzone(page, [src]);
+    await page.getByRole("button", { name: "SNS 프리셋" }).click();
+    await page.getByRole("button", { name: "1개 이미지 리사이즈" }).click();
+    await expect(page.getByRole("button", { name: "다운로드" })).toBeVisible({ timeout: 30_000 });
+    const file = await saveDownload(page, testInfo, () => page.getByRole("button", { name: "다운로드" }).click());
+    const p = pngPixels(file);
+    expect([p.width, p.height]).toEqual([1080, 1080]);
+    expect(isRedAt(p, 50, 540)).toBe(false);
+    expect(isRedAt(p, 1030, 540)).toBe(false);
+  });
+
   test("투명 PNG를 줄이면 PNG로 저장 (JPG 흰 배경으로 바꾸지 않음)", async ({ page }, testInfo) => {
     await page.goto("/tools/image/resize");
     await uploadToDropzone(page, [fx("transparent-400x300.png")]);
