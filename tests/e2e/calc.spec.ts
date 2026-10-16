@@ -6,14 +6,14 @@ import { test, expect } from "@playwright/test";
 import { installGuards, assertClean, fillStable } from "./helpers";
 
 test.describe("연봉 실수령액", () => {
-  test("연봉 5,000만 → 월 실수령 3,571,547원 + 공제 내역 (간이세액표 원표)", async ({ page }) => {
+  test("연봉 5,000만 → 월 실수령 3,571,577원 + 공제 내역 (간이세액표 원표)", async ({ page }) => {
     const guards = await installGuards(page);
     await page.goto("/tools/calc/salary");
     await fillStable(page.getByLabel("연봉(만원)"), "5000");
 
     const main = page.locator("main");
-    await expect(main.getByText("3,571,547")).toBeVisible();
-    await expect(main.getByText("188,410")).toBeVisible(); // 국민연금
+    await expect(main.getByText("3,571,577")).toBeVisible();
+    await expect(main.getByText("188,380")).toBeVisible(); // 국민연금 (기준소득월액 천원 미만 버림)
     await expect(main.getByText("142,600")).toBeVisible(); // 건강보험
     await expect(main.getByText("18,730")).toBeVisible(); // 장기요양
     await expect(main.getByText("35,700")).toBeVisible(); // 고용보험 (floor10 FP 수정 검증)

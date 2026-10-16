@@ -16,11 +16,11 @@ describe("연봉 실수령액 (calcSalary)", () => {
   it("연봉 5,000만 · 비과세 월 20만 · 본인 1인 · 자녀 0 — 법정 산식 수기 검산", () => {
     // 수기 검산 (2026 요율):
     // 월 세전 = 4,166,667 / 과세 월급여 = 3,966,666.67
-    // 국민연금 = floor10(3,966,666.67 × 0.0475) = 188,410
+    // 국민연금 = floor10(기준소득월액 3,966,000(천원 미만 버림) × 0.0475 = 188,385) = 188,380
     // 건강 = floor10(× 0.03595) = 142,600 / 장기요양 = floor10(142,600 × 0.1314) = 18,730
     // 고용 = floor10(× 0.009) = 35,700
     // 소득세 = 간이세액표 3,960~3,980천원 · 가족 1명 = 190,620 / 지방소득세 = 19,060
-    // 공제 합계 = 188,410 + 142,600 + 18,730 + 35,700 + 190,620 + 19,060 = 595,120
+    // 공제 합계 = 188,380 + 142,600 + 18,730 + 35,700 + 190,620 + 19,060 = 595,090
     const r = calcSalary({
       annualSalary: 50_000_000,
       monthlyNonTax: 200_000,
@@ -28,14 +28,20 @@ describe("연봉 실수령액 (calcSalary)", () => {
       children: 0,
     });
     expect(r.monthlyGross).toBe(4_166_667);
-    expect(r.deductions.pension).toBe(188_410);
+    expect(r.deductions.pension).toBe(188_380);
     expect(r.deductions.health).toBe(142_600);
     expect(r.deductions.longTermCare).toBe(18_730);
     expect(r.deductions.employment).toBe(35_700);
     expect(r.deductions.incomeTax).toBe(190_620);
     expect(r.deductions.localTax).toBe(19_060);
-    expect(r.totalDeduction).toBe(595_120);
-    expect(r.monthlyNet).toBe(3_571_547); // 4,166,666.67 − 595,120 (반올림)
+    expect(r.totalDeduction).toBe(595_090);
+    expect(r.monthlyNet).toBe(3_571_577); // 4,166,666.67 − 595,090 (반올림)
+  });
+
+  it("저소득: 국민연금 기준소득월액 하한(41만) 적용", () => {
+    // 과세 월 30만 → 기준소득월액 41만 × 4.75% = 19,475 → 19,470
+    const r = calcSalary({ annualSalary: 3_600_000, monthlyNonTax: 0, dependents: 1, children: 0 });
+    expect(r.deductions.pension).toBe(19_470);
   });
 
   it("고소득: 국민연금 기준소득월액 상한(659만) 적용", () => {
