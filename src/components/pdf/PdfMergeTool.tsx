@@ -1,6 +1,6 @@
 "use client";
 
-import { useState, useCallback } from "react";
+import { useState, useCallback, useEffect, useRef } from "react";
 import { saveAs } from "file-saver";
 import FileDropzone from "@/components/common/FileDropzone";
 import { fileToArrayBuffer } from "@/lib/common/fileUtils";
@@ -16,15 +16,30 @@ interface Item {
 }
 
 let idSeq = 0;
+/** 합칠 수 있는 PDF 총 개수 (여러 번 나눠 올려도 합계 기준) */
+const MAX_FILES = 20;
 
 export default function PdfMergeTool() {
   const [items, setItems] = useState<Item[]>([]);
   const [busy, setBusy] = useState(false);
   const [error, setError] = useState<string | null>(null);
 
+  const countRef = useRef(0);
+  useEffect(() => {
+    countRef.current = items.length;
+  }, [items.length]);
+
   const addFiles = useCallback(async (files: File[]) => {
     setError(null);
-    const added: Item[] = files.map((file) => ({ id: `pdf-${idSeq++}`, file, pages: null }));
+    const room = Math.max(0, MAX_FILES - countRef.current);
+    const accepted = files.slice(0, room);
+    if (accepted.length < files.length) {
+      setError(
+        `PDF는 한 번에 ${MAX_FILES}개까지 합칠 수 있어 ${files.length - accepted.length}개는 빼 두었습니다. 더 많다면 ${MAX_FILES}개씩 합친 결과를 다시 합쳐 주세요.`,
+      );
+    }
+    countRef.current += accepted.length;
+    const added: Item[] = accepted.map((file) => ({ id: `pdf-${idSeq++}`, file, pages: null }));
     setItems((prev) => [...prev, ...added]);
     // 페이지 수 비동기 로드
     for (const item of added) {
@@ -74,7 +89,7 @@ export default function PdfMergeTool() {
 
   return (
     <div className="space-y-6">
-      <FileDropzone onFilesSelected={addFiles} accept="application/pdf,.pdf" multiple maxFiles={20} />
+      <FileDropzone onFilesSelected={addFiles} accept="application/pdf,.pdf" multiple maxFiles={MAX_FILES} />
 
       {items.length > 0 && (
         <>
@@ -120,8 +135,7 @@ export default function PdfMergeTool() {
       )}
 
       <p className="text-xs text-brand-mid leading-relaxed">
-        위에서 아래 순서대로 페이지가 이어집니다. 모든 처리는 브라우저 안에서 이루어지며, 파일이
-        서버로 전송되지 않습니다.
+        위에서 아래 순서대로 페이지가 이어집니다. 합치기는 내 브라우저 메모리에서만 이뤄져 문서 내용이 외부에 남지 않습니다.
       </p>
     </div>
   );

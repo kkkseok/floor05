@@ -68,8 +68,9 @@ src/
 | 배경/주요 텍스트 | `text-black`, `bg-black` | #0A0A0A |
 | 카드 배경 | `bg-paper` | #F2F0ED |
 | 페이지 배경 | `bg-white` | #FAFAFA |
-| **강조/CTA** | `text-accent`, `bg-accent` | #C45C2C |
-| 호버 상태 | `hover:bg-accent-light` | #E8734A |
+| **강조/CTA** | `text-accent`, `bg-accent` | #B8562A (2026-10 대비 보정, 이전 #C45C2C) |
+| 호버 상태 | `hover:bg-accent-light` | #C45C2C |
+| 밝은 배경 위 보조 글자 | `text-brand-subtle` | #6E6E6E (`text-brand-light`는 어두운 배경 전용) |
 
 **컬러 비율**: Paper 50% / Black 35% / Gray 10% / Accent 5%
 

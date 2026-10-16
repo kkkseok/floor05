@@ -239,8 +239,7 @@ export default function SeveranceTool() {
       {/* 안내 */}
       <p className="text-xs text-brand-mid leading-relaxed">
         근로기준법 평균임금 방식으로 계산한 <strong>세전 추정치</strong>입니다. 실제 수령액은
-        퇴직소득세·지방소득세가 차감되며 근속연수에 따라 달라집니다. 입력한 값은 서버로 전송되지
-        않습니다.
+        퇴직소득세·지방소득세가 차감되며 근속연수에 따라 달라집니다. 입사일과 급여는 이 페이지 안에서만 계산하고 어디에도 기록하지 않습니다.
       </p>
     </div>
   );

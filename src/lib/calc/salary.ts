@@ -52,16 +52,14 @@ function floor10(n: number): number {
   return Math.floor((n + 0.001) / 10) * 10;
 }
 
-/** 국민연금 (월). 기준소득월액 상·하한 적용 */
+/**
+ * 국민연금 (월). 기준소득월액 = 월 소득에서 천원 미만을 버린 금액, 상·하한 적용.
+ * 예전에는 하한(41만 원) 미만 소득에 하한을 적용하지 않았고 천원 미만도 버리지 않았다.
+ */
 export function calcPension(taxableMonthly: number): number {
-  const base = Math.min(
-    INSURANCE.pension.maxBase,
-    Math.max(taxableMonthly < INSURANCE.pension.minBase ? 0 : INSURANCE.pension.minBase, taxableMonthly),
-  );
-  // 과세소득이 하한 미만이면 0으로 본다(실무상 최저 기준소득월액 적용되나 단순화)
-  if (taxableMonthly < INSURANCE.pension.minBase) {
-    return floor10(taxableMonthly * INSURANCE.pension.rate);
-  }
+  if (taxableMonthly <= 0) return 0;
+  const income = Math.floor(taxableMonthly / 1000) * 1000;
+  const base = Math.min(INSURANCE.pension.maxBase, Math.max(INSURANCE.pension.minBase, income));
   return floor10(base * INSURANCE.pension.rate);
 }
 

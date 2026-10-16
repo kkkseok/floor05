@@ -55,7 +55,7 @@ export default function PreventPhotoTheftPage() {
       <main className="flex-1">
         <article className="max-w-3xl mx-auto px-4 sm:px-6 lg:px-8 py-16">
           {/* 브레드크럼 */}
-          <nav className="mb-8 text-sm text-brand-light">
+          <nav className="mb-8 text-sm text-brand-subtle">
             <Link href="/blog" className="hover:text-brand-mid">
               블로그
             </Link>
@@ -71,7 +71,7 @@ export default function PreventPhotoTheftPage() {
             <p className="text-lg text-brand-mid">
               완벽히 막을 순 없지만, 도용의 비용을 높이는 현실적인 방법들
             </p>
-            <div className="mt-4 flex items-center gap-4 text-sm text-brand-light">
+            <div className="mt-4 flex items-center gap-4 text-sm text-brand-subtle">
               <time dateTime="2026-06-20">2026-06-20</time>
               <span>·</span>
               <span>5분 읽기</span>
