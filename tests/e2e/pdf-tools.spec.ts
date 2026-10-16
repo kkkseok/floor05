@@ -34,6 +34,23 @@ test.describe("이미지 PDF 변환", () => {
     assertClean(guards);
   });
 
+  test("화질 '제출용' → 긴 변 1754px로 축소 (fit 페이지 크기로 확인)", async ({ page }, testInfo) => {
+    await page.goto("/tools/pdf/image-to-pdf");
+    await uploadToDropzone(page, [fx("wide-3000x500.jpg"), fx("photo-1200x900.jpg")]);
+    await page.getByRole("button", { name: "제출용", exact: true }).click();
+    // FAQ에도 "긴 변 1754px"가 있으므로 안내 문구에만 있는 "(A4 150dpi)"까지 맞춘다
+    await expect(page.getByText(/긴 변 1754px\(A4 150dpi\)/)).toBeVisible();
+    const file = await saveDownload(
+      page,
+      testInfo,
+      () => page.getByRole("button", { name: /PDF로 변환 \(2장\)/ }).click(),
+      60_000,
+    );
+    const sizes = await pdfPageSizes(file);
+    expect(sizes[0]).toEqual({ w: 1754, h: 292 }); // 3000×500 → 1754×292
+    expect(sizes[1]).toEqual({ w: 1200, h: 900 }); // 이미 작으면 확대하지 않음
+  });
+
   test("A4 자동 방향 → 가로 이미지는 가로 A4", async ({ page }, testInfo) => {
     await page.goto("/tools/pdf/image-to-pdf");
     await uploadToDropzone(page, [fx("wide-3000x500.jpg"), fx("tall-500x3000.jpg")]);
@@ -105,13 +122,31 @@ test.describe("PDF 합치기", () => {
     await page.goto("/tools/pdf/merge");
     await uploadToDropzone(page, [fx("a4-1p.pdf"), fx("broken.pdf")]);
     await expect(page.getByText("읽을 수 없음", { exact: true })).toBeVisible({ timeout: 15_000 });
-    await page.getByRole("button", { name: "2개 PDF 합치기" }).click();
-    await expect(page.getByText(/PDF를 합치지 못했습니다/)).toBeVisible({ timeout: 15_000 });
+    await expect(page.getByText(/PDF로 읽을 수 없어요/)).toBeVisible();
+    await expect(page.getByRole("button", { name: "2개 PDF 합치기" })).toBeDisabled();
+    assertClean(guards);
+  });
+
+  test("암호로 보호된 PDF → '암호로 보호됨' 표시 · 병합 비활성 (빈 페이지 출력 금지)", async ({ page }) => {
+    const guards = await installGuards(page);
+    await page.goto("/tools/pdf/merge");
+    await uploadToDropzone(page, [fx("a4-1p.pdf"), fx("encrypted-3p.pdf")]);
+    await expect(page.getByText("암호로 보호됨", { exact: true })).toBeVisible({ timeout: 15_000 });
+    await expect(page.getByText(/암호로 보호된 PDF라 페이지를 꺼낼 수 없어요/)).toBeVisible();
+    await expect(page.getByRole("button", { name: "2개 PDF 합치기" })).toBeDisabled();
     assertClean(guards);
   });
 });
 
 test.describe("PDF 분할", () => {
+  test("암호로 보호된 PDF → 해결 방법 안내 (빈 페이지 출력 금지)", async ({ page }) => {
+    const guards = await installGuards(page);
+    await page.goto("/tools/pdf/split");
+    await uploadToDropzone(page, [fx("encrypted-3p.pdf")]);
+    await expect(page.getByText(/암호로 보호된 PDF라 페이지를 꺼낼 수 없어요/)).toBeVisible({ timeout: 15_000 });
+    assertClean(guards);
+  });
+
   test("페이지 추출 '2' (혼합 크기 PDF) → A5 가로 1페이지", async ({ page }, testInfo) => {
     const guards = await installGuards(page);
     await page.goto("/tools/pdf/split");
@@ -166,7 +201,7 @@ test.describe("PDF 분할", () => {
     const guards = await installGuards(page);
     await page.goto("/tools/pdf/split");
     await uploadToDropzone(page, [fx("broken.pdf")]);
-    await expect(page.getByText(/PDF를 읽지 못했습니다/)).toBeVisible({ timeout: 15_000 });
+    await expect(page.getByText(/PDF로 읽을 수 없어요/)).toBeVisible({ timeout: 15_000 });
     assertClean(guards);
   });
 });

@@ -4,6 +4,7 @@ import { useState, useEffect, useCallback, useRef } from "react";
 import { saveAs } from "file-saver";
 import FileDropzone from "@/components/common/FileDropzone";
 import { canvasToBlob } from "@/lib/common/fileUtils";
+import { drawImageDownscaled } from "@/lib/image/downscale";
 import {
   imagesToPdf,
   type PageSize,
@@ -24,6 +25,16 @@ const MARGINS: { key: string; label: string; pt: number }[] = [
   { key: "wide", label: "넓게", pt: 48 },
 ];
 
+// 화질 프리셋. long = 긴 변 최대 픽셀(null이면 원본 유지).
+// A4(210×297mm)의 긴 변 297mm를 300dpi로 뽑으면 3508px, 150dpi면 1754px.
+// 실측(docs/blog-data/photo-pdf-size-2026-10-15.json): 카메라 사진 10장 기준
+// 원본·92% 48.0MB → 인쇄용 9.8MB → 제출용 2.8MB (실제 도구, A4, 2026-10-15 재측정).
+const QUALITY_PRESETS: { key: string; label: string; long: number | null; quality: number; hint: string }[] = [
+  { key: "original", label: "원본", long: null, quality: 0.92, hint: "사진 해상도를 그대로 둡니다. 카메라 사진이면 장당 수 MB가 될 수 있어요." },
+  { key: "print", label: "인쇄용", long: 3508, quality: 0.85, hint: "긴 변 3508px(A4 300dpi). A4로 인쇄해도 거칠어 보이지 않는 크기입니다." },
+  { key: "submit", label: "제출용", long: 1754, quality: 0.85, hint: "긴 변 1754px(A4 150dpi). 화면으로 보는 제출 서류라면 충분하고 가장 가볍습니다." },
+];
+
 let idSeq = 0;
 
 export default function ImageToPdfTool() {
@@ -31,6 +42,7 @@ export default function ImageToPdfTool() {
   const [pageSize, setPageSize] = useState<PageSize>("fit");
   const [orientation, setOrientation] = useState<Orientation>("auto");
   const [marginKey, setMarginKey] = useState("none");
+  const [qualityKey, setQualityKey] = useState("original");
   const [busy, setBusy] = useState(false);
   const [error, setError] = useState<string | null>(null);
 
@@ -69,19 +81,24 @@ export default function ImageToPdfTool() {
     });
   }
 
-  async function fileToJpegItem(file: File): Promise<PdfImageItem> {
+  async function fileToJpegItem(
+    file: File,
+    preset: (typeof QUALITY_PRESETS)[number],
+  ): Promise<PdfImageItem> {
     const bitmap = await createImageBitmap(file, { imageOrientation: "from-image" });
+    const scale = preset.long ? Math.min(1, preset.long / Math.max(bitmap.width, bitmap.height)) : 1;
     const canvas = document.createElement("canvas");
-    canvas.width = bitmap.width;
-    canvas.height = bitmap.height;
+    canvas.width = Math.max(1, Math.round(bitmap.width * scale));
+    canvas.height = Math.max(1, Math.round(bitmap.height * scale));
     const ctx = canvas.getContext("2d");
     if (!ctx) throw new Error("이미지를 처리할 수 없습니다.");
     // 투명 PNG는 흰 배경으로 채워 PDF에서 검게 보이지 않게
     ctx.fillStyle = "#ffffff";
     ctx.fillRect(0, 0, canvas.width, canvas.height);
-    ctx.drawImage(bitmap, 0, 0);
+    // 인쇄용·제출용으로 크게 줄일 때 절반씩 나눠 그린다(Firefox·WebKit은 high 품질을 무시)
+    drawImageDownscaled(ctx, bitmap, 0, 0, bitmap.width, bitmap.height, 0, 0, canvas.width, canvas.height);
     bitmap.close?.();
-    const blob = await canvasToBlob(canvas, "image/jpeg", 0.92);
+    const blob = await canvasToBlob(canvas, "image/jpeg", preset.quality);
     const buf = await blob.arrayBuffer();
     return { bytes: new Uint8Array(buf), width: canvas.width, height: canvas.height };
   }
@@ -91,14 +108,15 @@ export default function ImageToPdfTool() {
     setBusy(true);
     setError(null);
     try {
+      const preset = QUALITY_PRESETS.find((q) => q.key === qualityKey) ?? QUALITY_PRESETS[0];
       const pdfImages: PdfImageItem[] = [];
       for (const it of items) {
-        pdfImages.push(await fileToJpegItem(it.file));
+        pdfImages.push(await fileToJpegItem(it.file, preset));
       }
       const margin = MARGINS.find((m) => m.key === marginKey)?.pt ?? 0;
       const bytes = await imagesToPdf(pdfImages, { pageSize, orientation, margin });
       saveAs(new Blob([new Uint8Array(bytes)], { type: "application/pdf" }), "images.pdf");
-      trackToolUse("image-to-pdf", { count: items.length });
+      trackToolUse("image-to-pdf", { count: items.length, quality: preset.key });
       trackDownload("image-to-pdf", "single");
     } catch {
       setError("PDF를 만들지 못했습니다. 일부 이미지가 손상되었거나 형식이 지원되지 않을 수 있어요.");
@@ -148,6 +166,16 @@ export default function ImageToPdfTool() {
                 <Seg active={orientation === "landscape"} onClick={() => setOrientation("landscape")}>가로</Seg>
               </OptionRow>
             )}
+            <OptionRow label="화질">
+              {QUALITY_PRESETS.map((q) => (
+                <Seg key={q.key} active={qualityKey === q.key} onClick={() => setQualityKey(q.key)}>
+                  {q.label}
+                </Seg>
+              ))}
+            </OptionRow>
+            <p className="text-xs leading-relaxed text-brand-mid">
+              {QUALITY_PRESETS.find((q) => q.key === qualityKey)?.hint}
+            </p>
             <OptionRow label="여백">
               {MARGINS.map((m) => (
                 <Seg key={m.key} active={marginKey === m.key} onClick={() => setMarginKey(m.key)}>

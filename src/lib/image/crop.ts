@@ -4,6 +4,7 @@
  */
 
 import { loadImage, fileToDataUrl, canvasToBlob } from "../common/fileUtils";
+import { drawImageDownscaled } from "./downscale";
 
 export interface CropArea {
   x: number;
@@ -143,7 +144,8 @@ export async function cropImage(
     octx.fillRect(0, 0, outW, outH);
   }
 
-  octx.drawImage(cropCanvas, 0, 0, cropW, cropH, 0, 0, outW, outH);
+  // 증명사진 크기처럼 크게 줄일 때 절반씩 나눠 그린다(Firefox·WebKit은 high 품질을 무시)
+  drawImageDownscaled(octx, cropCanvas, 0, 0, cropW, cropH, 0, 0, outW, outH);
 
   // 3) 원형(타원) 마스크 — 코너를 투명하게
   if (circle) {
