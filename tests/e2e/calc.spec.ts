@@ -6,19 +6,19 @@ import { test, expect } from "@playwright/test";
 import { installGuards, assertClean, fillStable } from "./helpers";
 
 test.describe("연봉 실수령액", () => {
-  test("연봉 5,000만 → 월 실수령 3,533,147원 + 공제 내역", async ({ page }) => {
+  test("연봉 5,000만 → 월 실수령 3,571,547원 + 공제 내역 (간이세액표 원표)", async ({ page }) => {
     const guards = await installGuards(page);
     await page.goto("/tools/calc/salary");
     await fillStable(page.getByLabel("연봉(만원)"), "5000");
 
     const main = page.locator("main");
-    await expect(main.getByText("3,533,147")).toBeVisible();
+    await expect(main.getByText("3,571,547")).toBeVisible();
     await expect(main.getByText("188,410")).toBeVisible(); // 국민연금
     await expect(main.getByText("142,600")).toBeVisible(); // 건강보험
     await expect(main.getByText("18,730")).toBeVisible(); // 장기요양
     await expect(main.getByText("35,700")).toBeVisible(); // 고용보험 (floor10 FP 수정 검증)
-    await expect(main.getByText("225,530")).toBeVisible(); // 근로소득세
-    await expect(main.getByText("22,550")).toBeVisible(); // 지방소득세
+    await expect(main.getByText("190,620")).toBeVisible(); // 근로소득세 (별표2 3,960~3,980천원·1명)
+    await expect(main.getByText("19,060")).toBeVisible(); // 지방소득세
     assertClean(guards);
   });
 
