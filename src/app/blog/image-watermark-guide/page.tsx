@@ -212,7 +212,7 @@ export default function ImageWatermarkGuidePage() {
               에서도 확인했는데, 정작 도구 기본값이 그 반대였던 셈입니다.
             </p>
             <p className="text-brand-mid leading-relaxed mb-6">
-              지금은 기본값이 &lsquo;자동&rsquo;입니다. JPG 사진은 JPG로, PNG·WebP 사진은 투명 배경을 지키도록 PNG로
+              지금은 기본값이 &lsquo;자동&rsquo;입니다. JPG 사진은 JPG로, WebP는 WebP로, PNG는 투명 배경을 지키도록 PNG로
               저장합니다. 여러 장을 한꺼번에 넣어도 사진마다 원래 형식을 따릅니다. 원하면 PNG나 JPG로 직접 고를 수
               있습니다.
             </p>
