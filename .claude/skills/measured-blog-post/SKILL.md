@@ -33,6 +33,7 @@ AdSense '가치가 별로 없는 콘텐츠' 반려(2026-10-15)에 대응해 정�
 - 새 스크립트는 `scripts/blog-measure/<이름>.mjs`에 만들고 머리 주석에 목적·사용법·기준(무엇과 비교한 PSNR인지)을 쓴다. `import { chromium } from "@playwright/test"`는 저장소 루트에서 실행하면 그대로 된다.
 - 화질 지표는 PSNR(dB). 기준 이미지를 무엇으로 했는지 글에 밝힌다. 용량은 1KB=1,000B, 1MB=1,000,000B로 쓴다(목표 용량 계산 코드는 1,024 기준이니 혼동 주의).
 - 원자료는 `docs/blog-data/<주제>-<측정일>.json`에 소스·환경·메모를 붙여 저장한다.
+- **측정 스크립트는 도구와 똑같은 그리기 경로를 쓴다.** 입력은 `createImageBitmap`(또는 도구가 쓰는 것), 축소는 `src/lib/image/downscale.ts`를 esbuild로 묶어 주입(`npx esbuild src/lib/image/downscale.ts --bundle --format=iife --global-name=DS --outfile=<helper.js>`). 축소가 들어간 수치는 실제 도구 다운로드와 바이트 단위로 같은지 확인한다(경로 차이로 PDF·크롭 글 수치를 정정한 적 있음).
 
 ### 4. 시각 자료
 직접 만든 것만 쓴다: 원본 픽셀 확대 비교(`image-rendering: pixelated`), 영역 겹침 그림, HTML 막대(div 너비)·표. 모바일에서 글자가 작아지는 SVG 그래프는 피한다. 파일은 `public/images/blog/<slug>/`에 두고 `<img>` 태그에 width/height/alt/loading="lazy"를 단다.
@@ -51,8 +52,9 @@ AdSense '가치가 별로 없는 콘텐츠' 반려(2026-10-15)에 대응해 정�
 
 ### 8. 검증 (기계 판정)
 ```bash
+set -o pipefail
 rm -rf .next/types          # 다른 브랜치 빌드의 낡은 타입 캐시 제거
-npx tsc --noEmit && npm run lint && npm run build
+npx tsc --noEmit && npm run lint && npm run build   # 파이프로 잘라 보지 말 것
 npx next start -p 3123 &    # 백그라운드
 node scripts/blog-measure/render-check.mjs <slug> <스크래치패드>   # desk 1280 / mobile 390이어야 함
 ```
@@ -72,9 +74,14 @@ git checkout main && git branch -D sim-publish
 프로젝트 메모리 `scope-focus-adsense.md`의 예약 목록과 Drive 리서치 문서의 발행 큐 표를 갱신한다.
 
 ## 함정 (실제로 겪은 것)
+- **검증 명령을 `| tail`로 파이프하지 않는다.** `npm run lint | tail -1`은 tail의 종료 코드(0)를 돌려줘 lint 실패가 가려진다(2026-10-16 실제로 main이 lint 실패 상태로 배포됨). `set -o pipefail`을 쓰거나 `npm run lint > log; echo $?`로 종료 코드를 직접 확인한다. 병합 시뮬레이션도 브랜치마다 lint·tsc를 돌린다(예약 워크플로가 lint를 실행하므로).
+- 정규식·문자열에 `​` 같은 이스케이프를 쓸 때 편집 도구가 실제 보이지 않는 문자로 바꿔 넣을 수 있다 → lint의 no-irregular-whitespace가 잡는다.
+- sed로 정규식을 치환하면 `\(` 같은 역슬래시가 사라진다 → 정규식이 든 줄은 Python 치환이나 Edit 도구로 고친다.
 - `python -I`는 `PYTHONIOENCODING`을 무시한다 → 한글 출력은 `python -I -X utf8`.
 - Git Bash가 `이름=경로` 형태 인자의 `/c/...`를 변환하지 않는다 → 그런 인자는 `C:/Users/...` 형식으로.
 - WebKit은 `.webp` 파일의 `File.type`을 비워 둔다 → 형식 판단은 확장자도 함께.
 - WebKit(Playwright)은 Windows용 사파리 엔진 빌드다 → 실제 사파리와 다를 수 있다고 글에 밝힌다.
 - 체크아웃한 브랜치마다 `.next/types`가 남아 tsc가 없는 페이지를 찾는다 → `rm -rf .next/types`.
 - E2E WebKit 입력은 `fillStable` 헬퍼를 쓴다(hydration 경합).
+- Playwright 기본 Chromium(headless 셸)은 파비콘을 받지 않고, 화질 수치도 전체 Chromium(`channel: "chromium"`)과 다르다 → 같은 빌드끼리만 비교한다.
+- 축소 화질 E2E는 `writeStripesPng`/`pngGreenStats`(tests/e2e/helpers.ts) 사용. 줄무늬 편차는 마지막 단계가 정확히 2배인 비율(8·16배 등)에서만 판정에 쓸 수 있다. 수정 전 코드에서 실패하는지 반드시 확인한다.

@@ -27,7 +27,7 @@ export default function PrivacyPage() {
           <div className="prose prose-lg max-w-none space-y-10 text-brand-mid">
             <section>
               <p className="leading-relaxed">
-                floor05는 회원가입 없이 이용하는 개인 운영 서비스입니다. 도구에 넣은 파일과 계산
+                floor05는 floor05 팀이 운영하는, 회원가입 없이 이용하는 서비스입니다. 도구에 넣은 파일과 계산
                 입력값은 원칙적으로 사용자의 브라우저에서 처리하지만, 문의 폼·방문 통계·광고를
                 이용할 때는 아래와 같이 제한된 정보가 외부 서비스에서 처리될 수 있습니다.
               </p>

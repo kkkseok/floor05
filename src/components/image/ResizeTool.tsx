@@ -12,8 +12,8 @@ import {
   loadImage,
   validateImageFiles,
   revokeObjectUrl,
-  getFileExtension,
   mimeToExtension,
+  outputTypeFor,
 } from "@/lib/common/fileUtils";
 import {
   SNS_PRESETS,
@@ -26,16 +26,6 @@ import { trackToolUse } from "@/lib/common/analytics";
 
 const ACCEPT_IMAGE = "image/jpeg,image/png,image/webp";
 
-/**
- * 출력 형식은 입력을 따른다. 예전처럼 전부 JPG로 저장하면 투명 PNG는 흰 배경이 되고
- * 글자 캡처는 손실 압축된다. WebKit은 .webp의 File.type을 비워 두므로 확장자도 본다.
- */
-function outputFormatFor(file: File): "image/jpeg" | "image/png" | "image/webp" {
-  const ext = getFileExtension(file.name);
-  if (file.type === "image/png" || ext === "png") return "image/png";
-  if (file.type === "image/webp" || ext === "webp") return "image/webp";
-  return "image/jpeg";
-}
 
 interface ProcessedImage {
   id: string;
@@ -236,6 +226,7 @@ export default function ResizeTool() {
           let reqWidth: number;
           let reqHeight: number;
           let maintain: boolean;
+          let cover = false;
 
           if (mode === "percentage") {
             reqWidth = Math.round(img.originalWidth * (percentage / 100));
@@ -245,6 +236,8 @@ export default function ResizeTool() {
             reqWidth = selectedPreset.width;
             reqHeight = selectedPreset.height || 0;
             maintain = selectedPreset.height === 0;
+            // 가로·세로가 정해진 프리셋은 가운데를 잘라 채운다(늘리면 찌그러짐)
+            cover = selectedPreset.height > 0;
           } else {
             reqWidth = customWidth;
             reqHeight = customHeight;
@@ -252,7 +245,7 @@ export default function ResizeTool() {
           }
 
           // 확대 안 함: 요청 크기를 원본 이하로 제한 (업스케일 방지)
-          if (doNotEnlarge) {
+          if (doNotEnlarge && !cover) {
             reqWidth = Math.min(reqWidth, img.originalWidth);
             if (reqHeight > 0) reqHeight = Math.min(reqHeight, img.originalHeight);
           }
@@ -261,7 +254,9 @@ export default function ResizeTool() {
             width: reqWidth,
             height: reqHeight,
             maintainAspectRatio: maintain,
-            outputFormat: outputFormatFor(img.file),
+            cover,
+            noEnlarge: doNotEnlarge,
+            outputFormat: outputTypeFor(img.file),
           });
 
           // 이전 결과 URL 해제 (재리사이즈 시 누수 방지)
@@ -682,6 +677,7 @@ export default function ResizeTool() {
                         ? `${selectedPreset.width} × ${selectedPreset.height}`
                         : `너비 ${selectedPreset.width}px (높이 자동)`}
                     </span>
+                    {selectedPreset.height > 0 && " · 비율이 다른 사진은 가운데를 기준으로 잘라 맞춥니다"}
                   </p>
                 )}
               </div>
