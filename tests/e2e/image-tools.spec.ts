@@ -68,6 +68,39 @@ test.describe("이미지 압축", () => {
     expect(fs.statSync(file).size).toBeLessThanOrEqual(30 * 1024);
   });
 
+  test("이미 목표보다 작은 GPS 사진 → 다시 압축하지 않되 GPS·EXIF는 지워서 저장", async ({ page }, testInfo) => {
+    expect(jpegHasExif(fx("exif-gps.jpg"))).toBe(true);
+    await page.goto("/tools/image/compress");
+    await uploadToDropzone(page, [fx("exif-gps.jpg")]);
+    await page.getByRole("button", { name: "목표 용량" }).click();
+    await page.getByPlaceholder("직접 입력").fill("500");
+    await page.getByRole("button", { name: "1개 이미지 압축하기" }).click();
+    await expect(page.getByRole("button", { name: "다운로드" })).toBeVisible({ timeout: 45_000 });
+    await expect(page.getByText(/이미 목표 용량보다 작은 사진이라/)).toBeVisible();
+    const file = await saveDownload(page, testInfo, () =>
+      page.getByRole("button", { name: "다운로드" }).click(),
+    );
+    expect(detectKind(file)).toBe("jpeg");
+    expect(jpegHasExif(file), "원본을 그대로 내주면 GPS가 남는다").toBe(false);
+    expect(fs.statSync(file).size).toBeLessThan(fs.statSync(fx("exif-gps.jpg")).size);
+  });
+
+  test("다시 압축하면 커지는 사진 → 원본 화질 유지 + GPS·EXIF 제거, '+%'로 커졌다고 표시하지 않음", async ({ page }, testInfo) => {
+    await page.goto("/tools/image/compress");
+    await uploadToDropzone(page, [fx("exif-gps.jpg")]);
+    await page.getByLabel(/이미지 압축 품질/).fill("100");
+    await page.getByRole("button", { name: "1개 이미지 압축하기" }).click();
+    await expect(page.getByRole("button", { name: "다운로드" })).toBeVisible({ timeout: 45_000 });
+    await expect(page.getByText(/다시 압축하면 오히려 커집니다/)).toBeVisible();
+    await expect(page.getByText(/--\d+%/)).toHaveCount(0);
+    const file = await saveDownload(page, testInfo, () =>
+      page.getByRole("button", { name: "다운로드" }).click(),
+    );
+    expect(detectKind(file)).toBe("jpeg");
+    expect(jpegHasExif(file)).toBe(false);
+    expect(fs.statSync(file).size).toBeLessThan(fs.statSync(fx("exif-gps.jpg")).size);
+  });
+
   test("목표 용량이 품질 하한(60%)으로 안 맞으면 해상도를 줄이고 안내", async ({ page }, testInfo) => {
     await page.goto("/tools/image/compress");
     await uploadToDropzone(page, [fx("photo-1200x900.jpg")]);
