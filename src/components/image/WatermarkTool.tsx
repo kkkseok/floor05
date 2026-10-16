@@ -20,6 +20,7 @@ import {
   WatermarkOptions,
 } from "@/lib/image/watermark";
 import { useBeforeUnload, useMaxBatchSize } from "@/lib/common/hooks";
+import { isWebPSupported } from "@/lib/image/convert";
 import { trackToolUse } from "@/lib/common/analytics";
 
 const ACCEPT_IMAGE = "image/jpeg,image/png,image/webp";
@@ -27,6 +28,14 @@ const LOGO_ACCEPT = "image/png,image/webp,image/jpeg";
 // auto = 원본 형식을 따름(JPG 사진은 JPG, PNG·WebP는 투명을 지키도록 PNG).
 // 예전 기본값 PNG는 15.8MB JPG 사진을 47.2MB PNG로 만들었다(실측, docs/blog-data/watermark-2026-10-16.json).
 type OutputFormat = "auto" | "image/png" | "image/jpeg";
+
+/** '자동': JPG는 JPG, WebP는 WebP(인코딩 미지원이면 PNG), 그 밖(PNG 등)은 투명을 지키는 PNG */
+function autoFormat(file: File): "image/jpeg" | "image/png" | "image/webp" {
+  const t = outputTypeFor(file);
+  if (t === "image/jpeg") return t;
+  if (t === "image/webp" && isWebPSupported()) return t;
+  return "image/png";
+}
 
 interface SourceImage {
   id: string;
@@ -56,7 +65,7 @@ export default function WatermarkTool() {
   const [selectedId, setSelectedId] = useState<string | null>(null);
 
   const [mode, setMode] = useState<WatermarkMode>("text");
-  const [text, setText] = useState("© floor05");
+  const [text, setText] = useState("");
   const [fontScale, setFontScale] = useState(6);
   const [color, setColor] = useState("#FFFFFF");
   const [bold, setBold] = useState(true);
@@ -292,9 +301,7 @@ export default function WatermarkTool() {
       for (const im of images) {
         const format =
           outputFormat === "auto"
-            ? outputTypeFor(im.file) === "image/jpeg"
-              ? "image/jpeg"
-              : "image/png"
+            ? autoFormat(im.file)
             : outputFormat;
         const res = await applyWatermark(im.img, { ...opts, outputFormat: format });
         out.push({
@@ -614,20 +621,20 @@ export default function WatermarkTool() {
                 </div>
                 {outputFormat === "auto" && (
                   <p className="text-xs text-brand-mid leading-relaxed">
-                    JPG 사진은 JPG로, PNG·WebP는 투명 배경을 지키도록 PNG로 저장합니다.
+                    JPG 사진은 JPG로, WebP는 WebP로, PNG는 투명 배경을 지키도록 PNG로 저장합니다.
                   </p>
                 )}
               </div>
               {outputFormat !== "image/png" && (
                 <div className="space-y-3">
                   <div className="flex justify-between items-center">
-                    <label className="text-sm font-medium text-brand-black">JPG 품질</label>
+                    <label className="text-sm font-medium text-brand-black">저장 품질 (JPG·WebP)</label>
                     <span className="font-mono text-sm text-brand-accent">{quality}%</span>
                   </div>
                   <input
                     type="range" min="1" max="100" value={quality}
                     onChange={(e) => setQuality(Number(e.target.value))}
-                    aria-label={`JPG 품질 ${quality}%`}
+                    aria-label={`저장 품질 ${quality}%`}
                     className="w-full h-2 bg-brand-light rounded-lg appearance-none cursor-pointer accent-brand-accent"
                   />
                 </div>

@@ -66,7 +66,7 @@ export default function ImageToPdfGuidePage() {
 
       <main className="flex-1">
         <article className="max-w-3xl mx-auto px-4 sm:px-6 lg:px-8 py-16">
-          <nav className="mb-8 text-sm text-brand-light">
+          <nav className="mb-8 text-sm text-brand-subtle">
             <Link href="/blog" className="hover:text-brand-mid">
               블로그
             </Link>
@@ -79,7 +79,7 @@ export default function ImageToPdfGuidePage() {
               사진을 PDF로 만들기
             </h1>
             <p className="text-lg text-brand-mid">10장이면 몇 MB? 화질별로 재봤습니다</p>
-            <div className="mt-4 flex items-center gap-4 text-sm text-brand-light">
+            <div className="mt-4 flex items-center gap-4 text-sm text-brand-subtle">
               <time dateTime="2026-10-15">2026-10-15 측정</time>
               <span>·</span>
               <span>6분 읽기</span>
