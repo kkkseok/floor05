@@ -565,11 +565,14 @@ export function buildBlogMetadata(slug: string): Metadata {
       description: post.description,
       publishedTime: post.datePublished,
       modifiedTime: post.dateModified,
+      // 페이지의 openGraph가 루트 설정을 통째로 덮어쓰므로 공유 이미지를 다시 지정한다
+      images: [{ url: "/og-image.png", width: 1200, height: 630, alt: post.title }],
     },
     twitter: {
       card: "summary_large_image",
       title: post.title,
       description: post.description,
+      images: ["/og-image.png"],
     },
   };
 }

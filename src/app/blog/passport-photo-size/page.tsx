@@ -20,6 +20,8 @@ export const metadata: Metadata = {
   ],
   alternates: { canonical: "/blog/passport-photo-size" },
   openGraph: {
+    url: "/blog/passport-photo-size",
+    images: [{ url: "/og-image.png", width: 1200, height: 630 }],
     title: "증명사진 용량 줄이기 - 200KB, 500KB 맞추는 방법",
     description: "취업사이트, 원서접수용 증명사진 용량을 화질 손실 없이 줄이는 방법",
   },

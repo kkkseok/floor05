@@ -10,6 +10,8 @@ export const metadata: Metadata = {
     "이미지 압축, 리사이즈, 포맷 변환 등 이미지 편집에 관한 실용적인 가이드를 제공합니다.",
   alternates: { canonical: "/blog" },
   openGraph: {
+    url: "/blog",
+    images: [{ url: "/og-image.png", width: 1200, height: 630 }],
     title: "블로그 - 이미지 편집 가이드",
     description:
       "이미지 압축, 리사이즈, 포맷 변환 등 이미지 편집에 관한 실용적인 가이드를 제공합니다.",
