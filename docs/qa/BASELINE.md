@@ -1,4 +1,4 @@
-# QA Baseline — 2026-10-16 기준 (전체 E2E 231 통과·flaky 0 확인)
+# QA Baseline — 2026-10-16 기준 (검토 후 수정 반영: 전체 E2E 261 통과·skip 3·flaky 0)
 
 > 2026-10-15 AdSense '가치가 별로 없는 콘텐츠' 반려 대응으로 사이트 범위를 축소했다(도구 40→20, 블로그 34→25).
 > 이전 기준(2026-08-13, 도구 40·E2E 106)은 git 기록 참조.
@@ -20,10 +20,10 @@
 
 | 스위트 | 개수 | 상태 |
 |--------|------|------|
-| Unit (Vitest) | 41 | 전부 PASS |
-| E2E chromium | 78 | PASS (skip 1: 모바일 전용) |
-| E2E mobile-chromium | 78 | PASS |
-| E2E webkit | 78 | PASS (skip 2: HEIC·클립보드) · 전체 병렬 실행 시 간헐 flaky ≤1 (retry로 통과) |
+| Unit (Vitest) | 56 | 전부 PASS |
+| E2E chromium | 88 | PASS (skip 1: 모바일 전용) |
+| E2E mobile-chromium | 88 | PASS |
+| E2E webkit | 88 | PASS (skip 2: HEIC·클립보드) · 전체 병렬 실행 시 간헐 flaky ≤1 (retry로 통과) |
 | Prod smoke | 9 | 전부 PASS |
 
 축소 화질 E2E는 `writeStripesPng`/`pngGreenStats`/`pngPixels`(tests/e2e/helpers.ts) 사용 — 줄무늬 편차는
