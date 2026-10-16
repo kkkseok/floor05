@@ -10,6 +10,7 @@ import {
   loadImage,
   validateImageFiles,
   mimeToExtension,
+  outputTypeFor,
 } from "@/lib/common/fileUtils";
 import {
   cropImage,
@@ -25,6 +26,7 @@ import { useBeforeUnload } from "@/lib/common/hooks";
 import { trackToolUse } from "@/lib/common/analytics";
 
 const ACCEPT_IMAGE = "image/jpeg,image/png,image/webp";
+
 
 interface ImageData {
   file: File;
@@ -386,6 +388,7 @@ export default function CropTool() {
     try {
       const cropResult = await cropImage(imageData.file, {
         area: cropArea,
+        outputFormat: outputTypeFor(imageData.file),
         rotation,
         flipHorizontal,
         flipVertical,

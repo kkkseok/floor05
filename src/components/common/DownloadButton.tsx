@@ -2,6 +2,7 @@
 
 import { useCallback, useState } from "react";
 import { trackDownload } from "@/lib/common/analytics";
+import { uniqueFileName } from "@/lib/common/fileUtils";
 
 interface DownloadButtonProps {
   // 트래킹용 도구 식별자 (예: "compress"). 지정 시 다운로드 이벤트 집계
@@ -110,17 +111,7 @@ export default function DownloadButton({
       // 파일 추가 (동일 이름 충돌 시 " (n)" 접미사로 구분 — 덮어쓰기/손실 방지)
       const usedNames = new Set<string>();
       for (const file of files) {
-        let name = file.name;
-        if (usedNames.has(name)) {
-          const dotIndex = name.lastIndexOf(".");
-          const base = dotIndex > 0 ? name.slice(0, dotIndex) : name;
-          const ext = dotIndex > 0 ? name.slice(dotIndex) : "";
-          let n = 1;
-          while (usedNames.has(`${base} (${n})${ext}`)) n++;
-          name = `${base} (${n})${ext}`;
-        }
-        usedNames.add(name);
-        zip.file(name, file.blob);
+        zip.file(uniqueFileName(file.name, usedNames), file.blob);
       }
 
       // ZIP 생성

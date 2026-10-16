@@ -54,93 +54,10 @@ export const INSURANCE = {
   },
 } as const;
 
-/**
- * 종합소득세 기본세율 — 과세표준 구간·세율·누진공제 (2023년 개정 ~ 현행, 2026 동일).
- * 산출세액 = 과세표준 × rate − deduction.
- * upTo는 "이 금액 이하"의 상한(원). 마지막 구간은 Infinity.
- */
-export const INCOME_TAX_BRACKETS: ReadonlyArray<{
-  upTo: number;
-  rate: number;
-  deduction: number;
-}> = [
-  { upTo: 14_000_000, rate: 0.06, deduction: 0 },
-  { upTo: 50_000_000, rate: 0.15, deduction: 1_260_000 },
-  { upTo: 88_000_000, rate: 0.24, deduction: 5_760_000 },
-  { upTo: 150_000_000, rate: 0.35, deduction: 15_440_000 },
-  { upTo: 300_000_000, rate: 0.38, deduction: 19_940_000 },
-  { upTo: 500_000_000, rate: 0.40, deduction: 25_940_000 },
-  { upTo: 1_000_000_000, rate: 0.42, deduction: 35_940_000 },
-  { upTo: Infinity, rate: 0.45, deduction: 65_940_000 },
-];
-
-/**
- * 근로소득공제 — 총급여(연) 구간별 (현행).
- * 공제액 = base + (총급여 − floor) × rate. 단 총 공제 한도 2,000만원.
- */
-export const EARNED_INCOME_DEDUCTION: ReadonlyArray<{
-  upTo: number;
-  base: number;
-  floor: number;
-  rate: number;
-}> = [
-  { upTo: 5_000_000, base: 0, floor: 0, rate: 0.7 },
-  { upTo: 15_000_000, base: 3_500_000, floor: 5_000_000, rate: 0.4 },
-  { upTo: 45_000_000, base: 7_500_000, floor: 15_000_000, rate: 0.15 },
-  { upTo: 100_000_000, base: 12_000_000, floor: 45_000_000, rate: 0.05 },
-  { upTo: Infinity, base: 14_750_000, floor: 100_000_000, rate: 0.02 },
-];
-
-/** 근로소득공제 한도 */
-export const EARNED_INCOME_DEDUCTION_CAP = 20_000_000;
-
-/** 기본(인적)공제: 본인·부양가족 1인당 (연) */
-export const PERSONAL_DEDUCTION_PER_HEAD = 1_500_000;
-
-/** 표준세액공제: 특별공제를 받지 않는 근로자 기본 적용 (연) */
-export const STANDARD_TAX_CREDIT = 130_000;
-
-/** 지방소득세: 소득세(결정세액)의 10% */
+/** 지방소득세: 소득세의 10% */
 export const LOCAL_TAX_RATE = 0.1;
 
-/**
- * 근로소득세액공제 — 산출세액 기준 공제율과 총급여별 한도.
- * 공제액 = 산출세액 130만 이하 55%, 초과분 30% (아래 한도 적용).
- */
-export const EARNED_INCOME_TAX_CREDIT = {
-  threshold: 1_300_000,
-  rateUnder: 0.55,
-  rateOver: 0.3,
-  /** 산출세액 130만원까지의 공제액(= 130만×55%) — 초과분 계산 기준 */
-  baseAtThreshold: 715_000,
-} as const;
-
-/**
- * 근로소득세액공제 한도 — 총급여(연) 구간별.
- * 검색·국세청 기준: 3,300만 이하 74만 / 3,300만~7,000만 점감(최소 66만) /
- * 7,000만~1.2억 점감(최소 50만) / 1.2억 초과 점감(최소 20만).
- */
-export function earnedIncomeTaxCreditCap(grossAnnual: number): number {
-  if (grossAnnual <= 33_000_000) return 740_000;
-  if (grossAnnual <= 70_000_000) {
-    return Math.max(660_000, 740_000 - (grossAnnual - 33_000_000) * 0.008);
-  }
-  if (grossAnnual <= 120_000_000) {
-    return Math.max(500_000, 660_000 - (grossAnnual - 70_000_000) * 0.5);
-  }
-  return Math.max(200_000, 500_000 - (grossAnnual - 120_000_000) * 0.5);
-}
-
-/**
- * 8세 이상 20세 이하 자녀 세액공제 (월, 간이세액표 차감액).
- * 국세청 간이세액표 기준: 1명 12,500원, 2명 29,160원, 3명 이상은 +25,000원/명.
- */
-export function childTaxCreditMonthly(children: number): number {
-  if (children <= 0) return 0;
-  if (children === 1) return 12_500;
-  if (children === 2) return 29_160;
-  return 29_160 + (children - 2) * 25_000;
-}
+// 근로소득세는 산식이 아니라 간이세액표 원표(./incomeTaxTable, 법령 별표2에서 생성)로 조회한다.
 
 /** 부가가치세율 (일반과세 10%) */
 export const VAT_RATE = 0.1;
@@ -174,4 +91,8 @@ export const SEVERANCE = {
   yearDays: 365,
   /** 퇴직금 발생 최소 재직기간(일): 1년 미만은 법정 퇴직금 대상 아님 */
   minDays: 365,
+  /** 통상시급 산정용 월 소정근로시간 (주 40시간 + 주휴 8시간, 고용노동부 기준 209시간) */
+  monthlyHours: 209,
+  /** 1일 소정근로시간 */
+  dailyHours: 8,
 } as const;

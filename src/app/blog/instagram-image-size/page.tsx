@@ -20,6 +20,8 @@ export const metadata: Metadata = {
   ],
   alternates: { canonical: "/blog/instagram-image-size" },
   openGraph: {
+    url: "/blog/instagram-image-size",
+    images: [{ url: "/og-image.png", width: 1200, height: 630 }],
     title: "인스타그램 사진 크기 총정리 - 2026년 최신 규격",
     description:
       "인스타그램 피드, 스토리, 릴스의 최적 크기와 무료 리사이즈 방법",

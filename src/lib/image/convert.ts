@@ -146,22 +146,24 @@ async function getHeic2any() {
 }
 
 /**
- * HEIC를 JPEG로 변환 (heic2any 동적 로드)
+ * HEIC를 브라우저가 그릴 수 있는 이미지로 디코딩 (heic2any 동적 로드).
+ * 중간 결과는 무손실 PNG로 받는다. 예전에는 JPEG 92%로 받은 뒤 사용자가 고른 품질로 한 번 더 저장해
+ * 품질 100%·PNG 출력도 92% 위로 올라가지 못했다.
+ * heic2any는 실패 시 Error가 아니라 { code, message } 객체를 던진다. 이름만 .heic인 JPG 등은
+ * "already browser readable"로 실패하므로 원본을 그대로 쓴다.
  */
-async function convertHeicToJpeg(file: File): Promise<Blob> {
+async function decodeHeic(file: File): Promise<Blob> {
   const heic2any = await getHeic2any();
-
-  const result = await heic2any({
-    blob: file,
-    toType: "image/jpeg",
-    quality: 0.92,
-  });
-
-  // 단일 이미지 또는 배열 처리
-  if (Array.isArray(result)) {
-    return result[0];
+  try {
+    const result = await heic2any({ blob: file, toType: "image/png", quality: 1 }); // PNG는 quality를 쓰지 않음(타입상 필수)
+    return Array.isArray(result) ? result[0] : result;
+  } catch (err) {
+    const message = typeof err === "object" && err && "message" in err ? String(err.message) : String(err);
+    if (/already browser readable/i.test(message)) return file;
+    throw new Error(
+      "HEIC 사진을 읽지 못했습니다. 파일이 손상됐거나 지원하지 않는 형식일 수 있어요. 사진 앱에서 JPG로 내보내거나, 아이폰 설정 → 카메라 → 포맷 → '높은 호환성'으로 찍은 사진을 써 주세요."
+    );
   }
-  return result;
 }
 
 /**
@@ -184,12 +186,12 @@ export async function convertImage(
   // HEIC 파일 처리
   if (isHeicFile(file)) {
     originalFormat = "image/heic";
-    const jpegBlob = await convertHeicToJpeg(file);
+    const decoded = await decodeHeic(file);
     dataUrl = await new Promise<string>((resolve, reject) => {
       const reader = new FileReader();
       reader.onload = () => resolve(reader.result as string);
       reader.onerror = () => reject(new Error("HEIC 파일을 읽을 수 없습니다."));
-      reader.readAsDataURL(jpegBlob);
+      reader.readAsDataURL(decoded);
     });
   } else {
     dataUrl = await fileToDataUrl(file);
