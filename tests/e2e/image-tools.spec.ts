@@ -56,6 +56,23 @@ test.describe("이미지 압축", () => {
     expect(imageDims(file)).toEqual({ width: 400, height: 300 });
   });
 
+  test("투명 WebP는 '자동'에서 WebP(미지원 시 PNG)로 — JPG로 바꿔 투명을 흰색으로 칠하지 않음", async ({ page }, testInfo) => {
+    const webp = await writeTransparentWebp(page, testInfo.outputPath("alpha.webp"));
+    test.skip(!webp, "이 브라우저는 WebP를 만들 수 없음");
+    for (const target of [false, true]) {
+      await page.goto("/tools/image/compress");
+      await uploadToDropzone(page, [webp!]);
+      if (target) {
+        await page.getByRole("button", { name: "목표 용량" }).click();
+        await page.getByPlaceholder("직접 입력").fill("500");
+      }
+      await page.getByRole("button", { name: "1개 이미지 압축하기" }).click();
+      await expect(page.getByRole("button", { name: "다운로드" })).toBeVisible({ timeout: 30_000 });
+      const file = await saveDownload(page, testInfo, () => page.getByRole("button", { name: "다운로드" }).click());
+      expect(["webp", "png"], target ? "목표 용량" : "품질").toContain(detectKind(file));
+    }
+  });
+
   test("목표 용량 30KB → 결과 ≤ 30KB", async ({ page }, testInfo) => {
     await page.goto("/tools/image/compress");
     await uploadToDropzone(page, [fx("photo-1200x900.jpg")]);
@@ -407,6 +424,20 @@ test.describe("워터마크", () => {
     await expect(page.getByRole("button", { name: "다운로드" })).toBeVisible({ timeout: 30_000 });
     const file = await saveDownload(page, testInfo, () => page.getByRole("button", { name: "다운로드" }).click());
     expect(detectKind(file)).toBe("png");
+  });
+
+  test("기본 '자동'에서 WebP는 WebP로 (PNG로 바꿔 몇 배 키우지 않음) · 기본 문구는 비어 있음", async ({ page }, testInfo) => {
+    const webp = await writeTransparentWebp(page, testInfo.outputPath("alpha.webp"));
+    test.skip(!webp, "이 브라우저는 WebP를 만들 수 없음");
+    await page.goto("/tools/image/watermark");
+    await uploadToDropzone(page, [webp!]);
+    const input = page.getByPlaceholder("예: © 내 이름, @아이디");
+    await expect(input).toHaveValue("");
+    await input.fill("© test");
+    await page.getByRole("button", { name: "워터마크 적용", exact: true }).click();
+    await expect(page.getByRole("button", { name: "다운로드" })).toBeVisible({ timeout: 30_000 });
+    const file = await saveDownload(page, testInfo, () => page.getByRole("button", { name: "다운로드" }).click());
+    expect(detectKind(file)).toBe("webp");
   });
 });
 

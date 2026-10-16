@@ -120,8 +120,7 @@ export default function PdfMergeTool() {
       )}
 
       <p className="text-xs text-brand-mid leading-relaxed">
-        위에서 아래 순서대로 페이지가 이어집니다. 모든 처리는 브라우저 안에서 이루어지며, 파일이
-        서버로 전송되지 않습니다.
+        위에서 아래 순서대로 페이지가 이어집니다. 합치기는 내 브라우저 메모리에서만 이뤄져 문서 내용이 외부에 남지 않습니다.
       </p>
     </div>
   );
