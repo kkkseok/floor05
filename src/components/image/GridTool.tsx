@@ -171,7 +171,7 @@ export default function GridTool() {
 
       <p className="text-xs text-brand-mid leading-relaxed">
         나뉜 이미지는 왼쪽 위부터 번호 순서로 ZIP에 담깁니다. 인스타그램에는 마지막 번호부터 거꾸로(9→1)
-        올려야 프로필에서 한 장처럼 이어집니다. 모든 처리는 브라우저에서 이루어지며, 파일이 서버로 전송되지 않습니다.
+        올려야 프로필에서 한 장처럼 이어집니다. 조각은 이 탭에서 잘라 바로 ZIP으로 묶으니 원본 사진은 내 기기를 떠나지 않습니다.
       </p>
     </div>
   );
