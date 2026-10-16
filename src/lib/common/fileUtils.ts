@@ -281,3 +281,21 @@ export function outputTypeFor(file: File): OutputImageType {
   if (file.type === "image/webp" || ext === "webp") return "image/webp";
   return "image/jpeg";
 }
+
+/**
+ * ZIP 안 파일 이름이 겹치지 않게 " (n)"을 붙인다. used에 결과 이름을 추가한다.
+ * 폰 사진처럼 이름이 같은 파일을 여러 장 넣으면 JSZip이 같은 이름을 덮어써 한 장만 남는다.
+ */
+export function uniqueFileName(name: string, used: Set<string>): string {
+  let result = name;
+  if (used.has(result)) {
+    const dotIndex = name.lastIndexOf(".");
+    const base = dotIndex > 0 ? name.slice(0, dotIndex) : name;
+    const ext = dotIndex > 0 ? name.slice(dotIndex) : "";
+    let n = 1;
+    while (used.has(`${base} (${n})${ext}`)) n++;
+    result = `${base} (${n})${ext}`;
+  }
+  used.add(result);
+  return result;
+}

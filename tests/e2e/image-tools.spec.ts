@@ -450,6 +450,22 @@ test.describe("인스타 9분할", () => {
 });
 
 test.describe("EXIF 삭제", () => {
+  test("이름이 같은 사진 2장 → ZIP에 2개 모두 (덮어써서 1장만 남지 않음)", async ({ page }, testInfo) => {
+    const a = testInfo.outputPath("a/image.jpg");
+    const b = testInfo.outputPath("b/image.jpg");
+    fs.mkdirSync(path.dirname(a), { recursive: true });
+    fs.mkdirSync(path.dirname(b), { recursive: true });
+    fs.copyFileSync(fx("exif-gps.jpg"), a);
+    fs.copyFileSync(fx("photo-1200x900.jpg"), b);
+    await page.goto("/tools/image/exif-remove");
+    await uploadToDropzone(page, [a, b]);
+    const file = await saveDownload(page, testInfo, () =>
+      page.getByRole("button", { name: /EXIF 제거/ }).click(),
+    );
+    expect(detectKind(file)).toBe("zip");
+    expect((await zipEntries(file)).sort()).toEqual(["image_noexif (1).jpg", "image_noexif.jpg"]);
+  });
+
   test("GPS 포함 JPEG → 감지 표시 → 출력에서 EXIF 완전 제거 · 치수 유지", async ({ page }, testInfo) => {
     const guards = await installGuards(page);
     // 입력 fixture에 실제 EXIF(GPS)가 있는지 사전 확인
