@@ -10,6 +10,8 @@ export const metadata: Metadata = {
   description:
     "floor05 도구에 대한 불편·오류 신고, 기능 건의, 일반 문의를 폼으로 바로 남겨주세요. 영업일 기준 1~3일 내에 확인합니다.",
   openGraph: {
+    url: "/contact",
+    images: [{ url: "/og-image.png", width: 1200, height: 630 }],
     title: "문의 - 도구 오류 신고와 기능 제안",
     description:
       "floor05 도구에 대한 불편·오류 신고, 기능 건의, 일반 문의를 폼으로 바로 남겨주세요.",
@@ -66,7 +68,7 @@ export default function ContactPage() {
                   평일 오전 10시 ~ 오후 6시 (주말/공휴일 제외)
                 </p>
                 <p className="text-sm text-brand-light">
-                  ※ 개인 운영 서비스로, 답변이 다소 늦어질 수 있습니다. 양해
+                  ※ 작은 팀이 운영하는 서비스라 답변이 다소 늦어질 수 있습니다. 양해
                   부탁드립니다.
                 </p>
               </div>
