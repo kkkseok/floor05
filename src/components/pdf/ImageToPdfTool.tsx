@@ -198,8 +198,7 @@ export default function ImageToPdfTool() {
       )}
 
       <p className="text-xs text-brand-mid leading-relaxed">
-        이미지는 순서대로 한 장씩 PDF 페이지가 됩니다. 모든 처리는 브라우저 안에서 이루어지며,
-        파일이 서버로 전송되지 않습니다.
+        이미지는 순서대로 한 장씩 PDF 페이지가 됩니다. PDF는 이 탭에서 바로 만들어져, 증빙·서류 사진이 외부로 전송되지 않습니다.
       </p>
     </div>
   );
