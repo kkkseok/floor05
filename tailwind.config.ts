@@ -14,12 +14,14 @@ const config: Config = {
           black: "#0A0A0A",
           dark: "#1A1A1A",
           mid: "#4A4A4A",
-          light: "#B0B0B0",
+          light: "#B0B0B0", // 어두운 배경 위 보조 글자용 (밝은 배경에서는 대비 2.1로 부족 → subtle)
+          subtle: "#6E6E6E", // 밝은 배경 위 보조 글자 (#FAFAFA 대비 4.9)
           paper: "#F2F0ED",
           white: "#FAFAFA",
-          accent: "#C45C2C",
-          "accent-light": "#E8734A",
-          "accent-muted": "rgba(196, 92, 44, 0.12)",
+          // 2026-10 대비 보정: #C45C2C는 흰 글자 4.27·밝은 배경 4.09로 WCAG AA(4.5) 미달
+          accent: "#B8562A",
+          "accent-light": "#C45C2C",
+          "accent-muted": "rgba(184, 86, 42, 0.12)",
         },
       },
       fontFamily: {

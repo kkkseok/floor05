@@ -643,9 +643,50 @@ test.describe("색상 추출", () => {
     await expect(page.locator("main").getByText(/^rgb\(\d+, \d+, \d+\)$/).first()).toBeVisible();
     assertClean(guards);
   });
+
+  test("1px 줄무늬에서도 클릭한 픽셀의 정확한 색 (미리보기 평균색 아님) · 오른쪽 끝도 정상", async ({ page }, testInfo) => {
+    const stripes = writeStripesPng(testInfo.outputPath("stripes-1040.png"), 1040);
+    await page.goto("/tools/image/color-picker");
+    await uploadToDropzone(page, [stripes]);
+    const canvas = page.locator("main canvas").first();
+    await expect(canvas).toBeVisible({ timeout: 15_000 });
+    const box = (await canvas.boundingBox())!;
+    const rgb = page.locator("main").getByText(/^rgb\(\d+, \d+, \d+\)$/).first();
+    for (const fx_ of [0.13, 0.37, 0.61, 0.88]) {
+      await canvas.click({ position: { x: box.width * fx_, y: box.height / 2 } });
+      await expect(rgb).toHaveText(/^rgb\((0, 0, 0|255, 255, 255)\)$/);
+    }
+
+    const red = writeQuadrantPng(testInfo.outputPath("red.png"), 400, 200, 400, 200);
+    await page.goto("/tools/image/color-picker");
+    await uploadToDropzone(page, [red]);
+    await expect(canvas).toBeVisible({ timeout: 15_000 });
+    const b2 = (await canvas.boundingBox())!;
+    await canvas.click({ position: { x: b2.width - 0.5, y: b2.height / 2 } });
+    await expect(rgb).toHaveText("rgb(255, 0, 0)");
+  });
 });
 
 test.describe("모자이크", () => {
+  test("세로 사진에서도 드래그 선택 상자가 포인터 위치에 그려진다", async ({ page }, testInfo) => {
+    const tall = writeQuadrantPng(testInfo.outputPath("tall.png"), 600, 1600);
+    await page.goto("/tools/image/mosaic");
+    await uploadToDropzone(page, [tall]);
+    const canvas = page.locator("main canvas").first();
+    await expect(canvas).toBeVisible({ timeout: 15_000 });
+    const box = (await canvas.boundingBox())!;
+    const sx = box.x + box.width * 0.2;
+    const sy = box.y + box.height * 0.2;
+    await page.mouse.move(sx, sy);
+    await page.mouse.down();
+    await page.mouse.move(box.x + box.width * 0.6, box.y + box.height * 0.5, { steps: 5 });
+    const sel = page.locator("main div.pointer-events-none.absolute");
+    const sb = (await sel.boundingBox())!;
+    await page.mouse.up();
+    expect(Math.abs(sb.x - sx), `상자 왼쪽 ${sb.x} vs 포인터 ${sx}`).toBeLessThan(4);
+    expect(Math.abs(sb.y - sy)).toBeLessThan(4);
+  });
+
   test("드래그로 영역 적용 → 다운로드 (바이트 변경 확인)", async ({ page }, testInfo) => {
     const guards = await installGuards(page);
     await page.goto("/tools/image/mosaic");
@@ -696,6 +737,25 @@ test.describe("모자이크", () => {
 });
 
 test.describe("크롭", () => {
+  test("잡아 둔 크롭 영역은 좌우 반전 후에도 초기화되지 않고 거울 위치로 옮겨진다", async ({ page }, testInfo) => {
+    const src = writeQuadrantPng(testInfo.outputPath("quad.png"), 400, 300);
+    await page.goto("/tools/image/crop");
+    await uploadToDropzone(page, [src]);
+    await page.getByRole("button", { name: "1:1", exact: true }).click();
+    const area = page.getByLabel(/크롭 영역 - 방향키로 이동/);
+    await area.focus();
+    for (let i = 0; i < 6; i++) await page.keyboard.press("Shift+ArrowLeft"); // 영역을 왼쪽 끝(x=0)으로
+    await page.getByRole("button", { name: "좌우 반전" }).click();
+    await page.getByRole("button", { name: "이미지 크롭", exact: true }).click();
+    await expect(page.getByText(/크롭 완료/)).toBeVisible({ timeout: 30_000 });
+    const file = await saveDownload(page, testInfo, () => page.getByRole("button", { name: "다운로드" }).click());
+    const p = pngPixels(file);
+    expect([p.width, p.height]).toEqual([300, 300]);
+    // 반전된 그림에서 빨강은 x 200~400, 영역이 거울 위치(x 100~400)면 결과의 x 100~300이 빨강
+    expect(isRedAt(p, 120, 50)).toBe(true);
+    expect(isRedAt(p, 20, 50)).toBe(false);
+  });
+
   test("기본 크롭 영역 다운로드 → 원본 이하 치수의 유효 이미지", async ({ page }, testInfo) => {
     const guards = await installGuards(page);
     await page.goto("/tools/image/crop");

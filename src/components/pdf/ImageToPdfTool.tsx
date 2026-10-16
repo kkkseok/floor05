@@ -36,6 +36,8 @@ const QUALITY_PRESETS: { key: string; label: string; long: number | null; qualit
 ];
 
 let idSeq = 0;
+/** PDF 한 개에 넣을 수 있는 사진 수 (여러 번 나눠 올려도 합계 기준) */
+const MAX_IMAGES = 30;
 
 export default function ImageToPdfTool() {
   const [items, setItems] = useState<Item[]>([]);
@@ -55,11 +57,25 @@ export default function ImageToPdfTool() {
     };
   }, []);
 
+  const countRef = useRef(0);
+  useEffect(() => {
+    countRef.current = items.length;
+  }, [items.length]);
+
+  // 여러 번 나눠 올려도 합계가 MAX_IMAGES를 넘지 않게
   const addFiles = useCallback((files: File[]) => {
     setError(null);
+    const room = Math.max(0, MAX_IMAGES - countRef.current);
+    const accepted = files.slice(0, room);
+    if (accepted.length < files.length) {
+      setError(
+        `PDF 한 개에는 사진을 ${MAX_IMAGES}장까지 넣을 수 있어 ${files.length - accepted.length}장은 빼 두었습니다. 나머지는 PDF를 하나 더 만든 뒤 'PDF 합치기'로 이어 붙이세요.`,
+      );
+    }
+    countRef.current += accepted.length;
     setItems((prev) => [
       ...prev,
-      ...files.map((file) => ({ id: `img-${idSeq++}`, file, url: URL.createObjectURL(file) })),
+      ...accepted.map((file) => ({ id: `img-${idSeq++}`, file, url: URL.createObjectURL(file) })),
     ]);
   }, []);
 
@@ -131,7 +147,7 @@ export default function ImageToPdfTool() {
         onFilesSelected={addFiles}
         accept="image/jpeg,image/png,image/webp"
         multiple
-        maxFiles={30}
+        maxFiles={MAX_IMAGES}
       />
 
       {items.length > 0 && (
