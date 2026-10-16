@@ -3,11 +3,12 @@
  * expected 값은 제품 코드가 아니라 법정 산식·공식 요율(2026)로 별도 산출한 golden value다.
  * - 4대보험 요율: 국민연금 4.75%(상한 659만/하한 41만, 2026.7~), 건강 3.595%,
  *   장기요양 13.14%(건보료 대비), 고용 0.9% [출처: 보건복지부·국민건강보험공단·NPS 고시]
- * - 소득세: 2023~ 현행 누진구조 + 근로소득공제 + 근로소득세액공제 + 표준세액공제 13만
+ * - 소득세: 소득세법 시행령 [별표 2] 근로소득 간이세액표 <개정 2026. 2. 27.> 원표 조회값
+ *   (law.go.kr 별표2 PDF, 국세청 안내 페이지 예시 3,500~3,520천원 행과 대조)
  * - 최저임금 2026: 10,320원 [고용노동부 고시]
  */
 import { describe, it, expect } from "vitest";
-import { calcSalary } from "@/lib/calc/salary";
+import { calcSalary, calcIncomeTax } from "@/lib/calc/salary";
 import { calcSeverance } from "@/lib/calc/severance";
 import { calcWage } from "@/lib/calc/wage";
 
@@ -18,12 +19,8 @@ describe("연봉 실수령액 (calcSalary)", () => {
     // 국민연금 = floor10(3,966,666.67 × 0.0475) = 188,410
     // 건강 = floor10(× 0.03595) = 142,600 / 장기요양 = floor10(142,600 × 0.1314) = 18,730
     // 고용 = floor10(× 0.009) = 35,700
-    // 총급여(연) 47,600,000 → 근로소득공제 12,130,000 → 근로소득금액 35,470,000
-    // 과세표준 = 35,470,000 − 1,500,000(본인) − 2,260,920(연금연액) = 31,709,080
-    // 산출세액 = 31,709,080 × 15% − 1,260,000 = 3,496,362
-    // 세액공제 = min(715,000 + 2,196,362 × 30%, 한도 660,000) = 660,000
-    // 결정세액(연) = 3,496,362 − 660,000 − 130,000 = 2,706,362 → 월 225,530 (10원 절사)
-    // 지방소득세 = 22,550
+    // 소득세 = 간이세액표 3,960~3,980천원 · 가족 1명 = 190,620 / 지방소득세 = 19,060
+    // 공제 합계 = 188,410 + 142,600 + 18,730 + 35,700 + 190,620 + 19,060 = 595,120
     const r = calcSalary({
       annualSalary: 50_000_000,
       monthlyNonTax: 200_000,
@@ -35,10 +32,10 @@ describe("연봉 실수령액 (calcSalary)", () => {
     expect(r.deductions.health).toBe(142_600);
     expect(r.deductions.longTermCare).toBe(18_730);
     expect(r.deductions.employment).toBe(35_700);
-    expect(r.deductions.incomeTax).toBe(225_530);
-    expect(r.deductions.localTax).toBe(22_550);
-    expect(r.totalDeduction).toBe(633_520);
-    expect(r.monthlyNet).toBe(3_533_147); // 4,166,666.67 − 633,520 (반올림)
+    expect(r.deductions.incomeTax).toBe(190_620);
+    expect(r.deductions.localTax).toBe(19_060);
+    expect(r.totalDeduction).toBe(595_120);
+    expect(r.monthlyNet).toBe(3_571_547); // 4,166,666.67 − 595,120 (반올림)
   });
 
   it("고소득: 국민연금 기준소득월액 상한(659만) 적용", () => {
@@ -83,6 +80,39 @@ describe("연봉 실수령액 (calcSalary)", () => {
   });
 });
 
+describe("근로소득 간이세액표 (calcIncomeTax)", () => {
+  it("국세청 안내 예시: 월급여 3,500천원 행, 가족 1~6명", () => {
+    // 국세청 근로소득 간이세액표 안내 페이지의 3,500~3,520천원 행
+    const expected = [127_220, 102_220, 62_460, 49_340, 37_630, 32_380];
+    expected.forEach((tax, i) => expect(calcIncomeTax(3_500_000, i + 1, 0)).toBe(tax));
+  });
+
+  it("8~20세 자녀 차감 (2026.2.27 개정: 1명 20,830 / 2명 45,830 / 3명부터 +33,330)", () => {
+    expect(calcIncomeTax(3_500_000, 4, 1)).toBe(49_340 - 20_830);
+    expect(calcIncomeTax(3_500_000, 4, 2)).toBe(49_340 - 45_830);
+    expect(calcIncomeTax(3_500_000, 5, 3)).toBe(Math.max(0, 37_630 - 45_830 - 33_330));
+  });
+
+  it("표의 첫 행(770천원) 미만은 0원", () => {
+    expect(calcIncomeTax(700_000, 1, 0)).toBe(0);
+  });
+
+  it("10,000천원 정확값과 초과 산식", () => {
+    expect(calcIncomeTax(10_000_000, 1, 0)).toBe(1_507_400);
+    // 1,507,400 + (2,300,000 × 98% × 35%) + 25,000
+    expect(calcIncomeTax(12_300_000, 1, 0)).toBe(2_321_300);
+    // 1,507,400 + 1,397,000 + (6,000,000 × 98% × 38%) = 5,138,800
+    expect(calcIncomeTax(20_000_000, 1, 0)).toBe(5_138_800);
+  });
+
+  it("가족 11명 초과: 11명 세액 − (10명 − 11명) × 초과 인원", () => {
+    // 3,500천원 행의 10·11명 값은 원표에서 조회되므로 단조 감소만 확인
+    const t11 = calcIncomeTax(5_000_000, 11, 0);
+    const t10 = calcIncomeTax(5_000_000, 10, 0);
+    expect(calcIncomeTax(5_000_000, 12, 0)).toBe(Math.max(0, t11 - (t10 - t11)));
+  });
+});
+
 describe("퇴직금 (calcSeverance)", () => {
   it("3년 재직 · 월 300만 — 법정 산식 수기 검산", () => {
     // 재직 1,096일(2024 윤년 포함), 산정기간 2025-10-01~2026-01-01 = 92일
@@ -100,6 +130,37 @@ describe("퇴직금 (calcSeverance)", () => {
     expect(r.serviceDays).toBe(1096);
     expect(r.periodDays).toBe(92);
     expect(r.avgDailyWage).toBe(97_826);
+    expect(r.severancePay).toBe(8_812_388);
+  });
+
+  it("평균임금이 통상임금보다 적으면 통상임금으로 (근로기준법 §2②)", () => {
+    // 휴업 등으로 3개월 월 150만, 월 통상임금 300만 (주 40시간 → 월 209시간, 1일 8시간)
+    // 평균임금 = 4,500,000 / 92 = 48,913.04 / 1일 통상임금 = 3,000,000 / 209 × 8 = 114,832.54
+    // 퇴직금 = 114,832.54 × 30 × (1096/365) = 10,344,367
+    const r = calcSeverance({
+      joinDate: "2023-01-01",
+      leaveDate: "2026-01-01",
+      monthlyWage: 1_500_000,
+      annualBonus: 0,
+      annualLeaveAllowance: 0,
+      monthlyOrdinaryWage: 3_000_000,
+    });
+    expect(r.ordinaryApplied).toBe(true);
+    expect(r.ordinaryDailyWage).toBe(114_833);
+    expect(r.avgDailyWage).toBe(48_913);
+    expect(r.severancePay).toBe(Math.round(((3_000_000 / 209) * 8) * 30 * (1096 / 365)));
+  });
+
+  it("평균임금이 더 크면 통상임금을 넣어도 평균임금 그대로", () => {
+    const r = calcSeverance({
+      joinDate: "2023-01-01",
+      leaveDate: "2026-01-01",
+      monthlyWage: 3_000_000,
+      annualBonus: 0,
+      annualLeaveAllowance: 0,
+      monthlyOrdinaryWage: 2_000_000,
+    });
+    expect(r.ordinaryApplied).toBe(false);
     expect(r.severancePay).toBe(8_812_388);
   });
 

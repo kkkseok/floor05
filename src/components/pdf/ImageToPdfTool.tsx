@@ -4,6 +4,7 @@ import { useState, useEffect, useCallback, useRef } from "react";
 import { saveAs } from "file-saver";
 import FileDropzone from "@/components/common/FileDropzone";
 import { canvasToBlob } from "@/lib/common/fileUtils";
+import { drawImageDownscaled } from "@/lib/image/downscale";
 import {
   imagesToPdf,
   type PageSize,
@@ -27,7 +28,7 @@ const MARGINS: { key: string; label: string; pt: number }[] = [
 // 화질 프리셋. long = 긴 변 최대 픽셀(null이면 원본 유지).
 // A4(210×297mm)의 긴 변 297mm를 300dpi로 뽑으면 3508px, 150dpi면 1754px.
 // 실측(docs/blog-data/photo-pdf-size-2026-10-15.json): 카메라 사진 10장 기준
-// 원본·92% 48.0MB → 인쇄용 10.1MB → 제출용 2.9MB.
+// 원본·92% 48.0MB → 인쇄용 9.8MB → 제출용 2.8MB (실제 도구, A4, 2026-10-15 재측정).
 const QUALITY_PRESETS: { key: string; label: string; long: number | null; quality: number; hint: string }[] = [
   { key: "original", label: "원본", long: null, quality: 0.92, hint: "사진 해상도를 그대로 둡니다. 카메라 사진이면 장당 수 MB가 될 수 있어요." },
   { key: "print", label: "인쇄용", long: 3508, quality: 0.85, hint: "긴 변 3508px(A4 300dpi). A4로 인쇄해도 거칠어 보이지 않는 크기입니다." },
@@ -94,8 +95,8 @@ export default function ImageToPdfTool() {
     // 투명 PNG는 흰 배경으로 채워 PDF에서 검게 보이지 않게
     ctx.fillStyle = "#ffffff";
     ctx.fillRect(0, 0, canvas.width, canvas.height);
-    ctx.imageSmoothingQuality = "high";
-    ctx.drawImage(bitmap, 0, 0, canvas.width, canvas.height);
+    // 인쇄용·제출용으로 크게 줄일 때 절반씩 나눠 그린다(Firefox·WebKit은 high 품질을 무시)
+    drawImageDownscaled(ctx, bitmap, 0, 0, bitmap.width, bitmap.height, 0, 0, canvas.width, canvas.height);
     bitmap.close?.();
     const blob = await canvasToBlob(canvas, "image/jpeg", preset.quality);
     const buf = await blob.arrayBuffer();

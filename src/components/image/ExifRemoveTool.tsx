@@ -4,7 +4,7 @@ import { useState, useCallback } from "react";
 import { saveAs } from "file-saver";
 import JSZip from "jszip";
 import FileDropzone from "@/components/common/FileDropzone";
-import { canvasToBlob, fileToArrayBuffer, getFileNameWithoutExtension, getFileExtension } from "@/lib/common/fileUtils";
+import { canvasToBlob, fileToArrayBuffer, getFileNameWithoutExtension, getFileExtension, mimeToExtension, outputTypeFor, uniqueFileName } from "@/lib/common/fileUtils";
 import { scanExif } from "@/lib/image/exifScan";
 import { trackToolUse, trackDownload } from "@/lib/common/analytics";
 
@@ -50,10 +50,10 @@ export default function ExifRemoveTool() {
     if (!ctx) throw new Error("처리 실패");
     ctx.drawImage(bmp, 0, 0);
     bmp.close?.();
-    const type = file.type === "image/png" ? "image/png" : file.type === "image/webp" ? "image/webp" : "image/jpeg";
-    const ext = type === "image/png" ? "png" : type === "image/webp" ? "webp" : "jpg";
-    const blob = await canvasToBlob(canvas, type, type === "image/jpeg" ? 0.95 : undefined);
-    return { blob, ext };
+    // 입력 형식 유지(WebKit은 .webp의 File.type을 비워 두므로 확장자도 봄). WebP도 JPG와 같은 95%로 저장
+    const type = outputTypeFor(file);
+    const blob = await canvasToBlob(canvas, type, type === "image/png" ? undefined : 0.95);
+    return { blob, ext: mimeToExtension(blob.type) };
   }
 
   async function process() {
@@ -67,9 +67,10 @@ export default function ExifRemoveTool() {
         trackDownload("exif-remove", "single");
       } else {
         const zip = new JSZip();
+        const usedNames = new Set<string>();
         for (const it of items) {
           const { blob, ext } = await strip(it.file);
-          zip.file(`${getFileNameWithoutExtension(it.file.name)}_noexif.${ext}`, blob);
+          zip.file(uniqueFileName(`${getFileNameWithoutExtension(it.file.name)}_noexif.${ext}`, usedNames), blob);
         }
         const out = await zip.generateAsync({ type: "blob" });
         saveAs(out, "exif_removed.zip");

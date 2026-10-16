@@ -127,7 +127,7 @@ export const POSTS: BlogPost[] = [
     slug: "image-to-pdf-guide",
     title: "사진을 PDF로 만들기 — 화질별 용량 실측",
     description:
-      "카메라 사진 10장을 PDF로 묶으니 원본 그대로는 48MB, 긴 변 1754px로 줄이면 2.9MB였습니다. PDF 용량이 정해지는 원리와 화질 옵션 고르는 법.",
+      "카메라 사진 10장을 PDF로 묶으니 원본 그대로는 48MB, 긴 변 1754px로 줄이면 2.8MB였습니다. PDF 용량이 정해지는 원리와 화질 옵션 고르는 법.",
     keywords: [
       "사진 pdf 만들기",
       "jpg pdf 변환",
@@ -436,7 +436,7 @@ export const POSTS: BlogPost[] = [
     slug: "image-crop-guide",
     title: "사진 자르기 — 비율별 남는 픽셀·용량 실측",
     description:
-      "카메라 원본 사진을 여섯 비율로 잘라 남는 픽셀과 용량을 쟀습니다. 9:16은 44%만 남았고, 원형 프로필 PNG는 같은 크기 JPG의 5.7배였습니다.",
+      "카메라 원본 사진을 여섯 비율로 잘라 남는 픽셀과 용량을 쟀습니다. 9:16은 44%만 남았고, 원형 프로필 PNG는 같은 크기 JPG의 5.9배였습니다.",
     keywords: [
       "사진 자르기",
       "이미지 크롭",
@@ -621,11 +621,14 @@ export function buildBlogMetadata(slug: string): Metadata {
       description: post.description,
       publishedTime: post.datePublished,
       modifiedTime: post.dateModified,
+      // 페이지의 openGraph가 루트 설정을 통째로 덮어쓰므로 공유 이미지를 다시 지정한다
+      images: [{ url: "/og-image.png", width: 1200, height: 630, alt: post.title }],
     },
     twitter: {
       card: "summary_large_image",
       title: post.title,
       description: post.description,
+      images: ["/og-image.png"],
     },
   };
 }

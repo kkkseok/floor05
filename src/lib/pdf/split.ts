@@ -5,6 +5,7 @@
  */
 
 import { PDFDocument } from "pdf-lib";
+import { loadPdf } from "./load";
 
 /**
  * "1-3, 5, 8-10" → 0-based 인덱스 배열(입력 순서·중복 유지).
@@ -44,7 +45,7 @@ export async function extractPages(
   buffer: ArrayBuffer,
   indices: number[],
 ): Promise<Uint8Array> {
-  const src = await PDFDocument.load(buffer, { ignoreEncryption: true });
+  const src = await loadPdf(buffer);
   const out = await PDFDocument.create();
   const pages = await out.copyPages(src, indices);
   pages.forEach((p) => out.addPage(p));
@@ -61,7 +62,7 @@ export async function splitAllPages(
   buffer: ArrayBuffer,
   baseName: string,
 ): Promise<SplitFile[]> {
-  const src = await PDFDocument.load(buffer, { ignoreEncryption: true });
+  const src = await loadPdf(buffer);
   const count = src.getPageCount();
   const pad = String(count).length;
 

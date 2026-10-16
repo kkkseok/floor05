@@ -4,6 +4,7 @@
  */
 
 import { loadImage, fileToDataUrl, canvasToBlob } from "../common/fileUtils";
+import { drawImageDownscaled } from "./downscale";
 
 export interface CompressionOptions {
   quality: number; // 0.01 ~ 1.0
@@ -21,6 +22,10 @@ export interface CompressionResult {
   dataUrl: string;
   /** 목표 용량을 맞추려고 해상도를 줄였을 때의 원본 치수 */
   resizedFrom?: { width: number; height: number };
+  /** 투명 PNG를 목표 용량에 맞추지 못해 JPG(흰 배경)로 바꿔 저장했을 때 true */
+  alphaDropped?: boolean;
+  /** 다시 압축하면 오히려 커지거나 이미 목표 이하라, 원본 화질 그대로 메타데이터만 지웠을 때 true */
+  keptOriginal?: boolean;
 }
 
 /**
@@ -72,7 +77,8 @@ export async function compressImage(
     ctx.fillRect(0, 0, width, height);
   }
 
-  ctx.drawImage(img, 0, 0, width, height);
+  // 해상도를 크게 줄일 때는 절반씩 나눠 그린다(Firefox·WebKit은 high 품질을 무시해 한 번에 줄이면 깨짐)
+  drawImageDownscaled(ctx, img, 0, 0, img.naturalWidth || img.width, img.naturalHeight || img.height, 0, 0, width, height);
 
   // Blob 생성
   const blob = await canvasToBlob(

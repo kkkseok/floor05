@@ -1,0 +1,16 @@
+{
+ "measuredAt": "2026-10-16",
+ "source": "NASA KSC-20210121-PH-JBS01_0079 (public domain) 5522x4312 JPG 15,781,842B",
+ "tool": "floor05 워터마크, 텍스트 '© floor05', 나머지 기본값, Chromium 151 실제 화면 조작",
+ "result": {
+  "PNG(기존 기본값)": {
+   "bytes": 47173278,
+   "ms": 2039
+  },
+  "JPG(92%)": {
+   "bytes": 6507589,
+   "ms": 811
+  }
+ },
+ "decision": "기본값을 '자동'(JPG 사진→JPG, PNG·WebP→PNG)으로 변경"
+}

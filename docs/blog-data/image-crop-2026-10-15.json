@@ -1,6 +1,6 @@
 {
   "browser": "151.0.7922.34",
-  "measuredAt": "2026-10-15T13:36:59.991Z",
+  "measuredAt": "2026-10-15T14:51:21.967Z",
   "result": {
     "W": 5522,
     "H": 4312,
@@ -59,40 +59,41 @@
         "name": "1:1 → 1080×1080 (JPG)",
         "w": 1080,
         "h": 1080,
-        "bytes": 370841
+        "bytes": 334010
       },
       {
         "name": "1:1 → 600×600 (JPG)",
         "w": 600,
         "h": 600,
-        "bytes": 120869
+        "bytes": 112938
       },
       {
         "name": "3.5:4.5 → 413×531 (JPG)",
         "w": 413,
         "h": 531,
-        "bytes": 66293
+        "bytes": 70400
       },
       {
         "name": "3:4 → 354×472 (JPG)",
         "w": 354,
         "h": 472,
-        "bytes": 53630
+        "bytes": 54440
       }
     ],
     "circle": [
       {
         "size": 1080,
-        "circlePng": 2095779,
-        "squareJpg": 370841
+        "circlePng": 1978971,
+        "squareJpg": 334010
       },
       {
         "size": 600,
-        "circlePng": 648284,
-        "squareJpg": 120869
+        "circlePng": 627175,
+        "squareJpg": 112938
       }
     ]
   },
   "source": "NASA KSC-20210121-PH-JBS01_0079 (public domain), 5522x4312",
-  "alsoFound": "CropTool saved all non-circle crops as JPEG; transparent PNG got white background — fixed in 64d479e"
+  "alsoFound": "CropTool saved all non-circle crops as JPEG; transparent PNG got white background — fixed in 64d479e",
+  "correction": "2026-10-15 재측정: 고정 크기 출력을 도구(crop.ts)와 같은 경로(원본 크기로 자른 캔버스 → drawImageDownscaled)로 다시 잼. 실제 도구 다운로드와 일치: 2×2 112,938B / 3.5×4.5 70,400B / 3×4 54,440B"
 }

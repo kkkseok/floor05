@@ -22,6 +22,8 @@ export const metadata: Metadata = {
   ],
   alternates: { canonical: "/blog/webp-guide" },
   openGraph: {
+    url: "/blog/webp-guide",
+    images: [{ url: "/og-image.png", width: 1200, height: 630 }],
     title: "WebP 포맷 완벽 가이드 - 장점, 단점, 변환 방법",
     description: "WebP 포맷의 모든 것: 장점, 단점, 변환 방법까지",
   },
