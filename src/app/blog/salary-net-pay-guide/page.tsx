@@ -15,7 +15,7 @@ const faqs = [
   {
     question: "연봉 5,000만 원이면 한 달에 얼마 받나요?",
     answer:
-      "2026년 요율, 부양가족 1명(본인), 비과세 식대 월 20만 원 기준으로 월 3,571,547원입니다. 세전 월급 4,166,667원에서 4대보험 385,440원과 소득세·지방소득세 209,680원이 빠집니다. 회사에 신고한 가족 수나 원천징수 비율이 다르면 급여명세서와 차이가 납니다.",
+      "2026년 요율, 부양가족 1명(본인), 비과세 식대 월 20만 원 기준으로 월 3,571,577원입니다. 세전 월급 4,166,667원에서 4대보험 385,410원과 소득세·지방소득세 209,680원이 빠집니다. 회사에 신고한 가족 수나 원천징수 비율이 다르면 급여명세서와 차이가 납니다.",
   },
   {
     question: "연봉이 두 배가 되면 실수령액도 두 배가 되나요?",
@@ -25,7 +25,7 @@ const faqs = [
   {
     question: "부양가족이 많으면 얼마나 더 받나요?",
     answer:
-      "연봉 5,000만 원 기준으로 본인만일 때 월 3,571,547원, 본인 포함 4명에 8~20세 자녀 2명이면 월 3,734,567원으로 163,020원 많았습니다. 4대보험은 같고 소득세만 줄어든 차이입니다.",
+      "연봉 5,000만 원 기준으로 본인만일 때 월 3,571,577원, 본인 포함 4명에 8~20세 자녀 2명이면 월 3,734,597원으로 163,020원 많았습니다. 4대보험은 같고 소득세만 줄어든 차이입니다.",
   },
   {
     question: "연봉을 넣으면 어딘가에 기록되나요?",
@@ -50,17 +50,17 @@ const bands = [
   { annual: "2,400만", gross: 2000000, net: 1808470, rate: 9.6 },
   { annual: "3,000만", gross: 2500000, net: 2244440, rate: 10.2 },
   { annual: "3,600만", gross: 3000000, net: 2665440, rate: 11.2 },
-  { annual: "4,000만", gross: 3333333, net: 2935783, rate: 11.9 },
-  { annual: "5,000만", gross: 4166667, net: 3571547, rate: 14.3 },
+  { annual: "4,000만", gross: 3333333, net: 2935803, rate: 11.9 },
+  { annual: "5,000만", gross: 4166667, net: 3571577, rate: 14.3 },
   { annual: "6,000만", gross: 5000000, net: 4195410, rate: 16.1 },
-  { annual: "7,000만", gross: 5833333, net: 4821283, rate: 17.3 },
-  { annual: "8,000만", gross: 6666667, net: 5367047, rate: 19.5 },
+  { annual: "7,000만", gross: 5833333, net: 4821303, rate: 17.3 },
+  { annual: "8,000만", gross: 6666667, net: 5367077, rate: 19.5 },
   { annual: "1억", gross: 8333333, net: 6530913, rate: 21.6 },
   { annual: "1억 5,000만", gross: 12500000, net: 9022570, rate: 27.8 },
 ];
 
 const breakdown = [
-  { item: "국민연금 (4.75%)", won: 188410 },
+  { item: "국민연금 (4.75%)", won: 188380 },
   { item: "건강보험 (3.595%)", won: 142600 },
   { item: "장기요양 (건강보험료의 13.14%)", won: 18730 },
   { item: "고용보험 (0.9%)", won: 35700 },
@@ -167,7 +167,7 @@ export default function SalaryNetPayGuidePage() {
             </p>
             <p className="text-brand-mid leading-relaxed mb-6">
               같은 이유로 연봉 인상분도 전부 손에 들어오지 않습니다. 5,000만 원에서 6,000만 원으로 오르면 세전 월급은
-              833,333원 늘지만 실수령액은 623,863원 늘었습니다. 인상분의 75%입니다.
+              833,333원 늘지만 실수령액은 623,833원 늘었습니다. 인상분의 75%입니다.
             </p>
 
             <h2 className="text-2xl font-bold text-brand-black mt-12 mb-4">
@@ -190,13 +190,13 @@ export default function SalaryNetPayGuidePage() {
                   ))}
                   <tr>
                     <td className="py-2 pr-4 font-medium text-brand-black">합계</td>
-                    <td className="py-2 pr-4 font-medium text-brand-black">595,120원</td>
+                    <td className="py-2 pr-4 font-medium text-brand-black">595,090원</td>
                   </tr>
                 </tbody>
               </table>
             </div>
             <p className="text-brand-mid leading-relaxed mb-6">
-              가장 큰 항목은 소득세(190,620원)와 국민연금(188,410원)입니다. 4대보험은 비과세 20만 원을 뺀 3,966,667원에 요율을
+              가장 큰 항목은 소득세(190,620원)와 국민연금(188,380원)입니다. 4대보험은 비과세 20만 원을 뺀 3,966,667원(국민연금은 천원 미만을 버린 3,966,000원)에 요율을
               곱하고, 장기요양보험은 월급이 아니라 건강보험료에 13.14%를 곱한다는 점이 다릅니다. 산재보험은 사업주가 전액
               부담해 월급에서 빠지지 않습니다.
             </p>
@@ -219,7 +219,7 @@ export default function SalaryNetPayGuidePage() {
               4. 비과세 20만 원과 부양가족은 얼마나 차이 날까
             </h2>
             <p className="text-brand-mid leading-relaxed mb-4">
-              연봉 5,000만 원에서 비과세(식대) 20만 원이 있을 때와 없을 때를 비교하니 월 3,571,547원과 3,522,737원으로
+              연봉 5,000만 원에서 비과세(식대) 20만 원이 있을 때와 없을 때를 비교하니 월 3,571,577원과 3,522,767원으로
               48,810원 차이였습니다. 비과세 금액만큼 4대보험과 소득세를 매기는 기준이 줄어서입니다. 1년이면 약 59만 원입니다.
             </p>
             <div className="overflow-x-auto mb-4">
@@ -235,22 +235,22 @@ export default function SalaryNetPayGuidePage() {
                   <tr className="border-b border-brand-light/20">
                     <td className="py-2 pr-4">본인만 (1명)</td>
                     <td className="py-2 pr-4">190,620원</td>
-                    <td className="py-2 pr-4">3,571,547원</td>
+                    <td className="py-2 pr-4">3,571,577원</td>
                   </tr>
                   <tr className="border-b border-brand-light/20">
                     <td className="py-2 pr-4">본인 + 배우자 (2명)</td>
                     <td className="py-2 pr-4">162,640원</td>
-                    <td className="py-2 pr-4">3,602,327원</td>
+                    <td className="py-2 pr-4">3,602,357원</td>
                   </tr>
                   <tr className="border-b border-brand-light/20">
                     <td className="py-2 pr-4">3명, 8~20세 자녀 1명</td>
                     <td className="py-2 pr-4">83,870원</td>
-                    <td className="py-2 pr-4">3,688,977원</td>
+                    <td className="py-2 pr-4">3,689,007원</td>
                   </tr>
                   <tr>
                     <td className="py-2 pr-4">4명, 8~20세 자녀 2명</td>
                     <td className="py-2 pr-4">42,420원</td>
-                    <td className="py-2 pr-4">3,734,567원</td>
+                    <td className="py-2 pr-4">3,734,597원</td>
                   </tr>
                 </tbody>
               </table>
@@ -273,7 +273,7 @@ export default function SalaryNetPayGuidePage() {
             <p className="text-brand-mid leading-relaxed mb-6">
               그래서 법령(소득세법 시행령 별표2)에 실린 간이세액표 646개 구간을 그대로 넣어 찾아 쓰도록 바꿨습니다. 연봉
               5,000만 원·본인만 기준 소득세는 225,530원에서 190,620원으로, 4명·자녀 2명 기준은 140,120원에서 42,420원으로
-              바뀌었습니다. 2026년 3월부터 늘어난 자녀 차감액(1명 20,830원, 2명 45,830원)도 이때 반영했습니다. 이 글의 숫자는
+              바뀌었습니다. 2026년 3월부터 늘어난 자녀 차감액(1명 20,830원, 2명 45,830원)도 이때 반영했습니다. 국민연금도 기준소득월액을 정할 때 천원 미만을 버리고 하한(41만 원)을 적용하도록 함께 고쳤습니다. 이 글의 숫자는
               모두 고친 뒤의 계산입니다.
             </p>
 
