@@ -61,7 +61,7 @@ export default function ExifRemovalGuidePage() {
 
       <main className="flex-1">
         <article className="max-w-3xl mx-auto px-4 sm:px-6 lg:px-8 py-16">
-          <nav className="mb-8 text-sm text-brand-light">
+          <nav className="mb-8 text-sm text-brand-subtle">
             <Link href="/blog" className="hover:text-brand-mid">
               블로그
             </Link>
@@ -74,7 +74,7 @@ export default function ExifRemovalGuidePage() {
               사진 위치정보(EXIF) 삭제하는 법
             </h1>
             <p className="text-lg text-brand-mid">올리기 전에 지우는 작은 습관</p>
-            <div className="mt-4 flex items-center gap-4 text-sm text-brand-light">
+            <div className="mt-4 flex items-center gap-4 text-sm text-brand-subtle">
               <time dateTime="2026-06-29">2026-06-29</time>
               <span>·</span>
               <span>5분 읽기</span>
