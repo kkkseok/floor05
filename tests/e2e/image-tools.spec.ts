@@ -737,6 +737,25 @@ test.describe("모자이크", () => {
 });
 
 test.describe("크롭", () => {
+  test("잡아 둔 크롭 영역은 좌우 반전 후에도 초기화되지 않고 거울 위치로 옮겨진다", async ({ page }, testInfo) => {
+    const src = writeQuadrantPng(testInfo.outputPath("quad.png"), 400, 300);
+    await page.goto("/tools/image/crop");
+    await uploadToDropzone(page, [src]);
+    await page.getByRole("button", { name: "1:1", exact: true }).click();
+    const area = page.getByLabel(/크롭 영역 - 방향키로 이동/);
+    await area.focus();
+    for (let i = 0; i < 6; i++) await page.keyboard.press("Shift+ArrowLeft"); // 영역을 왼쪽 끝(x=0)으로
+    await page.getByRole("button", { name: "좌우 반전" }).click();
+    await page.getByRole("button", { name: "이미지 크롭", exact: true }).click();
+    await expect(page.getByText(/크롭 완료/)).toBeVisible({ timeout: 30_000 });
+    const file = await saveDownload(page, testInfo, () => page.getByRole("button", { name: "다운로드" }).click());
+    const p = pngPixels(file);
+    expect([p.width, p.height]).toEqual([300, 300]);
+    // 반전된 그림에서 빨강은 x 200~400, 영역이 거울 위치(x 100~400)면 결과의 x 100~300이 빨강
+    expect(isRedAt(p, 120, 50)).toBe(true);
+    expect(isRedAt(p, 20, 50)).toBe(false);
+  });
+
   test("기본 크롭 영역 다운로드 → 원본 이하 치수의 유효 이미지", async ({ page }, testInfo) => {
     const guards = await installGuards(page);
     await page.goto("/tools/image/crop");

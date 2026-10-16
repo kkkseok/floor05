@@ -85,9 +85,12 @@ export default function CropTool() {
     });
   }, [imageData?.originalDataUrl, rotation, flipHorizontal, flipVertical]);
 
-  // 비율 변경 시 크롭 영역 재계산
+  // 이미지·비율·회전(치수)이 바뀔 때만 크롭 영역을 최대로 다시 잡는다.
+  // 예전에는 imageData 객체 전체에 반응해, 반전으로 미리보기가 갱신될 때마다 잡아 둔 영역이 초기화됐다.
+  const hasImage = !!imageData;
+  const imageKey = imageData?.originalDataUrl;
   useEffect(() => {
-    if (!imageData) return;
+    if (!hasImage) return;
 
     const newArea = calculateMaxCropArea(
       currentDimensions.width,
@@ -95,7 +98,17 @@ export default function CropTool() {
       aspectRatio
     );
     setCropArea(newArea);
-  }, [imageData, currentDimensions, aspectRatio]);
+  }, [hasImage, imageKey, currentDimensions.width, currentDimensions.height, aspectRatio]);
+
+  // 반전하면 잡아 둔 영역도 거울 위치로 옮겨 같은 부분을 계속 가리킨다
+  const flipH = useCallback(() => {
+    setFlipHorizontal((v) => !v);
+    setCropArea((a) => ({ ...a, x: currentDimensions.width - a.x - a.width }));
+  }, [currentDimensions.width]);
+  const flipV = useCallback(() => {
+    setFlipVertical((v) => !v);
+    setCropArea((a) => ({ ...a, y: currentDimensions.height - a.y - a.height }));
+  }, [currentDimensions.height]);
 
   // 디스플레이 스케일 계산
   useEffect(() => {
@@ -727,7 +740,7 @@ export default function CropTool() {
               </div>
               <div className="flex gap-2">
                 <button
-                  onClick={() => setFlipHorizontal(!flipHorizontal)}
+                  onClick={flipH}
                   aria-label="좌우 반전"
                   aria-pressed={flipHorizontal}
                   className={`
@@ -742,7 +755,7 @@ export default function CropTool() {
                   좌우 반전
                 </button>
                 <button
-                  onClick={() => setFlipVertical(!flipVertical)}
+                  onClick={flipV}
                   aria-label="상하 반전"
                   aria-pressed={flipVertical}
                   className={`
