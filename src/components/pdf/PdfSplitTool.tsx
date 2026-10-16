@@ -7,6 +7,7 @@ import FileDropzone from "@/components/common/FileDropzone";
 import { fileToArrayBuffer, getFileNameWithoutExtension } from "@/lib/common/fileUtils";
 import { getPageCount } from "@/lib/pdf/merge";
 import { parsePageRanges, extractPages, splitAllPages } from "@/lib/pdf/split";
+import { pdfErrorMessage } from "@/lib/pdf/load";
 import { trackToolUse, trackDownload } from "@/lib/common/analytics";
 
 type Mode = "extract" | "all";
@@ -29,8 +30,8 @@ export default function PdfSplitTool() {
     try {
       const buf = await fileToArrayBuffer(f);
       setPageCount(await getPageCount(buf));
-    } catch {
-      setError("PDF를 읽지 못했습니다. 암호가 걸렸거나 손상된 파일일 수 있어요.");
+    } catch (err) {
+      setError(pdfErrorMessage(err, f.name));
       setFile(null);
     }
   }, []);
@@ -62,8 +63,8 @@ export default function PdfSplitTool() {
         trackDownload("pdf-split", "zip");
       }
       trackToolUse("pdf-split", { mode });
-    } catch {
-      setError("PDF를 분할하지 못했습니다. 잠시 후 다시 시도해 주세요.");
+    } catch (err) {
+      setError(pdfErrorMessage(err, file.name));
     } finally {
       setBusy(false);
     }
