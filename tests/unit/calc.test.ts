@@ -133,6 +133,37 @@ describe("퇴직금 (calcSeverance)", () => {
     expect(r.severancePay).toBe(8_812_388);
   });
 
+  it("평균임금이 통상임금보다 적으면 통상임금으로 (근로기준법 §2②)", () => {
+    // 휴업 등으로 3개월 월 150만, 월 통상임금 300만 (주 40시간 → 월 209시간, 1일 8시간)
+    // 평균임금 = 4,500,000 / 92 = 48,913.04 / 1일 통상임금 = 3,000,000 / 209 × 8 = 114,832.54
+    // 퇴직금 = 114,832.54 × 30 × (1096/365) = 10,344,367
+    const r = calcSeverance({
+      joinDate: "2023-01-01",
+      leaveDate: "2026-01-01",
+      monthlyWage: 1_500_000,
+      annualBonus: 0,
+      annualLeaveAllowance: 0,
+      monthlyOrdinaryWage: 3_000_000,
+    });
+    expect(r.ordinaryApplied).toBe(true);
+    expect(r.ordinaryDailyWage).toBe(114_833);
+    expect(r.avgDailyWage).toBe(48_913);
+    expect(r.severancePay).toBe(Math.round(((3_000_000 / 209) * 8) * 30 * (1096 / 365)));
+  });
+
+  it("평균임금이 더 크면 통상임금을 넣어도 평균임금 그대로", () => {
+    const r = calcSeverance({
+      joinDate: "2023-01-01",
+      leaveDate: "2026-01-01",
+      monthlyWage: 3_000_000,
+      annualBonus: 0,
+      annualLeaveAllowance: 0,
+      monthlyOrdinaryWage: 2_000_000,
+    });
+    expect(r.ordinaryApplied).toBe(false);
+    expect(r.severancePay).toBe(8_812_388);
+  });
+
   it("상여·연차수당 3/12 가산 (근로기준법 시행령 §2)", () => {
     // 연간상여 1,200만 → 300만 가산 / 연차수당 120만 → 30만 가산
     const r = calcSeverance({

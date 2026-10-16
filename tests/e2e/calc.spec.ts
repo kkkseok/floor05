@@ -50,6 +50,17 @@ test.describe("퇴직금", () => {
     assertClean(guards);
   });
 
+  test("월 통상임금이 평균임금보다 크면 통상임금으로 계산 (근로기준법 §2②)", async ({ page }) => {
+    await page.goto("/tools/calc/severance");
+    await fillStable(page.getByLabel("입사일"), "2023-01-01");
+    await fillStable(page.getByLabel("퇴직일"), "2026-01-01");
+    await fillStable(page.getByLabel("월 평균 급여(만원)"), "150");
+    await fillStable(page.getByLabel("월 통상임금(만원)"), "300");
+    const main = page.locator("main");
+    await expect(main.getByText("10,344,367")).toBeVisible();
+    await expect(main.getByText(/통상임금으로 계산했습니다/)).toBeVisible();
+  });
+
   test("1년 미만 → 대상 아님 경고", async ({ page }) => {
     await page.goto("/tools/calc/severance");
     await fillStable(page.getByLabel("입사일"), "2025-09-01");

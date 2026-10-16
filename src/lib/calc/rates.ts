@@ -91,4 +91,8 @@ export const SEVERANCE = {
   yearDays: 365,
   /** 퇴직금 발생 최소 재직기간(일): 1년 미만은 법정 퇴직금 대상 아님 */
   minDays: 365,
+  /** 통상시급 산정용 월 소정근로시간 (주 40시간 + 주휴 8시간, 고용노동부 기준 209시간) */
+  monthlyHours: 209,
+  /** 1일 소정근로시간 */
+  dailyHours: 8,
 } as const;

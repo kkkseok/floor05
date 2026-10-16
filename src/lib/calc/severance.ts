@@ -22,6 +22,8 @@ export interface SeveranceInput {
   annualBonus: number;
   /** 연차수당 (원, 없으면 0) */
   annualLeaveAllowance: number;
+  /** 월 통상임금 (원, 선택). 평균임금이 통상임금보다 적으면 통상임금으로 계산(근로기준법 제2조 제2항) */
+  monthlyOrdinaryWage?: number;
 }
 
 export interface SeveranceResult {
@@ -39,8 +41,12 @@ export interface SeveranceResult {
   leavePortion: number;
   /** 임금총액 */
   totalWage: number;
-  /** 1일 평균임금 */
+  /** 1일 평균임금 (3개월 임금총액 기준) */
   avgDailyWage: number;
+  /** 1일 통상임금 (월 통상임금 ÷ 209시간 × 8시간, 입력 없으면 0) */
+  ordinaryDailyWage: number;
+  /** 평균임금 대신 통상임금으로 계산했는지 */
+  ordinaryApplied: boolean;
   /** 세전 퇴직금 */
   severancePay: number;
   /** 1년(365일) 이상 재직 — 법정 퇴직금 대상 여부 */
@@ -93,6 +99,8 @@ const EMPTY: SeveranceResult = {
   leavePortion: 0,
   totalWage: 0,
   avgDailyWage: 0,
+  ordinaryDailyWage: 0,
+  ordinaryApplied: false,
   severancePay: 0,
   eligible: false,
   valid: false,
@@ -119,8 +127,13 @@ export function calcSeverance(input: SeveranceInput): SeveranceResult {
   const totalWage = threeMonthWage + bonusPortion + leavePortion;
 
   const avgDailyWage = totalWage / periodDays;
+  // 1일 통상임금 = 통상시급(월 통상임금 ÷ 월 소정근로시간 209) × 1일 소정근로시간 8 (주 40시간 기준)
+  const ordinaryDailyWage =
+    (Math.max(0, input.monthlyOrdinaryWage ?? 0) / SEVERANCE.monthlyHours) * SEVERANCE.dailyHours;
+  const ordinaryApplied = ordinaryDailyWage > avgDailyWage;
+  const appliedDaily = ordinaryApplied ? ordinaryDailyWage : avgDailyWage;
   const severancePay =
-    avgDailyWage * SEVERANCE.daysPerYear * (serviceDays / SEVERANCE.yearDays);
+    appliedDaily * SEVERANCE.daysPerYear * (serviceDays / SEVERANCE.yearDays);
 
   return {
     serviceDays,
@@ -131,6 +144,8 @@ export function calcSeverance(input: SeveranceInput): SeveranceResult {
     leavePortion: Math.round(leavePortion),
     totalWage: Math.round(totalWage),
     avgDailyWage: Math.round(avgDailyWage),
+    ordinaryDailyWage: Math.round(ordinaryDailyWage),
+    ordinaryApplied,
     severancePay: Math.round(severancePay),
     eligible: serviceDays >= SEVERANCE.minDays,
     valid: true,
