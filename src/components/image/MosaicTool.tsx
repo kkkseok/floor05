@@ -1,12 +1,27 @@
 "use client";
 
-import { useState, useRef, useCallback } from "react";
+import { useState, useRef, useCallback, useEffect } from "react";
 import { saveAs } from "file-saver";
 import FileDropzone from "@/components/common/FileDropzone";
-import { canvasToBlob, getFileNameWithoutExtension } from "@/lib/common/fileUtils";
+import {
+  canvasToBlob,
+  getFileNameWithoutExtension,
+  mimeToExtension,
+  outputTypeFor,
+  type OutputImageType,
+} from "@/lib/common/fileUtils";
 import { trackToolUse, trackDownload } from "@/lib/common/analytics";
 
 const MAX_DIM = 2000;
+
+interface Region {
+  x: number;
+  y: number;
+  w: number;
+  h: number;
+  mode: Mode;
+  block: number;
+}
 type Mode = "mosaic" | "blur";
 
 interface Sel {
@@ -19,7 +34,8 @@ interface Sel {
 export default function MosaicTool() {
   const [loaded, setLoaded] = useState(false);
   const [name, setName] = useState("image");
-  const [isJpeg, setIsJpeg] = useState(true);
+  // 출력 형식은 입력을 따른다(투명 WebP를 JPG로 바꾸면 투명 영역이 검게 칠해졌다)
+  const [outputType, setOutputType] = useState<OutputImageType>("image/jpeg");
   const [mode, setMode] = useState<Mode>("mosaic");
   const [strength, setStrength] = useState(12);
   const [sel, setSel] = useState<Sel | null>(null);
@@ -30,6 +46,8 @@ export default function MosaicTool() {
   const bitmapRef = useRef<ImageBitmap | null>(null);
   const dragStart = useRef<{ x: number; y: number } | null>(null);
   const usedRef = useRef(false);
+  // 적용한 영역 기록(편집 캔버스 좌표). 다운로드 때 원본 해상도 캔버스에 같은 순서로 다시 적용한다.
+  const regionsRef = useRef<Region[]>([]);
 
   const drawBase = useCallback(() => {
     const canvas = canvasRef.current;
@@ -42,6 +60,12 @@ export default function MosaicTool() {
     ctx?.drawImage(bmp, 0, 0, canvas.width, canvas.height);
   }, []);
 
+  // 캔버스는 loaded가 true가 된 뒤에야 만들어진다. requestAnimationFrame으로 그리면
+  // 캔버스가 생기기 전에 실행돼 300×150 빈 캔버스가 남는 경합이 있었다(E2E 12회 중 4회).
+  useEffect(() => {
+    if (loaded) drawBase();
+  }, [loaded, drawBase]);
+
   const onSelect = useCallback(
     async (files: File[]) => {
       const f = files[0];
@@ -51,10 +75,10 @@ export default function MosaicTool() {
         const bmp = await createImageBitmap(f, { imageOrientation: "from-image" });
         bitmapRef.current = bmp;
         setName(getFileNameWithoutExtension(f.name));
-        setIsJpeg(f.type !== "image/png");
+        setOutputType(outputTypeFor(f));
         setApplied(0);
+        regionsRef.current = [];
         setLoaded(true);
-        requestAnimationFrame(drawBase);
       } catch {
         setError("이미지를 불러오지 못했습니다. JPG·PNG·WebP 파일인지 확인해 주세요.");
       }
@@ -104,7 +128,16 @@ export default function MosaicTool() {
     const w = Math.min(canvas.width - x, Math.abs(p.x - start.x));
     const h = Math.min(canvas.height - y, Math.abs(p.y - start.y));
     if (w < 4 || h < 4) return; // 너무 작은 영역 무시
-    applyRegion(Math.round(x), Math.round(y), Math.round(w), Math.round(h));
+    const region: Region = {
+      x: Math.round(x),
+      y: Math.round(y),
+      w: Math.round(w),
+      h: Math.round(h),
+      mode,
+      block: Math.max(2, strength),
+    };
+    applyRegion(canvas, region, 1);
+    regionsRef.current.push(region);
     setApplied((n) => n + 1);
     if (!usedRef.current) {
       usedRef.current = true;
@@ -112,11 +145,16 @@ export default function MosaicTool() {
     }
   }
 
-  function applyRegion(x: number, y: number, w: number, h: number) {
-    const canvas = canvasRef.current!;
-    const ctx = canvas.getContext("2d");
+  /** target 캔버스에 region을 적용한다. scale = target 픽셀 / 편집 캔버스 픽셀 */
+  function applyRegion(target: HTMLCanvasElement, r: Region, scale: number) {
+    const ctx = target.getContext("2d");
     if (!ctx) return;
-    const bs = Math.max(2, strength);
+    const x = Math.round(r.x * scale);
+    const y = Math.round(r.y * scale);
+    const w = Math.max(1, Math.min(target.width - x, Math.round(r.w * scale)));
+    const h = Math.max(1, Math.min(target.height - y, Math.round(r.h * scale)));
+    // 칸 크기도 같은 비율로 키워, 원본 해상도에서도 화면에서 본 것과 같은 굵기의 모자이크가 되게 한다
+    const bs = Math.max(2, r.block * scale);
     const tw = Math.max(1, Math.round(w / bs));
     const th = Math.max(1, Math.round(h / bs));
     const tmp = document.createElement("canvas");
@@ -125,20 +163,39 @@ export default function MosaicTool() {
     const tctx = tmp.getContext("2d");
     if (!tctx) return;
     // 영역을 작게 축소
-    tctx.imageSmoothingEnabled = mode === "blur";
-    tctx.drawImage(canvas, x, y, w, h, 0, 0, tw, th);
+    tctx.imageSmoothingEnabled = r.mode === "blur";
+    tctx.drawImage(target, x, y, w, h, 0, 0, tw, th);
     // 다시 확대해 덮어쓰기 (모자이크=계단식, 블러=부드럽게)
-    ctx.imageSmoothingEnabled = mode === "blur";
+    ctx.imageSmoothingEnabled = r.mode === "blur";
     ctx.drawImage(tmp, 0, 0, tw, th, x, y, w, h);
     ctx.imageSmoothingEnabled = true;
   }
 
-  async function download() {
+  /**
+   * 저장용 캔버스. 편집 캔버스는 성능 때문에 긴 변 2000px로 줄여 보여주므로, 원본이 더 크면
+   * 원본 해상도 캔버스를 새로 만들어 기록한 영역을 다시 적용한다(예전에는 2000px로 줄어 저장됐다).
+   */
+  function renderFullResolution(): HTMLCanvasElement | null {
     const canvas = canvasRef.current;
+    const bmp = bitmapRef.current;
+    if (!canvas || !bmp) return canvas;
+    if (bmp.width === canvas.width && bmp.height === canvas.height) return canvas;
+    const full = document.createElement("canvas");
+    full.width = bmp.width;
+    full.height = bmp.height;
+    const ctx = full.getContext("2d");
+    if (!ctx) return canvas;
+    ctx.drawImage(bmp, 0, 0);
+    const scale = bmp.width / canvas.width;
+    for (const r of regionsRef.current) applyRegion(full, r, scale);
+    return full;
+  }
+
+  async function download() {
+    const canvas = renderFullResolution();
     if (!canvas) return;
-    const type = isJpeg ? "image/jpeg" : "image/png";
-    const blob = await canvasToBlob(canvas, type, isJpeg ? 0.92 : undefined);
-    saveAs(blob, `${name}_모자이크.${isJpeg ? "jpg" : "png"}`);
+    const blob = await canvasToBlob(canvas, outputType, outputType === "image/png" ? undefined : 0.92);
+    saveAs(blob, `${name}_모자이크.${mimeToExtension(blob.type)}`);
     trackDownload("mosaic", "single");
   }
 
@@ -189,7 +246,7 @@ export default function MosaicTool() {
 
           <div className="flex gap-2">
             <button
-              onClick={() => { drawBase(); setApplied(0); }}
+              onClick={() => { drawBase(); setApplied(0); regionsRef.current = []; }}
               className="rounded-xl bg-brand-paper px-4 py-3 text-sm font-medium text-brand-mid transition-colors hover:text-brand-black"
             >
               초기화

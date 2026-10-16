@@ -5,6 +5,9 @@
 
 import { loadImage, fileToDataUrl, canvasToBlob } from "../common/fileUtils";
 
+/** 합친 결과 한 변의 최대 픽셀 (JPEG 규격 한계 65,535) */
+export const MAX_MERGED_SIDE = 65535;
+
 export type MergeDirection = "vertical" | "horizontal";
 /** match: 공통 축 크기를 최대값으로 통일(비율 유지) / keep: 원본 크기 유지 + 배경 레터박스 */
 export type MergeSizeStrategy = "match" | "keep";
@@ -116,6 +119,16 @@ export async function mergeImages(
 
   canvasW = Math.max(1, Math.round(canvasW));
   canvasH = Math.max(1, Math.round(canvasH));
+
+  // JPG는 한 변이 65,535px를 넘을 수 없고, 브라우저 캔버스도 대개 이 근처가 한계다
+  // (실측: Chromium·Firefox 65,520px까지 성공, docs/blog-data/image-merge-2026-10-15.json).
+  // 큰 캔버스를 만들다 멈추기 전에 미리 안내한다.
+  const longest = Math.max(canvasW, canvasH);
+  if (longest > MAX_MERGED_SIDE) {
+    throw new Error(
+      `합친 결과의 ${canvasH >= canvasW ? "높이" : "너비"}가 ${longest.toLocaleString()}px로, 한 장에 담을 수 있는 ${MAX_MERGED_SIDE.toLocaleString()}px를 넘습니다. 두 번에 나눠 합치거나 크기 조절로 이미지를 먼저 줄여 주세요.`
+    );
+  }
 
   const canvas = document.createElement("canvas");
   canvas.width = canvasW;

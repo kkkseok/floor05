@@ -13,6 +13,7 @@ export default function SeveranceTool() {
   const [wageManwon, setWageManwon] = useState(300); // 월 평균급여(만원)
   const [bonusManwon, setBonusManwon] = useState(0); // 연간 상여금(만원)
   const [leaveAllowManwon, setLeaveAllowManwon] = useState(0); // 연차수당(만원)
+  const [ordinaryManwon, setOrdinaryManwon] = useState(0); // 월 통상임금(만원, 선택)
 
   const result = useMemo(
     () =>
@@ -22,8 +23,9 @@ export default function SeveranceTool() {
         monthlyWage: wageManwon * 10_000,
         annualBonus: bonusManwon * 10_000,
         annualLeaveAllowance: leaveAllowManwon * 10_000,
+        monthlyOrdinaryWage: ordinaryManwon * 10_000,
       }),
-    [joinDate, leaveDate, wageManwon, bonusManwon, leaveAllowManwon],
+    [joinDate, leaveDate, wageManwon, bonusManwon, leaveAllowManwon, ordinaryManwon],
   );
 
   // 기본 예시값에서 입력을 바꾼 순간 = 실제 사용 (세션당 1회만 집계)
@@ -35,12 +37,13 @@ export default function SeveranceTool() {
       leaveDate !== "2025-01-01" ||
       wageManwon !== 300 ||
       bonusManwon !== 0 ||
-      leaveAllowManwon !== 0
+      leaveAllowManwon !== 0 ||
+      ordinaryManwon !== 0
     ) {
       usedRef.current = true;
       trackToolUse("severance");
     }
-  }, [joinDate, leaveDate, wageManwon, bonusManwon, leaveAllowManwon]);
+  }, [joinDate, leaveDate, wageManwon, bonusManwon, leaveAllowManwon, ordinaryManwon]);
 
   return (
     <div className="space-y-6">
@@ -132,6 +135,26 @@ export default function SeveranceTool() {
         상여금·연차수당은 연간 총액을 입력하면 3개월분(×3/12)이 평균임금에 반영됩니다.
       </p>
 
+      <div className="space-y-1.5">
+        <label className="block text-xs text-brand-mid" htmlFor="ordinary-wage">월 통상임금 (선택)</label>
+        <div className="relative">
+          <input
+            id="ordinary-wage"
+            type="number"
+            min={0}
+            value={ordinaryManwon}
+            onChange={(e) => setOrdinaryManwon(Math.max(0, Number(e.target.value) || 0))}
+            aria-label="월 통상임금(만원)"
+            className="w-full px-3 py-2 pr-12 rounded-lg border border-brand-light text-sm font-mono focus:outline-none focus:border-brand-accent"
+          />
+          <span className="absolute right-3 top-1/2 -translate-y-1/2 text-brand-mid text-xs">만원</span>
+        </div>
+        <p className="text-xs text-brand-mid">
+          기본급과 매달 고정으로 받는 수당의 합입니다. 휴업·결근으로 최근 3개월 급여가 줄었다면 넣어 보세요.
+          평균임금이 통상임금보다 낮으면 통상임금으로 계산합니다(주 40시간 기준, 월 209시간·하루 8시간).
+        </p>
+      </div>
+
       {/* 결과 */}
       {!result.valid ? (
         <div className="bg-brand-paper rounded-xl p-6 text-center text-brand-mid">
@@ -160,8 +183,8 @@ export default function SeveranceTool() {
           {/* 1년 미만 경고 */}
           {!result.eligible && (
             <div className="bg-brand-accent/10 border border-brand-accent/30 rounded-xl p-4 text-sm text-brand-black">
-              재직기간이 1년(365일) 미만이라 법정 퇴직금 지급 대상이 아닙니다. 위 금액은 1년
-              기준으로 환산한 참고용 추정치입니다.
+              재직기간이 1년(365일) 미만이라 법정 퇴직금 지급 대상이 아닙니다. 위 금액은 같은 산식을
+              재직일수만큼 비례해 계산한 참고값이며, 법으로 받을 수 있는 금액은 아닙니다.
             </div>
           )}
 
@@ -197,10 +220,18 @@ export default function SeveranceTool() {
                 <span className="font-mono text-brand-black">{won(result.totalWage)}원</span>
               </div>
             </div>
-            <p className="text-xs text-brand-mid pt-1">
-              퇴직금 = 1일 평균임금({won(result.avgDailyWage)}원) × 30일 ×
-              (재직 {won(result.serviceDays)}일 ÷ 365)
-            </p>
+            {result.ordinaryApplied ? (
+              <p className="text-xs text-brand-mid pt-1">
+                1일 평균임금({won(result.avgDailyWage)}원)이 1일 통상임금({won(result.ordinaryDailyWage)}원)보다
+                적어 통상임금으로 계산했습니다. 퇴직금 = {won(result.ordinaryDailyWage)}원 × 30일 × (재직{" "}
+                {won(result.serviceDays)}일 ÷ 365)
+              </p>
+            ) : (
+              <p className="text-xs text-brand-mid pt-1">
+                퇴직금 = 1일 평균임금({won(result.avgDailyWage)}원) × 30일 ×
+                (재직 {won(result.serviceDays)}일 ÷ 365)
+              </p>
+            )}
           </div>
         </>
       )}

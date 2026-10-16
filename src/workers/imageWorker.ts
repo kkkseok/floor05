@@ -2,10 +2,11 @@
 // 메인 스레드 블로킹 없이 디코딩/리사이즈/인코딩을 수행한다.
 // 미지원 브라우저나 오류 시에는 호출측(processPool)이 메인 스레드 함수로 폴백한다.
 
-import { computeResizeDimensions } from "../lib/image/resizeDims";
+import { computeResizeDimensions, computeCoverCrop } from "../lib/image/resizeDims";
+import { drawImageDownscaled } from "../lib/image/downscale";
 
 type ResizeInstruction =
-  | { mode: "fit"; width: number; height: number; maintainAspectRatio: boolean }
+  | { mode: "fit"; width: number; height: number; maintainAspectRatio: boolean; cover?: boolean; noEnlarge?: boolean }
   | { mode: "max"; maxWidth?: number; maxHeight?: number };
 
 interface RenderOp {
@@ -35,8 +36,14 @@ ctx.onmessage = async (e: MessageEvent<RenderMessage>) => {
 
     let w = naturalWidth;
     let h = naturalHeight;
+    let src = { sx: 0, sy: 0, sw: naturalWidth, sh: naturalHeight };
 
-    if (op.resize?.mode === "fit") {
+    if (op.resize?.mode === "fit" && op.resize.cover && op.resize.width > 0 && op.resize.height > 0) {
+      const c = computeCoverCrop(naturalWidth, naturalHeight, op.resize.width, op.resize.height, op.resize.noEnlarge);
+      src = c;
+      w = c.width;
+      h = c.height;
+    } else if (op.resize?.mode === "fit") {
       const d = computeResizeDimensions(naturalWidth, naturalHeight, {
         width: op.resize.width,
         height: op.resize.height,
@@ -71,7 +78,8 @@ ctx.onmessage = async (e: MessageEvent<RenderMessage>) => {
       context.fillRect(0, 0, w, h);
     }
 
-    context.drawImage(bitmap, 0, 0, w, h);
+    // 크게 줄일 때는 절반씩 나눠 그린다(Firefox는 high 품질을 무시해 한 번에 줄이면 깨짐)
+    drawImageDownscaled(context, bitmap, src.sx, src.sy, src.sw, src.sh, 0, 0, w, h);
     bitmap.close();
 
     const blob = await canvas.convertToBlob({

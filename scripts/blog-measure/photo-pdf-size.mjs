@@ -1,26 +1,31 @@
 /**
  * 블로그 실측용: floor05 이미지→PDF와 같은 파이프라인(Canvas JPEG 재인코딩 + pdf-lib embedJpg)으로
  * 사진 장수·해상도·품질별 PDF 용량을 잰다.
- * 사용: node scripts/blog-measure/photo-pdf-size.mjs <출력.json> <사진.jpg>...
+ * 그리기 경로는 도구와 같게: createImageBitmap(from-image) → 흰 배경 → src/lib/image/downscale.ts의
+ * drawImageDownscaled(esbuild로 묶어 주입). 결과가 실제 도구 다운로드와 바이트 단위로 같아야 한다.
+ * 사용: npx esbuild src/lib/image/downscale.ts --bundle --format=iife --global-name=DS --outfile=<helper.js>
+ *       node scripts/blog-measure/photo-pdf-size.mjs <출력.json> <helper.js> <사진.jpg>...
  */
 import fs from "node:fs";
 import { chromium } from "@playwright/test";
 import { PDFDocument } from "pdf-lib";
 
-const [, , out, ...files] = process.argv;
+const [, , out, helperPath, ...files] = process.argv;
 const b = await chromium.launch();
 const page = await b.newPage();
 await page.setContent("<html></html>");
+await page.addScriptTag({ content: fs.readFileSync(helperPath, "utf8") });
 
 // 브라우저에서 리사이즈·JPEG 인코딩 (long = 긴 변 픽셀, null이면 원본)
 async function encode(file, long, quality) {
   const url = `data:image/jpeg;base64,${fs.readFileSync(file).toString("base64")}`;
   const r = await page.evaluate(async ({ url, long, quality }) => {
-    const img = await new Promise((ok) => { const i = new Image(); i.onload = () => ok(i); i.src = url; });
-    const s = long ? Math.min(1, long / Math.max(img.width, img.height)) : 1;
-    const w = Math.round(img.width * s), h = Math.round(img.height * s);
+    const bitmap = await createImageBitmap(await (await fetch(url)).blob(), { imageOrientation: "from-image" });
+    const s = long ? Math.min(1, long / Math.max(bitmap.width, bitmap.height)) : 1;
+    const w = Math.max(1, Math.round(bitmap.width * s)), h = Math.max(1, Math.round(bitmap.height * s));
     const c = document.createElement("canvas"); c.width = w; c.height = h;
-    const x = c.getContext("2d"); x.fillStyle = "#fff"; x.fillRect(0, 0, w, h); x.drawImage(img, 0, 0, w, h);
+    const x = c.getContext("2d"); x.fillStyle = "#ffffff"; x.fillRect(0, 0, w, h);
+    DS.drawImageDownscaled(x, bitmap, 0, 0, bitmap.width, bitmap.height, 0, 0, w, h);
     const blob = await new Promise((ok) => c.toBlob(ok, "image/jpeg", quality));
     const buf = new Uint8Array(await blob.arrayBuffer());
     let bin = ""; for (let i = 0; i < buf.length; i += 0x8000) bin += String.fromCharCode(...buf.subarray(i, i + 0x8000));

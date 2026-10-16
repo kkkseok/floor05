@@ -1,6 +1,6 @@
 {
   "browser": "151.0.7922.34",
-  "measuredAt": "2026-10-15T13:02:49.400Z",
+  "measuredAt": "2026-10-15T14:45:04.502Z",
   "files": [
     "tortoise.jpg",
     "flower.jpg"
@@ -33,14 +33,14 @@
         "4032x2689"
       ],
       "jpegBytesPerPhoto": [
-        3366594,
-        583005
+        3366488,
+        584707
       ],
-      "pdf1_fit": 3367547,
-      "pdf1_a4": 3367590,
-      "pdfAll_fit": 3950893,
-      "jpegSum": 3949599,
-      "pdf10_a4": 19752340
+      "pdf1_fit": 3367440,
+      "pdf1_a4": 3367482,
+      "pdfAll_fit": 3952490,
+      "jpegSum": 3951195,
+      "pdf10_a4": 19760317
     },
     {
       "label": "긴 변 3508px · 85% (A4 300dpi)",
@@ -51,14 +51,14 @@
         "3508x2340"
       ],
       "jpegBytesPerPhoto": [
-        1778093,
-        239189
+        1717398,
+        236718
       ],
-      "pdf1_fit": 1779046,
-      "pdf1_a4": 1779089,
-      "pdfAll_fit": 2018577,
-      "jpegSum": 2017282,
-      "pdf10_a4": 10090766
+      "pdf1_fit": 1718350,
+      "pdf1_a4": 1718392,
+      "pdfAll_fit": 1955412,
+      "jpegSum": 1954116,
+      "pdf10_a4": 9774937
     },
     {
       "label": "긴 변 2339px · 85% (A4 200dpi)",
@@ -69,14 +69,14 @@
         "2339x1560"
       ],
       "jpegBytesPerPhoto": [
-        771662,
-        126077
+        798387,
+        124421
       ],
-      "pdf1_fit": 772612,
-      "pdf1_a4": 772655,
-      "pdfAll_fit": 899031,
-      "jpegSum": 897739,
-      "pdf10_a4": 4493041
+      "pdf1_fit": 799337,
+      "pdf1_a4": 799380,
+      "pdfAll_fit": 924099,
+      "jpegSum": 922808,
+      "pdf10_a4": 4618386
     },
     {
       "label": "긴 변 1754px · 85% (A4 150dpi)",
@@ -87,19 +87,25 @@
         "1754x1170"
       ],
       "jpegBytesPerPhoto": [
-        494232,
-        81867
+        474286,
+        81676
       ],
-      "pdf1_fit": 495180,
-      "pdf1_a4": 495223,
-      "pdfAll_fit": 577387,
-      "jpegSum": 576099,
-      "pdf10_a4": 2884825
+      "pdf1_fit": 475234,
+      "pdf1_a4": 475277,
+      "pdfAll_fit": 557249,
+      "jpegSum": 555962,
+      "pdf10_a4": 2784139
     }
   ],
   "sources": {
     "tortoise.jpg": "NASA KSC-20210121-PH-JBS01_0079 (public domain)",
     "flower.jpg": "NASA KSC-20230613-PH-FMX01-0075 (public domain)"
   },
-  "note": "pdf10_a4 = 10 pages alternating the two photos; PDF bytes ≈ sum of embedded JPEG bytes + ~1KB/page"
+  "note": "pdf10_a4 = 10 pages alternating the two photos; PDF bytes ≈ sum of embedded JPEG bytes + ~1KB/page",
+  "correction": "2026-10-15 재측정: 첫 측정은 기본 품질 HTMLImageElement로 그려 도구(createImageBitmap+high+단계 축소)와 달랐다. 이번 값은 도구와 같은 경로이며 실제 도구 다운로드(A4, 10장)와 일치: 원본 47,974,099B / 인쇄용 9,774,937B / 제출용 2,784,140B(스크립트 2,784,139B, PDF 메타데이터 1바이트 차)",
+  "realToolCheck": {
+    "원본": 47974099,
+    "인쇄용": 9774937,
+    "제출용": 2784140
+  }
 }
