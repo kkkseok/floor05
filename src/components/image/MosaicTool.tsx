@@ -92,7 +92,10 @@ export default function MosaicTool() {
     const rect = canvas.getBoundingClientRect();
     const sx = canvas.width / rect.width;
     const sy = canvas.height / rect.height;
-    return { x: (clientX - rect.left) * sx, y: (clientY - rect.top) * sy, rect };
+    // 캔버스 밖까지 끌어도 가장자리에서 멈추게(밖으로 나간 만큼 반대편으로 영역이 넓어지지 않게)
+    const lx = Math.min(rect.width, Math.max(0, clientX - rect.left));
+    const ly = Math.min(rect.height, Math.max(0, clientY - rect.top));
+    return { x: lx * sx, y: ly * sy, lx, ly, rect };
   }
 
   function onPointerDown(e: React.PointerEvent) {
@@ -101,7 +104,7 @@ export default function MosaicTool() {
     canvas.setPointerCapture(e.pointerId);
     const p = toCanvas(e.clientX, e.clientY);
     dragStart.current = { x: p.x, y: p.y };
-    setSel({ x: e.clientX - p.rect.left, y: e.clientY - p.rect.top, w: 0, h: 0 });
+    setSel({ x: p.lx, y: p.ly, w: 0, h: 0 });
   }
 
   function onPointerMove(e: React.PointerEvent) {
@@ -110,8 +113,7 @@ export default function MosaicTool() {
     const rect = canvas.getBoundingClientRect();
     const x0 = (dragStart.current.x * rect.width) / canvas.width;
     const y0 = (dragStart.current.y * rect.height) / canvas.height;
-    const x1 = e.clientX - rect.left;
-    const y1 = e.clientY - rect.top;
+    const { lx: x1, ly: y1 } = toCanvas(e.clientX, e.clientY);
     setSel({ x: Math.min(x0, x1), y: Math.min(y0, y1), w: Math.abs(x1 - x0), h: Math.abs(y1 - y0) });
   }
 
@@ -235,7 +237,13 @@ export default function MosaicTool() {
             {sel && sel.w > 0 && (
               <div
                 className="pointer-events-none absolute border-2 border-brand-accent bg-brand-accent/20"
-                style={{ left: sel.x + 12, top: sel.y + 12, width: sel.w, height: sel.h }}
+                // 캔버스는 가운데 정렬이라 고정 여백(12px)이 아니라 실제 캔버스 위치를 더한다
+                style={{
+                  left: sel.x + (canvasRef.current?.offsetLeft ?? 0),
+                  top: sel.y + (canvasRef.current?.offsetTop ?? 0),
+                  width: sel.w,
+                  height: sel.h,
+                }}
               />
             )}
           </div>
@@ -266,7 +274,7 @@ export default function MosaicTool() {
 
       <p className="text-xs text-brand-mid leading-relaxed">
         얼굴·차량 번호판·주소 같은 개인정보를 가릴 때 쓰세요. 가린 부분은 원본 정보가 사라져 복원할
-        수 없습니다. 모든 처리는 브라우저에서 이루어지며, 파일이 서버로 전송되지 않습니다.
+        수 없습니다. 가리기 전 원본도 이 화면 밖으로 나가지 않으니, 지우려는 정보가 업로드되는 일은 없습니다.
       </p>
     </div>
   );
