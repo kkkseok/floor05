@@ -77,3 +77,22 @@ export async function compressPng(
     dataUrl: URL.createObjectURL(blob),
   };
 }
+
+/**
+ * 투명도를 유지한 채(PNG) 목표 용량을 맞춰 본다. 무손실 → 색 수를 줄인 팔레트 순으로 시도해
+ * 처음으로 목표 이하가 되는 결과를 돌려주고, 끝까지 안 되면 null(호출측이 JPG로 대체).
+ * 예전에는 목표 용량 모드가 무조건 JPG라 투명 로고가 흰 배경이 됐다
+ * (실측: docs/blog-data/alpha-2026-10-16.json, 23KB 투명 PNG → 20KB 목표 → JPG 14.8KB).
+ */
+export async function compressPngToTarget(
+  file: File,
+  targetSizeKB: number,
+): Promise<CompressionResult | null> {
+  const targetBytes = targetSizeKB * 1024;
+  for (const quality of [100, 60, 30, 3]) {
+    const result = await compressPng(file, quality);
+    if (result.compressedSize <= targetBytes) return result;
+    URL.revokeObjectURL(result.dataUrl);
+  }
+  return null;
+}

@@ -21,6 +21,8 @@ export const metadata: Metadata = {
   ],
   alternates: { canonical: "/blog/sns-image-size" },
   openGraph: {
+    url: "/blog/sns-image-size",
+    images: [{ url: "/og-image.png", width: 1200, height: 630 }],
     title: "SNS별 이미지 크기 총정리 - 2026년 최신",
     description: "인스타, 유튜브, 페이스북 등 SNS별 최적 이미지 크기 가이드",
   },

@@ -20,6 +20,8 @@ export const metadata: Metadata = {
   ],
   alternates: { canonical: "/blog/image-compression-guide" },
   openGraph: {
+    url: "/blog/image-compression-guide",
+    images: [{ url: "/og-image.png", width: 1200, height: 630 }],
     title: "이미지 용량 줄이기 - 품질 100%부터 20%까지 직접 재본 결과",
     description:
       "품질 90%에서 80%로 내리면 용량은 37~60% 줄고 화질 지표는 2dB 남짓 내려갔습니다.",

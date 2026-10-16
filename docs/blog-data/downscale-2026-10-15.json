@@ -1,0 +1,338 @@
+{
+ "measuredAt": "2026-10-15",
+ "engines": "Playwright Chromium 151(headless shell) / Firefox 153 / WebKit 26.5",
+ "reference": "Pillow BOX(면적 평균) 축소, 흰 배경 합성 후 RGB PSNR",
+ "sources": {
+  "photo": "NASA KSC-20210121-PH-JBS01_0079 (public domain) 5522x4312",
+  "logo": "scripts/blog-measure/favicon-test-logo.mjs 1024x1024"
+ },
+ "singleVsSteps4": {
+  "note": "single = drawImage 한 번(imageSmoothingQuality=high), steps = 절반씩 줄여 마지막이 2~4배",
+  "result": {
+   "logo": {
+    "120": {
+     "chromium": {
+      "single": 31.9,
+      "steps": 31.9
+     },
+     "firefox": {
+      "single": 21.11,
+      "steps": 31.06
+     },
+     "webkit": {
+      "single": 20.51,
+      "steps": 24.63
+     }
+    },
+    "200": {
+     "chromium": {
+      "single": 32.62,
+      "steps": 32.62
+     },
+     "firefox": {
+      "single": 25.11,
+      "steps": 29.57
+     },
+     "webkit": {
+      "single": 24.05,
+      "steps": 25.92
+     }
+    },
+    "360": {
+     "chromium": {
+      "single": 33.48,
+      "steps": 33.48
+     },
+     "firefox": {
+      "single": 30.44,
+      "steps": 30.44
+     },
+     "webkit": {
+      "single": 28.73,
+      "steps": 28.73
+     }
+    }
+   },
+   "photo": {
+    "1080": {
+     "chromium": {
+      "single": 37.7,
+      "steps": 37.7
+     },
+     "firefox": {
+      "single": 32.24,
+      "steps": 36.41
+     },
+     "webkit": {
+      "single": 31.26,
+      "steps": 33.07
+     }
+    },
+    "1920": {
+     "chromium": {
+      "single": 40.04,
+      "steps": 40.04
+     },
+     "firefox": {
+      "single": 37.38,
+      "steps": 37.38
+     },
+     "webkit": {
+      "single": 35.89,
+      "steps": 35.89
+     }
+    },
+    "640": {
+     "chromium": {
+      "single": 37.2,
+      "steps": 36.32
+     },
+     "firefox": {
+      "single": 28.09,
+      "steps": 35.66
+     },
+     "webkit": {
+      "single": 27.55,
+      "steps": 31.04
+     }
+    }
+   }
+  }
+ },
+ "finerSteps": {
+  "note": "마지막 단계를 2배 이내로 더 잘게 나눈 변형 — Chromium에서 크게 나빠져 기각",
+  "result": {
+   "logo": {
+    "120": {
+     "chromium": {
+      "single": 31.9,
+      "steps": 26.3
+     },
+     "firefox": {
+      "single": 21.11,
+      "steps": 26.26
+     },
+     "webkit": {
+      "single": 20.51,
+      "steps": 26.33
+     }
+    },
+    "16": {
+     "chromium": {
+      "single": 44.28,
+      "steps": 44.28
+     },
+     "firefox": {
+      "single": 16.3,
+      "steps": 44.28
+     },
+     "webkit": {
+      "single": 15.93,
+      "steps": 32.55
+     }
+    },
+    "200": {
+     "chromium": {
+      "single": 32.62,
+      "steps": 30.97
+     },
+     "firefox": {
+      "single": 25.11,
+      "steps": 30.54
+     },
+     "webkit": {
+      "single": 24.05,
+      "steps": 30.52
+     }
+    },
+    "360": {
+     "chromium": {
+      "single": 33.48,
+      "steps": 33.48
+     },
+     "firefox": {
+      "single": 30.44,
+      "steps": 33.13
+     },
+     "webkit": {
+      "single": 28.73,
+      "steps": 31.41
+     }
+    },
+    "48": {
+     "chromium": {
+      "single": 32.0,
+      "steps": 31.05
+     },
+     "firefox": {
+      "single": 16.2,
+      "steps": 30.89
+     },
+     "webkit": {
+      "single": 15.9,
+      "steps": 26.31
+     }
+    }
+   },
+   "photo": {
+    "1080": {
+     "chromium": {
+      "single": 37.7,
+      "steps": 36.66
+     },
+     "firefox": {
+      "single": 32.24,
+      "steps": 36.63
+     },
+     "webkit": {
+      "single": 31.26,
+      "steps": 35.56
+     }
+    },
+    "1920": {
+     "chromium": {
+      "single": 40.04,
+      "steps": 40.04
+     },
+     "firefox": {
+      "single": 37.38,
+      "steps": 39.44
+     },
+     "webkit": {
+      "single": 35.89,
+      "steps": 38.33
+     }
+    },
+    "640": {
+     "chromium": {
+      "single": 37.2,
+      "steps": 32.33
+     },
+     "firefox": {
+      "single": 28.09,
+      "steps": 32.69
+     },
+     "webkit": {
+      "single": 27.55,
+      "steps": 32.24
+     }
+    }
+   }
+  }
+ },
+ "adoptedHelper": {
+  "note": "src/lib/image/downscale.ts drawImageDownscaled 번들을 각 브라우저에 넣어 잰 값",
+  "result": {
+   "logo": {
+    "120": {
+     "chromium": {
+      "helper": 31.9
+     },
+     "firefox": {
+      "helper": 31.06
+     },
+     "webkit": {
+      "helper": 24.63
+     }
+    },
+    "16": {
+     "chromium": {
+      "helper": 44.28
+     },
+     "firefox": {
+      "helper": 44.28
+     },
+     "webkit": {
+      "helper": 32.55
+     }
+    },
+    "200": {
+     "chromium": {
+      "helper": 32.62
+     },
+     "firefox": {
+      "helper": 29.57
+     },
+     "webkit": {
+      "helper": 25.92
+     }
+    },
+    "32": {
+     "chromium": {
+      "helper": 45.31
+     },
+     "firefox": {
+      "helper": 45.31
+     },
+     "webkit": {
+      "helper": 33.31
+     }
+    },
+    "360": {
+     "chromium": {
+      "helper": 33.48
+     },
+     "firefox": {
+      "helper": 30.44
+     },
+     "webkit": {
+      "helper": 28.73
+     }
+    },
+    "48": {
+     "chromium": {
+      "helper": 32.0
+     },
+     "firefox": {
+      "helper": 26.1
+     },
+     "webkit": {
+      "helper": 21.04
+     }
+    }
+   },
+   "photo": {
+    "1080": {
+     "chromium": {
+      "helper": 37.7
+     },
+     "firefox": {
+      "helper": 36.41
+     },
+     "webkit": {
+      "helper": 33.07
+     }
+    },
+    "1920": {
+     "chromium": {
+      "helper": 40.04
+     },
+     "firefox": {
+      "helper": 37.38
+     },
+     "webkit": {
+      "helper": 35.89
+     }
+    },
+    "640": {
+     "chromium": {
+      "helper": 36.32
+     },
+     "firefox": {
+      "helper": 35.66
+     },
+     "webkit": {
+      "helper": 31.04
+     }
+    }
+   }
+  }
+ },
+ "rejectedDetection": "imageSmoothingQuality 반영 여부를 캔버스로 시험해 분기하는 방식: WebKit은 low/high 결과가 달라 '반영'으로 판별되지만 실제로는 깨짐 → 기각",
+ "stripeTest": {
+  "pattern": "3px 주기(검정2·흰1) 1024px → 64px, 초록 채널 최대-최소",
+  "chromium": 16,
+  "webkit_after": 46,
+  "webkit_before": 143
+ }
+}

@@ -4,7 +4,13 @@ import { useState, useEffect, useRef, useCallback } from "react";
 import { saveAs } from "file-saver";
 import JSZip from "jszip";
 import FileDropzone from "@/components/common/FileDropzone";
-import { canvasToBlob, getFileNameWithoutExtension } from "@/lib/common/fileUtils";
+import {
+  canvasToBlob,
+  getFileNameWithoutExtension,
+  mimeToExtension,
+  outputTypeFor,
+  type OutputImageType,
+} from "@/lib/common/fileUtils";
 import { trackToolUse, trackDownload } from "@/lib/common/analytics";
 
 const PRESETS: { key: string; label: string; rows: number; cols: number; square: boolean }[] = [
@@ -17,7 +23,8 @@ const PRESETS: { key: string; label: string; rows: number; cols: number; square:
 export default function GridTool() {
   const [loaded, setLoaded] = useState(false);
   const [name, setName] = useState("image");
-  const [isJpeg, setIsJpeg] = useState(true);
+  // 출력 형식은 입력을 따른다(투명 WebP를 JPG로 바꾸면 투명 영역이 검게 칠해졌다)
+  const [outputType, setOutputType] = useState<OutputImageType>("image/jpeg");
   const [presetKey, setPresetKey] = useState("3x3");
   const [busy, setBusy] = useState(false);
   const [error, setError] = useState<string | null>(null);
@@ -79,7 +86,7 @@ export default function GridTool() {
       const bmp = await createImageBitmap(f, { imageOrientation: "from-image" });
       bitmapRef.current = bmp;
       setName(getFileNameWithoutExtension(f.name));
-      setIsJpeg(f.type !== "image/png");
+      setOutputType(outputTypeFor(f));
       setLoaded(true);
     } catch {
       setError("이미지를 불러오지 못했습니다. JPG·PNG·WebP 파일인지 확인해 주세요.");
@@ -95,8 +102,7 @@ export default function GridTool() {
       const { sx, sy, sw, sh } = sourceRegion(bmp);
       const cellW = sw / preset.cols;
       const cellH = sh / preset.rows;
-      const type = isJpeg ? "image/jpeg" : "image/png";
-      const ext = isJpeg ? "jpg" : "png";
+      const quality = outputType === "image/png" ? undefined : 0.92;
       const zip = new JSZip();
       let n = 0;
       for (let r = 0; r < preset.rows; r++) {
@@ -108,8 +114,8 @@ export default function GridTool() {
           const ctx = cell.getContext("2d");
           if (!ctx) continue;
           ctx.drawImage(bmp, sx + c * cellW, sy + r * cellH, cellW, cellH, 0, 0, cell.width, cell.height);
-          const blob = await canvasToBlob(cell, type, isJpeg ? 0.92 : undefined);
-          zip.file(`${name}_${String(n).padStart(2, "0")}.${ext}`, blob);
+          const blob = await canvasToBlob(cell, outputType, quality);
+          zip.file(`${name}_${String(n).padStart(2, "0")}.${mimeToExtension(blob.type)}`, blob);
         }
       }
       const out = await zip.generateAsync({ type: "blob" });
@@ -164,8 +170,8 @@ export default function GridTool() {
       )}
 
       <p className="text-xs text-brand-mid leading-relaxed">
-        나뉜 이미지는 왼쪽 위부터 번호 순서로 ZIP에 담깁니다. 인스타 그리드는 번호 순서대로 올리면
-        한 장처럼 이어집니다. 모든 처리는 브라우저에서 이루어지며, 파일이 서버로 전송되지 않습니다.
+        나뉜 이미지는 왼쪽 위부터 번호 순서로 ZIP에 담깁니다. 인스타그램에는 마지막 번호부터 거꾸로(9→1)
+        올려야 프로필에서 한 장처럼 이어집니다. 모든 처리는 브라우저에서 이루어지며, 파일이 서버로 전송되지 않습니다.
       </p>
     </div>
   );
