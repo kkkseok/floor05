@@ -137,7 +137,7 @@ export default function ColorPickerTool() {
 
       <p className="text-xs text-brand-mid leading-relaxed">
         클릭한 지점의 색과 이미지의 대표 색 팔레트를 추출합니다. 색을 누르면 HEX 코드가 복사됩니다.
-        모든 처리는 브라우저에서 이루어지며, 파일이 서버로 전송되지 않습니다.
+        색은 이 화면에 띄운 이미지에서 바로 읽어 오므로, 사진이 어디로 올라가지 않습니다.
       </p>
     </div>
   );

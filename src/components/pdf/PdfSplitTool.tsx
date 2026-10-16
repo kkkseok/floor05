@@ -139,7 +139,7 @@ export default function PdfSplitTool() {
       )}
 
       <p className="text-xs text-brand-mid leading-relaxed">
-        모든 처리는 브라우저 안에서 이루어지며, 파일이 서버로 전송되지 않습니다.
+        페이지를 떼어 내는 작업도 이 탭 안에서만 일어나므로, 원본 PDF는 밖으로 나가지 않습니다.
       </p>
     </div>
   );

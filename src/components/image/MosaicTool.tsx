@@ -266,7 +266,7 @@ export default function MosaicTool() {
 
       <p className="text-xs text-brand-mid leading-relaxed">
         얼굴·차량 번호판·주소 같은 개인정보를 가릴 때 쓰세요. 가린 부분은 원본 정보가 사라져 복원할
-        수 없습니다. 모든 처리는 브라우저에서 이루어지며, 파일이 서버로 전송되지 않습니다.
+        수 없습니다. 가리기 전 원본도 이 화면 밖으로 나가지 않으니, 지우려는 정보가 업로드되는 일은 없습니다.
       </p>
     </div>
   );
