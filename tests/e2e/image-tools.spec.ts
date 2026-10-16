@@ -668,6 +668,25 @@ test.describe("색상 추출", () => {
 });
 
 test.describe("모자이크", () => {
+  test("세로 사진에서도 드래그 선택 상자가 포인터 위치에 그려진다", async ({ page }, testInfo) => {
+    const tall = writeQuadrantPng(testInfo.outputPath("tall.png"), 600, 1600);
+    await page.goto("/tools/image/mosaic");
+    await uploadToDropzone(page, [tall]);
+    const canvas = page.locator("main canvas").first();
+    await expect(canvas).toBeVisible({ timeout: 15_000 });
+    const box = (await canvas.boundingBox())!;
+    const sx = box.x + box.width * 0.2;
+    const sy = box.y + box.height * 0.2;
+    await page.mouse.move(sx, sy);
+    await page.mouse.down();
+    await page.mouse.move(box.x + box.width * 0.6, box.y + box.height * 0.5, { steps: 5 });
+    const sel = page.locator("main div.pointer-events-none.absolute");
+    const sb = (await sel.boundingBox())!;
+    await page.mouse.up();
+    expect(Math.abs(sb.x - sx), `상자 왼쪽 ${sb.x} vs 포인터 ${sx}`).toBeLessThan(4);
+    expect(Math.abs(sb.y - sy)).toBeLessThan(4);
+  });
+
   test("드래그로 영역 적용 → 다운로드 (바이트 변경 확인)", async ({ page }, testInfo) => {
     const guards = await installGuards(page);
     await page.goto("/tools/image/mosaic");
