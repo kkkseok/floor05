@@ -21,6 +21,8 @@ import {
   pngPixels,
   rowTransitions,
   writeTransparentWebp,
+  writeQuadrantPng,
+  isRedAt,
 } from "./helpers";
 
 test.describe("이미지 압축", () => {
@@ -66,6 +68,39 @@ test.describe("이미지 압축", () => {
     );
     expect(detectKind(file)).toBe("jpeg");
     expect(fs.statSync(file).size).toBeLessThanOrEqual(30 * 1024);
+  });
+
+  test("이미 목표보다 작은 GPS 사진 → 다시 압축하지 않되 GPS·EXIF는 지워서 저장", async ({ page }, testInfo) => {
+    expect(jpegHasExif(fx("exif-gps.jpg"))).toBe(true);
+    await page.goto("/tools/image/compress");
+    await uploadToDropzone(page, [fx("exif-gps.jpg")]);
+    await page.getByRole("button", { name: "목표 용량" }).click();
+    await page.getByPlaceholder("직접 입력").fill("500");
+    await page.getByRole("button", { name: "1개 이미지 압축하기" }).click();
+    await expect(page.getByRole("button", { name: "다운로드" })).toBeVisible({ timeout: 45_000 });
+    await expect(page.getByText(/이미 목표 용량보다 작은 사진이라/)).toBeVisible();
+    const file = await saveDownload(page, testInfo, () =>
+      page.getByRole("button", { name: "다운로드" }).click(),
+    );
+    expect(detectKind(file)).toBe("jpeg");
+    expect(jpegHasExif(file), "원본을 그대로 내주면 GPS가 남는다").toBe(false);
+    expect(fs.statSync(file).size).toBeLessThan(fs.statSync(fx("exif-gps.jpg")).size);
+  });
+
+  test("다시 압축하면 커지는 사진 → 원본 화질 유지 + GPS·EXIF 제거, '+%'로 커졌다고 표시하지 않음", async ({ page }, testInfo) => {
+    await page.goto("/tools/image/compress");
+    await uploadToDropzone(page, [fx("exif-gps.jpg")]);
+    await page.getByLabel(/이미지 압축 품질/).fill("100");
+    await page.getByRole("button", { name: "1개 이미지 압축하기" }).click();
+    await expect(page.getByRole("button", { name: "다운로드" })).toBeVisible({ timeout: 45_000 });
+    await expect(page.getByText(/다시 압축하면 오히려 커집니다/)).toBeVisible();
+    await expect(page.getByText(/--\d+%/)).toHaveCount(0);
+    const file = await saveDownload(page, testInfo, () =>
+      page.getByRole("button", { name: "다운로드" }).click(),
+    );
+    expect(detectKind(file)).toBe("jpeg");
+    expect(jpegHasExif(file)).toBe(false);
+    expect(fs.statSync(file).size).toBeLessThan(fs.statSync(fx("exif-gps.jpg")).size);
   });
 
   test("목표 용량이 품질 하한(60%)으로 안 맞으면 해상도를 줄이고 안내", async ({ page }, testInfo) => {
@@ -192,6 +227,19 @@ test.describe("포맷 변환", () => {
     expect(imageDims(file)).toEqual({ width: 800, height: 600 });
   });
 
+  test("이름만 .HEIC인 JPG → 실패 없이 JPG로 변환", async ({ page }, testInfo) => {
+    const src = testInfo.outputPath("IMG_0001.HEIC");
+    fs.mkdirSync(path.dirname(src), { recursive: true });
+    fs.copyFileSync(fx("photo-1200x900.jpg"), src);
+    await page.goto("/tools/image/heic-to-jpg");
+    await uploadToDropzone(page, [src]);
+    await page.getByRole("button", { name: /1개 이미지 JPG로 변환/ }).click();
+    await expect(page.getByRole("button", { name: "다운로드" })).toBeVisible({ timeout: 60_000 });
+    const file = await saveDownload(page, testInfo, () => page.getByRole("button", { name: "다운로드" }).click());
+    expect(detectKind(file)).toBe("jpeg");
+    expect(imageDims(file)).toEqual({ width: 1200, height: 900 });
+  });
+
   test("HEIC → JPG 변환 (실물 HEIC 파일)", async ({ page, browserName }, testInfo) => {
     test.skip(browserName !== "chromium", "heic2any 디코딩은 대표로 Chromium에서 검증");
     test.skip(!fs.existsSync(fx("sample.heic")), "실물 HEIC 선택 fixture가 있는 환경에서 검증");
@@ -238,6 +286,21 @@ test.describe("리사이즈", () => {
       page.getByRole("button", { name: "다운로드" }).click(),
     );
     expect(imageDims(file)).toEqual({ width: 600, height: 450 });
+  });
+
+  test("SNS 정방형 프리셋은 가로 사진을 늘리지 않고 가운데를 잘라 1080×1080으로", async ({ page }, testInfo) => {
+    // 400×200, 왼쪽 100px 세로 띠만 빨강 → 가운데 200×200을 자르면 빨강이 없어야 한다(늘리면 왼쪽 1/4이 빨강)
+    const src = writeQuadrantPng(testInfo.outputPath("strip.png"), 400, 200, 100, 200);
+    await page.goto("/tools/image/resize");
+    await uploadToDropzone(page, [src]);
+    await page.getByRole("button", { name: "SNS 프리셋" }).click();
+    await page.getByRole("button", { name: "1개 이미지 리사이즈" }).click();
+    await expect(page.getByRole("button", { name: "다운로드" })).toBeVisible({ timeout: 30_000 });
+    const file = await saveDownload(page, testInfo, () => page.getByRole("button", { name: "다운로드" }).click());
+    const p = pngPixels(file);
+    expect([p.width, p.height]).toEqual([1080, 1080]);
+    expect(isRedAt(p, 50, 540)).toBe(false);
+    expect(isRedAt(p, 1030, 540)).toBe(false);
   });
 
   test("투명 PNG를 줄이면 PNG로 저장 (JPG 흰 배경으로 바꾸지 않음)", async ({ page }, testInfo) => {
@@ -361,6 +424,34 @@ test.describe("회전·반전", () => {
     assertClean(guards);
   });
 
+  test("오른쪽 90° 뒤 좌우 반전은 화면 기준 좌우로 뒤집는다", async ({ page }, testInfo) => {
+    const src = writeQuadrantPng(testInfo.outputPath("quad.png"));
+    await page.goto("/tools/image/rotate");
+    await uploadToDropzone(page, [src]);
+    await page.getByRole("button", { name: /오른쪽 90°/ }).click(); // 빨강: 오른쪽 위
+    await page.getByRole("button", { name: "좌우 반전" }).click(); // 빨강: 왼쪽 위
+    const file = await saveDownload(page, testInfo, () => page.getByRole("button", { name: "다운로드" }).click());
+    const p = pngPixels(file);
+    expect([p.width, p.height]).toEqual([100, 200]);
+    expect(isRedAt(p, 10, 10)).toBe(true);
+    expect(isRedAt(p, 90, 10)).toBe(false);
+    expect(isRedAt(p, 90, 190)).toBe(false);
+  });
+
+  test("좌우 반전 뒤 오른쪽 90°는 반전된 그림을 그대로 돌린다", async ({ page }, testInfo) => {
+    const src = writeQuadrantPng(testInfo.outputPath("quad.png"));
+    await page.goto("/tools/image/rotate");
+    await uploadToDropzone(page, [src]);
+    await page.getByRole("button", { name: "좌우 반전" }).click(); // 빨강: 오른쪽 위
+    await page.getByRole("button", { name: /오른쪽 90°/ }).click(); // 빨강: 오른쪽 아래
+    const file = await saveDownload(page, testInfo, () => page.getByRole("button", { name: "다운로드" }).click());
+    const p = pngPixels(file);
+    expect([p.width, p.height]).toEqual([100, 200]);
+    expect(isRedAt(p, 90, 190)).toBe(true);
+    expect(isRedAt(p, 10, 10)).toBe(false);
+    expect(isRedAt(p, 90, 10)).toBe(false);
+  });
+
   test("좌우 반전 → 치수 유지 · 초기화 동작", async ({ page }, testInfo) => {
     await page.goto("/tools/image/rotate");
     await uploadToDropzone(page, [fx("photo-1200x900.jpg")]);
@@ -417,6 +508,22 @@ test.describe("인스타 9분할", () => {
 });
 
 test.describe("EXIF 삭제", () => {
+  test("이름이 같은 사진 2장 → ZIP에 2개 모두 (덮어써서 1장만 남지 않음)", async ({ page }, testInfo) => {
+    const a = testInfo.outputPath("a/image.jpg");
+    const b = testInfo.outputPath("b/image.jpg");
+    fs.mkdirSync(path.dirname(a), { recursive: true });
+    fs.mkdirSync(path.dirname(b), { recursive: true });
+    fs.copyFileSync(fx("exif-gps.jpg"), a);
+    fs.copyFileSync(fx("photo-1200x900.jpg"), b);
+    await page.goto("/tools/image/exif-remove");
+    await uploadToDropzone(page, [a, b]);
+    const file = await saveDownload(page, testInfo, () =>
+      page.getByRole("button", { name: /EXIF 제거/ }).click(),
+    );
+    expect(detectKind(file)).toBe("zip");
+    expect((await zipEntries(file)).sort()).toEqual(["image_noexif (1).jpg", "image_noexif.jpg"]);
+  });
+
   test("GPS 포함 JPEG → 감지 표시 → 출력에서 EXIF 완전 제거 · 치수 유지", async ({ page }, testInfo) => {
     const guards = await installGuards(page);
     // 입력 fixture에 실제 EXIF(GPS)가 있는지 사전 확인

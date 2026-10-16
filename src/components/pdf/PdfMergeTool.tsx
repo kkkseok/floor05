@@ -5,12 +5,14 @@ import { saveAs } from "file-saver";
 import FileDropzone from "@/components/common/FileDropzone";
 import { fileToArrayBuffer } from "@/lib/common/fileUtils";
 import { mergePdfs, getPageCount } from "@/lib/pdf/merge";
+import { ProtectedPdfError, pdfErrorMessage } from "@/lib/pdf/load";
 import { trackToolUse, trackDownload } from "@/lib/common/analytics";
 
 interface Item {
   id: string;
   file: File;
-  pages: number | null; // null = 읽기 실패
+  pages: number | null; // null = 읽는 중, -1 = 읽기 실패
+  problem?: "protected" | "unreadable";
 }
 
 let idSeq = 0;
@@ -30,8 +32,9 @@ export default function PdfMergeTool() {
         const buf = await fileToArrayBuffer(item.file);
         const pages = await getPageCount(buf);
         setItems((prev) => prev.map((it) => (it.id === item.id ? { ...it, pages } : it)));
-      } catch {
-        setItems((prev) => prev.map((it) => (it.id === item.id ? { ...it, pages: -1 } : it)));
+      } catch (err) {
+        const problem = err instanceof ProtectedPdfError ? "protected" : "unreadable";
+        setItems((prev) => prev.map((it) => (it.id === item.id ? { ...it, pages: -1, problem } : it)));
       }
     }
   }, []);
@@ -50,8 +53,10 @@ export default function PdfMergeTool() {
     setItems((prev) => prev.filter((it) => it.id !== id));
   }
 
+  const badItem = items.find((it) => it.pages === -1);
+
   async function merge() {
-    if (items.length < 2 || busy) return;
+    if (items.length < 2 || busy || badItem) return;
     setBusy(true);
     setError(null);
     try {
@@ -60,8 +65,8 @@ export default function PdfMergeTool() {
       saveAs(new Blob([new Uint8Array(bytes)], { type: "application/pdf" }), "merged.pdf");
       trackToolUse("pdf-merge", { count: items.length });
       trackDownload("pdf-merge", "single");
-    } catch {
-      setError("PDF를 합치지 못했습니다. 암호가 걸렸거나 손상된 파일이 있는지 확인해 주세요.");
+    } catch (err) {
+      setError(pdfErrorMessage(err));
     } finally {
       setBusy(false);
     }
@@ -81,7 +86,7 @@ export default function PdfMergeTool() {
                 <div className="min-w-0 flex-1">
                   <p className="truncate text-sm text-brand-black">{it.file.name}</p>
                   <p className="text-xs text-brand-mid">
-                    {it.pages === null ? "읽는 중…" : it.pages === -1 ? "읽을 수 없음" : `${it.pages}페이지`}
+                    {it.pages === null ? "읽는 중…" : it.problem === "protected" ? "암호로 보호됨" : it.pages === -1 ? "읽을 수 없음" : `${it.pages}페이지`}
                   </p>
                 </div>
                 <div className="flex shrink-0 gap-1">
@@ -93,11 +98,20 @@ export default function PdfMergeTool() {
             ))}
           </div>
 
+          {badItem && (
+            <p className="text-sm text-red-600">
+              {pdfErrorMessage(
+                badItem.problem === "protected" ? new ProtectedPdfError() : null,
+                badItem.file.name,
+              )}{" "}
+              이 파일을 빼면 나머지는 바로 합칠 수 있어요.
+            </p>
+          )}
           {error && <p className="text-sm text-red-600">{error}</p>}
 
           <button
             onClick={merge}
-            disabled={busy || items.length < 2}
+            disabled={busy || items.length < 2 || !!badItem}
             className="w-full rounded-xl bg-brand-accent py-4 text-lg font-medium text-white transition-colors hover:bg-brand-accent-light disabled:opacity-50"
           >
             {busy ? "합치는 중…" : items.length < 2 ? "PDF를 2개 이상 올려주세요" : `${items.length}개 PDF 합치기`}

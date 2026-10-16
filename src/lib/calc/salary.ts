@@ -1,24 +1,14 @@
 /**
  * 연봉 → 월 실수령액 계산 (100% 클라이언트, 순수 함수)
- * - 4대보험(국민연금·건강·장기요양·고용) + 근로소득세(간이세액표 근사) + 지방소득세 공제
- * - 요율·세액표는 모두 ./rates 에서 가져온다 (유지보수 단일 지점)
+ * - 4대보험(국민연금·건강·장기요양·고용) + 근로소득세(간이세액표 원표 조회) + 지방소득세 공제
+ * - 요율은 ./rates, 간이세액표는 ./incomeTaxTable(법령 별표2에서 생성)
  *
- * ⚠️ 소득세는 국세청 근로소득 간이세액표를 근사한 추정치다. 실제 원천징수액은
- *    회사 신고 부양가족 수·비과세 항목·간이세액표 원본에 따라 달라질 수 있다.
+ * 예전에는 간이세액표를 연말정산 산식으로 근사했는데, 간이세액표에 들어 있는 특별소득공제 등이 빠져
+ * 소득세가 크게 나왔다(월 350만 원·가족 4명: 표 49,340원 vs 근사 109,180원). 2026-10-16 원표 조회로 교체.
  */
 
-import {
-  INSURANCE,
-  INCOME_TAX_BRACKETS,
-  EARNED_INCOME_DEDUCTION,
-  EARNED_INCOME_DEDUCTION_CAP,
-  PERSONAL_DEDUCTION_PER_HEAD,
-  STANDARD_TAX_CREDIT,
-  LOCAL_TAX_RATE,
-  EARNED_INCOME_TAX_CREDIT,
-  earnedIncomeTaxCreditCap,
-  childTaxCreditMonthly,
-} from "./rates";
+import { INSURANCE, LOCAL_TAX_RATE } from "./rates";
+import { TAX_TABLE, TAX_AT_10M, OVER_10M_BRACKETS, CHILD_DEDUCTION } from "./incomeTaxTable";
 
 export interface SalaryInput {
   /** 연봉(세전, 원). 비과세 포함 총액 */
@@ -90,54 +80,48 @@ export function calcEmployment(taxableMonthly: number): number {
   return floor10(taxableMonthly * INSURANCE.employment.rate);
 }
 
-/** 근로소득공제 (연) — 한도 적용 */
-export function earnedIncomeDeduction(grossAnnual: number): number {
-  const band = EARNED_INCOME_DEDUCTION.find((b) => grossAnnual <= b.upTo)!;
-  const deduction = band.base + (grossAnnual - band.floor) * band.rate;
-  return Math.min(deduction, EARNED_INCOME_DEDUCTION_CAP);
-}
-
-/** 산출세액 (연) — 기본세율 누진 */
-export function computeIncomeTax(taxBase: number): number {
-  if (taxBase <= 0) return 0;
-  const bracket = INCOME_TAX_BRACKETS.find((b) => taxBase <= b.upTo)!;
-  return taxBase * bracket.rate - bracket.deduction;
-}
-
-/** 근로소득세액공제 (연) — 한도 적용 */
-export function earnedIncomeTaxCredit(computedTax: number, grossAnnual: number): number {
-  const { threshold, rateUnder, rateOver, baseAtThreshold } = EARNED_INCOME_TAX_CREDIT;
-  const credit =
-    computedTax <= threshold
-      ? computedTax * rateUnder
-      : baseAtThreshold + (computedTax - threshold) * rateOver;
-  return Math.min(credit, earnedIncomeTaxCreditCap(grossAnnual));
+/** 가족 수별 세액 배열에서 조회. 11명 초과는 별표2 비고 4: 11명 세액 − (10명 − 11명) × 초과 인원 */
+function taxForFamily(taxes: readonly number[], family: number): number {
+  if (family <= 11) return taxes[family - 1];
+  return Math.max(0, taxes[10] - (taxes[9] - taxes[10]) * (family - 11));
 }
 
 /**
- * 월 근로소득세 (간이세액표 근사).
- * 연환산 → 근로소득공제 → (인적공제 + 연금보험료공제) → 과세표준 →
- * 산출세액 → 근로소득세액공제 → 표준세액공제 → ÷12 → 8~20세 자녀공제.
+ * 월 근로소득세 — 소득세법 시행령 [별표 2] 근로소득 간이세액표 원표 조회.
+ * 월급여는 비과세를 뺀 금액, 공제대상가족은 본인 포함(최소 1명).
+ * 10,000천원 초과는 별표의 산식, 8~20세 자녀는 별표 비고 3의 차감액을 뺀다(음수면 0).
  */
-export function calcIncomeTax(
-  taxableMonthly: number,
-  dependents: number,
-  children: number,
-  annualPension: number,
-): number {
-  const grossAnnual = taxableMonthly * 12;
-  const earnedIncome = grossAnnual - earnedIncomeDeduction(grossAnnual);
+export function calcIncomeTax(taxableMonthly: number, dependents: number, children: number): number {
+  const family = Math.max(1, Math.floor(dependents) || 1);
+  let tax: number;
+  if (taxableMonthly < TAX_TABLE[0][0]) {
+    tax = 0;
+  } else if (taxableMonthly < 10_000_000) {
+    // 하한이 월급여 이하인 마지막 행 (이진 탐색)
+    let lo = 0;
+    let hi = TAX_TABLE.length - 1;
+    while (lo < hi) {
+      const mid = (lo + hi + 1) >> 1;
+      if (TAX_TABLE[mid][0] <= taxableMonthly) lo = mid;
+      else hi = mid - 1;
+    }
+    tax = taxForFamily(TAX_TABLE[lo].slice(1), family);
+  } else {
+    const at10m = taxForFamily(TAX_AT_10M, family);
+    const bracket = [...OVER_10M_BRACKETS].reverse().find((x) => taxableMonthly > x.over);
+    tax = bracket
+      ? at10m + bracket.base + (taxableMonthly - bracket.from) * bracket.factor * bracket.rate + bracket.add
+      : at10m;
+  }
 
-  const personalDeduction = PERSONAL_DEDUCTION_PER_HEAD * Math.max(1, dependents);
-  const taxBase = Math.max(0, earnedIncome - personalDeduction - annualPension);
-
-  const computedTax = computeIncomeTax(taxBase);
-  const taxCredit = earnedIncomeTaxCredit(computedTax, grossAnnual);
-  const decidedAnnual = Math.max(0, computedTax - taxCredit - STANDARD_TAX_CREDIT);
-
-  let monthly = decidedAnnual / 12 - childTaxCreditMonthly(children);
-  monthly = Math.max(0, monthly);
-  return floor10(monthly);
+  const kids = Math.max(0, Math.floor(children) || 0);
+  const childDeduction =
+    kids === 0
+      ? 0
+      : kids === 1
+        ? CHILD_DEDUCTION.one
+        : CHILD_DEDUCTION.two + Math.max(0, kids - 2) * CHILD_DEDUCTION.perExtra;
+  return floor10(Math.max(0, tax - childDeduction));
 }
 
 /** 지방소득세 (월) = 소득세 × 10% */
@@ -160,14 +144,7 @@ export function calcSalary(input: SalaryInput): SalaryResult {
   const longTermCare = calcLongTermCare(health);
   const employment = calcEmployment(taxableMonthly);
 
-  // 소득세 과세표준에서 빼는 연금보험료공제 = 국민연금 근로자부담 연액
-  const annualPension = pension * 12;
-  const incomeTax = calcIncomeTax(
-    taxableMonthly,
-    input.dependents,
-    input.children,
-    annualPension,
-  );
+  const incomeTax = calcIncomeTax(taxableMonthly, input.dependents, input.children);
   const localTax = calcLocalTax(incomeTax);
 
   const deductions: Deductions = {

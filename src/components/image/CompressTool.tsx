@@ -21,6 +21,7 @@ import {
 } from "@/lib/image/compress";
 import { compressImageSmart } from "@/lib/image/processPool";
 import { compressPng, compressPngToTarget } from "@/lib/image/pngCompress";
+import { stripMetadata } from "@/lib/image/stripMetadata";
 import { useBeforeUnload, useMaxBatchSize } from "@/lib/common/hooks";
 import { trackToolUse } from "@/lib/common/analytics";
 
@@ -60,6 +61,41 @@ async function compressToTarget(file: File, targetSizeKB: number): Promise<Compr
     return { ...jpg, alphaDropped: true };
   }
   return compressToTargetSize(file, targetSizeKB, { outputFormat: "image/jpeg" });
+}
+
+function mimeFromBytes(b: Uint8Array, fallback: string): string {
+  if (b[0] === 0xff && b[1] === 0xd8) return "image/jpeg";
+  if (b[0] === 0x89 && b[1] === 0x50) return "image/png";
+  if (b[8] === 0x57 && b[9] === 0x45 && b[10] === 0x42 && b[11] === 0x50) return "image/webp";
+  return fallback;
+}
+
+/**
+ * 압축 결과가 원본 그대로이거나 원본보다 크면, 원본에서 메타데이터만 지운 파일로 바꾼다.
+ * 예전에는 원본을 그대로 내줘서 '위치·촬영 정보도 제거'라는 안내와 달리 GPS가 남았다.
+ */
+async function finalize(file: File, result: CompressionResult): Promise<CompressionResult> {
+  if (result.blob !== file && result.compressedSize < file.size) return result;
+  const stripped = stripMetadata(new Uint8Array(await file.arrayBuffer()));
+  if (!stripped) return result;
+  revokeObjectUrl(result.dataUrl);
+  const blob = new Blob([new Uint8Array(stripped)], { type: mimeFromBytes(stripped, file.type) });
+  const size = result.resizedFrom ?? { width: result.width, height: result.height };
+  return {
+    blob,
+    width: size.width,
+    height: size.height,
+    originalSize: file.size,
+    compressedSize: blob.size,
+    dataUrl: URL.createObjectURL(blob),
+    keptOriginal: true,
+  };
+}
+
+/** 줄었으면 -N%, 커졌으면 +N% */
+function rateLabel(originalSize: number, compressedSize: number): string {
+  const rate = calculateCompressionRate(originalSize, compressedSize);
+  return rate >= 0 ? `-${rate}%` : `+${-rate}%`;
 }
 
 export default function CompressTool() {
@@ -249,7 +285,7 @@ export default function CompressTool() {
     await Promise.all(
       images.map(async (img) => {
         try {
-          const result =
+          const raw =
             mode === "target"
               ? await compressToTarget(img.file, targetSizeKB)
               : wantsPng(img.file, outputMode)
@@ -258,6 +294,7 @@ export default function CompressTool() {
                   quality: quality / 100,
                   outputFormat: "image/jpeg",
                 });
+          const result = await finalize(img.file, raw);
 
           // 이전 결과 URL 해제 (재압축 시 누수 방지)
           revokeObjectUrl(img.result?.dataUrl);
@@ -379,7 +416,7 @@ export default function CompressTool() {
                   {img.status === "done" && img.result && (
                     <div className="absolute bottom-0 left-0 right-0 bg-brand-black/70 px-2 py-1">
                       <p className="text-xs text-brand-accent font-mono">
-                        -{calculateCompressionRate(img.result.originalSize, img.result.compressedSize)}%
+                        {img.result.keptOriginal ? "원본 화질" : rateLabel(img.result.originalSize, img.result.compressedSize)}
                       </p>
                     </div>
                   )}
@@ -657,12 +694,8 @@ export default function CompressTool() {
                   <div className="flex items-center justify-between text-sm">
                     <span className="text-brand-mid">압축 후</span>
                     <span className="font-mono text-brand-accent">
-                      {formatFileSize(selectedImage.result.compressedSize)} · -
-                      {calculateCompressionRate(
-                        selectedImage.result.originalSize,
-                        selectedImage.result.compressedSize
-                      )}
-                      %
+                      {formatFileSize(selectedImage.result.compressedSize)} ·{" "}
+                      {rateLabel(selectedImage.result.originalSize, selectedImage.result.compressedSize)}
                     </span>
                   </div>
                   <div className="h-3 rounded-full bg-brand-light/40 overflow-hidden">
@@ -684,6 +717,14 @@ export default function CompressTool() {
                     />
                   </div>
                 </div>
+                {selectedImage.result.keptOriginal && (
+                  <p className="text-sm text-brand-mid leading-relaxed">
+                    {mode === "target"
+                      ? "이미 목표 용량보다 작은 사진이라 다시 압축하지 않았습니다."
+                      : "이미 충분히 압축된 사진이라 다시 압축하면 오히려 커집니다."}{" "}
+                    화질은 원본 그대로 두고, 사진에 들어 있던 위치(GPS)·촬영 정보만 지워 저장했습니다.
+                  </p>
+                )}
                 {selectedImage.result.alphaDropped && (
                   <p className="text-sm text-brand-mid leading-relaxed">
                     투명 배경을 유지한 PNG로는 목표 용량까지 줄일 수 없어, 투명한 부분을 흰색으로 채운 JPG로 저장했습니다.
@@ -734,7 +775,7 @@ export default function CompressTool() {
                   <div>
                     <p className="text-sm text-brand-light mb-1">절약</p>
                     <p className="font-mono text-2xl text-brand-accent">
-                      {formatFileSize(totalStats.savedSize)} (-{totalStats.rate}%)
+                      {formatFileSize(Math.max(0, totalStats.savedSize))} ({rateLabel(totalStats.originalSize, totalStats.compressedSize)})
                     </p>
                   </div>
                 </div>

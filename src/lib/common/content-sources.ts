@@ -28,9 +28,9 @@ const SOURCES = {
     url: "https://edi.nhis.or.kr/portal/images/popup/20251204_pop01longdesc.html",
   },
   earnedIncomeTax: {
-    title: "근로소득 간이세액표 안내",
-    publisher: "국세청",
-    url: "https://www.nts.go.kr/nts/cm/cntnts/cntntsView.do?cntntsId=7862&mi=6583",
+    title: "소득세법 시행령 [별표 2] 근로소득 간이세액표 (2026.2.27 개정)",
+    publisher: "국가법령정보센터",
+    url: "https://www.law.go.kr/LSW/flDownload.do?flSeq=169798151",
   },
   minimumWage2026: {
     title: "2026년 적용 최저임금 시간급 10,320원",

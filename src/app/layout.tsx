@@ -34,7 +34,7 @@ const pretendard = localFont({
 
 export const metadata: Metadata = {
   metadataBase: new URL(SITE_URL),
-  title: "floor05 - 무료 온라인 도구 모음",
+  title: "무료 온라인 도구 모음 - 이미지·PDF·계산기를 업로드 없이",
   description:
     "서버 전송 없이 브라우저에서 바로. 이미지 압축·변환·크롭, PDF 합치기, 글자수 세기, 연봉·퇴직금 계산까지 회원가입 없이 무제한 무료.",
   keywords: [
@@ -74,7 +74,7 @@ export const metadata: Metadata = {
     locale: "ko_KR",
     url: SITE_URL,
     siteName: "floor05",
-    title: "floor05 - 무료 온라인 도구 모음",
+    title: "무료 온라인 도구 모음 - 이미지·PDF·계산기를 업로드 없이",
     description:
       "서버 전송 없이 브라우저에서 바로. 이미지 압축·변환·크롭, PDF 합치기, 글자수 세기, 연봉·퇴직금 계산까지 회원가입 없이 무제한 무료.",
     images: [
@@ -82,13 +82,13 @@ export const metadata: Metadata = {
         url: "/og-image.png",
         width: 1200,
         height: 630,
-        alt: "floor05 - 무료 온라인 도구 모음",
+        alt: "floor05 무료 온라인 도구 모음",
       },
     ],
   },
   twitter: {
     card: "summary_large_image",
-    title: "floor05 - 무료 온라인 도구 모음",
+    title: "무료 온라인 도구 모음 - 이미지·PDF·계산기를 업로드 없이",
     description:
       "서버 전송 없이 브라우저에서 바로. 이미지·PDF·계산기 도구를 회원가입 없이 무제한 무료로.",
     images: ["/og-image.png"],
