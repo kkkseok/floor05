@@ -20,6 +20,8 @@ export const metadata: Metadata = {
   ],
   alternates: { canonical: "/blog/image-crop-guide" },
   openGraph: {
+    url: "/blog/image-crop-guide",
+    images: [{ url: "/og-image.png", width: 1200, height: 630 }],
     title: "사진 자르기 - 비율마다 얼마나 남고 몇 KB가 되나 실측",
     description: "가운데 기준 9:16 크롭은 사진의 43.9%만 남기고 거북이 머리를 잘라냈습니다.",
   },
