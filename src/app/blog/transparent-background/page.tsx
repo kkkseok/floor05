@@ -78,7 +78,7 @@ export default function TransparentBackgroundPage() {
 
       <main className="flex-1">
         <article className="max-w-3xl mx-auto px-4 sm:px-6 lg:px-8 py-16">
-          <nav className="mb-8 text-sm text-brand-light">
+          <nav className="mb-8 text-sm text-brand-subtle">
             <Link href="/blog" className="hover:text-brand-mid">
               블로그
             </Link>
@@ -91,7 +91,7 @@ export default function TransparentBackgroundPage() {
               도구를 거쳐도 투명 배경이 남을까
             </h1>
             <p className="text-lg text-brand-mid">투명 로고 하나를 10가지 작업에 넣어 봤습니다</p>
-            <div className="mt-4 flex items-center gap-4 text-sm text-brand-light">
+            <div className="mt-4 flex items-center gap-4 text-sm text-brand-subtle">
               <time dateTime="2026-10-16">2026-10-16 측정</time>
               <span>·</span>
               <span>6분 읽기</span>

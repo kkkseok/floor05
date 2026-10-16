@@ -2,6 +2,8 @@
  * PDF 도구 3종 E2E — 결과 PDF의 페이지 수·페이지 크기·ZIP 구성 검증
  */
 import { test, expect } from "@playwright/test";
+import fs from "fs";
+import path from "path";
 import {
   installGuards,
   assertClean,
@@ -109,6 +111,22 @@ test.describe("PDF 합치기", () => {
     );
     const sizes = await pdfPageSizes(file);
     expect(sizes[0]).toEqual({ w: 612, h: 792 }); // Letter 먼저
+  });
+
+  test("나눠 올려도 합계 20개까지만 — 넘친 파일은 빼고 안내", async ({ page }, testInfo) => {
+    const files = Array.from({ length: 24 }, (_, i) => {
+      const f = testInfo.outputPath(`many/doc-${String(i + 1).padStart(2, "0")}.pdf`);
+      fs.mkdirSync(path.dirname(f), { recursive: true });
+      fs.copyFileSync(fx("a4-1p.pdf"), f);
+      return f;
+    });
+    await page.goto("/tools/pdf/merge");
+    await uploadToDropzone(page, files.slice(0, 12));
+    await expect(page.getByRole("button", { name: "12개 PDF 합치기" })).toBeVisible({ timeout: 15_000 });
+    await page.getByText("파일을 드래그하거나").first().scrollIntoViewIfNeeded();
+    await uploadToDropzone(page, files.slice(12));
+    await expect(page.getByRole("button", { name: "20개 PDF 합치기" })).toBeVisible({ timeout: 15_000 });
+    await expect(page.getByText(/4개는 빼 두었습니다/)).toBeVisible();
   });
 
   test("1개만 업로드 → 병합 비활성", async ({ page }) => {

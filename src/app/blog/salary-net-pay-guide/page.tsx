@@ -82,7 +82,7 @@ export default function SalaryNetPayGuidePage() {
 
       <main className="flex-1">
         <article className="max-w-3xl mx-auto px-4 sm:px-6 lg:px-8 py-16">
-          <nav className="mb-8 text-sm text-brand-light">
+          <nav className="mb-8 text-sm text-brand-subtle">
             <Link href="/blog" className="hover:text-brand-mid">
               블로그
             </Link>
@@ -95,7 +95,7 @@ export default function SalaryNetPayGuidePage() {
               2026 연봉 실수령액 표
             </h1>
             <p className="text-lg text-brand-mid">2,400만 원부터 1억 5,000만 원까지 10개 구간을 계산했습니다</p>
-            <div className="mt-4 flex items-center gap-4 text-sm text-brand-light">
+            <div className="mt-4 flex items-center gap-4 text-sm text-brand-subtle">
               <time dateTime="2026-10-16">2026-10-16 계산</time>
               <span>·</span>
               <span>6분 읽기</span>

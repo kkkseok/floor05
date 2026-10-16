@@ -80,8 +80,14 @@ export const MINIMUM_WAGE = {
   monthlyHours: 209,
 } as const;
 
-/** 주→월 환산 평균 주수 (52.14주 ÷ 12개월) */
-export const WEEKS_PER_MONTH = 4.345;
+/**
+ * 최저임금 — 2027년 적용 (2027.1.1~).
+ * [출처] 고용노동부 보도자료 2026-08-05 「2027년도 적용 최저임금 시간급 10,700원」. 월 209시간 기준 2,236,300원.
+ */
+export const MINIMUM_WAGE_2027 = {
+  hourly: 10_700,
+  effectiveFrom: "2027-01-01",
+} as const;
 
 /** 퇴직금 — 법정 산식 상수 */
 export const SEVERANCE = {
