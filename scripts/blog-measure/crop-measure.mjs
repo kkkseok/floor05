@@ -2,16 +2,19 @@
  * 블로그 실측용: floor05 이미지 크롭과 같은 방식(src/lib/image/crop.ts — 정수 좌표, high 스무딩,
  * JPG 92% / 원형은 PNG)으로 비율별 최대 영역 크롭, 원형 크롭, 고정 크기 출력을 만들어
  * 크기·용량·PSNR(손실 없이 자른 영역 대비)을 잰다.
- * 사용: node scripts/blog-measure/crop-measure.mjs <출력.json> <사진.jpg>
+ * 고정 크기 출력은 도구와 같게 원본 크기로 자른 뒤 drawImageDownscaled(esbuild 번들 주입)로 줄인다.
+ * 사용: npx esbuild src/lib/image/downscale.ts --bundle --format=iife --global-name=DS --outfile=<helper.js>
+ *       node scripts/blog-measure/crop-measure.mjs <출력.json> <helper.js> <사진.jpg>
  */
 import fs from "node:fs";
 import { chromium } from "@playwright/test";
 
-const [, , out, photo] = process.argv;
+const [, , out, helperPath, photo] = process.argv;
 const url = `data:image/jpeg;base64,${fs.readFileSync(photo).toString("base64")}`;
 const b = await chromium.launch();
 const page = await b.newPage();
 await page.setContent("<html></html>");
+await page.addScriptTag({ content: fs.readFileSync(helperPath, "utf8") });
 const result = await page.evaluate(async (url) => {
   const load = (s) => new Promise((ok) => { const i = new Image(); i.onload = () => ok(i); i.src = s; });
   const toBlob = (c, type, q) => new Promise((ok) => c.toBlob(ok, type, q));
@@ -28,10 +31,14 @@ const result = await page.evaluate(async (url) => {
   const cut = (a, outW, outH, circle) => {
     const x = Math.max(0, Math.round(a.x)), y = Math.max(0, Math.round(a.y));
     const w = Math.max(1, Math.min(Math.round(a.w), W - x)), h = Math.max(1, Math.min(Math.round(a.h), H - y));
+    // 도구(crop.ts)와 같은 순서: 원본 크기로 자른 캔버스 → 출력 크기로 단계 축소
+    const cropC = document.createElement("canvas"); cropC.width = w; cropC.height = h;
+    const cc = cropC.getContext("2d"); cc.imageSmoothingEnabled = true; cc.imageSmoothingQuality = "high";
+    cc.drawImage(img, x, y, w, h, 0, 0, w, h);
     const c = document.createElement("canvas"); c.width = outW ?? w; c.height = outH ?? h;
     const ctx = c.getContext("2d"); ctx.imageSmoothingEnabled = true; ctx.imageSmoothingQuality = "high";
     if (!circle) { ctx.fillStyle = "#fff"; ctx.fillRect(0, 0, c.width, c.height); }
-    ctx.drawImage(img, x, y, w, h, 0, 0, c.width, c.height);
+    DS.drawImageDownscaled(ctx, cropC, 0, 0, w, h, 0, 0, c.width, c.height);
     if (circle) { ctx.globalCompositeOperation = "destination-in"; ctx.beginPath(); ctx.ellipse(c.width/2, c.height/2, c.width/2, c.height/2, 0, 0, Math.PI*2); ctx.fill(); }
     return c;
   };

@@ -1,0 +1,143 @@
+{
+  "measuredAt": "2026-10-15",
+  "testLogo": "scripts/blog-measure/favicon-test-logo.mjs 로 생성한 1024x1024 PNG(굵은 글자+얇은 동심원+사선)",
+  "downscalePsnr": {
+    "reference": "Pillow BOX(면적 평균) 축소, 흰 배경 합성 후 RGB 비교",
+    "methods": {
+      "M1": "기존: drawImage 한 번, 기본 smoothing",
+      "M2": "drawImage 한 번, imageSmoothingQuality=high",
+      "M3": "절반씩 단계 축소(high) — 채택"
+    },
+    "result": {
+      "chromium": {
+        "M1": {
+          "16": 16.3,
+          "180": 27.42,
+          "32": 17.08,
+          "48": 17.2
+        },
+        "M2": {
+          "16": 44.28,
+          "180": 32.21,
+          "32": 51.13,
+          "48": 31.79
+        },
+        "M3": {
+          "16": 50.67,
+          "180": 32.21,
+          "32": 51.13,
+          "48": 31.79
+        }
+      },
+      "firefox": {
+        "M1": {
+          "16": 16.3,
+          "180": 23.86,
+          "32": 16.05,
+          "48": 16.2
+        },
+        "M2": {
+          "16": 16.3,
+          "180": 23.86,
+          "32": 16.05,
+          "48": 16.2
+        },
+        "M3": {
+          "16": 44.28,
+          "180": 27.34,
+          "32": 45.31,
+          "48": 26.1
+        }
+      },
+      "webkit": {
+        "M1": {
+          "16": 16.3,
+          "180": 23.86,
+          "32": 16.05,
+          "48": 16.19
+        },
+        "M2": {
+          "16": 15.93,
+          "180": 22.97,
+          "32": 15.72,
+          "48": 15.9
+        },
+        "M3": {
+          "16": 32.55,
+          "180": 24.38,
+          "32": 33.31,
+          "48": 21.04
+        }
+      }
+    }
+  },
+  "requests": {
+    "note": "floor05 파비콘 ZIP(수정 후 도구로 생성)을 로컬 서버에 올리고 페이지 2종에서 요청 기록, 3초 대기, 2회 반복 동일. Chromium은 channel=chromium(전체 브라우저), WebKit은 headed(Windows 빌드)",
+    "run1": {
+      "Chromium": {
+        "version": "151.0.7922.34",
+        "/with-snippet.html": [
+          "/favicon.ico"
+        ],
+        "/no-tags.html": [
+          "/favicon.ico"
+        ]
+      },
+      "Firefox": {
+        "version": "153.0",
+        "/with-snippet.html": [
+          "/apple-touch-icon.png",
+          "/favicon-16x16.png"
+        ],
+        "/no-tags.html": [
+          "/favicon.ico"
+        ]
+      },
+      "WebKit": {
+        "version": "26.5",
+        "/with-snippet.html": [
+          "/site.webmanifest"
+        ],
+        "/no-tags.html": []
+      }
+    },
+    "run2": {
+      "Chromium": {
+        "version": "151.0.7922.34",
+        "/with-snippet.html": [
+          "/favicon.ico"
+        ],
+        "/no-tags.html": [
+          "/favicon.ico"
+        ]
+      },
+      "Firefox": {
+        "version": "153.0",
+        "/with-snippet.html": [
+          "/apple-touch-icon.png",
+          "/favicon-16x16.png"
+        ],
+        "/no-tags.html": [
+          "/favicon.ico"
+        ]
+      },
+      "WebKit": {
+        "version": "26.5",
+        "/with-snippet.html": [
+          "/site.webmanifest"
+        ],
+        "/no-tags.html": []
+      }
+    },
+    "fileSizes": {
+      "android-chrome-192x192.png": 55080,
+      "android-chrome-512x512.png": 158898,
+      "apple-touch-icon.png": 63709,
+      "favicon-16x16.png": 713,
+      "favicon-32x32.png": 2142,
+      "favicon.ico": 7808,
+      "head-snippet.html": 321,
+      "site.webmanifest": 237
+    }
+  }
+}

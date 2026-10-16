@@ -4,12 +4,17 @@
  */
 
 import { loadImage, fileToDataUrl, canvasToBlob } from "../common/fileUtils";
-import { computeResizeDimensions } from "./resizeDims";
+import { computeResizeDimensions, computeCoverCrop } from "./resizeDims";
+import { drawImageDownscaled } from "./downscale";
 
 export interface ResizeOptions {
   width: number;
   height: number;
   maintainAspectRatio?: boolean;
+  /** width×height를 정확히 채우도록 가운데를 잘라 맞춘다(프리셋용). maintainAspectRatio보다 우선 */
+  cover?: boolean;
+  /** cover일 때 원본보다 크게 만들지 않는다 */
+  noEnlarge?: boolean;
   outputFormat?: "image/jpeg" | "image/png" | "image/webp";
   quality?: number;
 }
@@ -129,7 +134,12 @@ export async function resizeImage(
   const img = await loadImage(dataUrl);
 
   // 새 크기 계산 (워커와 공유하는 순수 함수)
-  const { width: newWidth, height: newHeight } = computeResizeDimensions(
+  const naturalW = img.naturalWidth || img.width;
+  const naturalH = img.naturalHeight || img.height;
+  const crop = options.cover && width > 0 && height > 0
+    ? computeCoverCrop(naturalW, naturalH, width, height, options.noEnlarge)
+    : null;
+  const { width: newWidth, height: newHeight } = crop ?? computeResizeDimensions(
     img.width,
     img.height,
     { width, height, maintainAspectRatio }
@@ -155,7 +165,12 @@ export async function resizeImage(
     ctx.fillRect(0, 0, newWidth, newHeight);
   }
 
-  ctx.drawImage(img, 0, 0, newWidth, newHeight);
+  // 크게 줄일 때는 절반씩 나눠 그린다(Firefox·WebKit은 high 품질을 무시해 한 번에 줄이면 깨짐)
+  if (crop) {
+    drawImageDownscaled(ctx, img, crop.sx, crop.sy, crop.sw, crop.sh, 0, 0, newWidth, newHeight);
+  } else {
+    drawImageDownscaled(ctx, img, 0, 0, naturalW, naturalH, 0, 0, newWidth, newHeight);
+  }
 
   // Blob 생성 (단일 인코딩 — toDataURL 중복 제거, 호출측에서 objectURL 해제)
   const blob = await canvasToBlob(

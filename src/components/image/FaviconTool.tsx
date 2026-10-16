@@ -1,10 +1,11 @@
 "use client";
 
-import { useState, useRef, useCallback } from "react";
+import { useState, useRef, useCallback, useEffect } from "react";
 import { saveAs } from "file-saver";
 import JSZip from "jszip";
 import FileDropzone from "@/components/common/FileDropzone";
 import { canvasToBlob } from "@/lib/common/fileUtils";
+import { downscaleToCanvas } from "@/lib/image/downscale";
 import { buildIco } from "@/lib/image/ico";
 import { trackToolUse, trackDownload } from "@/lib/common/analytics";
 
@@ -47,8 +48,14 @@ export default function FaviconTool() {
     canvas.width = 96;
     canvas.height = 96;
     const ctx = canvas.getContext("2d");
-    ctx?.drawImage(bmp, sx, sy, side, side, 0, 0, 96, 96);
+    ctx?.clearRect(0, 0, 96, 96);
+    ctx?.drawImage(downscaleToCanvas(bmp, sx, sy, side, side, 96, 96), 0, 0);
   }, []);
+
+  // 미리보기 캔버스는 loaded 이후에 생기므로 렌더가 끝난 뒤 그린다(requestAnimationFrame 경합 제거)
+  useEffect(() => {
+    if (loaded) drawPreview();
+  }, [loaded, drawPreview]);
 
   const onSelect = useCallback(
     async (files: File[]) => {
@@ -59,7 +66,6 @@ export default function FaviconTool() {
         const bmp = await createImageBitmap(f, { imageOrientation: "from-image" });
         bitmapRef.current = bmp;
         setLoaded(true);
-        requestAnimationFrame(drawPreview);
       } catch {
         setError("이미지를 불러오지 못했습니다. JPG·PNG·WebP 파일인지 확인해 주세요.");
       }
@@ -70,12 +76,8 @@ export default function FaviconTool() {
   async function renderPng(size: number): Promise<Uint8Array> {
     const bmp = bitmapRef.current!;
     const { sx, sy, side } = squareCrop(bmp);
-    const canvas = document.createElement("canvas");
-    canvas.width = size;
-    canvas.height = size;
-    const ctx = canvas.getContext("2d");
-    if (!ctx) throw new Error("처리 실패");
-    ctx.drawImage(bmp, sx, sy, side, side, 0, 0, size, size);
+    // 1024px → 16px처럼 크게 줄일 때 한 번에 그리면 계단이 생기므로 절반씩 줄인다
+    const canvas = downscaleToCanvas(bmp, sx, sy, side, side, size, size);
     const blob = await canvasToBlob(canvas, "image/png");
     return new Uint8Array(await blob.arrayBuffer());
   }

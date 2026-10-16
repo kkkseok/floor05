@@ -8,7 +8,7 @@ import BlogInlineCTA from "@/components/common/BlogInlineCTA";
 export const metadata: Metadata = {
   title: "사진 자르기 - 비율마다 얼마나 남고 몇 KB가 되나 실측",
   description:
-    "카메라 원본 사진을 1:1, 4:3, 16:9, 9:16으로 잘라 남는 픽셀과 용량을 쟀습니다. 9:16은 44%만 남았고, 원형 프로필 PNG는 같은 크기 JPG의 5.7배였습니다.",
+    "카메라 원본 사진을 1:1, 4:3, 16:9, 9:16으로 잘라 남는 픽셀과 용량을 쟀습니다. 9:16은 44%만 남았고, 원형 프로필 PNG는 같은 크기 JPG의 5.9배였습니다.",
   keywords: [
     "사진 자르기",
     "이미지 크롭",
@@ -20,6 +20,8 @@ export const metadata: Metadata = {
   ],
   alternates: { canonical: "/blog/image-crop-guide" },
   openGraph: {
+    url: "/blog/image-crop-guide",
+    images: [{ url: "/og-image.png", width: 1200, height: 630 }],
     title: "사진 자르기 - 비율마다 얼마나 남고 몇 KB가 되나 실측",
     description: "가운데 기준 9:16 크롭은 사진의 43.9%만 남기고 거북이 머리를 잘라냈습니다.",
   },
@@ -34,12 +36,12 @@ const faqs = [
   {
     question: "원형으로 자른 프로필 사진 용량이 왜 이렇게 큰가요?",
     answer:
-      "원형 크롭은 모서리를 투명하게 남겨야 해서 PNG로 저장하는데, PNG는 사진에 약합니다. 1080×1080 원형 PNG가 2.10MB로, 같은 크기 정사각 JPG(0.37MB)의 5.7배였습니다. 서비스가 원형으로 표시해 준다면 정사각 JPG를 올리는 편이 가볍습니다.",
+      "원형 크롭은 모서리를 투명하게 남겨야 해서 PNG로 저장하는데, PNG는 사진에 약합니다. 1080×1080 원형 PNG가 1.98MB로, 같은 크기 정사각 JPG(0.33MB)의 5.9배였습니다. 서비스가 원형으로 표시해 준다면 정사각 JPG를 올리는 편이 가볍습니다.",
   },
   {
     question: "증명사진 크기로 자르면 용량은 얼마나 되나요?",
     answer:
-      "카메라 원본 사진을 잘라 고정 크기로 저장해 보니 3.5×4.5cm(413×531px)는 66KB, 3×4cm(354×472px)는 54KB, 2×2인치(600×600px)는 121KB였습니다. 같은 크기라도 사진 내용에 따라 용량은 달라집니다.",
+      "카메라 원본 사진을 잘라 고정 크기로 저장해 보니 3.5×4.5cm(413×531px)는 70KB, 3×4cm(354×472px)는 54KB, 2×2인치(600×600px)는 113KB였습니다. 같은 크기라도 사진 내용에 따라 용량은 달라집니다.",
   },
   {
     question: "자르는 동안 사진이 다른 곳에 저장되나요?",
@@ -194,12 +196,12 @@ export default function ImageCropGuidePage() {
             </BlogInlineCTA>
 
             <h2 className="text-2xl font-bold text-brand-black mt-12 mb-4">
-              3. 원형 프로필 사진은 JPG의 5.7배
+              3. 원형 프로필 사진은 JPG의 5.9배
             </h2>
             <p className="text-brand-mid leading-relaxed mb-4">
               원형 크롭은 모서리를 투명하게 남겨야 하므로 투명을 지원하는 PNG로 저장합니다. 같은 1:1 영역을
-              1080×1080으로 만들었을 때 원형 PNG는 2.10MB, 정사각 JPG는 0.37MB였습니다. 600×600에서도
-              0.65MB 대 0.12MB로 5.4배였습니다.
+              1080×1080으로 만들었을 때 원형 PNG는 1.98MB, 정사각 JPG는 0.33MB였습니다. 600×600에서도
+              0.63MB 대 0.11MB로 5.6배였습니다.
             </p>
             <p className="text-brand-mid leading-relaxed mb-6">
               PNG는 같은 색이 넓게 이어지는 그래픽에는 강하지만, 사진처럼 픽셀마다 색이 다른 이미지에는
@@ -233,12 +235,12 @@ export default function ImageCropGuidePage() {
                   <tr className="border-b border-brand-light/20">
                     <td className="py-2 pr-4 font-medium text-brand-black">여권 3.5×4.5</td>
                     <td className="py-2 pr-4">413×531px</td>
-                    <td className="py-2 pr-4">66KB</td>
+                    <td className="py-2 pr-4">70KB</td>
                   </tr>
                   <tr>
                     <td className="py-2 pr-4 font-medium text-brand-black">미국 비자 2×2</td>
                     <td className="py-2 pr-4">600×600px</td>
-                    <td className="py-2 pr-4">121KB</td>
+                    <td className="py-2 pr-4">113KB</td>
                   </tr>
                 </tbody>
               </table>

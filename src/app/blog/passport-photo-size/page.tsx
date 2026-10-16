@@ -20,6 +20,8 @@ export const metadata: Metadata = {
   ],
   alternates: { canonical: "/blog/passport-photo-size" },
   openGraph: {
+    url: "/blog/passport-photo-size",
+    images: [{ url: "/og-image.png", width: 1200, height: 630 }],
     title: "증명사진 용량 줄이기 - 200KB, 500KB 맞추는 방법",
     description: "취업사이트, 원서접수용 증명사진 용량을 화질 손실 없이 줄이는 방법",
   },
@@ -99,7 +101,7 @@ export default function PassportPhotoSizePage() {
             <p className="text-brand-mid text-lg leading-relaxed mb-8">
               취업사이트에 원서를 넣으려는데 &quot;사진 용량이 500KB를 초과합니다&quot;라는
               메시지가 떴나요? 사진관에서 받은 증명사진은 보통 2~5MB라
-              그대로는 올릴 수 없습니다. 화질 손상 없이 용량만 줄이는 방법을 알려드립니다.
+              그대로는 올릴 수 없습니다. 화질을 최대한 지키면서 용량만 줄이는 방법을 알려드립니다.
             </p>
 
             {/* CTA 박스 */}
@@ -199,7 +201,7 @@ export default function PassportPhotoSizePage() {
 
             {/* 화질 손상 최소화 */}
             <h2 className="text-2xl font-bold text-brand-black mt-12 mb-4">
-              3. 화질 손상 없이 줄이는 팁
+              3. 화질을 지키며 줄이는 팁
             </h2>
             <ul className="list-disc list-inside text-brand-mid space-y-2 mb-6">
               <li>
