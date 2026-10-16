@@ -1,4 +1,4 @@
-# QA Baseline — 2026-10-16 기준
+# QA Baseline — 2026-10-16 기준 (전체 E2E 231 통과·flaky 0 확인)
 
 > 2026-10-15 AdSense '가치가 별로 없는 콘텐츠' 반려 대응으로 사이트 범위를 축소했다(도구 40→20, 블로그 34→25).
 > 이전 기준(2026-08-13, 도구 40·E2E 106)은 git 기록 참조.
@@ -20,10 +20,10 @@
 
 | 스위트 | 개수 | 상태 |
 |--------|------|------|
-| Unit (Vitest) | 39 | 전부 PASS |
-| E2E chromium | 75 | PASS (skip 1: 모바일 전용) |
-| E2E mobile-chromium | 75 | PASS |
-| E2E webkit | 75 | PASS (skip 2: HEIC·클립보드) · 전체 병렬 실행 시 간헐 flaky ≤1 (retry로 통과) |
+| Unit (Vitest) | 41 | 전부 PASS |
+| E2E chromium | 78 | PASS (skip 1: 모바일 전용) |
+| E2E mobile-chromium | 78 | PASS |
+| E2E webkit | 78 | PASS (skip 2: HEIC·클립보드) · 전체 병렬 실행 시 간헐 flaky ≤1 (retry로 통과) |
 | Prod smoke | 9 | 전부 PASS |
 
 축소 화질 E2E는 `writeStripesPng`/`pngGreenStats`/`pngPixels`(tests/e2e/helpers.ts) 사용 — 줄무늬 편차는
@@ -48,7 +48,7 @@
 - **주휴수당 월 환산**: 4.345주 기준 — 209시간 고정 방식 회사와 수천 원 차이 (UI에 명시).
 - **국민연금 하한**: 기준소득월액 하한(41만) 미만 소득은 실무와 달리 비례 계산 (코드 주석에 명시된 단순화).
 - **인스타 9분할**: 중앙 정사각 크롭 후 분할 (인스타 그리드 특성상 의도된 동작).
-- **워터마크 기본 출력**: PNG (품질 무손실 우선 설계).
+- **워터마크 기본 출력**: '자동'(JPG 사진은 JPG, PNG·WebP는 PNG). 예전 PNG 기본값은 15.8MB JPG를 47.2MB PNG로 만들어 2026-10-16 변경.
 - **WebKit 축소 화질**: 절반씩 단계 축소(src/lib/image/downscale.ts)를 써도, 마지막 단계가 2배가 아닌 비율에서는
   WebKit 캔버스 필터가 정확한 평균을 내지 않아 일부 깨짐이 남는다(Chromium·Firefox는 양호). JS 픽셀 평균은 메모리 부담으로 보류.
 - **모자이크 편집 화면**: 긴 변 2000px로 줄여 보여주지만 저장은 원본 해상도로 다시 적용(2026-10-16부터).

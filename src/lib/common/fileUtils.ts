@@ -266,3 +266,36 @@ export function canvasToBlob(
     );
   });
 }
+
+export type OutputImageType = "image/jpeg" | "image/png" | "image/webp";
+
+/**
+ * 결과 이미지 형식은 입력을 따른다: PNG→PNG, WebP→WebP, 그 외→JPG.
+ * 투명을 담을 수 있는 PNG·WebP를 JPG로 바꾸면 투명 영역이 검게(또는 흰색으로) 칠해진다.
+ * WebKit은 .webp 파일의 File.type을 비워 두므로 확장자도 함께 본다.
+ * WebP 인코딩을 못 하는 브라우저는 PNG를 돌려주므로, 확장자는 결과 blob.type으로 정할 것.
+ */
+export function outputTypeFor(file: File): OutputImageType {
+  const ext = getFileExtension(file.name);
+  if (file.type === "image/png" || ext === "png") return "image/png";
+  if (file.type === "image/webp" || ext === "webp") return "image/webp";
+  return "image/jpeg";
+}
+
+/**
+ * ZIP 안 파일 이름이 겹치지 않게 " (n)"을 붙인다. used에 결과 이름을 추가한다.
+ * 폰 사진처럼 이름이 같은 파일을 여러 장 넣으면 JSZip이 같은 이름을 덮어써 한 장만 남는다.
+ */
+export function uniqueFileName(name: string, used: Set<string>): string {
+  let result = name;
+  if (used.has(result)) {
+    const dotIndex = name.lastIndexOf(".");
+    const base = dotIndex > 0 ? name.slice(0, dotIndex) : name;
+    const ext = dotIndex > 0 ? name.slice(dotIndex) : "";
+    let n = 1;
+    while (used.has(`${base} (${n})${ext}`)) n++;
+    result = `${base} (${n})${ext}`;
+  }
+  used.add(result);
+  return result;
+}

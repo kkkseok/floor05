@@ -20,6 +20,8 @@ export const metadata: Metadata = {
   ],
   alternates: { canonical: "/blog/avif-guide" },
   openGraph: {
+    url: "/blog/avif-guide",
+    images: [{ url: "/og-image.png", width: 1200, height: 630 }],
     title: "AVIF란? WebP·JPG와 비교 + 변환 방법",
     description: "AVIF의 장단점과 WebP·JPG 비교, 변환 방법까지 한 번에.",
   },

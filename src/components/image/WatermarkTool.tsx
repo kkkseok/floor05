@@ -10,6 +10,7 @@ import {
   validateImageFiles,
   createNewFileName,
   mimeToExtension,
+  outputTypeFor,
 } from "@/lib/common/fileUtils";
 import {
   applyWatermark,
@@ -23,7 +24,9 @@ import { trackToolUse } from "@/lib/common/analytics";
 
 const ACCEPT_IMAGE = "image/jpeg,image/png,image/webp";
 const LOGO_ACCEPT = "image/png,image/webp,image/jpeg";
-type OutputFormat = "image/png" | "image/jpeg";
+// auto = 원본 형식을 따름(JPG 사진은 JPG, PNG·WebP는 투명을 지키도록 PNG).
+// 예전 기본값 PNG는 15.8MB JPG 사진을 47.2MB PNG로 만들었다(실측, docs/blog-data/watermark-2026-10-16.json).
+type OutputFormat = "auto" | "image/png" | "image/jpeg";
 
 interface SourceImage {
   id: string;
@@ -69,7 +72,7 @@ export default function WatermarkTool() {
   const [tile, setTile] = useState(false);
   const [margin, setMargin] = useState(4);
 
-  const [outputFormat, setOutputFormat] = useState<OutputFormat>("image/png");
+  const [outputFormat, setOutputFormat] = useState<OutputFormat>("auto");
   const [quality, setQuality] = useState(92);
 
   const [isProcessing, setIsProcessing] = useState(false);
@@ -110,7 +113,7 @@ export default function WatermarkTool() {
       rotation,
       tile,
       margin,
-      outputFormat,
+      outputFormat: outputFormat === "auto" ? undefined : outputFormat,
       quality: quality / 100,
     }),
     [
@@ -287,7 +290,13 @@ export default function WatermarkTool() {
       const opts = buildOptions();
       const out: { name: string; blob: Blob }[] = [];
       for (const im of images) {
-        const res = await applyWatermark(im.img, opts);
+        const format =
+          outputFormat === "auto"
+            ? outputTypeFor(im.file) === "image/jpeg"
+              ? "image/jpeg"
+              : "image/png"
+            : outputFormat;
+        const res = await applyWatermark(im.img, { ...opts, outputFormat: format });
         out.push({
           name: createNewFileName(
             im.file.name,
@@ -586,6 +595,7 @@ export default function WatermarkTool() {
                 <label className="text-sm font-medium text-brand-black">저장 포맷</label>
                 <div className="flex gap-2">
                   {([
+                    { v: "auto", label: "자동" },
                     { v: "image/png", label: "PNG" },
                     { v: "image/jpeg", label: "JPG" },
                   ] as const).map((opt) => (
@@ -602,8 +612,13 @@ export default function WatermarkTool() {
                     </button>
                   ))}
                 </div>
+                {outputFormat === "auto" && (
+                  <p className="text-xs text-brand-mid leading-relaxed">
+                    JPG 사진은 JPG로, PNG·WebP는 투명 배경을 지키도록 PNG로 저장합니다.
+                  </p>
+                )}
               </div>
-              {outputFormat === "image/jpeg" && (
+              {outputFormat !== "image/png" && (
                 <div className="space-y-3">
                   <div className="flex justify-between items-center">
                     <label className="text-sm font-medium text-brand-black">JPG 품질</label>

@@ -122,13 +122,31 @@ test.describe("PDF 합치기", () => {
     await page.goto("/tools/pdf/merge");
     await uploadToDropzone(page, [fx("a4-1p.pdf"), fx("broken.pdf")]);
     await expect(page.getByText("읽을 수 없음", { exact: true })).toBeVisible({ timeout: 15_000 });
-    await page.getByRole("button", { name: "2개 PDF 합치기" }).click();
-    await expect(page.getByText(/PDF를 합치지 못했습니다/)).toBeVisible({ timeout: 15_000 });
+    await expect(page.getByText(/PDF로 읽을 수 없어요/)).toBeVisible();
+    await expect(page.getByRole("button", { name: "2개 PDF 합치기" })).toBeDisabled();
+    assertClean(guards);
+  });
+
+  test("암호로 보호된 PDF → '암호로 보호됨' 표시 · 병합 비활성 (빈 페이지 출력 금지)", async ({ page }) => {
+    const guards = await installGuards(page);
+    await page.goto("/tools/pdf/merge");
+    await uploadToDropzone(page, [fx("a4-1p.pdf"), fx("encrypted-3p.pdf")]);
+    await expect(page.getByText("암호로 보호됨", { exact: true })).toBeVisible({ timeout: 15_000 });
+    await expect(page.getByText(/암호로 보호된 PDF라 페이지를 꺼낼 수 없어요/)).toBeVisible();
+    await expect(page.getByRole("button", { name: "2개 PDF 합치기" })).toBeDisabled();
     assertClean(guards);
   });
 });
 
 test.describe("PDF 분할", () => {
+  test("암호로 보호된 PDF → 해결 방법 안내 (빈 페이지 출력 금지)", async ({ page }) => {
+    const guards = await installGuards(page);
+    await page.goto("/tools/pdf/split");
+    await uploadToDropzone(page, [fx("encrypted-3p.pdf")]);
+    await expect(page.getByText(/암호로 보호된 PDF라 페이지를 꺼낼 수 없어요/)).toBeVisible({ timeout: 15_000 });
+    assertClean(guards);
+  });
+
   test("페이지 추출 '2' (혼합 크기 PDF) → A5 가로 1페이지", async ({ page }, testInfo) => {
     const guards = await installGuards(page);
     await page.goto("/tools/pdf/split");
@@ -183,7 +201,7 @@ test.describe("PDF 분할", () => {
     const guards = await installGuards(page);
     await page.goto("/tools/pdf/split");
     await uploadToDropzone(page, [fx("broken.pdf")]);
-    await expect(page.getByText(/PDF를 읽지 못했습니다/)).toBeVisible({ timeout: 15_000 });
+    await expect(page.getByText(/PDF로 읽을 수 없어요/)).toBeVisible({ timeout: 15_000 });
     assertClean(guards);
   });
 });

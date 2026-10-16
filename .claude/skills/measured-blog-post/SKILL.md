@@ -52,8 +52,9 @@ AdSense '가치가 별로 없는 콘텐츠' 반려(2026-10-15)에 대응해 정�
 
 ### 8. 검증 (기계 판정)
 ```bash
+set -o pipefail
 rm -rf .next/types          # 다른 브랜치 빌드의 낡은 타입 캐시 제거
-npx tsc --noEmit && npm run lint && npm run build
+npx tsc --noEmit && npm run lint && npm run build   # 파이프로 잘라 보지 말 것
 npx next start -p 3123 &    # 백그라운드
 node scripts/blog-measure/render-check.mjs <slug> <스크래치패드>   # desk 1280 / mobile 390이어야 함
 ```
@@ -73,6 +74,9 @@ git checkout main && git branch -D sim-publish
 프로젝트 메모리 `scope-focus-adsense.md`의 예약 목록과 Drive 리서치 문서의 발행 큐 표를 갱신한다.
 
 ## 함정 (실제로 겪은 것)
+- **검증 명령을 `| tail`로 파이프하지 않는다.** `npm run lint | tail -1`은 tail의 종료 코드(0)를 돌려줘 lint 실패가 가려진다(2026-10-16 실제로 main이 lint 실패 상태로 배포됨). `set -o pipefail`을 쓰거나 `npm run lint > log; echo $?`로 종료 코드를 직접 확인한다. 병합 시뮬레이션도 브랜치마다 lint·tsc를 돌린다(예약 워크플로가 lint를 실행하므로).
+- 정규식·문자열에 `​` 같은 이스케이프를 쓸 때 편집 도구가 실제 보이지 않는 문자로 바꿔 넣을 수 있다 → lint의 no-irregular-whitespace가 잡는다.
+- sed로 정규식을 치환하면 `\(` 같은 역슬래시가 사라진다 → 정규식이 든 줄은 Python 치환이나 Edit 도구로 고친다.
 - `python -I`는 `PYTHONIOENCODING`을 무시한다 → 한글 출력은 `python -I -X utf8`.
 - Git Bash가 `이름=경로` 형태 인자의 `/c/...`를 변환하지 않는다 → 그런 인자는 `C:/Users/...` 형식으로.
 - WebKit은 `.webp` 파일의 `File.type`을 비워 둔다 → 형식 판단은 확장자도 함께.

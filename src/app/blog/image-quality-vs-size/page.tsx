@@ -20,6 +20,8 @@ export const metadata: Metadata = {
   ],
   alternates: { canonical: "/blog/image-quality-vs-size" },
   openGraph: {
+    url: "/blog/image-quality-vs-size",
+    images: [{ url: "/og-image.png", width: 1200, height: 630 }],
     title: "사진 화질 높이기 vs 용량 줄이기 - 차이점과 올바른 선택",
     description: "화질과 용량, 둘 중 무엇을 선택해야 할까요?",
   },
