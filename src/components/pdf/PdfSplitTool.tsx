@@ -58,7 +58,7 @@ export default function PdfSplitTool() {
         const files = await splitAllPages(buf, base);
         const zip = new JSZip();
         files.forEach((f) => zip.file(f.name, f.bytes));
-        const blob = await zip.generateAsync({ type: "blob" });
+        const blob = await zip.generateAsync({ type: "blob", compression: "DEFLATE" });
         saveAs(blob, `${base}_분할.zip`);
         trackDownload("pdf-split", "zip");
       }
@@ -121,7 +121,8 @@ export default function PdfSplitTool() {
           ) : (
             <p className="rounded-lg bg-brand-paper p-4 text-sm text-brand-mid">
               모든 페이지를 1장짜리 PDF로 나눠 ZIP 한 개로 내려받습니다.
-              {pageCount ? ` (${pageCount}개 파일)` : ""}
+              {pageCount ? ` (${pageCount}개 파일)` : ""} 글꼴을 내장한 문서는 낱장마다 같은 글꼴이 다시 들어가서,
+              ZIP이 원본보다 몇 배 커질 수 있어요. 필요한 페이지만 있다면 &lsquo;페이지 추출&rsquo;이 훨씬 가볍습니다.
             </p>
           )}
 
