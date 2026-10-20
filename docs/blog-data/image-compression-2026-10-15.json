@@ -1,0 +1,233 @@
+{
+  "browser": "151.0.7922.34",
+  "measuredAt": "2026-10-15T12:53:46.068Z",
+  "result": {
+    "tortoise": {
+      "sourceBytes": 15781842,
+      "width": 5522,
+      "height": 4312,
+      "ladder": [
+        {
+          "quality": 1,
+          "bytes": 19741045,
+          "ms": 463,
+          "psnr": 56.93
+        },
+        {
+          "quality": 0.95,
+          "bytes": 8758827,
+          "ms": 213,
+          "psnr": 42.44
+        },
+        {
+          "quality": 0.9,
+          "bytes": 5795751,
+          "ms": 198,
+          "psnr": 39.8
+        },
+        {
+          "quality": 0.85,
+          "bytes": 4430594,
+          "ms": 195,
+          "psnr": 38.5
+        },
+        {
+          "quality": 0.8,
+          "bytes": 3649358,
+          "ms": 248,
+          "psnr": 37.67
+        },
+        {
+          "quality": 0.7,
+          "bytes": 2765789,
+          "ms": 150,
+          "psnr": 36.61
+        },
+        {
+          "quality": 0.6,
+          "bytes": 2207338,
+          "ms": 123,
+          "psnr": 35.78
+        },
+        {
+          "quality": 0.5,
+          "bytes": 1850699,
+          "ms": 164,
+          "psnr": 35.19
+        },
+        {
+          "quality": 0.4,
+          "bytes": 1525054,
+          "ms": 132,
+          "psnr": 34.53
+        },
+        {
+          "quality": 0.3,
+          "bytes": 1204692,
+          "ms": 111,
+          "psnr": 33.69
+        },
+        {
+          "quality": 0.2,
+          "bytes": 888056,
+          "ms": 102,
+          "psnr": 32.43
+        }
+      ],
+      "targets": [
+        {
+          "targetKB": 1000,
+          "quality": 0.242,
+          "bytes": 1017926,
+          "width": 5522,
+          "height": 4312,
+          "attempts": 7,
+          "psnr": 33.02
+        },
+        {
+          "targetKB": 500,
+          "quality": 0.087,
+          "bytes": 497515,
+          "width": 5522,
+          "height": 4312,
+          "attempts": 7,
+          "psnr": 29.1
+        },
+        {
+          "targetKB": 200,
+          "quality": 0.018,
+          "bytes": 202977,
+          "width": 5522,
+          "height": 4312,
+          "attempts": 7,
+          "psnr": 23.6
+        },
+        {
+          "targetKB": 100,
+          "quality": 0.5,
+          "bytes": 75571,
+          "width": 926,
+          "height": 723,
+          "attempts": 7,
+          "resized": true
+        }
+      ]
+    },
+    "flower": {
+      "sourceBytes": 9177109,
+      "width": 8192,
+      "height": 5464,
+      "ladder": [
+        {
+          "quality": 1,
+          "bytes": 18908018,
+          "ms": 714,
+          "psnr": 57.34
+        },
+        {
+          "quality": 0.95,
+          "bytes": 5546099,
+          "ms": 288,
+          "psnr": 48.18
+        },
+        {
+          "quality": 0.9,
+          "bytes": 2532685,
+          "ms": 251,
+          "psnr": 46.68
+        },
+        {
+          "quality": 0.85,
+          "bytes": 1486805,
+          "ms": 215,
+          "psnr": 45.91
+        },
+        {
+          "quality": 0.8,
+          "bytes": 1013902,
+          "ms": 185,
+          "psnr": 45.32
+        },
+        {
+          "quality": 0.7,
+          "bytes": 635063,
+          "ms": 353,
+          "psnr": 44.43
+        },
+        {
+          "quality": 0.6,
+          "bytes": 514163,
+          "ms": 152,
+          "psnr": 43.68
+        },
+        {
+          "quality": 0.5,
+          "bytes": 464538,
+          "ms": 162,
+          "psnr": 43.1
+        },
+        {
+          "quality": 0.4,
+          "bytes": 422124,
+          "ms": 189,
+          "psnr": 42.36
+        },
+        {
+          "quality": 0.3,
+          "bytes": 384049,
+          "ms": 160,
+          "psnr": 40.8
+        },
+        {
+          "quality": 0.2,
+          "bytes": 343476,
+          "ms": 167,
+          "psnr": 38.29
+        }
+      ],
+      "targets": [
+        {
+          "targetKB": 1000,
+          "quality": 0.799,
+          "bytes": 1013902,
+          "width": 8192,
+          "height": 5464,
+          "attempts": 7,
+          "psnr": 45.32
+        },
+        {
+          "targetKB": 500,
+          "quality": 0.59,
+          "bytes": 511493,
+          "width": 8192,
+          "height": 5464,
+          "attempts": 7,
+          "psnr": 43.66
+        },
+        {
+          "targetKB": 200,
+          "quality": 0.5,
+          "bytes": 155448,
+          "width": 4194,
+          "height": 2798,
+          "attempts": 7,
+          "resized": true
+        },
+        {
+          "targetKB": 100,
+          "quality": 0.5,
+          "bytes": 78181,
+          "width": 2684,
+          "height": 1790,
+          "attempts": 7,
+          "resized": true
+        }
+      ]
+    }
+  },
+  "sources": {
+    "tortoise": "NASA KSC-20210121-PH-JBS01_0079 (public domain)",
+    "flower": "NASA KSC-20230613-PH-FMX01-0075 (public domain)"
+  },
+  "note": "targets[] here use the previous algorithm (quality-only search); see compress-target-2026-10-15.json for the adopted one"
+}
