@@ -3,51 +3,66 @@ import Link from "next/link";
 import Header from "@/components/common/Header";
 import Footer from "@/components/common/Footer";
 import BlogExtras from "@/components/common/BlogExtras";
+import BlogInlineCTA from "@/components/common/BlogInlineCTA";
 import { buildBlogMetadata } from "@/lib/common/blog";
 
 export const metadata: Metadata = {
   ...buildBlogMetadata("exif-removal-guide"),
-  title: "사진 위치정보(EXIF) 삭제하는 법 - 올리기 전에",
+  title: "사진 위치정보(EXIF) 삭제 - 카메라 원본 두 장을 뜯어봤습니다",
 };
+
+const faqs = [
+  {
+    question: "GPS를 끄고 찍으면 위치가 전혀 안 남나요?",
+    answer:
+      "꼭 그렇지는 않습니다. 이번에 뜯어본 두 사진은 GPS 좌표가 없었지만, XMP 영역의 도시·장소 칸에 'KSC'(케네디우주센터)가 적혀 있었습니다. 보정 프로그램이나 사진 관리 앱에서 넣은 위치 글자는 GPS와 별개로 남습니다.",
+  },
+  {
+    question: "EXIF를 지우면 화질이 떨어지나요?",
+    answer:
+      "floor05 EXIF 삭제는 사진을 JPG 품질 95%로 다시 저장해 메타데이터를 떼어냅니다. 원본 해상도 그대로 PSNR이 42.4dB(거북이)와 48.2dB(꽃)로, 나란히 놓고 봐도 차이를 찾기 어려운 수준이었습니다. 용량은 15.78MB → 8.76MB, 9.18MB → 5.55MB로 줄었습니다.",
+  },
+  {
+    question: "카메라 일련번호가 남으면 무엇이 문제인가요?",
+    answer:
+      "같은 일련번호가 적힌 사진은 같은 카메라에서 나왔다는 뜻입니다. 익명으로 올린 사진과 실명 계정에 올린 사진의 번호가 같다면 두 사진을 한 사람과 연결할 단서가 됩니다. 이번 사진들은 EXIF와 XMP 두 곳에 같은 번호를 기록하고 있었습니다.",
+  },
+  {
+    question: "지우는 동안 사진이 외부로 나가나요?",
+    answer:
+      "나가지 않습니다. 메타데이터를 읽는 것도, 다시 저장하는 것도 사진을 고른 그 브라우저 탭이 합니다. 손에 남는 건 정보가 빠진 사본 한 장이고, 원본 파일은 건드리지 않습니다.",
+  },
+];
 
 const faqSchema = {
   "@context": "https://schema.org",
   "@type": "FAQPage",
-  mainEntity: [
-    {
-      "@type": "Question",
-      name: "사진에 위치정보가 정말 들어 있나요?",
-      acceptedAnswer: {
-        "@type": "Answer",
-        text: "위치 서비스를 켠 상태로 찍은 사진에는 EXIF에 GPS 좌표가 저장됩니다. 지도에 찍으면 어디서 찍었는지 그대로 드러나, 집·직장 위치가 노출될 수 있습니다.",
-      },
-    },
-    {
-      "@type": "Question",
-      name: "SNS에 올리면 자동으로 지워지지 않나요?",
-      acceptedAnswer: {
-        "@type": "Answer",
-        text: "일부 플랫폼은 업로드 시 EXIF를 제거하지만 모두 그런 건 아니며, 원본 파일을 직접 주고받을 땐 그대로 남습니다. 미리 지워 두는 게 안전합니다.",
-      },
-    },
-    {
-      "@type": "Question",
-      name: "위치정보가 아예 안 남게 할 수 있나요?",
-      acceptedAnswer: {
-        "@type": "Answer",
-        text: "카메라 앱의 위치 기록을 끄면 됩니다. 아이폰은 설정의 위치 서비스에서 카메라 권한을 '안 함'으로, 갤럭시는 카메라 설정에서 위치 태그를 끄면 됩니다. 기종과 OS 버전에 따라 메뉴 이름은 조금 다를 수 있습니다.",
-      },
-    },
-    {
-      "@type": "Question",
-      name: "이미 올린 사진은 어떻게 하나요?",
-      acceptedAnswer: {
-        "@type": "Answer",
-        text: "서비스에 따라 원본 파일이 그대로 보관됐을 수 있습니다. 걱정되는 사진은 내린 뒤 EXIF를 지운 버전으로 다시 올리는 게 마음 편합니다.",
-      },
-    },
-  ],
+  mainEntity: faqs.map((faq) => ({
+    "@type": "Question",
+    name: faq.question,
+    acceptedAnswer: { "@type": "Answer", text: faq.answer },
+  })),
 };
+
+// 2026-10-15 측정 (원자료: docs/blog-data/exif-2026-10-15.json)
+const foundRows = [
+  { item: "촬영자 이름", where: "EXIF Artist · XMP", value: "NASA/Ben Smegelsky" },
+  { item: "카메라 본체 일련번호", where: "EXIF · XMP 두 곳", value: "12자리 숫자" },
+  { item: "렌즈 모델·일련번호", where: "EXIF", value: "EF16-35mm f/2.8L III USM · 10자리" },
+  { item: "촬영 시각", where: "EXIF", value: "2021-01-21 12:31:37, 1/100초, 시간대 −05:00" },
+  { item: "보정 프로그램", where: "EXIF Software", value: "Lightroom Classic 10.1.1 (Windows)" },
+  { item: "보정 이력", where: "XMP History", value: "6건" },
+  { item: "장소 글자", where: "XMP City·Location", value: "KSC" },
+  { item: "사진 설명문", where: "EXIF·IPTC", value: "영어 한 문단" },
+];
+
+const segmentRows = [
+  { name: "EXIF (APP1)", tortoise: "17,646B", flower: "39,662B", after: "없음" },
+  { name: "XMP (APP1)", tortoise: "11,363B", flower: "5,413B", after: "없음" },
+  { name: "IPTC (APP13)", tortoise: "16,870B", flower: "872B", after: "없음" },
+  { name: "APP2 (색 프로필 등)", tortoise: "3,162B", flower: "512B", after: "sRGB 프로필 474B" },
+  { name: "JFIF (APP0)", tortoise: "없음", flower: "없음", after: "18B" },
+];
 
 export default function ExifRemovalGuidePage() {
   return (
@@ -66,179 +81,208 @@ export default function ExifRemovalGuidePage() {
               블로그
             </Link>
             <span className="mx-2">›</span>
-            <span className="text-brand-mid">사진 위치정보(EXIF) 삭제하는 법</span>
+            <span className="text-brand-mid">사진 위치정보(EXIF) 삭제</span>
           </nav>
 
           <header className="mb-12">
             <h1 className="text-3xl sm:text-4xl font-bold text-brand-black mb-4 leading-tight">
-              사진 위치정보(EXIF) 삭제하는 법
+              사진 위치정보(EXIF) 삭제
             </h1>
-            <p className="text-lg text-brand-mid">올리기 전에 지우는 작은 습관</p>
+            <p className="text-lg text-brand-mid">카메라 원본 두 장을 뜯어봤습니다</p>
             <div className="mt-4 flex items-center gap-4 text-sm text-brand-subtle">
-              <time dateTime="2026-06-29">2026-06-29</time>
+              <time dateTime="2026-10-15">2026-10-15 측정</time>
               <span>·</span>
-              <span>5분 읽기</span>
+              <span>7분 읽기</span>
             </div>
           </header>
 
-          <div className="prose prose-lg max-w-none">
-            <p className="text-brand-mid text-lg leading-relaxed mb-8">
-              스마트폰으로 찍은 사진에는 눈에 보이지 않는 정보가 함께 저장됩니다. 그중 가장 민감한
-              건 찍은 위치를 담은 GPS 좌표입니다. 무심코 올린 사진 한 장으로 집 위치가 드러날 수
-              있다는 걸 알면, 올리기 전에 지우는 습관이 생깁니다.
+          <div className="max-w-none">
+            <p className="text-brand-mid text-lg leading-relaxed mb-6">
+              &ldquo;사진에는 위치정보가 들어 있으니 지우고 올리세요&rdquo;라는 말은 익숙합니다. 그런데
+              실제 사진 한 장에 무엇이 얼마나 들어 있는지 열어 본 적은 드뭅니다. 그래서 NASA가 공공
+              도메인으로 공개한 카메라 원본 두 장을 바이트 단위로 뜯어봤습니다.
+            </p>
+            <p className="text-brand-mid leading-relaxed mb-8">
+              두 사진에는 GPS 좌표가 없었습니다. 그런데도 장소, 촬영자, 카메라 일련번호가 남아
+              있었습니다. 그리고 이 과정에서 floor05 EXIF 삭제의 &lsquo;위치정보 포함&rsquo; 표시가
+              틀리게 뜨는 문제를 발견해 고쳤습니다.
             </p>
 
-            <div className="bg-brand-paper rounded-lg p-6 mb-10 border border-brand-light/20">
-              <p className="font-medium text-brand-black mb-3">💡 바로 지우고 싶다면?</p>
-              <p className="text-brand-mid text-sm mb-4">
-                사진을 넣으면 위치·기기·시각 정보를 떼어내 되돌려 줍니다. 지우는 과정은 이
-                브라우저 안에서만 돌아갑니다.
-              </p>
-              <Link
-                href="/tools/image/exif-remove"
-                className="inline-block bg-brand-accent text-brand-white px-4 py-2 rounded-md text-sm font-medium hover:bg-brand-accent-light transition-colors"
-              >
-                EXIF 삭제 사용하기 →
-              </Link>
-            </div>
-
-            <h2 className="text-2xl font-bold text-brand-black mt-12 mb-4">EXIF란 무엇인가</h2>
-            <p className="text-brand-mid leading-relaxed mb-4">
-              EXIF는 사진 파일 안에 함께 저장되는 부가 정보입니다. 사진을 더 잘 관리하려고 만든
-              규격이지만, 개인정보 관점에서는 주의가 필요합니다.
-            </p>
-            <ul className="list-disc list-inside text-brand-mid space-y-2 mb-6">
+            <h2 className="text-2xl font-bold text-brand-black mt-12 mb-4">어떻게 확인했나</h2>
+            <ul className="list-disc pl-5 text-brand-mid space-y-2 mb-8 leading-relaxed">
               <li>
-                <strong>촬영 위치(GPS)</strong> — 위도·경도 좌표. 지도에 넣으면 건물 단위까지
-                특정될 수 있습니다
+                거북이 사진: Canon EOS 5D Mark IV로 찍고 Lightroom에서 보정한 JPG, 15.78MB
+              </li>
+              <li>꽃 사진: Canon EOS R5로 찍은 JPG, 9.18MB</li>
+              <li>
+                JPG 파일의 머리 부분(APP 세그먼트)을 순서대로 읽어 영역별 크기를 재고, EXIF 태그는
+                Pillow 12.1로, XMP는 본문 텍스트로 확인했습니다.
               </li>
               <li>
-                <strong>촬영 날짜·시각</strong> — 초 단위까지 기록됩니다
-              </li>
-              <li>
-                <strong>기기 정보</strong> — 제조사와 모델명. 어떤 폰으로 찍었는지 드러납니다
-              </li>
-              <li>
-                <strong>카메라 설정</strong> — 렌즈, 조리개, 셔터 속도, ISO 같은 촬영 값
-              </li>
-              <li>
-                <strong>편집 이력</strong> — 보정에 쓴 소프트웨어 이름이 남기도 합니다
+                그다음 두 파일을 floor05{" "}
+                <Link href="/tools/image/exif-remove" className="text-brand-accent hover:underline">
+                  EXIF 삭제
+                </Link>
+                에 넣고, 내려받은 결과를 같은 방법으로 다시 읽었습니다.
               </li>
             </ul>
+
+            <h2 className="text-2xl font-bold text-brand-black mt-12 mb-4">
+              거북이 사진 한 장에서 나온 것
+            </h2>
             <p className="text-brand-mid leading-relaxed mb-4">
-              하나하나는 사소해 보여도 조합되면 이야기가 달라집니다. 여러 장의 사진에서 좌표와
-              시각을 모으면 집과 직장, 자주 가는 시간대까지 생활 패턴이 그려집니다.
+              EXIF 태그만 46개였습니다. 그중 사람이나 장소를 짐작하게 하는 항목만 추렸습니다.
+            </p>
+            <div className="overflow-x-auto mb-6">
+              <table className="w-full text-sm border-collapse">
+                <thead>
+                  <tr className="border-b border-brand-light/40 text-left">
+                    <th className="py-2 pr-4 text-brand-black">항목</th>
+                    <th className="py-2 pr-4 text-brand-black">기록된 곳</th>
+                    <th className="py-2 pr-4 text-brand-black">값</th>
+                  </tr>
+                </thead>
+                <tbody className="text-brand-mid">
+                  {foundRows.map((row) => (
+                    <tr key={row.item} className="border-b border-brand-light/20">
+                      <td className="py-2 pr-4 font-medium text-brand-black whitespace-nowrap">{row.item}</td>
+                      <td className="py-2 pr-4 whitespace-nowrap">{row.where}</td>
+                      <td className="py-2 pr-4">{row.value}</td>
+                    </tr>
+                  ))}
+                </tbody>
+              </table>
+            </div>
+            <p className="text-brand-mid leading-relaxed mb-6">
+              꽃 사진도 비슷했습니다. EXIF 태그 55개에 촬영자 이름, 본체·렌즈 일련번호, 1/100초 단위
+              촬영 시각이 있었고, 캐논이 자체 형식으로 기록하는 MakerNote도 들어 있어 EXIF 영역만
+              39.7KB였습니다. 카메라 소유자 이름 칸(CameraOwnerName)은 비어 있었습니다.
             </p>
 
             <h2 className="text-2xl font-bold text-brand-black mt-12 mb-4">
-              어디서 위험할까
+              1. GPS가 없어도 장소는 남는다
             </h2>
             <p className="text-brand-mid leading-relaxed mb-4">
-              중고거래에서 집에서 찍은 물건 사진, 블로그에 올린 일상 사진, 메신저로 보낸 원본 파일
-              모두 EXIF가 따라갑니다. 받는 사람이 마음만 먹으면 촬영 위치를 지도에 띄울 수 있습니다.
+              두 사진 모두 GPS 좌표는 없었습니다. 꽃 사진에는 GPS 영역 자체는 있었지만 안에 버전 번호만
+              있고 위도·경도가 비어 있었습니다. 그런데 XMP 영역의 도시(City)와 장소(Location) 칸에는
+              둘 다 &lsquo;KSC&rsquo;, 케네디우주센터의 약칭이 적혀 있었습니다.
             </p>
-            <p className="text-brand-mid leading-relaxed mb-4">
-              특히 문제가 되기 쉬운 상황은 이렇습니다. 중고거래 물건 사진은 대부분 집 안에서 찍기
-              때문에, 좌표가 남아 있으면 거래도 하기 전에 집 위치부터 알려준 셈이 됩니다. 부동산
-              직거래 사진, 데이트 앱이나 오픈채팅의 프로필 사진도 마찬가지입니다. 아이 사진은
-              어린이집·놀이터의 좌표와 촬영 시각이 함께 남아 등하원 동선까지 짐작하게 하니 더
-              조심해야 합니다.
+            <p className="text-brand-mid leading-relaxed mb-6">
+              GPS 좌표는 휴대폰이 자동으로 넣지만, 장소 글자는 사진 관리 프로그램이나 보정 단계에서
+              사람이 넣습니다. 그래서 &ldquo;카메라 위치 기록을 껐으니 괜찮다&rdquo;는 절반만 맞습니다.
+              보정을 거친 사진이라면 EXIF뿐 아니라 XMP·IPTC까지 비워야 장소가 남지 않습니다.
             </p>
 
             <h2 className="text-2xl font-bold text-brand-black mt-12 mb-4">
-              SNS가 지워줄까 — 서비스마다 다르다
+              2. 일련번호는 두 군데에 적혀 있었다
             </h2>
             <p className="text-brand-mid leading-relaxed mb-4">
-              인스타그램·페이스북 같은 주요 SNS는 업로드 과정에서 EXIF를 제거하는 것으로 알려져
-              있습니다. 다만 이건 각 서비스의 내부 처리 방식이라 언제든 바뀔 수 있고, 이용자가
-              직접 확인하기도 어렵습니다.
+              카메라 본체 일련번호는 EXIF의 BodySerialNumber에 한 번, XMP의 aux:SerialNumber에 또 한
+              번 적혀 있었습니다. 같은 정보가 영역을 바꿔 두 번 들어 있는 셈입니다. EXIF 영역만 지우는
+              방식이라면 XMP 쪽 번호는 그대로 남습니다.
             </p>
+            <p className="text-brand-mid leading-relaxed mb-6">
+              일련번호 자체로 이름이 나오지는 않습니다. 하지만 같은 번호가 찍힌 사진은 같은 카메라에서
+              나왔다는 뜻이라, 서로 다른 곳에 올린 사진을 한 사람과 이어 붙이는 단서가 됩니다.
+            </p>
+
+            <BlogInlineCTA href="/tools/image/exif-remove" label="EXIF 삭제 →">
+              EXIF·XMP·IPTC를 한 번에 비웁니다. 여러 장이면 ZIP으로 받습니다.
+            </BlogInlineCTA>
+
+            <h2 className="text-2xl font-bold text-brand-black mt-12 mb-4">
+              3. floor05로 지운 뒤 남은 것
+            </h2>
             <p className="text-brand-mid leading-relaxed mb-4">
-              반대로 확실히 남는 경로도 있습니다. 카카오톡의 &lsquo;원본 전송&rsquo;, 이메일 첨부,
-              클라우드 공유 링크처럼 파일을 그대로 주고받는 방식은 EXIF도 그대로 따라갑니다. 결국
-              플랫폼이 지워주길 기대하기보다, 올리기 전에 직접 지우는 쪽이 확실합니다.
+              두 파일을 EXIF 삭제에 넣고 결과 파일의 머리 부분을 다시 읽었습니다.
+            </p>
+            <div className="overflow-x-auto mb-4">
+              <table className="w-full text-sm border-collapse">
+                <thead>
+                  <tr className="border-b border-brand-light/40 text-left">
+                    <th className="py-2 pr-4 text-brand-black">영역</th>
+                    <th className="py-2 pr-4 text-brand-black">거북이 원본</th>
+                    <th className="py-2 pr-4 text-brand-black">꽃 원본</th>
+                    <th className="py-2 pr-4 text-brand-black">삭제 후 (둘 다)</th>
+                  </tr>
+                </thead>
+                <tbody className="text-brand-mid">
+                  {segmentRows.map((row) => (
+                    <tr key={row.name} className="border-b border-brand-light/20">
+                      <td className="py-2 pr-4 font-medium text-brand-black whitespace-nowrap">{row.name}</td>
+                      <td className="py-2 pr-4">{row.tortoise}</td>
+                      <td className="py-2 pr-4">{row.flower}</td>
+                      <td className="py-2 pr-4">{row.after}</td>
+                    </tr>
+                  ))}
+                </tbody>
+              </table>
+            </div>
+            <p className="text-brand-mid leading-relaxed mb-4">
+              EXIF·XMP·IPTC가 모두 사라지고, 기본 머리말(JFIF 18바이트)과 브라우저가 붙이는 표준 색
+              프로필(sRGB 474바이트)만 남았습니다. 이름, 일련번호, 촬영 시각, &lsquo;KSC&rsquo;도 함께
+              없어졌습니다. 두 사진은 원래 EXIF 색공간이 sRGB여서 색이 바뀌지도 않았습니다.
+            </p>
+            <p className="text-brand-mid leading-relaxed mb-6">
+              floor05는 메타데이터 칸을 하나씩 지우지 않고, 사진을 브라우저에서 픽셀만 남기고 JPG 품질
+              95%로 다시 저장합니다. 그래서 용량도 바뀝니다. 거북이 사진은 15.78MB에서 8.76MB로, 꽃
+              사진은 9.18MB에서 5.55MB로 줄었고, 원본 해상도 그대로 PSNR은 42.4dB와 48.2dB였습니다.
+              처리 시간은 장당 0.9초 남짓이었습니다.
             </p>
 
             <h2 className="text-2xl font-bold text-brand-black mt-12 mb-4">
-              찍을 때부터 안 남기려면
+              4. &lsquo;위치정보 포함&rsquo; 표시를 고쳤습니다
             </h2>
             <p className="text-brand-mid leading-relaxed mb-4">
-              카메라 앱의 위치 기록을 끄면 애초에 GPS가 저장되지 않습니다. 아이폰은 설정 &gt;
-              개인정보 보호 및 보안 &gt; 위치 서비스 &gt; 카메라에서 &lsquo;안 함&rsquo;을 선택하고,
-              갤럭시는 카메라 설정에서 &lsquo;위치 태그&rsquo;를 끄면 됩니다. 기종과 OS 버전에 따라
-              메뉴 이름은 조금 다를 수 있습니다.
+              두 사진을 넣었을 때 floor05는 둘 다 &lsquo;⚠ 위치정보(GPS) 포함&rsquo;이라고 표시했습니다.
+              위에서 본 것처럼 실제로는 둘 다 좌표가 없었으니 틀린 경고입니다.
             </p>
-            <p className="text-brand-mid leading-relaxed mb-4">
-              다만 위치 기록이 늘 나쁜 건 아닙니다. 여행 사진을 지도로 정리할 때는 꽤 유용하죠.
-              평소에는 켜 두고, 밖으로 나가는 사진만 올리기 전에 지우는 절충안도 괜찮습니다.
+            <p className="text-brand-mid leading-relaxed mb-6">
+              원인은 감지 방식이었습니다. 파일 앞부분에서 GPS 영역을 뜻하는 두 바이트(0x88, 0x25)를
+              찾기만 했기 때문에, 다른 정보 안에 같은 바이트가 우연히 있어도 걸렸습니다. 지금은 EXIF의
+              실제 구조를 따라가 GPS 영역을 찾고, 그 안에 위도나 경도가 기록돼 있을 때만 경고를 띄웁니다.
+              경고 여부와 상관없이, 지우기 버튼을 누르면 모든 메타데이터가 비워지는 것은 이전과 같습니다.
             </p>
 
-            <h2 className="text-2xl font-bold text-brand-black mt-12 mb-4">
-              서버에 올리지 않고 지우기
-            </h2>
-            <p className="text-brand-mid leading-relaxed mb-4">
-              위치정보를 지우겠다고 사진을 모르는 서버에 업로드하는 건 앞뒤가 안 맞습니다. floor05의{" "}
-              <Link href="/tools/image/exif-remove" className="text-brand-accent hover:underline">
-                EXIF 삭제
-              </Link>
-              는 사진을 브라우저 안에서 다시 인코딩해 EXIF를 포함한 모든 메타데이터를 제거합니다.
-              원본에 위치정보가 있었으면 &lsquo;위치정보(GPS) 포함&rsquo;으로 표시해 알려주고, 여러
-              장을 한 번에 처리해 ZIP으로 줍니다. 사진이 네트워크를 타는 구간은 어디에도 없습니다.
+            <h2 className="text-2xl font-bold text-brand-black mt-12 mb-4">언제 지우는 게 좋을까</h2>
+            <ul className="list-disc pl-5 text-brand-mid space-y-2 mb-4 leading-relaxed">
+              <li>
+                중고거래·부동산 직거래 사진: 집 안에서 찍은 사진에 좌표가 남으면 거래 전에 집 위치부터
+                알려주는 셈입니다.
+              </li>
+              <li>
+                메신저 &lsquo;원본 전송&rsquo;, 이메일 첨부, 클라우드 공유 링크: 파일을 그대로 넘기는
+                방식이라 메타데이터도 그대로 따라갑니다.
+              </li>
+              <li>
+                익명으로 올리는 사진: 위치가 없어도 카메라 일련번호와 촬영 시각이 다른 사진과 이어질 수
+                있습니다.
+              </li>
+            </ul>
+            <p className="text-brand-mid leading-relaxed mb-6">
+              찍을 때부터 좌표를 남기지 않으려면 카메라 앱의 위치 기록을 끄면 됩니다. 아이폰은 위치
+              서비스의 카메라 권한, 갤럭시는 카메라 설정의 위치 태그 항목입니다. 기종과 OS 버전에 따라
+              메뉴 이름은 다를 수 있습니다. 다만 앞에서 본 것처럼 이 설정은 GPS 좌표만 막고, 보정 단계에서
+              들어간 정보까지 막지는 않습니다.
             </p>
 
             <h2 className="text-2xl font-bold text-brand-black mt-12 mb-6">자주 묻는 질문</h2>
             <div className="space-y-6">
-              <div className="border-b border-brand-light/20 pb-6">
-                <h3 className="text-lg font-semibold text-brand-black mb-2">
-                  Q. 사진에 위치정보가 정말 들어 있나요?
-                </h3>
-                <p className="text-brand-mid">
-                  위치 서비스를 켜고 찍었다면 GPS 좌표가 저장됩니다. 지도에 찍으면 촬영 장소가
-                  드러납니다.
-                </p>
-              </div>
-              <div className="border-b border-brand-light/20 pb-6">
-                <h3 className="text-lg font-semibold text-brand-black mb-2">
-                  Q. EXIF를 지우면 화질이 떨어지나요?
-                </h3>
-                <p className="text-brand-mid">
-                  JPG는 재인코딩으로 아주 미미한 차이가 있을 수 있으나 눈으로는 거의 구분되지
-                  않습니다. PNG는 무손실입니다.
-                </p>
-              </div>
-              <div className="border-b border-brand-light/20 pb-6">
-                <h3 className="text-lg font-semibold text-brand-black mb-2">
-                  Q. 위치정보가 아예 안 남게 할 수 있나요?
-                </h3>
-                <p className="text-brand-mid">
-                  카메라 앱의 위치 기록을 끄면 됩니다. 아이폰은 위치 서비스에서 카메라 권한을
-                  &lsquo;안 함&rsquo;으로, 갤럭시는 카메라 설정에서 위치 태그를 끄세요.
-                </p>
-              </div>
-              <div className="border-b border-brand-light/20 pb-6">
-                <h3 className="text-lg font-semibold text-brand-black mb-2">
-                  Q. 이미 올린 사진은 어떻게 하나요?
-                </h3>
-                <p className="text-brand-mid">
-                  서비스에 따라 원본이 그대로 보관됐을 수 있습니다. 걱정되는 사진은 내린 뒤 EXIF를
-                  지운 버전으로 다시 올리는 게 마음 편합니다.
-                </p>
-              </div>
-              <div className="pb-6">
-                <h3 className="text-lg font-semibold text-brand-black mb-2">
-                  Q. 사진이 서버에 올라가나요?
-                </h3>
-                <p className="text-brand-mid">
-                  아니요. EXIF를 읽고 지우는 일은 전부 이 브라우저 탭 안에서 끝나고,
-                  위치정보가 지워진 사본만 내 기기에 저장됩니다.
-                </p>
-              </div>
+              {faqs.map((faq, i) => (
+                <div
+                  key={faq.question}
+                  className={i < faqs.length - 1 ? "border-b border-brand-light/20 pb-6" : "pb-6"}
+                >
+                  <h3 className="text-lg font-semibold text-brand-black mb-2">Q. {faq.question}</h3>
+                  <p className="text-brand-mid leading-relaxed">{faq.answer}</p>
+                </div>
+              ))}
             </div>
 
             <div className="bg-brand-black rounded-lg p-8 mt-12 text-center">
-              <h3 className="text-xl font-bold text-brand-paper mb-3">올리기 전에 지우기</h3>
+              <h3 className="text-xl font-bold text-brand-paper mb-3">올리기 전에 비우기</h3>
               <p className="text-brand-light mb-6">
-                위치·기기·시각 정보를 브라우저에서 바로 제거. 로그인도, 비용도 없습니다.
+                위치·이름·일련번호·촬영 시각을 픽셀만 남기고 떼어냅니다.
               </p>
               <div className="flex flex-col sm:flex-row gap-3 justify-center">
                 <Link
@@ -255,9 +299,8 @@ export default function ExifRemovalGuidePage() {
                 </Link>
               </div>
             </div>
-
-            <BlogExtras slug="exif-removal-guide" />
           </div>
+          <BlogExtras slug="exif-removal-guide" />
         </article>
       </main>
 

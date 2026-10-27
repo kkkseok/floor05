@@ -30,22 +30,22 @@ export const POSTS: BlogPost[] = [
   // ── 신규 (2026-06-29) ───────────────────────────────────────────
   {
     slug: "exif-removal-guide",
-    title: "사진 위치정보(EXIF) 삭제하는 법",
+    title: "사진 위치정보(EXIF) 삭제 — 카메라 원본 실측",
     description:
-      "스마트폰 사진에 저장되는 EXIF에 어떤 정보(GPS 위치·기기·시각)가 담기는지, 왜 올리기 전에 지워야 하는지, 서버에 올리지 않고 제거하는 방법을 정리했습니다.",
+      "카메라 원본 사진 두 장을 뜯어보니 GPS가 없어도 장소 글자, 촬영자 이름, 카메라 일련번호가 남아 있었습니다. 무엇이 어디에 남는지와 지운 뒤 결과를 정리했습니다.",
     keywords: [
       "exif 삭제",
       "사진 위치정보 삭제",
-      "GPS 정보 삭제",
+      "사진 메타데이터",
       "메타데이터 제거",
-      "사진 위치 노출",
+      "카메라 일련번호 exif",
       "exif 제거",
       "사진 개인정보",
     ],
     datePublished: "2026-06-29",
-    dateModified: "2026-07-23",
+    dateModified: "2026-10-27",
     related: ["browser-image-tools-privacy", "photo-mosaic-guide", "prevent-photo-theft"],
-    readTime: "5분",
+    readTime: "7분",
   },
   {
     slug: "photo-mosaic-guide",
