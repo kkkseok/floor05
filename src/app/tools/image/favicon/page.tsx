@@ -112,7 +112,7 @@ export default function FaviconPage() {
       guide={guide}
       faqs={faqs}
       currentToolHref="/tools/image/favicon"
-      relatedPostSlugs={["transparent-background"]}
+      relatedPostSlugs={["favicon-browser-requests", "transparent-background"]}
       schemas={schemas}
     >
       <FaviconTool />
