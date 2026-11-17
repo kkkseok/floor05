@@ -1,0 +1,432 @@
+{
+ "measuredAt": "2026-10-16",
+ "engines": "Playwright Chromium 151 / Firefox 153 / WebKit 26.5",
+ "note": "floor05 값은 src/lib/text/count.ts를 esbuild로 묶어 실행. before = 수정 전(61d0021 이전), after = 수정 후",
+ "cases_before": [
+  {
+   "name": "한글 문장",
+   "codepoints": "U+C548 U+B155 U+D558 U+C138 U+C694 U+0020 U+BC18 U+AC11 U+C2B5 U+B2C8 U+B2E4",
+   "jsLength": 11,
+   "codePoints": 11,
+   "graphemes": 11,
+   "utf8Bytes": 31,
+   "floor05": {
+    "naverChars": 11,
+    "naverNoSpace": 10,
+    "hwpChars": 11,
+    "hwpNoSpace": 10,
+    "bytes2": 21,
+    "bytes3": 31
+   }
+  },
+  {
+   "name": "영문+숫자",
+   "codepoints": "U+0048 U+0065 U+006C U+006C U+006F U+0020 U+0032 U+0030 U+0032 U+0036",
+   "jsLength": 10,
+   "codePoints": 10,
+   "graphemes": 10,
+   "utf8Bytes": 10,
+   "floor05": {
+    "naverChars": 10,
+    "naverNoSpace": 9,
+    "hwpChars": 10,
+    "hwpNoSpace": 9,
+    "bytes2": 10,
+    "bytes3": 10
+   }
+  },
+  {
+   "name": "이모지 1개",
+   "codepoints": "U+C88B U+C544 U+C694 U+1F44D",
+   "jsLength": 5,
+   "codePoints": 4,
+   "graphemes": 4,
+   "utf8Bytes": 13,
+   "floor05": {
+    "naverChars": 4,
+    "naverNoSpace": 4,
+    "hwpChars": 4,
+    "hwpNoSpace": 4,
+    "bytes2": 8,
+    "bytes3": 13
+   }
+  },
+  {
+   "name": "가족 이모지(ZWJ)",
+   "codepoints": "U+AC00 U+C871 U+1F468 U+200D U+1F469 U+200D U+1F467",
+   "jsLength": 10,
+   "codePoints": 7,
+   "graphemes": 3,
+   "utf8Bytes": 24,
+   "floor05": {
+    "naverChars": 7,
+    "naverNoSpace": 7,
+    "hwpChars": 7,
+    "hwpNoSpace": 7,
+    "bytes2": 14,
+    "bytes3": 24
+   }
+  },
+  {
+   "name": "국기",
+   "codepoints": "U+D55C U+AD6D U+1F1F0 U+1F1F7",
+   "jsLength": 6,
+   "codePoints": 4,
+   "graphemes": 3,
+   "utf8Bytes": 14,
+   "floor05": {
+    "naverChars": 4,
+    "naverNoSpace": 4,
+    "hwpChars": 4,
+    "hwpNoSpace": 4,
+    "bytes2": 8,
+    "bytes3": 14
+   }
+  },
+  {
+   "name": "분해된 한글(NFD)",
+   "codepoints": "U+1112 U+1161 U+11AB U+1100 U+1173 U+11AF",
+   "jsLength": 6,
+   "codePoints": 6,
+   "graphemes": 2,
+   "utf8Bytes": 18,
+   "floor05": {
+    "naverChars": 6,
+    "naverNoSpace": 6,
+    "hwpChars": 6,
+    "hwpNoSpace": 6,
+    "bytes2": 12,
+    "bytes3": 18
+   }
+  },
+  {
+   "name": "줄바꿈 LF",
+   "codepoints": "U+CCAB U+0020 U+C904 U+000A U+B458 U+C9F8 U+0020 U+C904",
+   "jsLength": 8,
+   "codePoints": 8,
+   "graphemes": 8,
+   "utf8Bytes": 18,
+   "floor05": {
+    "naverChars": 8,
+    "naverNoSpace": 5,
+    "hwpChars": 7,
+    "hwpNoSpace": 5,
+    "bytes2": 13,
+    "bytes3": 18
+   }
+  },
+  {
+   "name": "줄바꿈 CRLF",
+   "codepoints": "U+CCAB U+0020 U+C904 U+000D U+000A U+B458 U+C9F8 U+0020 U+C904",
+   "jsLength": 9,
+   "codePoints": 9,
+   "graphemes": 8,
+   "utf8Bytes": 19,
+   "floor05": {
+    "naverChars": 8,
+    "naverNoSpace": 5,
+    "hwpChars": 7,
+    "hwpNoSpace": 5,
+    "bytes2": 13,
+    "bytes3": 18
+   }
+  },
+  {
+   "name": "줄바꿈 없는 공백(U+00A0)",
+   "codepoints": "U+C6F9 U+00A0 U+BCF5 U+C0AC",
+   "jsLength": 4,
+   "codePoints": 4,
+   "graphemes": 4,
+   "utf8Bytes": 11,
+   "floor05": {
+    "naverChars": 4,
+    "naverNoSpace": 4,
+    "hwpChars": 4,
+    "hwpNoSpace": 4,
+    "bytes2": 8,
+    "bytes3": 11
+   }
+  },
+  {
+   "name": "전각 공백(U+3000)",
+   "codepoints": "U+C804 U+AC01 U+3000 U+ACF5 U+BC31",
+   "jsLength": 5,
+   "codePoints": 5,
+   "graphemes": 5,
+   "utf8Bytes": 15,
+   "floor05": {
+    "naverChars": 5,
+    "naverNoSpace": 5,
+    "hwpChars": 5,
+    "hwpNoSpace": 5,
+    "bytes2": 10,
+    "bytes3": 15
+   }
+  },
+  {
+   "name": "폭 없는 공백(U+200B)",
+   "codepoints": "U+BCF4 U+C774 U+C9C0 U+200B U+C54A U+C74C",
+   "jsLength": 6,
+   "codePoints": 6,
+   "graphemes": 6,
+   "utf8Bytes": 18,
+   "floor05": {
+    "naverChars": 6,
+    "naverNoSpace": 6,
+    "hwpChars": 6,
+    "hwpNoSpace": 6,
+    "bytes2": 12,
+    "bytes3": 18
+   }
+  }
+ ],
+ "cases_after": [
+  {
+   "name": "한글 문장",
+   "codepoints": "U+C548 U+B155 U+D558 U+C138 U+C694 U+0020 U+BC18 U+AC11 U+C2B5 U+B2C8 U+B2E4",
+   "jsLength": 11,
+   "codePoints": 11,
+   "graphemes": 11,
+   "utf8Bytes": 31,
+   "floor05": {
+    "naverChars": 11,
+    "naverNoSpace": 10,
+    "hwpChars": 11,
+    "hwpNoSpace": 10,
+    "bytes2": 21,
+    "bytes3": 31
+   }
+  },
+  {
+   "name": "영문+숫자",
+   "codepoints": "U+0048 U+0065 U+006C U+006C U+006F U+0020 U+0032 U+0030 U+0032 U+0036",
+   "jsLength": 10,
+   "codePoints": 10,
+   "graphemes": 10,
+   "utf8Bytes": 10,
+   "floor05": {
+    "naverChars": 10,
+    "naverNoSpace": 9,
+    "hwpChars": 10,
+    "hwpNoSpace": 9,
+    "bytes2": 10,
+    "bytes3": 10
+   }
+  },
+  {
+   "name": "이모지 1개",
+   "codepoints": "U+C88B U+C544 U+C694 U+1F44D",
+   "jsLength": 5,
+   "codePoints": 4,
+   "graphemes": 4,
+   "utf8Bytes": 13,
+   "floor05": {
+    "naverChars": 4,
+    "naverNoSpace": 4,
+    "hwpChars": 4,
+    "hwpNoSpace": 4,
+    "bytes2": 8,
+    "bytes3": 13
+   }
+  },
+  {
+   "name": "가족 이모지(ZWJ)",
+   "codepoints": "U+AC00 U+C871 U+1F468 U+200D U+1F469 U+200D U+1F467",
+   "jsLength": 10,
+   "codePoints": 7,
+   "graphemes": 3,
+   "utf8Bytes": 24,
+   "floor05": {
+    "naverChars": 7,
+    "naverNoSpace": 7,
+    "hwpChars": 7,
+    "hwpNoSpace": 7,
+    "bytes2": 14,
+    "bytes3": 24
+   }
+  },
+  {
+   "name": "국기",
+   "codepoints": "U+D55C U+AD6D U+1F1F0 U+1F1F7",
+   "jsLength": 6,
+   "codePoints": 4,
+   "graphemes": 3,
+   "utf8Bytes": 14,
+   "floor05": {
+    "naverChars": 4,
+    "naverNoSpace": 4,
+    "hwpChars": 4,
+    "hwpNoSpace": 4,
+    "bytes2": 8,
+    "bytes3": 14
+   }
+  },
+  {
+   "name": "분해된 한글(NFD)",
+   "codepoints": "U+1112 U+1161 U+11AB U+1100 U+1173 U+11AF",
+   "jsLength": 6,
+   "codePoints": 6,
+   "graphemes": 2,
+   "utf8Bytes": 18,
+   "floor05": {
+    "naverChars": 2,
+    "naverNoSpace": 2,
+    "hwpChars": 2,
+    "hwpNoSpace": 2,
+    "bytes2": 4,
+    "bytes3": 6
+   }
+  },
+  {
+   "name": "줄바꿈 LF",
+   "codepoints": "U+CCAB U+0020 U+C904 U+000A U+B458 U+C9F8 U+0020 U+C904",
+   "jsLength": 8,
+   "codePoints": 8,
+   "graphemes": 8,
+   "utf8Bytes": 18,
+   "floor05": {
+    "naverChars": 8,
+    "naverNoSpace": 5,
+    "hwpChars": 7,
+    "hwpNoSpace": 5,
+    "bytes2": 13,
+    "bytes3": 18
+   }
+  },
+  {
+   "name": "줄바꿈 CRLF",
+   "codepoints": "U+CCAB U+0020 U+C904 U+000D U+000A U+B458 U+C9F8 U+0020 U+C904",
+   "jsLength": 9,
+   "codePoints": 9,
+   "graphemes": 8,
+   "utf8Bytes": 19,
+   "floor05": {
+    "naverChars": 8,
+    "naverNoSpace": 5,
+    "hwpChars": 7,
+    "hwpNoSpace": 5,
+    "bytes2": 13,
+    "bytes3": 18
+   }
+  },
+  {
+   "name": "줄바꿈 없는 공백(U+00A0)",
+   "codepoints": "U+C6F9 U+00A0 U+BCF5 U+C0AC",
+   "jsLength": 4,
+   "codePoints": 4,
+   "graphemes": 4,
+   "utf8Bytes": 11,
+   "floor05": {
+    "naverChars": 4,
+    "naverNoSpace": 3,
+    "hwpChars": 4,
+    "hwpNoSpace": 3,
+    "bytes2": 8,
+    "bytes3": 11
+   }
+  },
+  {
+   "name": "전각 공백(U+3000)",
+   "codepoints": "U+C804 U+AC01 U+3000 U+ACF5 U+BC31",
+   "jsLength": 5,
+   "codePoints": 5,
+   "graphemes": 5,
+   "utf8Bytes": 15,
+   "floor05": {
+    "naverChars": 5,
+    "naverNoSpace": 4,
+    "hwpChars": 5,
+    "hwpNoSpace": 4,
+    "bytes2": 10,
+    "bytes3": 15
+   }
+  },
+  {
+   "name": "폭 없는 공백(U+200B)",
+   "codepoints": "U+BCF4 U+C774 U+C9C0 U+200B U+C54A U+C74C",
+   "jsLength": 6,
+   "codePoints": 6,
+   "graphemes": 6,
+   "utf8Bytes": 18,
+   "floor05": {
+    "naverChars": 6,
+    "naverNoSpace": 5,
+    "hwpChars": 6,
+    "hwpNoSpace": 5,
+    "bytes2": 12,
+    "bytes3": 18
+   }
+  }
+ ],
+ "maxlength5": {
+  "Chromium": {
+   "version": "151.0.7922.34",
+   "👍 6개": {
+    "kept": "👍👍",
+    "jsLength": 4,
+    "graphemes": 2
+   },
+   "가족 이모지 2개": {
+    "kept": "👨‍👩",
+    "jsLength": 5,
+    "graphemes": 1
+   },
+   "NFD 한글 4자": {
+    "kept": "한그",
+    "jsLength": 5,
+    "graphemes": 2
+   },
+   "한글 6자": {
+    "kept": "가나다라마",
+    "jsLength": 5,
+    "graphemes": 5
+   }
+  },
+  "Firefox": {
+   "version": "153.0",
+   "👍 6개": {
+    "kept": "👍👍",
+    "jsLength": 4,
+    "graphemes": 2
+   },
+   "가족 이모지 2개": {
+    "kept": "👨‍👩",
+    "jsLength": 5,
+    "graphemes": 1
+   },
+   "NFD 한글 4자": {
+    "kept": "한그",
+    "jsLength": 5,
+    "graphemes": 2
+   },
+   "한글 6자": {
+    "kept": "가나다라마",
+    "jsLength": 5,
+    "graphemes": 5
+   }
+  },
+  "WebKit": {
+   "version": "26.5",
+   "👍 6개": {
+    "kept": "👍👍",
+    "jsLength": 4,
+    "graphemes": 2
+   },
+   "가족 이모지 2개": {
+    "kept": "👨‍👩",
+    "jsLength": 5,
+    "graphemes": 1
+   },
+   "NFD 한글 4자": {
+    "kept": "한그",
+    "jsLength": 5,
+    "graphemes": 2
+   },
+   "한글 6자": {
+    "kept": "가나다라마",
+    "jsLength": 5,
+    "graphemes": 5
+   }
+  }
+ }
+}
