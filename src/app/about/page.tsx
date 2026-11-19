@@ -35,7 +35,7 @@ const trustItems = [
 ];
 
 const teamFacts = [
-  { label: "운영", value: "floor05 팀 (플로어공오)" },
+  { label: "상호·운영", value: "플로어공오 (floor05 팀)" },
   { label: "시작", value: "2026년 3월, 이미지 압축 도구 공개" },
   { label: "다루는 일", value: "브라우저 안에서 끝나는 이미지·PDF 처리, 근로 소득 계산" },
   { label: "연락", value: CONTACT_EMAIL, href: `mailto:${CONTACT_EMAIL}` },

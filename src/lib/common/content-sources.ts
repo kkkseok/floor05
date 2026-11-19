@@ -10,7 +10,8 @@ export interface ContentReview {
   sources: ContentSource[];
 }
 
-const REVIEWED_AT = "2026-08-25";
+// 2026-11-19: 아래 SOURCES 6건을 공식 페이지와 다시 대조함(요율·최저임금·퇴직급여법 제4조·제8조).
+const REVIEWED_AT = "2026-11-19";
 
 const FINANCE_DISCLAIMER =
   "계산 결과는 입력값과 공개 기준을 적용한 예상치입니다. 신고·계약·급여 정산처럼 중요한 결정에는 해당 기관의 최신 자료와 실제 명세서를 함께 확인하세요.";
