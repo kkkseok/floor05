@@ -1,0 +1,349 @@
+{
+  "measuredAt": "2026-11-19T14:16:38.257Z",
+  "browser": "Playwright Chromium 151.0.7922.34",
+  "script": "scripts/blog-measure/sns-size.mjs (그림: sns-crop-tiles.mjs, 도구 대조: sns-tool-check.mjs)",
+  "method": "워커 안에서 createImageBitmap(imageOrientation: from-image) → 가운데 자르기(computeCoverCrop과 같은 식) → drawImageDownscaled(src/lib/image/downscale.ts esbuild 번들) → OffscreenCanvas.convertToBlob. JPG 품질 0.92(리사이즈 도구 고정값). src/workers/imageWorker.ts와 같은 순서.",
+  "units": "bytes. 글에서는 1KB=1,000B, 1MB=1,000,000B로 환산",
+  "specs": "규격 크기의 출처는 docs/blog-data/sns-specs-2026-11-19.json",
+  "sources": {
+    "tortoise": "NASA KSC-20210121-PH-JBS01_0079 (public domain), 5522x4312, 15,781,842B",
+    "flower": "NASA KSC-20230613-PH-FMX01-0075 (public domain), 8192x5464, 9,177,109B"
+  },
+  "fields": {
+    "keptPct": "가운데 자르기 후 남는 면적 / 원본 면적 × 100",
+    "scaleDown": "잘라낸 영역의 너비 / 결과 너비 (축소 배율)",
+    "jpgBytes": "JPG 92% 저장 용량",
+    "pngBytes": "같은 캔버스를 PNG로 저장한 용량(PNG를 넣으면 도구가 PNG로 저장하므로 참고용으로 잼)",
+    "widths": "비율을 유지하고 너비만 지정해 줄인 결과(자르지 않음), JPG 92%",
+    "upscale": "원본 → 1080x1080(기준, 저장 전 캔버스 픽셀). directJpg = 기준을 JPG 92%로 저장했다 다시 연 것의 PSNR. from[] = 원본을 size×size JPG 92%로 저장한 작은 파일을 도구 경로로 1080x1080으로 키워 JPG 92%로 저장했다 다시 연 것의 PSNR(RGB, dB)"
+  },
+  "toolCheck": {
+    "note": "빌드된 사이트(next start)의 실제 리사이즈 도구에 tortoise를 넣고 SNS 프리셋으로 받은 파일. 같은 크기의 presets[].jpgBytes와 바이트 단위로 같다.",
+    "browser": "Playwright Chromium 151.0.7922.34",
+    "downloads": {
+      "Instagram 정방형 1080x1080": 330932,
+      "Instagram 세로형 1080x1350": 399798,
+      "Instagram 가로형 1080x566": 170519,
+      "YouTube 썸네일 1280x720": 249015,
+      "YouTube 채널 아트 2560x1440": 950924
+    }
+  },
+  "notMeasured": "플랫폼이 업로드 후 다시 압축하는 정도, 실제 앱 화면에서 보이는 모습, Firefox·Safari 결과",
+  "photos": {
+    "tortoise": {
+      "width": 5522,
+      "height": 4312,
+      "fileBytes": 15781842,
+      "presets": [
+        {
+          "id": "instagram-3x4",
+          "width": 1080,
+          "height": 1440,
+          "keptPct": 58.6,
+          "scaleDown": 2.99,
+          "jpgBytes": 419754
+        },
+        {
+          "id": "instagram-4x5",
+          "width": 1080,
+          "height": 1350,
+          "keptPct": 62.5,
+          "scaleDown": 3.19,
+          "jpgBytes": 399798,
+          "pngBytes": 3141686
+        },
+        {
+          "id": "instagram-1x1",
+          "width": 1080,
+          "height": 1080,
+          "keptPct": 78.1,
+          "scaleDown": 3.99,
+          "jpgBytes": 330932
+        },
+        {
+          "id": "instagram-1.91x1",
+          "width": 1080,
+          "height": 566,
+          "keptPct": 67.1,
+          "scaleDown": 5.11,
+          "jpgBytes": 170519
+        },
+        {
+          "id": "youtube-thumbnail-3840",
+          "width": 3840,
+          "height": 2160,
+          "keptPct": 72,
+          "scaleDown": 1.44,
+          "jpgBytes": 2157553,
+          "pngBytes": 17365646
+        },
+        {
+          "id": "youtube-thumbnail-1280",
+          "width": 1280,
+          "height": 720,
+          "keptPct": 72,
+          "scaleDown": 4.31,
+          "jpgBytes": 249015,
+          "pngBytes": 1916143
+        },
+        {
+          "id": "youtube-banner-2560",
+          "width": 2560,
+          "height": 1440,
+          "keptPct": 72,
+          "scaleDown": 2.16,
+          "jpgBytes": 950924,
+          "pngBytes": 7887076
+        },
+        {
+          "id": "youtube-banner-2048",
+          "width": 2048,
+          "height": 1152,
+          "keptPct": 72,
+          "scaleDown": 2.7,
+          "jpgBytes": 632049
+        },
+        {
+          "id": "facebook-page-cover",
+          "width": 851,
+          "height": 315,
+          "keptPct": 47.4,
+          "scaleDown": 6.49,
+          "jpgBytes": 79052
+        },
+        {
+          "id": "facebook-page-profile",
+          "width": 320,
+          "height": 320,
+          "keptPct": 78.1,
+          "scaleDown": 13.47,
+          "jpgBytes": 35551
+        },
+        {
+          "id": "facebook-link-image",
+          "width": 1200,
+          "height": 630,
+          "keptPct": 67.2,
+          "scaleDown": 4.6,
+          "jpgBytes": 212352
+        },
+        {
+          "id": "x-header",
+          "width": 1500,
+          "height": 500,
+          "keptPct": 42.7,
+          "scaleDown": 3.68,
+          "jpgBytes": 198945
+        },
+        {
+          "id": "x-profile",
+          "width": 400,
+          "height": 400,
+          "keptPct": 78.1,
+          "scaleDown": 10.78,
+          "jpgBytes": 54158
+        }
+      ],
+      "widths": [
+        {
+          "width": 4096,
+          "height": 3198,
+          "jpgBytes": 3452106
+        },
+        {
+          "width": 3840,
+          "height": 2999,
+          "jpgBytes": 3077520
+        },
+        {
+          "width": 2560,
+          "height": 1999,
+          "jpgBytes": 1355312
+        },
+        {
+          "width": 1920,
+          "height": 1499,
+          "jpgBytes": 802657
+        },
+        {
+          "width": 1080,
+          "height": 843,
+          "jpgBytes": 267622
+        }
+      ],
+      "upscale": {
+        "target": "1080x1080",
+        "directJpg": {
+          "bytes": 330932,
+          "psnr": 38.45
+        },
+        "from": [
+          {
+            "size": 540,
+            "smallBytes": 93613,
+            "factor": 2,
+            "upscaledBytes": 205907,
+            "psnr": 28.42
+          },
+          {
+            "size": 320,
+            "smallBytes": 35551,
+            "factor": 3.38,
+            "upscaledBytes": 164056,
+            "psnr": 24.99
+          },
+          {
+            "size": 270,
+            "smallBytes": 26050,
+            "factor": 4,
+            "upscaledBytes": 149257,
+            "psnr": 24.1
+          }
+        ]
+      }
+    },
+    "flower": {
+      "width": 8192,
+      "height": 5464,
+      "fileBytes": 9177109,
+      "presets": [
+        {
+          "id": "instagram-3x4",
+          "width": 1080,
+          "height": 1440,
+          "keptPct": 50,
+          "scaleDown": 3.79,
+          "jpgBytes": 132597
+        },
+        {
+          "id": "instagram-4x5",
+          "width": 1080,
+          "height": 1350,
+          "keptPct": 53.4,
+          "scaleDown": 4.05,
+          "jpgBytes": 121980,
+          "pngBytes": 2313019
+        },
+        {
+          "id": "instagram-1x1",
+          "width": 1080,
+          "height": 1080,
+          "keptPct": 66.7,
+          "scaleDown": 5.06,
+          "jpgBytes": 93410
+        },
+        {
+          "id": "instagram-1.91x1",
+          "width": 1080,
+          "height": 566,
+          "keptPct": 78.6,
+          "scaleDown": 7.59,
+          "jpgBytes": 51526
+        },
+        {
+          "id": "youtube-thumbnail-3840",
+          "width": 3840,
+          "height": 2160,
+          "keptPct": 84.3,
+          "scaleDown": 2.13,
+          "jpgBytes": 464153,
+          "pngBytes": 12347303
+        },
+        {
+          "id": "youtube-thumbnail-1280",
+          "width": 1280,
+          "height": 720,
+          "keptPct": 84.3,
+          "scaleDown": 6.4,
+          "jpgBytes": 69239,
+          "pngBytes": 1461264
+        },
+        {
+          "id": "youtube-banner-2560",
+          "width": 2560,
+          "height": 1440,
+          "keptPct": 84.3,
+          "scaleDown": 3.2,
+          "jpgBytes": 215673,
+          "pngBytes": 5790618
+        },
+        {
+          "id": "youtube-banner-2048",
+          "width": 2048,
+          "height": 1152,
+          "keptPct": 84.3,
+          "scaleDown": 4,
+          "jpgBytes": 147275
+        },
+        {
+          "id": "facebook-page-cover",
+          "width": 851,
+          "height": 315,
+          "keptPct": 55.5,
+          "scaleDown": 9.63,
+          "jpgBytes": 31460
+        },
+        {
+          "id": "facebook-page-profile",
+          "width": 320,
+          "height": 320,
+          "keptPct": 66.7,
+          "scaleDown": 17.07,
+          "jpgBytes": 14917
+        },
+        {
+          "id": "facebook-link-image",
+          "width": 1200,
+          "height": 630,
+          "keptPct": 78.7,
+          "scaleDown": 6.83,
+          "jpgBytes": 60875
+        },
+        {
+          "id": "x-header",
+          "width": 1500,
+          "height": 500,
+          "keptPct": 50,
+          "scaleDown": 5.46,
+          "jpgBytes": 68522
+        },
+        {
+          "id": "x-profile",
+          "width": 400,
+          "height": 400,
+          "keptPct": 66.7,
+          "scaleDown": 13.66,
+          "jpgBytes": 20979
+        }
+      ],
+      "widths": [
+        {
+          "width": 4096,
+          "height": 2732,
+          "jpgBytes": 620657
+        },
+        {
+          "width": 3840,
+          "height": 2561,
+          "jpgBytes": 528795
+        },
+        {
+          "width": 2560,
+          "height": 1708,
+          "jpgBytes": 240454
+        },
+        {
+          "width": 1920,
+          "height": 1281,
+          "jpgBytes": 144717
+        },
+        {
+          "width": 1080,
+          "height": 720,
+          "jpgBytes": 58034
+        }
+      ],
+      "upscale": null
+    }
+  }
+}
