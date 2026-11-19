@@ -40,8 +40,8 @@ test.describe("이미지 PDF 변환", () => {
     await page.goto("/tools/pdf/image-to-pdf");
     await uploadToDropzone(page, [fx("wide-3000x500.jpg"), fx("photo-1200x900.jpg")]);
     await page.getByRole("button", { name: "제출용", exact: true }).click();
-    // FAQ에도 "긴 변 1754px"가 있으므로 안내 문구에만 있는 "(A4 150dpi)"까지 맞춘다
-    await expect(page.getByText(/긴 변 1754px\(A4 150dpi\)/)).toBeVisible();
+    // FAQ·가이드에도 "긴 변 1754px(A4 150dpi)"가 있으므로 도구 안내 문구에만 있는 뒷문장까지 맞춘다
+    await expect(page.getByText(/긴 변 1754px\(A4 150dpi\)\. 화면으로/)).toBeVisible();
     const file = await saveDownload(
       page,
       testInfo,

@@ -110,7 +110,8 @@ test.describe("이미지 압축", () => {
     await page.getByLabel(/이미지 압축 품질/).fill("100");
     await page.getByRole("button", { name: "1개 이미지 압축하기" }).click();
     await expect(page.getByRole("button", { name: "다운로드" })).toBeVisible({ timeout: 45_000 });
-    await expect(page.getByText(/다시 압축하면 오히려 커집니다/)).toBeVisible();
+    // 가이드 본문에도 비슷한 문장("사진은 다시 압축하면…")이 있어 도구 안내 문구에만 있는 표현으로 맞춘다
+    await expect(page.getByText(/압축된 사진이라 다시 압축하면 오히려 커집니다/)).toBeVisible();
     await expect(page.getByText(/--\d+%/)).toHaveCount(0);
     const file = await saveDownload(page, testInfo, () =>
       page.getByRole("button", { name: "다운로드" }).click(),
