@@ -148,7 +148,7 @@ export default function Home() {
                 <div key={cat.id}>
                   <div className="text-center mb-12">
                     <h2 className="font-mono text-xs text-brand-accent uppercase tracking-widest mb-4">
-                      {cat.room} — {cat.label}
+                      {cat.room} — {cat.name}
                     </h2>
                     <p className="text-brand-mid text-lg">{cat.tagline}</p>
                   </div>

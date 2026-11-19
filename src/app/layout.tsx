@@ -13,7 +13,7 @@ const organizationSchema = {
   name: "floor05",
   alternateName: "플로어공오",
   url: SITE_URL,
-  logo: `${SITE_URL}/og-image.png`,
+  logo: `${SITE_URL}/apple-touch-icon.png`,
   description:
     "서버 전송 없이 브라우저에서 처리하는 무료 온라인 도구 모음. 이미지·PDF·계산기·변환 도구를 회원가입 없이 무제한 무료로.",
 };
@@ -26,7 +26,7 @@ const ibmPlexMono = IBM_Plex_Mono({
 });
 
 const pretendard = localFont({
-  src: "../fonts/PretendardVariable.woff2",
+  src: "../fonts/PretendardVariable.subset.woff2",
   display: "swap",
   weight: "45 920",
   variable: "--font-sans",

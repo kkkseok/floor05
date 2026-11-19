@@ -6,7 +6,7 @@ import { SITE_URL } from "@/lib/common/constants";
 const PAGE_URL = `${SITE_URL}/tools/image/merge`;
 
 export const metadata: Metadata = {
-  title: "사진 합치기 - 여러 장을 한 장으로, 브라우저에서 바로",
+  title: "사진 합치기 - 여러 장을 세로·가로로 이어붙이기",
   description:
     "여러 사진을 세로·가로로 한 장에 이어붙입니다. 카카오톡 캡처 합치기, 크기 다른 사진 정렬까지 무료로. 대화 캡처처럼 사적인 이미지도 기기 밖으로 나가지 않습니다.",
   keywords: [
@@ -18,7 +18,7 @@ export const metadata: Metadata = {
     "카톡 캡처 합치기",
   ],
   openGraph: {
-    title: "사진 합치기 - 여러 장을 한 장으로, 브라우저에서 바로",
+    title: "사진 합치기 - 여러 장을 세로·가로로 이어붙이기",
     description: "여러 사진을 세로·가로로 한 장에. 캡처 이어붙이기도 기기 안에서 끝납니다.",
     url: PAGE_URL,
     type: "website",
@@ -26,7 +26,7 @@ export const metadata: Metadata = {
   },
   twitter: {
     card: "summary_large_image",
-    title: "사진 합치기 - 여러 장을 한 장으로, 브라우저에서 바로",
+    title: "사진 합치기 - 여러 장을 세로·가로로 이어붙이기",
     description: "카톡 캡처를 길게 이어붙여도 대화 내용은 기기 안에만 있습니다.",
   },
   alternates: {

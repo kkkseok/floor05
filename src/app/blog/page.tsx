@@ -2,27 +2,51 @@ import type { Metadata } from "next";
 import Link from "next/link";
 import Header from "@/components/common/Header";
 import Footer from "@/components/common/Footer";
-import { getAllPosts } from "@/lib/common/blog";
+import { getAllPosts, getPostUrl } from "@/lib/common/blog";
+import { SITE_URL } from "@/lib/common/constants";
 
 export const metadata: Metadata = {
-  title: "블로그 - 이미지 편집 가이드",
+  title: "블로그 - 이미지·PDF 실측 기록과 급여 계산 가이드",
   description:
-    "이미지 압축, 리사이즈, 포맷 변환 등 이미지 편집에 관한 실용적인 가이드를 제공합니다.",
-  alternates: { canonical: "/blog" },
+    "사진 압축 품질, 포맷별 용량, 회전·합치기 화질을 직접 재 본 기록과 연봉 실수령액·퇴직금·주휴수당 계산 기준을 정리한 글 모음입니다.",
+  alternates: {
+    canonical: "/blog",
+    types: { "application/rss+xml": "/rss.xml" },
+  },
   openGraph: {
     url: "/blog",
     images: [{ url: "/og-image.png", width: 1200, height: 630 }],
-    title: "블로그 - 이미지 편집 가이드",
+    title: "블로그 - 이미지·PDF 실측 기록과 급여 계산 가이드",
     description:
-      "이미지 압축, 리사이즈, 포맷 변환 등 이미지 편집에 관한 실용적인 가이드를 제공합니다.",
+      "도구를 만들며 직접 측정한 이미지·PDF 수치와 급여 계산 기준을 글로 남깁니다.",
   },
 };
 
 export default function BlogPage() {
   const posts = getAllPosts();
 
+  // 글 목록 구조화 데이터 — 목록은 블로그 레지스트리에서 그대로 가져온다
+  const blogSchema = {
+    "@context": "https://schema.org",
+    "@type": "Blog",
+    name: "floor05 블로그",
+    url: `${SITE_URL}/blog`,
+    inLanguage: "ko-KR",
+    blogPost: posts.map((post) => ({
+      "@type": "BlogPosting",
+      headline: post.title,
+      url: getPostUrl(post.slug),
+      datePublished: post.datePublished,
+      dateModified: post.dateModified,
+    })),
+  };
+
   return (
     <div className="min-h-screen flex flex-col bg-brand-white">
+      <script
+        type="application/ld+json"
+        dangerouslySetInnerHTML={{ __html: JSON.stringify(blogSchema) }}
+      />
       <Header />
 
       <main className="flex-1">
@@ -31,7 +55,7 @@ export default function BlogPage() {
           <div className="mb-12">
             <h1 className="text-3xl font-bold text-brand-black mb-4">블로그</h1>
             <p className="text-brand-mid">
-              이미지 편집에 관한 실용적인 가이드
+              이미지·PDF를 직접 재 본 기록과 급여 계산 가이드
             </p>
           </div>
 

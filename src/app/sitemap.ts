@@ -2,7 +2,24 @@ import type { MetadataRoute } from "next";
 
 import { POSTS } from "@/lib/common/blog";
 import { SITE_URL } from "@/lib/common/constants";
-import { TOOLS } from "@/lib/common/tools";
+import { TOOLS, TOOL_CATEGORIES, type ToolCategory } from "@/lib/common/tools";
+
+// 정보·정책 페이지의 내용 최종 수정일. 본문을 고치면 함께 갱신한다.
+// (privacy·terms는 페이지에 적힌 시행·최종 수정일과 같아야 한다)
+const INFO_PAGES: Record<string, string> = {
+  "/about": "2026-11-19",
+  "/contact": "2026-10-16",
+  "/privacy": "2026-11-19",
+  "/terms": "2026-10-15",
+};
+
+function latestToolDate(category: ToolCategory) {
+  return TOOLS.filter((tool) => tool.category === category).reduce<string | undefined>(
+    (latest, tool) =>
+      tool.lastModified && (!latest || tool.lastModified > latest) ? tool.lastModified : latest,
+    undefined,
+  );
+}
 
 function latestModifiedDate() {
   return POSTS.reduce<string | undefined>((latest, post) => {
@@ -16,18 +33,23 @@ function latestModifiedDate() {
 
 export default function sitemap(): MetadataRoute.Sitemap {
   const pages: MetadataRoute.Sitemap = [
-    { url: `${SITE_URL}/tools/image`, changeFrequency: "weekly", priority: 0.8 },
-    { url: `${SITE_URL}/tools/calc`, changeFrequency: "weekly", priority: 0.8 },
-    { url: `${SITE_URL}/tools/pdf`, changeFrequency: "weekly", priority: 0.8 },
+    ...TOOL_CATEGORIES.filter((category) => category.hubHref).map((category) => ({
+      url: `${SITE_URL}${category.hubHref}`,
+      changeFrequency: "weekly" as const,
+      priority: 0.8,
+      // 허브는 소속 도구 중 가장 최근 수정일을 따른다
+      lastModified: latestToolDate(category.id),
+    })),
     {
       url: SITE_URL,
       changeFrequency: "daily",
       priority: 1.0,
     },
-    ...["/about", "/contact", "/privacy", "/terms"].map((path) => ({
+    ...Object.entries(INFO_PAGES).map(([path, lastModified]) => ({
       url: `${SITE_URL}${path}`,
-      changeFrequency: "weekly" as const,
+      changeFrequency: "monthly" as const,
       priority: 0.7,
+      lastModified,
     })),
     {
       url: `${SITE_URL}/blog`,

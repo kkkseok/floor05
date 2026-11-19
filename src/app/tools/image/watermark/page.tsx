@@ -6,7 +6,7 @@ import { SITE_URL } from "@/lib/common/constants";
 const PAGE_URL = `${SITE_URL}/tools/image/watermark`;
 
 export const metadata: Metadata = {
-  title: "사진 워터마크 넣기 - 텍스트·로고를 브라우저에서 바로",
+  title: "사진 워터마크 넣기 - 텍스트·로고를 여러 장에 한 번에",
   description:
     "사진에 텍스트나 로고 워터마크를 넣으세요. 위치·투명도·반복까지 조절, 여러 장 일괄도 무료. 도용을 막으려는 원본 사진을 남의 서버에 맡기지 않습니다.",
   keywords: [
@@ -19,7 +19,7 @@ export const metadata: Metadata = {
     "이미지 저작권 표시",
   ],
   openGraph: {
-    title: "사진 워터마크 넣기 - 텍스트·로고를 브라우저에서 바로",
+    title: "사진 워터마크 넣기 - 텍스트·로고를 여러 장에 한 번에",
     description: "사진에 텍스트·로고 워터마크를. 원본은 내 기기에만 남습니다.",
     url: PAGE_URL,
     type: "website",
@@ -27,7 +27,7 @@ export const metadata: Metadata = {
   },
   twitter: {
     card: "summary_large_image",
-    title: "사진 워터마크 넣기 - 텍스트·로고를 브라우저에서 바로",
+    title: "사진 워터마크 넣기 - 텍스트·로고를 여러 장에 한 번에",
     description: "워터마크 합성은 브라우저에서, 원본 사진은 내 기기에만.",
   },
   alternates: {

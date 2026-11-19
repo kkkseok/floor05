@@ -6,12 +6,12 @@ import { SITE_URL } from "@/lib/common/constants";
 const PAGE_URL = `${SITE_URL}/tools/image/compress`;
 
 export const metadata: Metadata = {
-  title: "이미지 압축 - 서버 전송 없이 브라우저에서 바로",
+  title: "이미지 압축 - 사진 용량 줄이기, 목표 KB에 맞춰서",
   description:
     "파일이 내 기기를 떠나지 않습니다. 로그인도 설치도 없이, 목표 용량 설정과 일괄 압축, Before/After 비교까지 무료로.",
   keywords: ["이미지 압축", "사진 용량 줄이기", "JPG 압축", "PNG 압축", "무료 이미지 압축"],
   openGraph: {
-    title: "이미지 압축 - 서버 전송 없이 브라우저에서 바로",
+    title: "이미지 압축 - 사진 용량 줄이기, 목표 KB에 맞춰서",
     description: "파일이 내 기기를 떠나지 않습니다. 가입 없이, 쓰는 횟수 제한 없이 무료.",
     url: PAGE_URL,
     type: "website",
@@ -19,7 +19,7 @@ export const metadata: Metadata = {
   },
   twitter: {
     card: "summary_large_image",
-    title: "이미지 압축 - 서버 전송 없이 브라우저에서 바로",
+    title: "이미지 압축 - 사진 용량 줄이기, 목표 KB에 맞춰서",
     description: "압축은 브라우저 몫, 사진은 내 기기에. 목표 용량 설정과 일괄 압축까지 무료.",
   },
   alternates: {
