@@ -1,0 +1,1106 @@
+{
+  "computedAt": "2026-11-19T14:12:33.454Z",
+  "calculator": "src/lib/calc/severance.ts calcSeverance (상수: src/lib/calc/rates.ts SEVERANCE)",
+  "constants": {
+    "daysPerYear": 30,
+    "yearDays": 365,
+    "minDays": 365,
+    "monthlyHours": 209,
+    "dailyHours": 8
+  },
+  "note": "입력 금액은 계산기 화면과 같이 만원 단위로 넣고 원으로 바꿔 함수에 전달. 퇴직일은 계산기 정의대로 마지막 근무일의 다음 날. 모든 금액은 세전.",
+  "result": {
+    "periodByMonth": [
+      {
+        "label": "2027-01-01 퇴직",
+        "input": {
+          "joinDate": "2026-01-01",
+          "leaveDate": "2027-01-01",
+          "monthlyWage": 3000000,
+          "annualBonus": 0,
+          "annualLeaveAllowance": 0,
+          "monthlyOrdinaryWage": 0
+        },
+        "output": {
+          "serviceDays": 365,
+          "serviceYears": 1,
+          "periodDays": 92,
+          "threeMonthWage": 9000000,
+          "bonusPortion": 0,
+          "leavePortion": 0,
+          "totalWage": 9000000,
+          "avgDailyWage": 97826,
+          "ordinaryDailyWage": 0,
+          "ordinaryApplied": false,
+          "severancePay": 2934783,
+          "eligible": true,
+          "valid": true,
+          "serviceYearsFixed2": "1.00"
+        }
+      },
+      {
+        "label": "2027-02-01 퇴직",
+        "input": {
+          "joinDate": "2026-02-01",
+          "leaveDate": "2027-02-01",
+          "monthlyWage": 3000000,
+          "annualBonus": 0,
+          "annualLeaveAllowance": 0,
+          "monthlyOrdinaryWage": 0
+        },
+        "output": {
+          "serviceDays": 365,
+          "serviceYears": 1,
+          "periodDays": 92,
+          "threeMonthWage": 9000000,
+          "bonusPortion": 0,
+          "leavePortion": 0,
+          "totalWage": 9000000,
+          "avgDailyWage": 97826,
+          "ordinaryDailyWage": 0,
+          "ordinaryApplied": false,
+          "severancePay": 2934783,
+          "eligible": true,
+          "valid": true,
+          "serviceYearsFixed2": "1.00"
+        }
+      },
+      {
+        "label": "2027-03-01 퇴직",
+        "input": {
+          "joinDate": "2026-03-01",
+          "leaveDate": "2027-03-01",
+          "monthlyWage": 3000000,
+          "annualBonus": 0,
+          "annualLeaveAllowance": 0,
+          "monthlyOrdinaryWage": 0
+        },
+        "output": {
+          "serviceDays": 365,
+          "serviceYears": 1,
+          "periodDays": 90,
+          "threeMonthWage": 9000000,
+          "bonusPortion": 0,
+          "leavePortion": 0,
+          "totalWage": 9000000,
+          "avgDailyWage": 100000,
+          "ordinaryDailyWage": 0,
+          "ordinaryApplied": false,
+          "severancePay": 3000000,
+          "eligible": true,
+          "valid": true,
+          "serviceYearsFixed2": "1.00"
+        }
+      },
+      {
+        "label": "2027-04-01 퇴직",
+        "input": {
+          "joinDate": "2026-04-01",
+          "leaveDate": "2027-04-01",
+          "monthlyWage": 3000000,
+          "annualBonus": 0,
+          "annualLeaveAllowance": 0,
+          "monthlyOrdinaryWage": 0
+        },
+        "output": {
+          "serviceDays": 365,
+          "serviceYears": 1,
+          "periodDays": 90,
+          "threeMonthWage": 9000000,
+          "bonusPortion": 0,
+          "leavePortion": 0,
+          "totalWage": 9000000,
+          "avgDailyWage": 100000,
+          "ordinaryDailyWage": 0,
+          "ordinaryApplied": false,
+          "severancePay": 3000000,
+          "eligible": true,
+          "valid": true,
+          "serviceYearsFixed2": "1.00"
+        }
+      },
+      {
+        "label": "2027-05-01 퇴직",
+        "input": {
+          "joinDate": "2026-05-01",
+          "leaveDate": "2027-05-01",
+          "monthlyWage": 3000000,
+          "annualBonus": 0,
+          "annualLeaveAllowance": 0,
+          "monthlyOrdinaryWage": 0
+        },
+        "output": {
+          "serviceDays": 365,
+          "serviceYears": 1,
+          "periodDays": 89,
+          "threeMonthWage": 9000000,
+          "bonusPortion": 0,
+          "leavePortion": 0,
+          "totalWage": 9000000,
+          "avgDailyWage": 101124,
+          "ordinaryDailyWage": 0,
+          "ordinaryApplied": false,
+          "severancePay": 3033708,
+          "eligible": true,
+          "valid": true,
+          "serviceYearsFixed2": "1.00"
+        }
+      },
+      {
+        "label": "2027-06-01 퇴직",
+        "input": {
+          "joinDate": "2026-06-01",
+          "leaveDate": "2027-06-01",
+          "monthlyWage": 3000000,
+          "annualBonus": 0,
+          "annualLeaveAllowance": 0,
+          "monthlyOrdinaryWage": 0
+        },
+        "output": {
+          "serviceDays": 365,
+          "serviceYears": 1,
+          "periodDays": 92,
+          "threeMonthWage": 9000000,
+          "bonusPortion": 0,
+          "leavePortion": 0,
+          "totalWage": 9000000,
+          "avgDailyWage": 97826,
+          "ordinaryDailyWage": 0,
+          "ordinaryApplied": false,
+          "severancePay": 2934783,
+          "eligible": true,
+          "valid": true,
+          "serviceYearsFixed2": "1.00"
+        }
+      },
+      {
+        "label": "2027-07-01 퇴직",
+        "input": {
+          "joinDate": "2026-07-01",
+          "leaveDate": "2027-07-01",
+          "monthlyWage": 3000000,
+          "annualBonus": 0,
+          "annualLeaveAllowance": 0,
+          "monthlyOrdinaryWage": 0
+        },
+        "output": {
+          "serviceDays": 365,
+          "serviceYears": 1,
+          "periodDays": 91,
+          "threeMonthWage": 9000000,
+          "bonusPortion": 0,
+          "leavePortion": 0,
+          "totalWage": 9000000,
+          "avgDailyWage": 98901,
+          "ordinaryDailyWage": 0,
+          "ordinaryApplied": false,
+          "severancePay": 2967033,
+          "eligible": true,
+          "valid": true,
+          "serviceYearsFixed2": "1.00"
+        }
+      },
+      {
+        "label": "2027-08-01 퇴직",
+        "input": {
+          "joinDate": "2026-08-01",
+          "leaveDate": "2027-08-01",
+          "monthlyWage": 3000000,
+          "annualBonus": 0,
+          "annualLeaveAllowance": 0,
+          "monthlyOrdinaryWage": 0
+        },
+        "output": {
+          "serviceDays": 365,
+          "serviceYears": 1,
+          "periodDays": 92,
+          "threeMonthWage": 9000000,
+          "bonusPortion": 0,
+          "leavePortion": 0,
+          "totalWage": 9000000,
+          "avgDailyWage": 97826,
+          "ordinaryDailyWage": 0,
+          "ordinaryApplied": false,
+          "severancePay": 2934783,
+          "eligible": true,
+          "valid": true,
+          "serviceYearsFixed2": "1.00"
+        }
+      },
+      {
+        "label": "2027-09-01 퇴직",
+        "input": {
+          "joinDate": "2026-09-01",
+          "leaveDate": "2027-09-01",
+          "monthlyWage": 3000000,
+          "annualBonus": 0,
+          "annualLeaveAllowance": 0,
+          "monthlyOrdinaryWage": 0
+        },
+        "output": {
+          "serviceDays": 365,
+          "serviceYears": 1,
+          "periodDays": 92,
+          "threeMonthWage": 9000000,
+          "bonusPortion": 0,
+          "leavePortion": 0,
+          "totalWage": 9000000,
+          "avgDailyWage": 97826,
+          "ordinaryDailyWage": 0,
+          "ordinaryApplied": false,
+          "severancePay": 2934783,
+          "eligible": true,
+          "valid": true,
+          "serviceYearsFixed2": "1.00"
+        }
+      },
+      {
+        "label": "2027-10-01 퇴직",
+        "input": {
+          "joinDate": "2026-10-01",
+          "leaveDate": "2027-10-01",
+          "monthlyWage": 3000000,
+          "annualBonus": 0,
+          "annualLeaveAllowance": 0,
+          "monthlyOrdinaryWage": 0
+        },
+        "output": {
+          "serviceDays": 365,
+          "serviceYears": 1,
+          "periodDays": 92,
+          "threeMonthWage": 9000000,
+          "bonusPortion": 0,
+          "leavePortion": 0,
+          "totalWage": 9000000,
+          "avgDailyWage": 97826,
+          "ordinaryDailyWage": 0,
+          "ordinaryApplied": false,
+          "severancePay": 2934783,
+          "eligible": true,
+          "valid": true,
+          "serviceYearsFixed2": "1.00"
+        }
+      },
+      {
+        "label": "2027-11-01 퇴직",
+        "input": {
+          "joinDate": "2026-11-01",
+          "leaveDate": "2027-11-01",
+          "monthlyWage": 3000000,
+          "annualBonus": 0,
+          "annualLeaveAllowance": 0,
+          "monthlyOrdinaryWage": 0
+        },
+        "output": {
+          "serviceDays": 365,
+          "serviceYears": 1,
+          "periodDays": 92,
+          "threeMonthWage": 9000000,
+          "bonusPortion": 0,
+          "leavePortion": 0,
+          "totalWage": 9000000,
+          "avgDailyWage": 97826,
+          "ordinaryDailyWage": 0,
+          "ordinaryApplied": false,
+          "severancePay": 2934783,
+          "eligible": true,
+          "valid": true,
+          "serviceYearsFixed2": "1.00"
+        }
+      },
+      {
+        "label": "2027-12-01 퇴직",
+        "input": {
+          "joinDate": "2026-12-01",
+          "leaveDate": "2027-12-01",
+          "monthlyWage": 3000000,
+          "annualBonus": 0,
+          "annualLeaveAllowance": 0,
+          "monthlyOrdinaryWage": 0
+        },
+        "output": {
+          "serviceDays": 365,
+          "serviceYears": 1,
+          "periodDays": 91,
+          "threeMonthWage": 9000000,
+          "bonusPortion": 0,
+          "leavePortion": 0,
+          "totalWage": 9000000,
+          "avgDailyWage": 98901,
+          "ordinaryDailyWage": 0,
+          "ordinaryApplied": false,
+          "severancePay": 2967033,
+          "eligible": true,
+          "valid": true,
+          "serviceYearsFixed2": "1.00"
+        }
+      }
+    ],
+    "periodGroups": [
+      {
+        "periodDays": 89,
+        "leaveMonths": [
+          5
+        ],
+        "serviceDays": 365,
+        "avgDailyWage": 101124,
+        "severancePay": 3033708
+      },
+      {
+        "periodDays": 90,
+        "leaveMonths": [
+          3,
+          4
+        ],
+        "serviceDays": 365,
+        "avgDailyWage": 100000,
+        "severancePay": 3000000
+      },
+      {
+        "periodDays": 91,
+        "leaveMonths": [
+          7,
+          12
+        ],
+        "serviceDays": 365,
+        "avgDailyWage": 98901,
+        "severancePay": 2967033
+      },
+      {
+        "periodDays": 92,
+        "leaveMonths": [
+          1,
+          2,
+          6,
+          8,
+          9,
+          10,
+          11
+        ],
+        "serviceDays": 365,
+        "avgDailyWage": 97826,
+        "severancePay": 2934783
+      }
+    ],
+    "serviceCases": [
+      {
+        "label": "1년에서 하루 모자람",
+        "input": {
+          "joinDate": "2026-01-02",
+          "leaveDate": "2027-01-01",
+          "monthlyWage": 3000000,
+          "annualBonus": 0,
+          "annualLeaveAllowance": 0,
+          "monthlyOrdinaryWage": 0
+        },
+        "output": {
+          "serviceDays": 364,
+          "serviceYears": 0.9972602739726028,
+          "periodDays": 92,
+          "threeMonthWage": 9000000,
+          "bonusPortion": 0,
+          "leavePortion": 0,
+          "totalWage": 9000000,
+          "avgDailyWage": 97826,
+          "ordinaryDailyWage": 0,
+          "ordinaryApplied": false,
+          "severancePay": 2926742,
+          "eligible": false,
+          "valid": true,
+          "serviceYearsFixed2": "1.00"
+        }
+      },
+      {
+        "label": "1년",
+        "input": {
+          "joinDate": "2026-01-01",
+          "leaveDate": "2027-01-01",
+          "monthlyWage": 3000000,
+          "annualBonus": 0,
+          "annualLeaveAllowance": 0,
+          "monthlyOrdinaryWage": 0
+        },
+        "output": {
+          "serviceDays": 365,
+          "serviceYears": 1,
+          "periodDays": 92,
+          "threeMonthWage": 9000000,
+          "bonusPortion": 0,
+          "leavePortion": 0,
+          "totalWage": 9000000,
+          "avgDailyWage": 97826,
+          "ordinaryDailyWage": 0,
+          "ordinaryApplied": false,
+          "severancePay": 2934783,
+          "eligible": true,
+          "valid": true,
+          "serviceYearsFixed2": "1.00"
+        }
+      },
+      {
+        "label": "1년 + 하루",
+        "input": {
+          "joinDate": "2025-12-31",
+          "leaveDate": "2027-01-01",
+          "monthlyWage": 3000000,
+          "annualBonus": 0,
+          "annualLeaveAllowance": 0,
+          "monthlyOrdinaryWage": 0
+        },
+        "output": {
+          "serviceDays": 366,
+          "serviceYears": 1.0027397260273974,
+          "periodDays": 92,
+          "threeMonthWage": 9000000,
+          "bonusPortion": 0,
+          "leavePortion": 0,
+          "totalWage": 9000000,
+          "avgDailyWage": 97826,
+          "ordinaryDailyWage": 0,
+          "ordinaryApplied": false,
+          "severancePay": 2942823,
+          "eligible": true,
+          "valid": true,
+          "serviceYearsFixed2": "1.00"
+        }
+      },
+      {
+        "label": "1년 6개월",
+        "input": {
+          "joinDate": "2025-07-01",
+          "leaveDate": "2027-01-01",
+          "monthlyWage": 3000000,
+          "annualBonus": 0,
+          "annualLeaveAllowance": 0,
+          "monthlyOrdinaryWage": 0
+        },
+        "output": {
+          "serviceDays": 549,
+          "serviceYears": 1.5041095890410958,
+          "periodDays": 92,
+          "threeMonthWage": 9000000,
+          "bonusPortion": 0,
+          "leavePortion": 0,
+          "totalWage": 9000000,
+          "avgDailyWage": 97826,
+          "ordinaryDailyWage": 0,
+          "ordinaryApplied": false,
+          "severancePay": 4414235,
+          "eligible": true,
+          "valid": true,
+          "serviceYearsFixed2": "1.50"
+        }
+      },
+      {
+        "label": "3년",
+        "input": {
+          "joinDate": "2024-01-01",
+          "leaveDate": "2027-01-01",
+          "monthlyWage": 3000000,
+          "annualBonus": 0,
+          "annualLeaveAllowance": 0,
+          "monthlyOrdinaryWage": 0
+        },
+        "output": {
+          "serviceDays": 1096,
+          "serviceYears": 3.0027397260273974,
+          "periodDays": 92,
+          "threeMonthWage": 9000000,
+          "bonusPortion": 0,
+          "leavePortion": 0,
+          "totalWage": 9000000,
+          "avgDailyWage": 97826,
+          "ordinaryDailyWage": 0,
+          "ordinaryApplied": false,
+          "severancePay": 8812388,
+          "eligible": true,
+          "valid": true,
+          "serviceYearsFixed2": "3.00"
+        }
+      },
+      {
+        "label": "5년",
+        "input": {
+          "joinDate": "2022-01-01",
+          "leaveDate": "2027-01-01",
+          "monthlyWage": 3000000,
+          "annualBonus": 0,
+          "annualLeaveAllowance": 0,
+          "monthlyOrdinaryWage": 0
+        },
+        "output": {
+          "serviceDays": 1826,
+          "serviceYears": 5.002739726027397,
+          "periodDays": 92,
+          "threeMonthWage": 9000000,
+          "bonusPortion": 0,
+          "leavePortion": 0,
+          "totalWage": 9000000,
+          "avgDailyWage": 97826,
+          "ordinaryDailyWage": 0,
+          "ordinaryApplied": false,
+          "severancePay": 14681954,
+          "eligible": true,
+          "valid": true,
+          "serviceYearsFixed2": "5.00"
+        }
+      },
+      {
+        "label": "10년",
+        "input": {
+          "joinDate": "2017-01-01",
+          "leaveDate": "2027-01-01",
+          "monthlyWage": 3000000,
+          "annualBonus": 0,
+          "annualLeaveAllowance": 0,
+          "monthlyOrdinaryWage": 0
+        },
+        "output": {
+          "serviceDays": 3652,
+          "serviceYears": 10.005479452054795,
+          "periodDays": 92,
+          "threeMonthWage": 9000000,
+          "bonusPortion": 0,
+          "leavePortion": 0,
+          "totalWage": 9000000,
+          "avgDailyWage": 97826,
+          "ordinaryDailyWage": 0,
+          "ordinaryApplied": false,
+          "severancePay": 29363907,
+          "eligible": true,
+          "valid": true,
+          "serviceYearsFixed2": "10.01"
+        }
+      }
+    ],
+    "bonusCases": [
+      {
+        "label": "월급 300만",
+        "input": {
+          "joinDate": "2024-01-01",
+          "leaveDate": "2027-01-01",
+          "monthlyWage": 3000000,
+          "annualBonus": 0,
+          "annualLeaveAllowance": 0,
+          "monthlyOrdinaryWage": 0
+        },
+        "output": {
+          "serviceDays": 1096,
+          "serviceYears": 3.0027397260273974,
+          "periodDays": 92,
+          "threeMonthWage": 9000000,
+          "bonusPortion": 0,
+          "leavePortion": 0,
+          "totalWage": 9000000,
+          "avgDailyWage": 97826,
+          "ordinaryDailyWage": 0,
+          "ordinaryApplied": false,
+          "severancePay": 8812388,
+          "eligible": true,
+          "valid": true,
+          "serviceYearsFixed2": "3.00"
+        }
+      },
+      {
+        "label": "월급 300만 + 연간 상여 600만",
+        "input": {
+          "joinDate": "2024-01-01",
+          "leaveDate": "2027-01-01",
+          "monthlyWage": 3000000,
+          "annualBonus": 6000000,
+          "annualLeaveAllowance": 0,
+          "monthlyOrdinaryWage": 0
+        },
+        "output": {
+          "serviceDays": 1096,
+          "serviceYears": 3.0027397260273974,
+          "periodDays": 92,
+          "threeMonthWage": 9000000,
+          "bonusPortion": 1500000,
+          "leavePortion": 0,
+          "totalWage": 10500000,
+          "avgDailyWage": 114130,
+          "ordinaryDailyWage": 0,
+          "ordinaryApplied": false,
+          "severancePay": 10281120,
+          "eligible": true,
+          "valid": true,
+          "serviceYearsFixed2": "3.00"
+        }
+      },
+      {
+        "label": "월급 300만 + 연차수당 60만",
+        "input": {
+          "joinDate": "2024-01-01",
+          "leaveDate": "2027-01-01",
+          "monthlyWage": 3000000,
+          "annualBonus": 0,
+          "annualLeaveAllowance": 600000,
+          "monthlyOrdinaryWage": 0
+        },
+        "output": {
+          "serviceDays": 1096,
+          "serviceYears": 3.0027397260273974,
+          "periodDays": 92,
+          "threeMonthWage": 9000000,
+          "bonusPortion": 0,
+          "leavePortion": 150000,
+          "totalWage": 9150000,
+          "avgDailyWage": 99457,
+          "ordinaryDailyWage": 0,
+          "ordinaryApplied": false,
+          "severancePay": 8959261,
+          "eligible": true,
+          "valid": true,
+          "serviceYearsFixed2": "3.00"
+        }
+      },
+      {
+        "label": "월급 300만 + 연간 상여 600만 + 연차수당 60만",
+        "input": {
+          "joinDate": "2024-01-01",
+          "leaveDate": "2027-01-01",
+          "monthlyWage": 3000000,
+          "annualBonus": 6000000,
+          "annualLeaveAllowance": 600000,
+          "monthlyOrdinaryWage": 0
+        },
+        "output": {
+          "serviceDays": 1096,
+          "serviceYears": 3.0027397260273974,
+          "periodDays": 92,
+          "threeMonthWage": 9000000,
+          "bonusPortion": 1500000,
+          "leavePortion": 150000,
+          "totalWage": 10650000,
+          "avgDailyWage": 115761,
+          "ordinaryDailyWage": 0,
+          "ordinaryApplied": false,
+          "severancePay": 10427993,
+          "eligible": true,
+          "valid": true,
+          "serviceYearsFixed2": "3.00"
+        }
+      },
+      {
+        "label": "월급 350만 (상여 없음)",
+        "input": {
+          "joinDate": "2024-01-01",
+          "leaveDate": "2027-01-01",
+          "monthlyWage": 3500000,
+          "annualBonus": 0,
+          "annualLeaveAllowance": 0,
+          "monthlyOrdinaryWage": 0
+        },
+        "output": {
+          "serviceDays": 1096,
+          "serviceYears": 3.0027397260273974,
+          "periodDays": 92,
+          "threeMonthWage": 10500000,
+          "bonusPortion": 0,
+          "leavePortion": 0,
+          "totalWage": 10500000,
+          "avgDailyWage": 114130,
+          "ordinaryDailyWage": 0,
+          "ordinaryApplied": false,
+          "severancePay": 10281120,
+          "eligible": true,
+          "valid": true,
+          "serviceYearsFixed2": "3.00"
+        }
+      }
+    ],
+    "ordinaryCases": [
+      {
+        "label": "월급 300만, 통상임금 비움",
+        "input": {
+          "joinDate": "2024-01-01",
+          "leaveDate": "2027-01-01",
+          "monthlyWage": 3000000,
+          "annualBonus": 0,
+          "annualLeaveAllowance": 0,
+          "monthlyOrdinaryWage": 0
+        },
+        "output": {
+          "serviceDays": 1096,
+          "serviceYears": 3.0027397260273974,
+          "periodDays": 92,
+          "threeMonthWage": 9000000,
+          "bonusPortion": 0,
+          "leavePortion": 0,
+          "totalWage": 9000000,
+          "avgDailyWage": 97826,
+          "ordinaryDailyWage": 0,
+          "ordinaryApplied": false,
+          "severancePay": 8812388,
+          "eligible": true,
+          "valid": true,
+          "serviceYearsFixed2": "3.00"
+        }
+      },
+      {
+        "label": "월급 300만, 통상임금 250만",
+        "input": {
+          "joinDate": "2024-01-01",
+          "leaveDate": "2027-01-01",
+          "monthlyWage": 3000000,
+          "annualBonus": 0,
+          "annualLeaveAllowance": 0,
+          "monthlyOrdinaryWage": 2500000
+        },
+        "output": {
+          "serviceDays": 1096,
+          "serviceYears": 3.0027397260273974,
+          "periodDays": 92,
+          "threeMonthWage": 9000000,
+          "bonusPortion": 0,
+          "leavePortion": 0,
+          "totalWage": 9000000,
+          "avgDailyWage": 97826,
+          "ordinaryDailyWage": 95694,
+          "ordinaryApplied": false,
+          "severancePay": 8812388,
+          "eligible": true,
+          "valid": true,
+          "serviceYearsFixed2": "3.00"
+        }
+      },
+      {
+        "label": "월급 300만, 통상임금 300만",
+        "input": {
+          "joinDate": "2024-01-01",
+          "leaveDate": "2027-01-01",
+          "monthlyWage": 3000000,
+          "annualBonus": 0,
+          "annualLeaveAllowance": 0,
+          "monthlyOrdinaryWage": 3000000
+        },
+        "output": {
+          "serviceDays": 1096,
+          "serviceYears": 3.0027397260273974,
+          "periodDays": 92,
+          "threeMonthWage": 9000000,
+          "bonusPortion": 0,
+          "leavePortion": 0,
+          "totalWage": 9000000,
+          "avgDailyWage": 97826,
+          "ordinaryDailyWage": 114833,
+          "ordinaryApplied": true,
+          "severancePay": 10344367,
+          "eligible": true,
+          "valid": true,
+          "serviceYearsFixed2": "3.00"
+        }
+      },
+      {
+        "label": "직전 3개월 월급 200만, 통상임금 비움",
+        "input": {
+          "joinDate": "2024-01-01",
+          "leaveDate": "2027-01-01",
+          "monthlyWage": 2000000,
+          "annualBonus": 0,
+          "annualLeaveAllowance": 0,
+          "monthlyOrdinaryWage": 0
+        },
+        "output": {
+          "serviceDays": 1096,
+          "serviceYears": 3.0027397260273974,
+          "periodDays": 92,
+          "threeMonthWage": 6000000,
+          "bonusPortion": 0,
+          "leavePortion": 0,
+          "totalWage": 6000000,
+          "avgDailyWage": 65217,
+          "ordinaryDailyWage": 0,
+          "ordinaryApplied": false,
+          "severancePay": 5874926,
+          "eligible": true,
+          "valid": true,
+          "serviceYearsFixed2": "3.00"
+        }
+      },
+      {
+        "label": "직전 3개월 월급 200만, 통상임금 300만",
+        "input": {
+          "joinDate": "2024-01-01",
+          "leaveDate": "2027-01-01",
+          "monthlyWage": 2000000,
+          "annualBonus": 0,
+          "annualLeaveAllowance": 0,
+          "monthlyOrdinaryWage": 3000000
+        },
+        "output": {
+          "serviceDays": 1096,
+          "serviceYears": 3.0027397260273974,
+          "periodDays": 92,
+          "threeMonthWage": 6000000,
+          "bonusPortion": 0,
+          "leavePortion": 0,
+          "totalWage": 6000000,
+          "avgDailyWage": 65217,
+          "ordinaryDailyWage": 114833,
+          "ordinaryApplied": true,
+          "severancePay": 10344367,
+          "eligible": true,
+          "valid": true,
+          "serviceYearsFixed2": "3.00"
+        }
+      }
+    ],
+    "probes": [
+      {
+        "label": "윤년 안 365일: 2024-01-01 입사, 2024-12-31 퇴직(달력상 1년은 2025-01-01)",
+        "input": {
+          "joinDate": "2024-01-01",
+          "leaveDate": "2024-12-31",
+          "monthlyWage": 3000000,
+          "annualBonus": 0,
+          "annualLeaveAllowance": 0,
+          "monthlyOrdinaryWage": 0
+        },
+        "output": {
+          "serviceDays": 365,
+          "serviceYears": 1,
+          "periodDays": 92,
+          "threeMonthWage": 9000000,
+          "bonusPortion": 0,
+          "leavePortion": 0,
+          "totalWage": 9000000,
+          "avgDailyWage": 97826,
+          "ordinaryDailyWage": 0,
+          "ordinaryApplied": false,
+          "severancePay": 2934783,
+          "eligible": true,
+          "valid": true,
+          "serviceYearsFixed2": "1.00"
+        }
+      },
+      {
+        "label": "윤년 2/29 포함: 2024-01-01 입사, 2025-01-01 퇴직",
+        "input": {
+          "joinDate": "2024-01-01",
+          "leaveDate": "2025-01-01",
+          "monthlyWage": 3000000,
+          "annualBonus": 0,
+          "annualLeaveAllowance": 0,
+          "monthlyOrdinaryWage": 0
+        },
+        "output": {
+          "serviceDays": 366,
+          "serviceYears": 1.0027397260273974,
+          "periodDays": 92,
+          "threeMonthWage": 9000000,
+          "bonusPortion": 0,
+          "leavePortion": 0,
+          "totalWage": 9000000,
+          "avgDailyWage": 97826,
+          "ordinaryDailyWage": 0,
+          "ordinaryApplied": false,
+          "severancePay": 2942823,
+          "eligible": true,
+          "valid": true,
+          "serviceYearsFixed2": "1.00"
+        }
+      },
+      {
+        "label": "도구 기본 예시: 2022-01-01 입사, 2025-01-01 퇴직, 300만",
+        "input": {
+          "joinDate": "2022-01-01",
+          "leaveDate": "2025-01-01",
+          "monthlyWage": 3000000,
+          "annualBonus": 0,
+          "annualLeaveAllowance": 0,
+          "monthlyOrdinaryWage": 0
+        },
+        "output": {
+          "serviceDays": 1096,
+          "serviceYears": 3.0027397260273974,
+          "periodDays": 92,
+          "threeMonthWage": 9000000,
+          "bonusPortion": 0,
+          "leavePortion": 0,
+          "totalWage": 9000000,
+          "avgDailyWage": 97826,
+          "ordinaryDailyWage": 0,
+          "ordinaryApplied": false,
+          "severancePay": 8812388,
+          "eligible": true,
+          "valid": true,
+          "serviceYearsFixed2": "3.00"
+        }
+      },
+      {
+        "label": "말일 근처 퇴직일 2027-05-28",
+        "input": {
+          "joinDate": "2024-01-01",
+          "leaveDate": "2027-05-28",
+          "monthlyWage": 3000000,
+          "annualBonus": 0,
+          "annualLeaveAllowance": 0,
+          "monthlyOrdinaryWage": 0
+        },
+        "output": {
+          "serviceDays": 1243,
+          "serviceYears": 3.4054794520547946,
+          "periodDays": 89,
+          "threeMonthWage": 9000000,
+          "bonusPortion": 0,
+          "leavePortion": 0,
+          "totalWage": 9000000,
+          "avgDailyWage": 101124,
+          "ordinaryDailyWage": 0,
+          "ordinaryApplied": false,
+          "severancePay": 10331230,
+          "eligible": true,
+          "valid": true,
+          "serviceYearsFixed2": "3.41"
+        }
+      },
+      {
+        "label": "말일 근처 퇴직일 2027-05-29",
+        "input": {
+          "joinDate": "2024-01-01",
+          "leaveDate": "2027-05-29",
+          "monthlyWage": 3000000,
+          "annualBonus": 0,
+          "annualLeaveAllowance": 0,
+          "monthlyOrdinaryWage": 0
+        },
+        "output": {
+          "serviceDays": 1244,
+          "serviceYears": 3.408219178082192,
+          "periodDays": 90,
+          "threeMonthWage": 9000000,
+          "bonusPortion": 0,
+          "leavePortion": 0,
+          "totalWage": 9000000,
+          "avgDailyWage": 100000,
+          "ordinaryDailyWage": 0,
+          "ordinaryApplied": false,
+          "severancePay": 10224658,
+          "eligible": true,
+          "valid": true,
+          "serviceYearsFixed2": "3.41"
+        }
+      },
+      {
+        "label": "말일 근처 퇴직일 2027-05-30",
+        "input": {
+          "joinDate": "2024-01-01",
+          "leaveDate": "2027-05-30",
+          "monthlyWage": 3000000,
+          "annualBonus": 0,
+          "annualLeaveAllowance": 0,
+          "monthlyOrdinaryWage": 0
+        },
+        "output": {
+          "serviceDays": 1245,
+          "serviceYears": 3.410958904109589,
+          "periodDays": 91,
+          "threeMonthWage": 9000000,
+          "bonusPortion": 0,
+          "leavePortion": 0,
+          "totalWage": 9000000,
+          "avgDailyWage": 98901,
+          "ordinaryDailyWage": 0,
+          "ordinaryApplied": false,
+          "severancePay": 10120428,
+          "eligible": true,
+          "valid": true,
+          "serviceYearsFixed2": "3.41"
+        }
+      },
+      {
+        "label": "말일 근처 퇴직일 2027-05-31",
+        "input": {
+          "joinDate": "2024-01-01",
+          "leaveDate": "2027-05-31",
+          "monthlyWage": 3000000,
+          "annualBonus": 0,
+          "annualLeaveAllowance": 0,
+          "monthlyOrdinaryWage": 0
+        },
+        "output": {
+          "serviceDays": 1246,
+          "serviceYears": 3.4136986301369863,
+          "periodDays": 92,
+          "threeMonthWage": 9000000,
+          "bonusPortion": 0,
+          "leavePortion": 0,
+          "totalWage": 9000000,
+          "avgDailyWage": 97826,
+          "ordinaryDailyWage": 0,
+          "ordinaryApplied": false,
+          "severancePay": 10018463,
+          "eligible": true,
+          "valid": true,
+          "serviceYearsFixed2": "3.41"
+        }
+      }
+    ],
+    "derived": {
+      "period": {
+        "minDays": 89,
+        "maxDays": 92,
+        "severanceDiffWon": 98925,
+        "severanceDiffPct": 3.4,
+        "avgDailyDiffWon": 3298,
+        "vsMonthlyWage": [
+          {
+            "periodDays": 89,
+            "severanceMinusMonthlyWage": 33708
+          },
+          {
+            "periodDays": 90,
+            "severanceMinusMonthlyWage": 0
+          },
+          {
+            "periodDays": 91,
+            "severanceMinusMonthlyWage": -32967
+          },
+          {
+            "periodDays": 92,
+            "severanceMinusMonthlyWage": -65217
+          }
+        ]
+      },
+      "service": {
+        "oneDayShortDiffWon": 8041,
+        "oneDayMoreDiffWon": 8040,
+        "threeYearsVsThreeTimesOneYear": 8039,
+        "threeTimesOneYear": 8804349,
+        "threeYearsMinusNineMillion": -187612
+      },
+      "bonus": {
+        "bonusDiffWon": 1468732,
+        "bonusDiffPct": 16.7,
+        "leaveDiffWon": 146873,
+        "bothDiffWon": 1615605,
+        "bothDiffPct": 18.3,
+        "bonus600EqualsWage350": true
+      },
+      "ordinary": {
+        "same300DiffWon": 1531979,
+        "same300DiffPct": 17.4,
+        "ordinary250Unchanged": true,
+        "lowWageDiffWon": 4469441,
+        "lowWageVsNormalDiffWon": -2937462,
+        "flipPointWage300": {
+          "wageManwon": 300,
+          "firstOrdinaryManwonApplied": 256,
+          "periodDays": 92,
+          "avgDailyWage": 97826,
+          "ordinaryDailyWage": 97990
+        },
+        "flipPointWage300WithBonus600": {
+          "wageManwon": 300,
+          "bonus": 600,
+          "firstOrdinaryManwonApplied": 299,
+          "periodDays": 92,
+          "avgDailyWage": 114130,
+          "ordinaryDailyWage": 114450
+        }
+      }
+    }
+  }
+}
