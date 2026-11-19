@@ -94,22 +94,22 @@ const guide = {
 };
 
 const workflowCTA = {
-  message: "변환 끝났나요? 이런 작업도 할 수 있어요.",
+  message: "아이폰 사진을 JPG로 바꿨다면, 보내기 전에 한 번 더.",
   tools: [
+    {
+      name: "EXIF 삭제",
+      href: "/tools/image/exif-remove",
+      description: "촬영 위치가 남았는지 확인",
+    },
     {
       name: "이미지 압축",
       href: "/tools/image/compress",
-      description: "용량도 줄여보세요",
+      description: "메일 첨부 용량에 맞추기",
     },
     {
-      name: "이미지 리사이즈",
-      href: "/tools/image/resize",
-      description: "크기도 조절해보세요",
-    },
-    {
-      name: "이미지 크롭",
-      href: "/tools/image/crop",
-      description: "원하는 부분만 자르기",
+      name: "이미지 PDF 변환",
+      href: "/tools/pdf/image-to-pdf",
+      description: "여러 장을 서류 한 부로",
     },
   ],
 };

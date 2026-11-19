@@ -9,6 +9,12 @@ export const metadata: Metadata = {
   title: "개인정보처리방침",
   description:
     "floor05의 브라우저 처리 원칙, 문의 폼, 방문 통계와 광고 서비스에서 처리되는 정보 및 이용자 선택권을 안내합니다.",
+  openGraph: {
+    url: "/privacy",
+    images: [{ url: "/og-image.png", width: 1200, height: 630 }],
+    title: "개인정보처리방침",
+    description: "문의 폼, 방문 통계, 광고에서 처리되는 정보와 이용자가 고를 수 있는 것을 정리했습니다.",
+  },
   alternates: { canonical: "/privacy" },
 };
 

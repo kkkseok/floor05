@@ -12,7 +12,7 @@ import { getToolsByCategory } from "@/lib/common/tools";
 const PAGE_URL = `${SITE_URL}/tools/image`;
 
 export const metadata: Metadata = {
-  title: "이미지 도구 모음 - 압축부터 워터마크까지 열다섯 가지",
+  title: "이미지 도구 모음 - 압축부터 워터마크까지 열세 가지",
   description:
     "압축, 변환, 리사이즈, 워터마크, 모자이크 등 자주 쓰는 이미지 작업을 한곳에서 고를 수 있는 허브입니다.",
   keywords: [
@@ -25,7 +25,7 @@ export const metadata: Metadata = {
     "EXIF 삭제",
   ],
   openGraph: {
-    title: "이미지 도구 모음 - 압축부터 워터마크까지 열다섯 가지",
+    title: "이미지 도구 모음 - 압축부터 워터마크까지 열세 가지",
     description:
       "사진 정리, SNS 업로드, 문서 첨부 전에 필요한 이미지 작업을 목적별로 빠르게 찾아보세요.",
     url: PAGE_URL,
@@ -34,7 +34,7 @@ export const metadata: Metadata = {
   },
   twitter: {
     card: "summary_large_image",
-    title: "이미지 도구 모음 - 압축부터 워터마크까지 열다섯 가지",
+    title: "이미지 도구 모음 - 압축부터 워터마크까지 열세 가지",
     description:
       "이미지 용량 줄이기부터 개인정보 정리까지, 필요한 도구로 바로 이동할 수 있습니다.",
   },
@@ -155,7 +155,7 @@ export default function ImageToolsPage() {
         <section className="mx-auto max-w-6xl px-4 py-12 sm:px-6 lg:px-8">
           <div className="mx-auto max-w-3xl space-y-4 text-base leading-8 text-brand-mid">
             <p>
-              이미지 도구 15종을 한 페이지에 모았습니다. 용량 줄이기, JPG와 PNG 변환,
+              이미지 도구 13종을 한 페이지에 모았습니다. 용량 줄이기, JPG와 PNG 변환,
               HEIC 변환, 크기 조정, 자르기, 회전, 워터마크, 모자이크, EXIF 정리처럼
               업로드 전후에 자주 필요한 작업을 바로 찾을 수 있습니다.
             </p>

@@ -8,6 +8,12 @@ export const metadata: Metadata = {
   title: "이용약관",
   description:
     "floor05의 이미지·PDF·계산·변환 도구와 콘텐츠 이용 조건, 결과의 한계, 광고 및 문의 기준을 안내합니다.",
+  openGraph: {
+    url: "/terms",
+    images: [{ url: "/og-image.png", width: 1200, height: 630 }],
+    title: "이용약관",
+    description: "도구와 콘텐츠 이용 조건, 계산·변환 결과의 한계, 광고와 문의 기준입니다.",
+  },
   alternates: { canonical: "/terms" },
 };
 
