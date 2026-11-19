@@ -10,7 +10,7 @@ export default function SourceDisclosure({ review }: { review: ContentReview }) 
         <h2 id="source-disclosure-title" className="text-lg font-semibold text-brand-black">
           계산 기준·출처
         </h2>
-        <p className="text-xs text-brand-light">
+        <p className="text-xs text-brand-mid">
           최종 검토 <time dateTime={review.reviewedAt}>{review.reviewedAt}</time>
         </p>
       </div>
@@ -26,7 +26,7 @@ export default function SourceDisclosure({ review }: { review: ContentReview }) 
             >
               {source.title}
             </a>{" "}
-            <span className="text-brand-light">— {source.publisher}</span>
+            <span className="text-brand-mid">— {source.publisher}</span>
           </li>
         ))}
       </ul>

@@ -179,8 +179,11 @@ test.describe("이미지 압축", () => {
     await page.goto("/tools/image/compress");
     await uploadToDropzone(page, [fx("broken.jpg")]);
     await page.getByRole("button", { name: /이미지 압축하기/ }).click();
-    // 개별 이미지 에러 오버레이 (기술 용어 없는 한국어)
-    await expect(page.locator("main").getByText(/이미지를 로드할 수 없습니다|압축에 실패/).first()).toBeVisible({ timeout: 20_000 });
+    // 실패 요약: 몇 개가 실패했는지 + 원인·해결 방법 (기술 용어 없는 한국어)
+    const alert = page.locator("main").getByRole("alert");
+    await expect(alert).toContainText("1개 중 1개를 처리하지 못했습니다.", { timeout: 20_000 });
+    await expect(alert).toContainText(/사진을 열지 못했습니다|압축하지 못했습니다/);
+    await expect(alert).not.toContainText(/Canvas|컨텍스트|로드|worker/i);
     await expect(page.getByRole("button", { name: "다운로드" })).toBeHidden();
     assertClean(guards); // pageerror 없어야 함
   });

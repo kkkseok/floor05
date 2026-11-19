@@ -2,6 +2,7 @@
 
 import { useState, useCallback, useEffect, useRef } from "react";
 import FileDropzone from "@/components/common/FileDropzone";
+import { toFriendlyImageError } from "@/lib/image/errorMessage";
 import DownloadButton from "@/components/common/DownloadButton";
 import {
   formatFileSize,
@@ -164,7 +165,7 @@ export default function MergeTool() {
       trackToolUse("merge", { count: images.length, direction });
     } catch (e) {
       setResult(null);
-      setError(e instanceof Error ? e.message : "이미지 합치기에 실패했습니다.");
+      setError(toFriendlyImageError(e, "이미지를 합치지 못했습니다. 장수를 줄여 다시 시도해 주세요."));
     } finally {
       setIsProcessing(false);
     }
@@ -437,7 +438,7 @@ export default function MergeTool() {
             </button>
 
             {error && (
-              <p className="text-sm text-red-600 text-center">{error}</p>
+              <p role="alert" className="text-sm text-red-700 text-center">{error}</p>
             )}
           </div>
 
@@ -457,7 +458,7 @@ export default function MergeTool() {
               </div>
 
               <div className="bg-brand-black rounded-xl p-6 space-y-6">
-                <div className="grid grid-cols-3 gap-4 text-center">
+                <div className="grid grid-cols-1 sm:grid-cols-3 gap-4 text-center">
                   <div>
                     <p className="text-sm text-brand-light mb-1">합친 장수</p>
                     <p className="font-mono text-2xl text-brand-paper">{result.count}개</p>

@@ -121,19 +121,20 @@ export default function ToolLayout({
 
       <main className="flex-1">
         {/* 2. 타이틀 영역 */}
-        <section className="bg-brand-black py-12 sm:py-16">
+        {/* 모바일은 여백을 줄여 도구 본체(드롭존)가 첫 화면에 들어오게 한다 */}
+        <section className="bg-brand-black py-8 sm:py-16">
           <div className="max-w-4xl mx-auto px-4 sm:px-6 lg:px-8 text-center">
-            <h1 className="text-3xl sm:text-4xl font-bold text-brand-paper mb-3">
+            <h1 className="text-3xl sm:text-4xl font-bold text-brand-paper mb-3 [word-break:keep-all]">
               {title}
             </h1>
-            <p className="text-brand-light text-lg">
+            <p className="text-brand-light text-base sm:text-lg [word-break:keep-all]">
               {description}
             </p>
           </div>
         </section>
 
         {/* 3. 도구 본체 */}
-        <section className="py-8 sm:py-12">
+        <section className="py-6 sm:py-12">
           <div className="max-w-4xl mx-auto px-4 sm:px-6 lg:px-8">
             <ErrorBoundary>
               {children}
@@ -205,7 +206,7 @@ export default function ToolLayout({
                         </table>
                       </div>
                       {section.table.caption && (
-                        <figcaption className="mt-2 text-xs text-brand-light">
+                        <figcaption className="mt-2 text-xs text-brand-subtle">
                           {section.table.caption}
                         </figcaption>
                       )}

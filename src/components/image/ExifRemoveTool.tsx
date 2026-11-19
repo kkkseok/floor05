@@ -13,6 +13,11 @@ interface Item {
   file: File;
   hasExif: boolean;
   hasGps: boolean;
+  /**
+   * 사전 확인 상태. scanExif는 JPG의 EXIF만 읽으므로 "없음"이라고 말할 수 있는 건 JPG뿐이다.
+   * - pending: 확인 중 / done: JPG를 읽어 봄 / unsupported: JPG가 아니라 미리 확인 불가 / error: 읽기 실패
+   */
+  scan: "pending" | "done" | "unsupported" | "error";
 }
 
 let idSeq = 0;
@@ -26,13 +31,17 @@ export default function ExifRemoveTool() {
     setError(null);
     for (const file of files) {
       const id = `f-${idSeq++}`;
-      setItems((prev) => [...prev, { id, file, hasExif: false, hasGps: false }]);
+      setItems((prev) => [...prev, { id, file, hasExif: false, hasGps: false, scan: "pending" }]);
       try {
-        const buf = await fileToArrayBuffer(file);
-        const { hasExif, hasGps } = scanExif(new Uint8Array(buf));
-        setItems((prev) => prev.map((it) => (it.id === id ? { ...it, hasExif, hasGps } : it)));
+        const bytes = new Uint8Array(await fileToArrayBuffer(file));
+        const isJpeg = bytes.length >= 2 && bytes[0] === 0xff && bytes[1] === 0xd8;
+        const { hasExif, hasGps } = scanExif(bytes);
+        setItems((prev) =>
+          prev.map((it) => (it.id === id ? { ...it, hasExif, hasGps, scan: isJpeg ? "done" : "unsupported" } : it)),
+        );
       } catch {
-        /* 스캔 실패는 무시(제거는 가능) */
+        // 사전 확인만 실패한 것이라 제거는 그대로 할 수 있다. 다만 "확인됨"으로 보이면 안 되므로 상태로 남긴다.
+        setItems((prev) => prev.map((it) => (it.id === id ? { ...it, scan: "error" } : it)));
       }
     }
   }, []);
@@ -100,8 +109,16 @@ export default function ExifRemoveTool() {
                       <span className="text-brand-accent">⚠ 위치정보(GPS) 포함</span>
                     ) : it.hasExif ? (
                       <span className="text-brand-mid">촬영정보(EXIF) 포함</span>
+                    ) : it.scan === "pending" ? (
+                      <span className="text-brand-subtle">촬영정보 확인 중…</span>
+                    ) : it.scan === "done" ? (
+                      <span className="text-brand-subtle">촬영정보(EXIF) 없음</span>
+                    ) : it.scan === "unsupported" ? (
+                      <span className="text-brand-subtle">
+                        .{getFileExtension(it.file.name)} 파일은 미리 확인하지 않습니다. 제거는 그대로 됩니다.
+                      </span>
                     ) : (
-                      <span className="text-brand-light">.{getFileExtension(it.file.name)} · 메타데이터 확인됨</span>
+                      <span className="text-brand-subtle">촬영정보를 미리 확인하지 못했습니다. 제거는 그대로 됩니다.</span>
                     )}
                   </p>
                 </div>
@@ -116,7 +133,7 @@ export default function ExifRemoveTool() {
             ))}
           </div>
 
-          {error && <p className="text-sm text-red-600">{error}</p>}
+          {error && <p role="alert" className="text-sm text-red-700">{error}</p>}
 
           <button
             onClick={process}

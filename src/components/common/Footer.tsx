@@ -32,7 +32,7 @@ export default function Footer() {
               <br />
               나만의 속도, 나만의 층.
             </p>
-            <p className="mt-4 font-mono text-xs tracking-wider text-brand-mid">
+            <p className="mt-4 font-mono text-xs tracking-wider text-brand-light/70">
               THE FLOOR THAT DOESN&apos;T EXIST
             </p>
           </div>
@@ -44,7 +44,7 @@ export default function Footer() {
                 도구
               </h2>
               <span
-                className="font-mono text-[10px] tracking-wider text-brand-mid"
+                className="font-mono text-[10px] tracking-wider text-brand-light/70"
                 aria-hidden="true"
               >
                 ROOM DIRECTORY
@@ -136,10 +136,10 @@ export default function Footer() {
         {/* 하단 저작권 */}
         <div className="mt-10 border-t border-brand-dark pt-6">
           <div className="flex flex-col items-center justify-between gap-4 sm:flex-row">
-            <p className="font-mono text-xs text-brand-mid">
+            <p className="font-mono text-xs text-brand-light/70">
               &copy; {currentYear} floor05 플로어공오
             </p>
-            <p className="font-mono text-xs text-brand-mid">
+            <p className="font-mono text-xs text-brand-light/70">
               파일이 서버로 전송되지 않습니다.
             </p>
           </div>

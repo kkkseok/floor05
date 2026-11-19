@@ -22,7 +22,7 @@ export default function PrivacyPage() {
       <main className="flex-1">
         <article className="max-w-3xl mx-auto px-4 sm:px-6 lg:px-8 py-16">
           <h1 className="text-3xl font-bold text-brand-black mb-2">개인정보처리방침</h1>
-          <p className="text-sm text-brand-light mb-12">시행·최종 수정일: 2026년 8월 25일</p>
+          <p className="text-sm text-brand-subtle mb-12">시행·최종 수정일: 2026년 8월 25일</p>
 
           <div className="prose prose-lg max-w-none space-y-10 text-brand-mid">
             <section>

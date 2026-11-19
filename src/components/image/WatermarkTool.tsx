@@ -2,6 +2,7 @@
 
 import { useState, useCallback, useEffect, useMemo, useRef } from "react";
 import FileDropzone from "@/components/common/FileDropzone";
+import { toFriendlyImageError } from "@/lib/image/errorMessage";
 import DownloadButton from "@/components/common/DownloadButton";
 import {
   getMaxBatchSize,
@@ -317,7 +318,7 @@ export default function WatermarkTool() {
       trackToolUse("watermark", { count: images.length, mode, tile });
     } catch (e) {
       setResults([]);
-      setError(e instanceof Error ? e.message : "워터마크 처리에 실패했습니다.");
+      setError(toFriendlyImageError(e, "워터마크를 넣지 못했습니다. 사진을 다시 올려 시도해 주세요."));
     } finally {
       setIsProcessing(false);
     }
@@ -395,7 +396,7 @@ export default function WatermarkTool() {
                     <button
                       onClick={() => handleRemove(img.id)}
                       aria-label={`${img.file.name} 삭제`}
-                      className="absolute -top-1.5 -right-1.5 w-5 h-5 rounded-full bg-brand-black text-white flex items-center justify-center text-xs hover:bg-red-500 transition-colors"
+                      className="absolute -top-2 -right-2 w-7 h-7 rounded-full bg-brand-black text-white flex items-center justify-center text-sm hover:bg-red-500 transition-colors"
                     >
                       ×
                     </button>
@@ -665,7 +666,7 @@ export default function WatermarkTool() {
               )}
             </button>
 
-            {error && <p className="text-sm text-red-600 text-center">{error}</p>}
+            {error && <p role="alert" className="text-sm text-red-700 text-center">{error}</p>}
           </div>
 
           {/* 결과 다운로드 */}

@@ -2,6 +2,8 @@
 
 import { useState, useCallback, useMemo, useEffect, useRef } from "react";
 import FileDropzone from "@/components/common/FileDropzone";
+import { toFriendlyImageError } from "@/lib/image/errorMessage";
+import FailureSummary from "./FailureSummary";
 import ResultCompare from "@/components/common/ResultCompare";
 import DownloadButton from "@/components/common/DownloadButton";
 import {
@@ -237,10 +239,7 @@ export default function ConvertTool({
                 ? {
                     ...item,
                     status: "error" as const,
-                    error:
-                      error instanceof Error
-                        ? error.message
-                        : "변환에 실패했습니다.",
+                    error: toFriendlyImageError(error, "변환하지 못했습니다. 사진을 다시 올려 시도해 주세요."),
                   }
                 : item
             )
@@ -363,10 +362,10 @@ export default function ConvertTool({
                   )}
 
                   {img.status === "error" && (
-                    <div className="absolute inset-0 bg-red-500/20 flex items-center justify-center" title={img.error || "변환 실패"}>
+                    <div className="absolute inset-0 bg-white/85 flex items-center justify-center">
                       <div className="text-center px-2">
-                        <span className="text-red-500 text-xl block">!</span>
-                        <span className="text-red-600 text-[10px] leading-tight block mt-1">{img.error || "실패"}</span>
+                        <span className="text-red-700 text-xl font-bold block" aria-hidden="true">!</span>
+                        <span className="text-red-700 text-xs font-medium block mt-1">실패</span>
                       </div>
                     </div>
                   )}
@@ -378,7 +377,7 @@ export default function ConvertTool({
                       handleRemoveImage(img.id);
                     }}
                     aria-label={`${img.file.name} 삭제`}
-                    className="absolute top-1 right-1 w-6 h-6 bg-brand-black/70 rounded-full flex items-center justify-center text-brand-paper hover:bg-red-500 transition-colors"
+                    className="absolute top-0.5 right-0.5 w-8 h-8 bg-brand-black/70 rounded-full flex items-center justify-center text-brand-paper hover:bg-red-500 transition-colors"
                   >
                     <svg
                       className="w-3 h-3"
@@ -427,6 +426,8 @@ export default function ConvertTool({
                 </label>
               )}
             </div>
+
+            <FailureSummary items={images} fallback="변환하지 못했습니다. 사진을 다시 올려 시도해 주세요." />
           </div>
 
           {/* HEIC 안내 */}
@@ -643,7 +644,7 @@ export default function ConvertTool({
                   <img
                     src={selectedImage.result.dataUrl}
                     alt={selectedImage.file.name}
-                    className="max-h-[480px] w-auto object-contain"
+                    className="max-h-[480px] max-w-full w-auto object-contain"
                   />
                 </div>
                 <p className="text-sm text-brand-mid text-center">

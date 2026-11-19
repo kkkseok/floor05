@@ -145,7 +145,7 @@ export default function ColorPickerTool() {
         </>
       )}
 
-      {error && <p className="text-sm text-red-600">{error}</p>}
+      {error && <p role="alert" className="text-sm text-red-700">{error}</p>}
 
       <p className="text-xs text-brand-mid leading-relaxed">
         클릭한 지점의 색과 이미지의 대표 색 팔레트를 추출합니다. 색을 누르면 HEX 코드가 복사됩니다.

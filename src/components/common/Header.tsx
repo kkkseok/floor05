@@ -2,6 +2,7 @@
 
 import Link from "next/link";
 import Image from "next/image";
+import { usePathname } from "next/navigation";
 import { useState, useRef, useEffect } from "react";
 import { TOOL_CATEGORIES, getToolsByCategory } from "@/lib/common/tools";
 
@@ -24,6 +25,7 @@ export default function Header() {
   const [isToolsOpen, setIsToolsOpen] = useState(false);
   const dropdownRef = useRef<HTMLDivElement>(null);
   const toolsButtonRef = useRef<HTMLButtonElement>(null);
+  const pathname = usePathname() ?? "";
 
   // 외부 클릭 감지로 드롭다운 닫기
   useEffect(() => {
@@ -68,7 +70,7 @@ export default function Header() {
           <Logo />
 
           {/* 오른쪽: 네비게이션 */}
-          <nav className="flex items-center gap-6">
+          <nav className="flex items-center gap-4" aria-label="주요 메뉴">
             {/* 도구 드롭다운 */}
             <div className="relative" ref={dropdownRef}>
               <button
@@ -95,13 +97,13 @@ export default function Header() {
               {isToolsOpen && (
                 <div
                   id="tool-directory-menu"
-                  className="tool-directory-scroll absolute right-0 z-50 mt-2 max-h-[min(70dvh,32rem)] w-[min(calc(100vw-2rem),44rem)] overflow-y-auto overscroll-contain rounded-lg border border-brand-light/20 bg-brand-white shadow-lg"
+                  className="tool-directory-scroll fixed inset-x-4 top-14 z-50 ml-auto mt-2 max-h-[min(70dvh,32rem)] max-w-[44rem] overflow-y-auto lg:absolute lg:inset-x-auto lg:right-0 lg:top-auto lg:w-[44rem] overscroll-contain rounded-lg border border-brand-light/20 bg-brand-white shadow-lg"
                 >
                   <div className="sticky top-0 z-10 flex items-center justify-between border-b border-brand-light/20 bg-brand-white px-4 py-3 sm:px-5">
                     <p className="font-mono text-[10px] uppercase tracking-widest text-brand-mid">
                       Tool directory
                     </p>
-                    <p className="text-xs text-brand-light">
+                    <p className="text-xs text-brand-subtle">
                       {TOOL_CATEGORIES.length}개의 Room
                     </p>
                   </div>
@@ -115,18 +117,27 @@ export default function Header() {
                           <h3 className="mb-2 font-mono text-[10px] font-medium uppercase tracking-wider text-brand-accent">
                             {category.room} · {category.label}
                           </h3>
-                          <ul className="space-y-1">
-                            {tools.map((tool) => (
-                              <li key={tool.href}>
-                                <Link
-                                  href={tool.href}
-                                  onClick={() => setIsToolsOpen(false)}
-                                  className="-mx-2 block rounded-sm px-2 py-1.5 text-xs leading-5 text-brand-mid transition-colors hover:bg-brand-paper hover:text-brand-black focus-visible:bg-brand-paper focus-visible:text-brand-black"
-                                >
-                                  {tool.name}
-                                </Link>
-                              </li>
-                            ))}
+                          <ul className="sm:space-y-1">
+                            {tools.map((tool) => {
+                              const isCurrent = pathname === tool.href;
+
+                              return (
+                                <li key={tool.href}>
+                                  <Link
+                                    href={tool.href}
+                                    onClick={() => setIsToolsOpen(false)}
+                                    aria-current={isCurrent ? "page" : undefined}
+                                    className={`-mx-2 block rounded-sm px-2 py-3 text-sm leading-5 transition-colors hover:bg-brand-paper hover:text-brand-black focus-visible:bg-brand-paper focus-visible:text-brand-black sm:py-1.5 sm:text-xs ${
+                                      isCurrent
+                                        ? "font-semibold text-brand-accent"
+                                        : "text-brand-mid"
+                                    }`}
+                                  >
+                                    {tool.name}
+                                  </Link>
+                                </li>
+                              );
+                            })}
                           </ul>
                         </section>
                       );
@@ -139,7 +150,10 @@ export default function Header() {
             {/* 블로그 링크 */}
             <Link
               href="/blog"
-              className="font-mono text-xs text-brand-mid hover:text-brand-black transition-colors uppercase tracking-wider"
+              aria-current={pathname.startsWith("/blog") ? "page" : undefined}
+              className={`-mr-2 flex min-h-11 items-center px-2 font-mono text-xs uppercase tracking-wider transition-colors hover:text-brand-black ${
+                pathname.startsWith("/blog") ? "text-brand-black" : "text-brand-mid"
+              }`}
             >
               블로그
             </Link>

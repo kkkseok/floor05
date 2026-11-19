@@ -168,7 +168,7 @@ export default function AboutPage() {
                     <h3 id={`category-${category.id}`} className="text-lg font-semibold text-brand-black">
                       {category.label}
                     </h3>
-                    <span className="text-sm text-brand-light">{categoryTools.length}개 도구</span>
+                    <span className="text-sm text-brand-subtle">{categoryTools.length}개 도구</span>
                   </div>
                   <div className="grid gap-3 sm:grid-cols-2">
                     {categoryTools.map((tool) => (
@@ -205,7 +205,7 @@ export default function AboutPage() {
               <dl className="grid gap-px overflow-hidden rounded-md border border-brand-black/10 bg-brand-black/10 sm:grid-cols-2">
                 {teamFacts.map((fact) => (
                   <div key={fact.label} className="bg-brand-white p-4">
-                    <dt className="font-mono text-xs uppercase tracking-wider text-brand-light">{fact.label}</dt>
+                    <dt className="font-mono text-xs uppercase tracking-wider text-brand-subtle">{fact.label}</dt>
                     <dd className="mt-1 text-sm font-medium text-brand-black">
                       {fact.href ? (
                         <a href={fact.href} className="text-brand-accent hover:underline">

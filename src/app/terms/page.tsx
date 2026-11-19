@@ -19,7 +19,7 @@ export default function TermsPage() {
       <main className="flex-1">
         <article className="max-w-3xl mx-auto px-4 sm:px-6 lg:px-8 py-16">
           <h1 className="text-3xl font-bold text-brand-black mb-2">이용약관</h1>
-          <p className="text-sm text-brand-light mb-12">시행·최종 수정일: 2026년 10월 15일</p>
+          <p className="text-sm text-brand-subtle mb-12">시행·최종 수정일: 2026년 10월 15일</p>
 
           <div className="prose prose-lg max-w-none space-y-10 text-brand-mid">
             <section>

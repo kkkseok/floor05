@@ -165,7 +165,7 @@ export default function SeveranceTool() {
           {/* 핵심: 퇴직금 */}
           <div className="bg-brand-black rounded-xl p-6 text-center">
             <p className="text-sm text-brand-light mb-1">예상 퇴직금 (세전)</p>
-            <p className="font-mono text-5xl font-bold text-brand-paper">
+            <p className="font-mono text-5xl max-sm:text-4xl font-bold text-brand-paper">
               {won(result.severancePay)}
               <span className="text-2xl text-brand-light ml-1">원</span>
             </p>

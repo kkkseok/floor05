@@ -43,7 +43,7 @@ export default function BlogExtras({ slug }: { slug: string }) {
               </>
             )}
           </p>
-          <p className="mt-2 text-sm leading-6 text-brand-light">
+          <p className="mt-2 text-sm leading-6 text-brand-subtle">
             직접 측정한 결과와 출처를 밝힐 수 있는 공개 자료만으로 작성합니다. 틀린 내용은 문의 페이지로 알려주세요.
           </p>
         </aside>

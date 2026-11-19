@@ -122,7 +122,7 @@ export default function PdfMergeTool() {
               이 파일을 빼면 나머지는 바로 합칠 수 있어요.
             </p>
           )}
-          {error && <p className="text-sm text-red-600">{error}</p>}
+          {error && <p role="alert" className="text-sm text-red-700">{error}</p>}
 
           <button
             onClick={merge}

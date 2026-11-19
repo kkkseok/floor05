@@ -138,6 +138,10 @@ export default function FileDropzone({
   const handleDragLeave = useCallback((e: React.DragEvent) => {
     e.preventDefault();
     e.stopPropagation();
+    // 드롭존 안의 아이콘·문구 위를 지날 때도 dragleave가 발생한다.
+    // 영역을 실제로 벗어난 경우에만 강조를 풀어 깜빡임을 막는다.
+    const next = e.relatedTarget;
+    if (next instanceof Node && e.currentTarget.contains(next)) return;
     setIsDragging(false);
   }, []);
 
@@ -188,7 +192,7 @@ export default function FileDropzone({
           text-center
           cursor-pointer
           transition-all duration-200
-          focus:outline-none focus:ring-2 focus:ring-brand-accent focus:ring-offset-2
+          focus:outline-none focus-visible:ring-2 focus-visible:ring-brand-accent focus-visible:ring-offset-2
           ${disabled
             ? "bg-brand-paper/50 border-brand-light/30 cursor-not-allowed"
             : isDragging
@@ -239,8 +243,8 @@ export default function FileDropzone({
 
       {/* 에러 메시지 */}
       {error && (
-        <div className="mt-3 p-3 bg-red-50 border border-red-200 rounded-lg">
-          <p className="text-sm text-red-600">{error}</p>
+        <div role="alert" className="mt-3 p-3 bg-red-50 border border-red-200 rounded-lg">
+          <p className="text-sm text-red-700">{error}</p>
         </div>
       )}
     </div>

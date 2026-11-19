@@ -140,6 +140,7 @@ export default function GridTool() {
               <button
                 key={p.key}
                 onClick={() => setPresetKey(p.key)}
+                aria-pressed={presetKey === p.key}
                 className={`rounded-lg px-3 py-2 text-sm font-medium transition-all ${
                   presetKey === p.key ? "bg-brand-accent text-white" : "bg-brand-paper text-brand-mid hover:text-brand-black"
                 }`}
@@ -157,7 +158,7 @@ export default function GridTool() {
             <p className="text-center text-xs text-brand-mid">정사각형으로 중앙을 잘라 {preset.rows * preset.cols}칸으로 나눕니다.</p>
           )}
 
-          {error && <p className="text-sm text-red-600">{error}</p>}
+          {error && <p role="alert" className="text-sm text-red-700">{error}</p>}
 
           <button
             onClick={generate}
@@ -165,6 +166,18 @@ export default function GridTool() {
             className="w-full rounded-xl bg-brand-accent py-4 text-lg font-medium text-white transition-colors hover:bg-brand-accent-light disabled:opacity-50"
           >
             {busy ? "분할 중…" : `${preset.rows * preset.cols}칸으로 분할 (ZIP)`}
+          </button>
+
+          <button
+            onClick={() => {
+              bitmapRef.current = null;
+              setError(null);
+              setLoaded(false);
+            }}
+            disabled={busy}
+            className="mx-auto block min-h-11 px-3 text-sm text-brand-mid underline underline-offset-4 transition-colors hover:text-brand-black disabled:opacity-50"
+          >
+            다른 이미지 선택
           </button>
         </>
       )}

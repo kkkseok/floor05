@@ -132,11 +132,11 @@ export default function SalaryTool() {
       {/* 핵심 결과: 월 실수령액 */}
       <div className="bg-brand-black rounded-xl p-6 text-center">
         <p className="text-sm text-brand-light mb-1">월 예상 실수령액</p>
-        <p className="font-mono text-5xl font-bold text-brand-paper">
+        <p className="font-mono text-5xl max-sm:text-4xl font-bold text-brand-paper">
           {won(result.monthlyNet)}
           <span className="text-2xl text-brand-light ml-1">원</span>
         </p>
-        <div className="mt-4 flex justify-center gap-6 text-sm">
+        <div className="mt-4 flex flex-wrap justify-center gap-x-6 gap-y-1 text-sm">
           <span className="text-brand-light">
             연 실수령 <span className="text-brand-paper font-mono">{won(result.annualNet)}</span>원
           </span>

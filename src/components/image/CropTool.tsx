@@ -2,6 +2,7 @@
 
 import { useState, useCallback, useMemo, useRef, useEffect } from "react";
 import FileDropzone from "@/components/common/FileDropzone";
+import { toFriendlyImageError } from "@/lib/image/errorMessage";
 import DownloadButton from "@/components/common/DownloadButton";
 import {
   formatFileSize,
@@ -413,7 +414,7 @@ export default function CropTool() {
       setResult(cropResult);
       trackToolUse("crop", { circle });
     } catch (err) {
-      const message = err instanceof Error ? err.message : "이미지 크롭에 실패했습니다. 다시 시도해주세요.";
+      const message = toFriendlyImageError(err, "이미지를 자르지 못했습니다. 다시 시도해 주세요.");
       setError(message);
     } finally {
       setIsProcessing(false);
@@ -450,7 +451,7 @@ export default function CropTool() {
           />
           {error && (
             <div className="mt-3 p-3 bg-red-50 border border-red-200 rounded-lg">
-              <p className="text-sm text-red-600">{error}</p>
+              <p role="alert" className="text-sm text-red-700">{error}</p>
             </div>
           )}
         </>
@@ -798,7 +799,7 @@ export default function CropTool() {
             {/* 에러 메시지 */}
             {error && (
               <div className="p-4 bg-red-50 border border-red-200 rounded-lg">
-                <p className="text-sm text-red-600">{error}</p>
+                <p role="alert" className="text-sm text-red-700">{error}</p>
               </div>
             )}
           </div>
@@ -814,7 +815,7 @@ export default function CropTool() {
                 <img
                   src={result.dataUrl}
                   alt="크롭 결과"
-                  className="max-h-[480px] w-auto object-contain"
+                  className="max-h-[480px] max-w-full w-auto object-contain"
                 />
               </div>
             </div>

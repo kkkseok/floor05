@@ -92,7 +92,7 @@ export default function RotateTool() {
       ) : (
         <>
           <div className="rounded-xl bg-brand-paper p-3">
-            <canvas ref={canvasRef} className="mx-auto max-h-[60vh] w-auto max-w-full rounded" />
+            <canvas ref={canvasRef} className="mx-auto block max-h-[60vh] w-auto max-w-full rounded" />
           </div>
 
           <div className="grid grid-cols-2 sm:grid-cols-4 gap-2">
@@ -116,10 +116,17 @@ export default function RotateTool() {
               다운로드
             </button>
           </div>
+
+          <button
+            onClick={() => setBitmap(null)}
+            className="mx-auto block min-h-11 px-3 text-sm text-brand-mid underline underline-offset-4 transition-colors hover:text-brand-black"
+          >
+            다른 이미지 선택
+          </button>
         </>
       )}
 
-      {error && <p className="text-sm text-red-600">{error}</p>}
+      {error && <p role="alert" className="text-sm text-red-700">{error}</p>}
 
       <p className="text-xs text-brand-mid leading-relaxed">
         세로로 찍힌 사진의 방향을 바로잡거나 좌우·상하로 뒤집습니다. 돌리고 뒤집는 일은 이 브라우저가 직접 하므로 사진을 어디에도 올리지 않습니다.
@@ -132,6 +139,7 @@ function Btn({ active, onClick, children }: { active?: boolean; onClick: () => v
   return (
     <button
       onClick={onClick}
+      aria-pressed={active}
       className={`rounded-xl py-3 text-sm font-medium transition-all ${
         active ? "bg-brand-accent text-white" : "bg-brand-paper text-brand-black hover:bg-brand-light/40"
       }`}

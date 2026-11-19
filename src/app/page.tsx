@@ -131,7 +131,7 @@ export default function Home() {
             <p className="text-brand-light text-lg sm:text-xl max-w-md mx-auto leading-relaxed">
               존재하지 않는 0.5층에서 만듭니다.
             </p>
-            <p className="font-mono text-xs text-brand-mid mt-4 tracking-widest uppercase">
+            <p className="font-mono text-xs text-brand-light/70 mt-4 tracking-widest uppercase">
               The floor that doesn&apos;t exist
             </p>
           </div>
