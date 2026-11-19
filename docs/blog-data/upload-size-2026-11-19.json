@@ -1,0 +1,463 @@
+{
+ "measuredAt": "2026-11-19",
+ "browser": "Playwright Chromium 151.0.7922.34 (headless shell)",
+ "pillow": "12.1.1",
+ "sources": {
+  "tortoise": "NASA KSC-20210121-PH-JBS01_0079 (public domain)",
+  "flower": "NASA KSC-20230613-PH-FMX01-0075 (public domain)"
+ },
+ "method": {
+  "resize": "floor05 리사이즈와 같은 경로: createImageBitmap(file,{imageOrientation:'from-image'}) → 흰 배경 → src/lib/image/downscale.ts drawImageDownscaled → OffscreenCanvas.convertToBlob('image/jpeg',0.92). 긴 변(가로)만 지정, 비율 유지",
+  "restore": "줄인 JPG를 원본 크기로 다시 키워 원본과 비교. restoredPsnrBrowserHigh = Chromium drawImage(imageSmoothingQuality=high), 기준은 같은 브라우저가 디코딩한 원본. restoredPsnrPillow = Pillow resize(LANCZOS/BICUBIC), 기준은 Pillow가 디코딩한 원본",
+  "psnr": "RGB 3채널 전체 픽셀 MSE, 10*log10(255^2/MSE). long=0은 크기 그대로 JPG 0.92 재저장만 한 대조군",
+  "region": "regionPsnrBrowserHigh는 photos.<name>.region [x,y,w,h](원본 픽셀, 피사체 영역)만 잰 값",
+  "meta": "metaSegments = 이미지 데이터와 부호화 표(DQT·DHT·SOF·DRI)를 뺀 JPEG 세그먼트. exif = Pillow getexif(IFD0 + Exif IFD)",
+  "units": "bytes 그대로. 글에서는 1KB=1,000B, 1MB=1,000,000B",
+  "notMeasured": "AI 업스케일러, 플랫폼 재압축, 역이미지 검색, Firefox·WebKit",
+  "scripts": [
+   "scripts/blog-measure/upload-size-restore.mjs",
+   "scripts/blog-measure/upload-size-restore.py",
+   "scripts/blog-measure/upload-size-tool-check.mjs",
+   "scripts/blog-measure/upload-size-crops.mjs"
+  ]
+ },
+ "photos": {
+  "tortoise": {
+   "sourceBytes": 15781842,
+   "width": 5522,
+   "height": 4312,
+   "region": [
+    900,
+    2600,
+    2400,
+    1500
+   ],
+   "sourceMeta": {
+    "metaSegments": [
+     {
+      "marker": "APP1(Exif)",
+      "bytes": 17646
+     },
+     {
+      "marker": "APP1(XMP)",
+      "bytes": 11363
+     },
+     {
+      "marker": "APP13(IPTC)",
+      "bytes": 16870
+     },
+     {
+      "marker": "APP2(ICC)",
+      "bytes": 3162
+     },
+     {
+      "marker": "APP14(Adobe)",
+      "bytes": 16
+     }
+    ],
+    "exif": {
+     "tagCount": 45,
+     "Artist": "NASA/Ben Smegelsky",
+     "Copyright": "For copyright and restrictions, refer to http://www.nasa.gov/multimedia/guidelines/index.html"
+    }
+   },
+   "rows": [
+    {
+     "long": 0,
+     "width": 5522,
+     "height": 4312,
+     "bytes": 6512958,
+     "restoredPsnrBrowserHigh": 40.57,
+     "regionPsnrBrowserHigh": 39.82,
+     "restoredPsnrPillow": {
+      "none": 40.57
+     },
+     "metaSegments": [
+      {
+       "marker": "APP0(JFIF)",
+       "bytes": 18
+      },
+      {
+       "marker": "APP2(ICC)",
+       "bytes": 474
+      }
+     ],
+     "exif": {
+      "tagCount": 0,
+      "Artist": null,
+      "Copyright": null
+     }
+    },
+    {
+     "long": 2560,
+     "width": 2560,
+     "height": 1999,
+     "bytes": 1355312,
+     "restoredPsnrBrowserHigh": 32.9,
+     "regionPsnrBrowserHigh": 31.6,
+     "restoredPsnrPillow": {
+      "lanczos": 33.83,
+      "bicubic": 33.49
+     },
+     "metaSegments": [
+      {
+       "marker": "APP0(JFIF)",
+       "bytes": 18
+      },
+      {
+       "marker": "APP2(ICC)",
+       "bytes": 474
+      }
+     ],
+     "exif": {
+      "tagCount": 0,
+      "Artist": null,
+      "Copyright": null
+     }
+    },
+    {
+     "long": 1920,
+     "width": 1920,
+     "height": 1499,
+     "bytes": 802657,
+     "restoredPsnrBrowserHigh": 30.96,
+     "regionPsnrBrowserHigh": 29.51,
+     "restoredPsnrPillow": {
+      "lanczos": 31.91,
+      "bicubic": 31.55
+     },
+     "metaSegments": [
+      {
+       "marker": "APP0(JFIF)",
+       "bytes": 18
+      },
+      {
+       "marker": "APP2(ICC)",
+       "bytes": 474
+      }
+     ],
+     "exif": {
+      "tagCount": 0,
+      "Artist": null,
+      "Copyright": null
+     }
+    },
+    {
+     "long": 1280,
+     "width": 1280,
+     "height": 1000,
+     "bytes": 364389,
+     "restoredPsnrBrowserHigh": 28.02,
+     "regionPsnrBrowserHigh": 26.55,
+     "restoredPsnrPillow": {
+      "lanczos": 28.8,
+      "bicubic": 28.52
+     },
+     "metaSegments": [
+      {
+       "marker": "APP0(JFIF)",
+       "bytes": 18
+      },
+      {
+       "marker": "APP2(ICC)",
+       "bytes": 474
+      }
+     ],
+     "exif": {
+      "tagCount": 0,
+      "Artist": null,
+      "Copyright": null
+     }
+    },
+    {
+     "long": 800,
+     "width": 800,
+     "height": 625,
+     "bytes": 153300,
+     "restoredPsnrBrowserHigh": 25.46,
+     "regionPsnrBrowserHigh": 24.08,
+     "restoredPsnrPillow": {
+      "lanczos": 26.03,
+      "bicubic": 25.85
+     },
+     "metaSegments": [
+      {
+       "marker": "APP0(JFIF)",
+       "bytes": 18
+      },
+      {
+       "marker": "APP2(ICC)",
+       "bytes": 474
+      }
+     ],
+     "exif": {
+      "tagCount": 0,
+      "Artist": null,
+      "Copyright": null
+     }
+    }
+   ]
+  },
+  "flower": {
+   "sourceBytes": 9177109,
+   "width": 8192,
+   "height": 5464,
+   "region": [
+    2460,
+    1020,
+    3480,
+    3080
+   ],
+   "sourceMeta": {
+    "metaSegments": [
+     {
+      "marker": "APP1(Exif)",
+      "bytes": 39662
+     },
+     {
+      "marker": "APP1(XMP)",
+      "bytes": 5413
+     },
+     {
+      "marker": "APP13(IPTC)",
+      "bytes": 872
+     },
+     {
+      "marker": "APP2",
+      "bytes": 512
+     }
+    ],
+    "exif": {
+     "tagCount": 54,
+     "Artist": "NASA/Frank Michaux",
+     "Copyright": "For copyright and restrictions, refer to http://www.nasa.gov/multimedia/guidelines/index.html"
+    }
+   },
+   "rows": [
+    {
+     "long": 0,
+     "width": 8192,
+     "height": 5464,
+     "bytes": 3080998,
+     "restoredPsnrBrowserHigh": 47.06,
+     "regionPsnrBrowserHigh": 46.73,
+     "restoredPsnrPillow": {
+      "none": 47.06
+     },
+     "metaSegments": [
+      {
+       "marker": "APP0(JFIF)",
+       "bytes": 18
+      },
+      {
+       "marker": "APP2(ICC)",
+       "bytes": 474
+      }
+     ],
+     "exif": {
+      "tagCount": 0,
+      "Artist": null,
+      "Copyright": null
+     }
+    },
+    {
+     "long": 2560,
+     "width": 2560,
+     "height": 1708,
+     "bytes": 240454,
+     "restoredPsnrBrowserHigh": 43.83,
+     "regionPsnrBrowserHigh": 41.26,
+     "restoredPsnrPillow": {
+      "lanczos": 43.83,
+      "bicubic": 43.84
+     },
+     "metaSegments": [
+      {
+       "marker": "APP0(JFIF)",
+       "bytes": 18
+      },
+      {
+       "marker": "APP2(ICC)",
+       "bytes": 474
+      }
+     ],
+     "exif": {
+      "tagCount": 0,
+      "Artist": null,
+      "Copyright": null
+     }
+    },
+    {
+     "long": 1920,
+     "width": 1920,
+     "height": 1281,
+     "bytes": 144717,
+     "restoredPsnrBrowserHigh": 42.79,
+     "regionPsnrBrowserHigh": 39.52,
+     "restoredPsnrPillow": {
+      "lanczos": 42.86,
+      "bicubic": 42.85
+     },
+     "metaSegments": [
+      {
+       "marker": "APP0(JFIF)",
+       "bytes": 18
+      },
+      {
+       "marker": "APP2(ICC)",
+       "bytes": 474
+      }
+     ],
+     "exif": {
+      "tagCount": 0,
+      "Artist": null,
+      "Copyright": null
+     }
+    },
+    {
+     "long": 1280,
+     "width": 1280,
+     "height": 854,
+     "bytes": 75491,
+     "restoredPsnrBrowserHigh": 41.08,
+     "regionPsnrBrowserHigh": 36.89,
+     "restoredPsnrPillow": {
+      "lanczos": 41.3,
+      "bicubic": 41.25
+     },
+     "metaSegments": [
+      {
+       "marker": "APP0(JFIF)",
+       "bytes": 18
+      },
+      {
+       "marker": "APP2(ICC)",
+       "bytes": 474
+      }
+     ],
+     "exif": {
+      "tagCount": 0,
+      "Artist": null,
+      "Copyright": null
+     }
+    },
+    {
+     "long": 800,
+     "width": 800,
+     "height": 534,
+     "bytes": 37296,
+     "restoredPsnrBrowserHigh": 38.53,
+     "regionPsnrBrowserHigh": 33.58,
+     "restoredPsnrPillow": {
+      "lanczos": 38.97,
+      "bicubic": 38.83
+     },
+     "metaSegments": [
+      {
+       "marker": "APP0(JFIF)",
+       "bytes": 18
+      },
+      {
+       "marker": "APP2(ICC)",
+       "bytes": 474
+      }
+     ],
+     "exif": {
+      "tagCount": 0,
+      "Artist": null,
+      "Copyright": null
+     }
+    }
+   ]
+  }
+ },
+ "toolByteCheck": {
+  "note": "로컬 빌드(next start)의 /tools/image/resize에서 직접 입력 너비만 넣어 받은 파일과 스크립트 출력을 바이트 비교",
+  "result": {
+   "tortoise": {
+    "browser": "151.0.7922.34",
+    "rows": [
+     {
+      "long": 2560,
+      "toolBytes": 1355312,
+      "scriptBytes": 1355312,
+      "identical": true,
+      "downloadName": "tortoise_resized.jpg"
+     },
+     {
+      "long": 1920,
+      "toolBytes": 802657,
+      "scriptBytes": 802657,
+      "identical": true,
+      "downloadName": "tortoise_resized.jpg"
+     },
+     {
+      "long": 1280,
+      "toolBytes": 364389,
+      "scriptBytes": 364389,
+      "identical": true,
+      "downloadName": "tortoise_resized.jpg"
+     },
+     {
+      "long": 800,
+      "toolBytes": 153300,
+      "scriptBytes": 153300,
+      "identical": true,
+      "downloadName": "tortoise_resized.jpg"
+     }
+    ]
+   },
+   "flower": {
+    "browser": "151.0.7922.34",
+    "rows": [
+     {
+      "long": 2560,
+      "toolBytes": 240454,
+      "scriptBytes": 240454,
+      "identical": true,
+      "downloadName": "flower_resized.jpg"
+     },
+     {
+      "long": 1920,
+      "toolBytes": 144717,
+      "scriptBytes": 144717,
+      "identical": true,
+      "downloadName": "flower_resized.jpg"
+     },
+     {
+      "long": 1280,
+      "toolBytes": 75491,
+      "scriptBytes": 75491,
+      "identical": true,
+      "downloadName": "flower_resized.jpg"
+     },
+     {
+      "long": 800,
+      "toolBytes": 37296,
+      "scriptBytes": 37296,
+      "identical": true,
+      "downloadName": "flower_resized.jpg"
+     }
+    ]
+   }
+  }
+ },
+ "figure": {
+  "file": "public/images/blog/prevent-photo-theft/restore-crops.png",
+  "source": "tortoise",
+  "box": [
+   1150,
+   2790,
+   200,
+   200
+  ],
+  "zoom": 2,
+  "tiles": [
+   "원본",
+   "1920",
+   "1280",
+   "800"
+  ],
+  "upscale": "Chromium drawImage high"
+ }
+}
