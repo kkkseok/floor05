@@ -170,7 +170,7 @@ export default function ResizePage() {
       faqs={faqs}
       workflowCTA={workflowCTA}
       currentToolHref="/tools/image/resize"
-      relatedPostSlugs={["instagram-image-size", "sns-image-size", "youtube-thumbnail-size"]}
+      relatedPostSlugs={["sns-image-size", "youtube-thumbnail-size", "image-crop-guide"]}
       schemas={schemas}
     >
       <ResizeTool />

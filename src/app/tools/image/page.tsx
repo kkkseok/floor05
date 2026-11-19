@@ -53,7 +53,7 @@ export default function ImageToolsPage() {
     "heic-to-jpg-guide",
     "sns-image-size",
     "browser-image-tools-privacy",
-    "photo-editing-without-photoshop",
+    "image-crop-guide",
   ]);
 
   const schemas = [

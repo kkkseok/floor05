@@ -29,9 +29,9 @@ export const metadata: Metadata = {
 
 const faqs = [
   {
-    question: "파일이 서버로 전송되나요?",
+    question: "압축했는데 '원본 화질'이라고 뜨고 용량이 거의 그대로입니다. 왜 그런가요?",
     answer:
-      "아니요. 압축 연산은 전부 지금 쓰고 있는 브라우저가 합니다. 원본을 올리고 결과를 내려받는 왕복이 없어 처리가 빠르고, 사진은 처음부터 끝까지 내 기기에만 있습니다.",
+      "이미 충분히 압축된 사진은 다시 압축하면 오히려 커집니다. 그럴 때는 다시 인코딩한 결과를 버리고, 원본에서 위치(GPS)·촬영 정보만 지운 파일을 내줍니다. 목표 용량 모드에서 이미 목표보다 작은 사진도 같은 방식으로 처리합니다. 화질은 원본과 같고 용량은 지워진 정보만큼만 줄어듭니다.",
   },
   {
     question: "한 번에 몇 장까지 압축할 수 있나요?",
@@ -177,7 +177,7 @@ export default function CompressPage() {
       faqs={faqs}
       workflowCTA={workflowCTA}
       currentToolHref="/tools/image/compress"
-      relatedPostSlugs={["image-compression-guide", "passport-photo-size", "image-quality-vs-size"]}
+      relatedPostSlugs={["image-compression-guide", "passport-photo-size", "png-vs-jpg"]}
       schemas={schemas}
     >
       <CompressTool />

@@ -87,9 +87,9 @@ const faqs = [
       "사진 파일에 방향 태그(EXIF)만 기록돼 있고 픽셀은 돌아간 채 저장된 경우입니다. 태그를 무시하는 프로그램에서는 누워 보입니다. 이 도구로 회전해 저장하면 픽셀 자체가 바로 세워져 어디서 열어도 똑바로 보입니다.",
   },
   {
-    question: "돌린 사진이 서버로 전송되나요?",
+    question: "사진을 돌린 뒤 '좌우 반전'을 누르면 어느 쪽 기준으로 뒤집히나요?",
     answer:
-      "아니요. 회전·반전은 픽셀 위치만 바꾸는 가벼운 연산이라 여러분의 브라우저 안에서 바로 끝납니다. 사진이 floor05 서버로 올라갈 일 자체가 없습니다.",
+      "지금 화면에 보이는 모습이 기준입니다. 90° 돌려 세운 사진에서 좌우 반전을 누르면 보이는 그대로 왼쪽과 오른쪽이 바뀝니다. 회전과 반전을 어떤 순서로 누르든 미리보기에 보이는 모습이 그대로 저장되고, 헷갈리면 '초기화'로 처음 방향으로 돌아갈 수 있습니다.",
   },
 ];
 
@@ -144,7 +144,7 @@ export default function RotatePage() {
       faqs={faqs}
       workflowCTA={workflowCTA}
       currentToolHref="/tools/image/rotate"
-      relatedPostSlugs={["image-rotate-quality", "photo-editing-without-photoshop", "image-crop-guide"]}
+      relatedPostSlugs={["image-rotate-quality", "image-crop-guide"]}
       schemas={schemas}
     >
       <RotateTool />

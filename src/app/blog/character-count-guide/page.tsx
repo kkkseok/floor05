@@ -8,7 +8,7 @@ import { buildBlogMetadata } from "@/lib/common/blog";
 
 export const metadata: Metadata = {
   ...buildBlogMetadata("character-count-guide"),
-  title: "글자수 세기 - 같은 글이 사이트마다 다르게 세지는 이유, 11가지 입력 실측",
+  title: "글자수가 사이트마다 다르게 나오는 이유 - 11가지 입력 실측",
 };
 
 const faqs = [
