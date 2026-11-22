@@ -451,7 +451,7 @@ export const POSTS: BlogPost[] = [
       "PNG WebP 변환",
     ],
     datePublished: "2026-03-10",
-    dateModified: "2026-12-01",
+    dateModified: "2026-12-11",
     readTime: "7분",
     related: ["avif-guide", "png-vs-jpg", "transparent-background"],
   },

@@ -386,9 +386,11 @@ export default function WebPGuidePage() {
               열어 보니 둘 다 1080×16383이었습니다. 20,000px 이미지는 아래 3,617px가 사라진 것입니다.
             </p>
             <p className="text-brand-mid leading-relaxed mb-4">
-              floor05 변환 도구 화면에서 같은 파일로 다시 해 봐도 결과는 같았고, 이번 측정 시점의 도구는 잘렸다는
+              floor05 변환 도구 화면에서 같은 파일로 다시 해 봐도 결과는 같았고, 측정 당시의 도구는 잘렸다는
               안내를 하지 않았습니다. 같은 이미지를 JPG와 PNG로 저장하면 1080×20000 그대로였습니다. WebKit과
-              Firefox는 16,384px부터 WebP 저장 자체가 되지 않았습니다.
+              Firefox는 16,384px부터 WebP 저장 자체가 되지 않았습니다. 이 글을 쓰면서 도구를 고쳤습니다. 지금은
+              한 변이 16,383px를 넘는 이미지를 WebP로 저장하려 하면 잘린 파일을 내보내는 대신, JPG나 PNG로
+              저장하거나 크기를 먼저 줄이라는 안내를 띄웁니다.
             </p>
             <p className="text-brand-mid leading-relaxed mb-6">
               긴 대화나 웹페이지 전체를 이어 붙인 캡처는 이 길이를 넘기 쉽습니다. 그런 이미지는 JPG나 PNG로
