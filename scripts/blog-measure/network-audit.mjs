@@ -22,10 +22,12 @@
  *    로컬 서버가 실제로 받은 바이트와 같은지 비교한다.
  *  - 파일 흔적 = 파일에서 뽑은 30바이트 조각 16개(원본 바이트·base64), 파일 이름, JPEG COM 세그먼트에 심은
  *    표식 문자열이 요청 본문이나 주소에 있는지.
- *  - --block-third-party: 광고·분석 호스트 요청은 기록만 하고 중단한다(로컬에서 운영 광고 ID로 요청을 보내지 않으려고).
+ *  - --block-third-party: 광고·분석 호스트는 DNS 규칙(--host-resolver-rules)으로 연결되지 않게 한다. 요청 시도는 기록에 남는다
+ *    (로컬에서 운영 광고 ID로 요청을 보내지 않으려고). Playwright route 가로채기는 쓰지 않는다. 켜면 본문 크기 보고가 달라져
+ *    대조 실험의 XHR·FormData 업로드를 놓쳤다.
  *  - --emulate-analytics: Vercel 통계 스크립트는 navigator.webdriver 가 참이거나 UA에 Headless 가 있으면 아무것도
  *    보내지 않는다. 일반 방문자의 브라우저가 보내는 내용을 보려고 자동화 표시를 끄고(AutomationControlled),
- *    스크립트는 받아 둔 파일로, 전송(/_vercel/insights/view·event)은 가짜 200 응답으로 받는다. 운영 통계에는 아무것도 가지 않는다.
+ *    로컬 중계 서버(기준 포트+1)가 스크립트는 받아 둔 파일로, 전송(/_vercel/insights/view·event)은 200 응답으로 받고 나머지는 next start 로 넘긴다. 운영 통계에는 아무것도 가지 않는다.
  *  - 테스트 파일은 전부 이 스크립트가 캔버스로 만든다(저작권 문제 없음).
  */
 import fs from "node:fs";
@@ -39,7 +41,7 @@ const opt = (name, def) => {
   return i >= 0 ? args[i + 1] : def;
 };
 const flag = (name) => args.includes(`--${name}`);
-const BASE = opt("base");
+let BASE = opt("base");
 const LABEL = opt("label", "run");
 const WORK = opt("work");
 const OUT = opt("out");
@@ -52,7 +54,7 @@ fs.mkdirSync(WORK, { recursive: true });
 
 const MARKER = "F05AUDIT-MARKER-9c41e7d2b6a80f35";
 const SALARY = "4321";
-const baseHost = new URL(BASE).host;
+let baseHost = new URL(BASE).host;
 
 // ---------- 호스트 분류 ----------
 const AD_HOSTS = [
@@ -101,7 +103,7 @@ function traceIn(body, url, files) {
 }
 
 // ---------- 감시 ----------
-function watch(context, getPhase, files, { block }) {
+function watch(context, getPhase, files) {
   const records = [];
   const byReq = new Map();
   const pending = [];
@@ -156,17 +158,6 @@ function watch(context, getPhase, files, { block }) {
     const r = byReq.get(req);
     if (r) r.failure = req.failure()?.errorText ?? "failed";
   });
-  if (block) {
-    context.route(
-      (url) => ["ads", "other"].includes(classify(url)) || url.host.endsWith("vercel-scripts.com"),
-      (route) => route.abort(),
-    );
-  }
-  if (VA_SCRIPT) {
-    const body = fs.readFileSync(VA_SCRIPT, "utf8");
-    context.route("**/_vercel/insights/script.js", (route) => route.fulfill({ status: 200, contentType: "application/javascript", body }));
-    context.route(/\/_vercel\/insights\/(view|event|session)$/, (route) => route.fulfill({ status: 200, contentType: "text/plain", body: "OK" }));
-  }
   return { records, flush: () => Promise.all(pending), websockets: () => websockets };
 }
 
@@ -257,7 +248,7 @@ async function control(browser, files) {
   await new Promise((r) => srv.listen(3997, "127.0.0.1", r));
   const file = files["f05audit-photo.jpg"];
   const context = await browser.newContext();
-  const w = watch(context, () => "control", () => [file], { block: false });
+  const w = watch(context, () => "control", () => [file]);
   const page = await context.newPage();
   await page.goto("http://127.0.0.1:3997/");
   await page.setInputFiles("#f", file.path);
@@ -360,7 +351,7 @@ async function runTool(browser, tool, files, { offline }) {
   const context = await browser.newContext({ acceptDownloads: true, viewport: { width: 1280, height: 900 }, locale: "ko-KR" });
   let phase = "load";
   const used = tool.inputs.map((n) => files[n]);
-  const w = watch(context, () => phase, () => used, { block: BLOCK });
+  const w = watch(context, () => phase, () => used);
   const page = await context.newPage();
   const result = { tool: tool.id, route: tool.route, offline, inputBytes: used.reduce((s, f) => s + f.bytes, 0), inputs: used.map((f) => ({ name: f.name, bytes: f.bytes })) };
   await page.goto(BASE + tool.route, { waitUntil: "load" });
@@ -396,7 +387,7 @@ async function runTool(browser, tool, files, { offline }) {
 
 async function runPage(browser, route) {
   const context = await browser.newContext({ viewport: { width: 1280, height: 900 }, locale: "ko-KR" });
-  const w = watch(context, () => "load", () => [], { block: BLOCK });
+  const w = watch(context, () => "load", () => []);
   const page = await context.newPage();
   const res = await page.goto(BASE + route, { waitUntil: "load" });
   await page.waitForLoadState("networkidle").catch(() => {});
@@ -410,15 +401,53 @@ async function runPage(browser, route) {
 // ---------- 실행 ----------
 let browser;
 let channel = "chromium";
-const launchArgs = VA_SCRIPT ? ["--disable-blink-features=AutomationControlled"] : [];
+// 요청 가로채기(route)를 켜면 Chromium이 본문 크기를 다르게 보고해 감시가 약해진다(대조 실험에서 확인).
+// 그래서 차단은 DNS 규칙으로, 통계 재현은 로컬 중계 서버로 한다.
+const launchArgs = [];
+if (BLOCK) {
+  const hosts = ["*.googlesyndication.com", "*.doubleclick.net", "*.adtrafficquality.google", "*.google.com", "*.gstatic.com", "*.googletagservices.com", "*.vercel-scripts.com", "*.kakao.com", "*.daumcdn.net"];
+  launchArgs.push(`--host-resolver-rules=${hosts.map((h) => `MAP ${h} ~NOTFOUND`).join(", ")}`);
+}
+const analyticsReceived = [];
+let proxy = null;
+if (VA_SCRIPT) {
+  launchArgs.push("--disable-blink-features=AutomationControlled");
+  const vaBody = fs.readFileSync(VA_SCRIPT);
+  const target = new URL(BASE);
+  proxy = http.createServer((req, res) => {
+    const url = req.url.split("?")[0];
+    if (url === "/_vercel/insights/script.js") {
+      res.writeHead(200, { "content-type": "application/javascript" });
+      return res.end(vaBody);
+    }
+    if (/^\/_vercel\/insights\/(view|event|session)$/.test(url)) {
+      let n = 0;
+      req.on("data", (c) => { n += c.length; });
+      req.on("end", () => { analyticsReceived.push({ path: url, method: req.method, receivedBytes: n }); res.writeHead(200, { "content-type": "text/plain" }); res.end("OK"); });
+      return;
+    }
+    const up = http.request({ host: target.hostname, port: target.port, path: req.url, method: req.method, headers: req.headers }, (r) => {
+      res.writeHead(r.statusCode, r.headers);
+      r.pipe(res);
+    });
+    up.on("error", () => { res.writeHead(502); res.end(); });
+    req.pipe(up);
+  });
+  const port = Number(target.port) + 1;
+  await new Promise((r) => proxy.listen(port, r));
+  BASE = `${target.protocol}//${target.hostname}:${port}`;
+  baseHost = new URL(BASE).host;
+}
 try { browser = await chromium.launch({ channel: "chromium", args: launchArgs }); } catch { channel = "headless-shell"; browser = await chromium.launch({ args: launchArgs }); }
 const probe = await browser.newPage();
 const identity = await probe.evaluate(() => ({ userAgent: navigator.userAgent, webdriver: navigator.webdriver }));
+console.log("identity", JSON.stringify(identity));
 await probe.close();
 const files = await makeFiles(browser);
 const out = {
   label: LABEL,
-  base: BASE,
+  base: opt("base"),
+  measuredBase: BASE,
   measuredAt: new Date().toISOString(),
   browser: { name: "Chromium", version: browser.version(), channel, headless: true, ...identity },
   analyticsEmulated: !!VA_SCRIPT,
@@ -450,5 +479,6 @@ for (const route of ["/", "/contact", "/privacy"]) {
   console.log(LABEL, "page", route, r.status, JSON.stringify(r.summary.byClass));
 }
 await browser.close();
+if (proxy) { proxy.close(); out.analyticsReceivedByLocalStub = analyticsReceived; }
 fs.writeFileSync(OUT, JSON.stringify(out, null, 2));
 console.log("saved", OUT);
