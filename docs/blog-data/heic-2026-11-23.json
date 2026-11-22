@@ -1,0 +1,4826 @@
+{
+ "measuredAt": "2026-11-23",
+ "post": "heic-to-jpg-guide",
+ "machine": "Windows 11 PC, Playwright 1.62.1 기본 브라우저(headless). 시간은 이 PC 기준이며 측정 중 다른 세션의 작업이 함께 돌았을 가능성을 배제하지 못함(이 측정 자체는 빌드와 겹치지 않게 순서대로 실행)",
+ "source": {
+  "note": "아이폰이 찍은 HEIC가 아니다. NASA 공공 도메인 사진 2장을 가운데 4:3으로 잘라 4032x3024로 줄인 뒤 x265(libheif)로 직접 인코딩했다. 기준 이미지는 인코딩 전의 무손실 PNG",
+  "nasa": {
+   "tortoise": "KSC-20210121-PH-JBS01_0079",
+   "flower": "KSC-20230613-PH-FMX01-0075"
+  },
+  "encoder": "x265 HEVC encoder (4.3+1-e9b8812)",
+  "libheif": "1.23.6",
+  "pillow_heif": "1.8.1",
+  "settings": {
+   "qualities": [
+    50,
+    70,
+    90
+   ],
+   "chroma": "4:2:0",
+   "bitDepth": 8,
+   "size": [
+    4032,
+    3024
+   ],
+   "resize": "center crop to 4:3, Lanczos"
+  },
+  "files": {
+   "ref-tortoise.png": {
+    "nasaId": "KSC-20210121-PH-JBS01_0079",
+    "original": [
+     5522,
+     4312
+    ],
+    "crop": [
+     0,
+     85,
+     5522,
+     4142
+    ],
+    "bytes": 19518939,
+    "exifBytesInOriginal": 17642
+   },
+   "tortoise-q50.heic": {
+    "quality": 50,
+    "bytes": 1707890,
+    "range": "full (libheif 기본)"
+   },
+   "tortoise-q70.heic": {
+    "quality": 70,
+    "bytes": 4742008,
+    "range": "full (libheif 기본)"
+   },
+   "tortoise-q90.heic": {
+    "quality": 90,
+    "bytes": 8385266,
+    "range": "full (libheif 기본)"
+   },
+   "tortoise-q70-limited.heic": {
+    "quality": 70,
+    "bytes": 4489494,
+    "range": "limited (full_range_flag=0, matrix 6)"
+   },
+   "tortoise-q70-rot.heic": {
+    "quality": 70,
+    "bytes": 4724408,
+    "storedPixels": [
+     4032,
+     3024
+    ],
+    "decodedByLibheif": [
+     3024,
+     4032
+    ],
+    "note": "EXIF Orientation=6 → pillow-heif가 irot로 기록"
+   },
+   "ref-flower.png": {
+    "nasaId": "KSC-20230613-PH-FMX01-0075",
+    "original": [
+     8192,
+     5464
+    ],
+    "crop": [
+     453,
+     0,
+     7285,
+     5464
+    ],
+    "bytes": 11859350,
+    "exifBytesInOriginal": 39658
+   },
+   "flower-q50.heic": {
+    "quality": 50,
+    "bytes": 184510,
+    "range": "full (libheif 기본)"
+   },
+   "flower-q70.heic": {
+    "quality": 70,
+    "bytes": 2715496,
+    "range": "full (libheif 기본)"
+   },
+   "flower-q90.heic": {
+    "quality": 90,
+    "bytes": 5138566,
+    "range": "full (libheif 기본)"
+   }
+  }
+ },
+ "path": "src/lib/image/convert.ts convertImage 를 esbuild로 묶어 실행: heic2any 0.0.4 → PNG → <img> → Canvas → toBlob('image/jpeg', 품질). 도구 화면 기본 품질 90%",
+ "units": "용량 1MB=1,000,000B. PSNR은 RGB 8비트 3채널 MSE(dB), JPG는 Pillow로 디코딩",
+ "notes": [
+  "heic2any 0.0.4에 들어 있는 libheif.js는 YCbCr→RGB를 제한 범위 BT.601 식(1.164*(Y-16) ...)으로 고정 변환한다(node_modules/heic2any/dist/heic2any.js 21행). 전체 범위로 인코딩된 HEIC는 밝기가 약 1.15배로 늘어나 어두운 곳·밝은 곳이 잘린다.",
+  "tortoise-q70-limited 는 같은 사진을 제한 범위(full_range_flag=0)로 인코딩한 대조군. heic2any 결과가 libheif 결과와 0.5dB 안으로 맞는다.",
+  "꽃 사진의 제한 범위 변형은 nclx 표기와 달리 픽셀이 전체 범위로 인코딩돼(변환식 재현 대조로 확인) 대조군에서 제외했다.",
+  "아이폰이 저장한 HEIC가 전체 범위인지, 같은 현상이 나는지는 측정하지 않았다(저작권이 깨끗한 아이폰 원본 없음).",
+  "변환 시간의 outputs[].ms 에는 첫 호출의 heic2any 준비 시간과 결과 전송 부하가 섞인다. 글에는 repsMs(반복 측정)와 실제 도구 화면 시간(ui)을 쓴다."
+ ],
+ "externalFacts": [
+  {
+   "claim": "iOS 11 이후 HEIF/HEVC 지원. 설정 > 카메라 > 포맷에서 '높은 호환성'을 고르면 새 사진이 JPEG로 저장되고 '고효율성'을 고르면 HEIF로 돌아간다. 문서에 용량 수치는 없고 'JPEG 및 H.264보다 압축률이 높다'고만 적혀 있다",
+   "url": "https://support.apple.com/ko-kr/116944",
+   "checked": "2026-11-23"
+  }
+ ],
+ "figure": {
+  "files": "public/images/blog/heic-to-jpg-guide/levels-{ref,full,limited}.jpg",
+  "note": "거북이 품질 70 파일의 같은 영역(1200x900 → 600x450 축소). full·limited는 도구 결과 JPG 90%",
+  "box": [
+   1650,
+   2100,
+   2850,
+   3000
+  ],
+  "newlyBlackPixelsInBox": 94987,
+  "boxPixels": 1080000,
+  "meanLuma": {
+   "ref": 58.0,
+   "full": 50.5,
+   "limited": 57.8
+  }
+ },
+ "derived": {
+  "sizes": {
+   "flower-q50": {
+    "heicBytes": 184510,
+    "jpg90Bytes": 468228,
+    "jpg90OverHeic": 2.54,
+    "jpg100Bytes": 2495028,
+    "jpg100OverHeic": 13.52,
+    "firefoxJpg90Bytes": 763830,
+    "firefoxOverChromium": 1.63,
+    "webkitSameBytesAsChromium": true
+   },
+   "flower-q70": {
+    "heicBytes": 2715496,
+    "jpg90Bytes": 767310,
+    "jpg90OverHeic": 0.28,
+    "jpg100Bytes": 7581709,
+    "jpg100OverHeic": 2.79,
+    "firefoxJpg90Bytes": 1313522,
+    "firefoxOverChromium": 1.71,
+    "webkitSameBytesAsChromium": true
+   },
+   "flower-q90": {
+    "heicBytes": 5138566,
+    "jpg90Bytes": 760422,
+    "jpg90OverHeic": 0.15,
+    "jpg100Bytes": 8181751,
+    "jpg100OverHeic": 1.59,
+    "firefoxJpg90Bytes": 1306422,
+    "firefoxOverChromium": 1.72,
+    "webkitSameBytesAsChromium": true
+   },
+   "tortoise-q50": {
+    "heicBytes": 1707890,
+    "jpg90Bytes": 3053579,
+    "jpg90OverHeic": 1.79,
+    "jpg100Bytes": 10214903,
+    "jpg100OverHeic": 5.98,
+    "firefoxJpg90Bytes": 3403691,
+    "firefoxOverChromium": 1.11,
+    "webkitSameBytesAsChromium": true
+   },
+   "tortoise-q70": {
+    "heicBytes": 4742008,
+    "jpg90Bytes": 3272521,
+    "jpg90OverHeic": 0.69,
+    "jpg100Bytes": 11359082,
+    "jpg100OverHeic": 2.4,
+    "firefoxJpg90Bytes": 3715593,
+    "firefoxOverChromium": 1.14,
+    "webkitSameBytesAsChromium": true
+   },
+   "tortoise-q70-limited": {
+    "heicBytes": 4489494,
+    "jpg90Bytes": 3002477,
+    "jpg90OverHeic": 0.67,
+    "jpg100Bytes": 10795975,
+    "jpg100OverHeic": 2.4,
+    "firefoxJpg90Bytes": 3409125,
+    "firefoxOverChromium": 1.14,
+    "webkitSameBytesAsChromium": true
+   },
+   "tortoise-q70-rot": {
+    "heicBytes": 4724408,
+    "jpg90Bytes": 3282706,
+    "jpg90OverHeic": 0.69,
+    "jpg100Bytes": 11376050,
+    "jpg100OverHeic": 2.41,
+    "firefoxJpg90Bytes": 3741761,
+    "firefoxOverChromium": 1.14,
+    "webkitSameBytesAsChromium": true
+   },
+   "tortoise-q90": {
+    "heicBytes": 8385266,
+    "jpg90Bytes": 3279257,
+    "jpg90OverHeic": 0.39,
+    "jpg100Bytes": 12629451,
+    "jpg100OverHeic": 1.51,
+    "firefoxJpg90Bytes": 3820297,
+    "firefoxOverChromium": 1.16,
+    "webkitSameBytesAsChromium": true
+   }
+  },
+  "timeMsPerFile": {
+   "Chromium": {
+    "perFile": {
+     "flower-q50": {
+      "min": 4820,
+      "median": 5042,
+      "max": 6919,
+      "n": 3
+     },
+     "flower-q70": {
+      "min": 10096,
+      "median": 10611,
+      "max": 12970,
+      "n": 5
+     },
+     "flower-q90": {
+      "min": 10963,
+      "median": 11216,
+      "max": 11373,
+      "n": 3
+     },
+     "tortoise-q50": {
+      "min": 8652,
+      "median": 11795,
+      "max": 12155,
+      "n": 3
+     },
+     "tortoise-q70-limited": {
+      "min": 10860,
+      "median": 10915,
+      "max": 11154,
+      "n": 3
+     },
+     "tortoise-q70-rot": {
+      "min": 11970,
+      "median": 12805,
+      "max": 14405,
+      "n": 3
+     },
+     "tortoise-q70": {
+      "min": 10155,
+      "median": 11395,
+      "max": 14086,
+      "n": 5
+     },
+     "tortoise-q90": {
+      "min": 12306,
+      "median": 15312,
+      "max": 15458,
+      "n": 3
+     }
+    },
+    "sixFiles": {
+     "min": 4820,
+     "median": 11294.5,
+     "max": 15458,
+     "n": 22
+    },
+    "withoutFlowerQ50": {
+     "min": 8652,
+     "median": 11395,
+     "max": 15458,
+     "n": 19
+    }
+   },
+   "Firefox": {
+    "perFile": {
+     "flower-q50": {
+      "min": 1415,
+      "median": 1551,
+      "max": 1645,
+      "n": 3
+     },
+     "flower-q70": {
+      "min": 2926,
+      "median": 3029,
+      "max": 4543,
+      "n": 5
+     },
+     "flower-q90": {
+      "min": 3509,
+      "median": 3524,
+      "max": 3633,
+      "n": 3
+     },
+     "tortoise-q50": {
+      "min": 3122,
+      "median": 3145,
+      "max": 3332,
+      "n": 3
+     },
+     "tortoise-q70-limited": {
+      "min": 3215,
+      "median": 3263,
+      "max": 3270,
+      "n": 3
+     },
+     "tortoise-q70-rot": {
+      "min": 3510,
+      "median": 3537,
+      "max": 3548,
+      "n": 3
+     },
+     "tortoise-q70": {
+      "min": 3388,
+      "median": 3431,
+      "max": 3593,
+      "n": 5
+     },
+     "tortoise-q90": {
+      "min": 3960,
+      "median": 3975,
+      "max": 3996,
+      "n": 3
+     }
+    },
+    "sixFiles": {
+     "min": 1415,
+     "median": 3393.5,
+     "max": 4543,
+     "n": 22
+    },
+    "withoutFlowerQ50": {
+     "min": 2926,
+     "median": 3431,
+     "max": 4543,
+     "n": 19
+    }
+   },
+   "WebKit": {
+    "perFile": {
+     "flower-q50": {
+      "min": 2802,
+      "median": 4950,
+      "max": 4974,
+      "n": 3
+     },
+     "flower-q70": {
+      "min": 13567,
+      "median": 13720,
+      "max": 14019,
+      "n": 5
+     },
+     "flower-q90": {
+      "min": 14875,
+      "median": 14990,
+      "max": 15923,
+      "n": 3
+     },
+     "tortoise-q50": {
+      "min": 13067,
+      "median": 13144,
+      "max": 14320,
+      "n": 3
+     },
+     "tortoise-q70-limited": {
+      "min": 14595,
+      "median": 14658,
+      "max": 15641,
+      "n": 3
+     },
+     "tortoise-q70-rot": {
+      "min": 15952,
+      "median": 16193,
+      "max": 20172,
+      "n": 3
+     },
+     "tortoise-q70": {
+      "min": 15551,
+      "median": 15666,
+      "max": 15874,
+      "n": 5
+     },
+     "tortoise-q90": {
+      "min": 17453,
+      "median": 17840,
+      "max": 21019,
+      "n": 3
+     }
+    },
+    "sixFiles": {
+     "min": 2802,
+     "median": 14597.5,
+     "max": 21019,
+     "n": 22
+    },
+    "withoutFlowerQ50": {
+     "min": 13067,
+     "median": 14990,
+     "max": 21019,
+     "n": 19
+    }
+   }
+  },
+  "equalPsnr": {
+   "flower-q50": {
+    "heicBytes": 184510,
+    "heicPsnr": 44.96,
+    "nearestJpgQuality": 80,
+    "jpgBytes": 284261,
+    "jpgPsnr": 44.75,
+    "heicOverJpg": 0.65
+   },
+   "flower-q70": {
+    "heicBytes": 2715496,
+    "heicPsnr": 48.0,
+    "nearestJpgQuality": 95,
+    "jpgBytes": 1340034,
+    "jpgPsnr": 46.55,
+    "heicOverJpg": 2.03
+   },
+   "flower-q90": {
+    "heicBytes": 5138566,
+    "heicPsnr": 49.88,
+    "nearestJpgQuality": 100,
+    "jpgBytes": 8055165,
+    "jpgPsnr": 51.73,
+    "heicOverJpg": 0.64
+   },
+   "tortoise-q50": {
+    "heicBytes": 1707890,
+    "heicPsnr": 37.98,
+    "nearestJpgQuality": 85,
+    "jpgBytes": 2284440,
+    "jpgPsnr": 37.81,
+    "heicOverJpg": 0.75
+   },
+   "tortoise-q70": {
+    "heicBytes": 4742008,
+    "heicPsnr": 43.86,
+    "nearestJpgQuality": 95,
+    "jpgBytes": 4596692,
+    "jpgPsnr": 41.58,
+    "heicOverJpg": 1.03
+   },
+   "tortoise-q90": {
+    "heicBytes": 8385266,
+    "heicPsnr": 46.68,
+    "nearestJpgQuality": 100,
+    "jpgBytes": 12566951,
+    "jpgPsnr": 51.64,
+    "heicOverJpg": 0.67
+   }
+  },
+  "levels": {
+   "flower-q50": {
+    "heic2anyVsRef": 29.75,
+    "libheifVsRef": 44.96,
+    "fit": [
+     [
+      1.062,
+      -3.058
+     ],
+     [
+      1.074,
+      -3.662
+     ],
+     [
+      1.085,
+      -9.762
+     ]
+    ],
+    "clipped": {
+     "refBlackPct": 0.0,
+     "decBlackPct": 0.0,
+     "refWhitePct": 1.414,
+     "decWhitePct": 5.01
+    },
+    "jpg90VsRef": 29.75,
+    "jpg90VsDecoded": 48.68,
+    "jpg100VsDecoded": 52.59
+   },
+   "flower-q70": {
+    "heic2anyVsRef": 29.81,
+    "libheifVsRef": 48.0,
+    "fit": [
+     [
+      1.063,
+      -3.303
+     ],
+     [
+      1.075,
+      -3.781
+     ],
+     [
+      1.085,
+      -9.805
+     ]
+    ],
+    "clipped": {
+     "refBlackPct": 0.0,
+     "decBlackPct": 0.0,
+     "refWhitePct": 1.414,
+     "decWhitePct": 5.014
+    },
+    "jpg90VsRef": 29.78,
+    "jpg90VsDecoded": 44.74,
+    "jpg100VsDecoded": 51.22
+   },
+   "flower-q90": {
+    "heic2anyVsRef": 29.84,
+    "libheifVsRef": 49.88,
+    "fit": [
+     [
+      1.064,
+      -3.39
+     ],
+     [
+      1.075,
+      -3.8
+     ],
+     [
+      1.086,
+      -9.867
+     ]
+    ],
+    "clipped": {
+     "refBlackPct": 0.0,
+     "decBlackPct": 0.0,
+     "refWhitePct": 1.414,
+     "decWhitePct": 5.016
+    },
+    "jpg90VsRef": 29.79,
+    "jpg90VsDecoded": 44.54,
+    "jpg100VsDecoded": 51.06
+   },
+   "tortoise-q50": {
+    "heic2anyVsRef": 28.11,
+    "libheifVsRef": 37.98,
+    "fit": [
+     [
+      1.149,
+      -16.299
+     ],
+     [
+      1.152,
+      -16.95
+     ],
+     [
+      1.149,
+      -16.75
+     ]
+    ],
+    "clipped": {
+     "refBlackPct": 0.013,
+     "decBlackPct": 1.889,
+     "refWhitePct": 0.0,
+     "decWhitePct": 0.185
+    },
+    "jpg90VsRef": 28.0,
+    "jpg90VsDecoded": 40.4,
+    "jpg100VsDecoded": 51.48
+   },
+   "tortoise-q70": {
+    "heic2anyVsRef": 28.51,
+    "libheifVsRef": 43.86,
+    "fit": [
+     [
+      1.15,
+      -16.445
+     ],
+     [
+      1.154,
+      -17.164
+     ],
+     [
+      1.15,
+      -16.962
+     ]
+    ],
+    "clipped": {
+     "refBlackPct": 0.013,
+     "decBlackPct": 1.933,
+     "refWhitePct": 0.0,
+     "decWhitePct": 0.202
+    },
+    "jpg90VsRef": 28.25,
+    "jpg90VsDecoded": 38.59,
+    "jpg100VsDecoded": 51.42
+   },
+   "tortoise-q70-limited": {
+    "heic2anyVsRef": 42.79,
+    "libheifVsRef": 43.26,
+    "fit": [
+     [
+      0.994,
+      0.275
+     ],
+     [
+      0.996,
+      0.024
+     ],
+     [
+      0.997,
+      -0.067
+     ]
+    ],
+    "clipped": {
+     "refBlackPct": 0.013,
+     "decBlackPct": 0.013,
+     "refWhitePct": 0.0,
+     "decWhitePct": 0.0
+    },
+    "jpg90VsRef": 38.36,
+    "jpg90VsDecoded": 39.27,
+    "jpg100VsDecoded": 51.35
+   },
+   "tortoise-q70-rot": {
+    "heic2anyVsRef": 28.51,
+    "libheifVsRef": 43.86,
+    "fit": [
+     [
+      1.153,
+      -16.795
+     ],
+     [
+      1.153,
+      -17.097
+     ],
+     [
+      1.146,
+      -16.368
+     ]
+    ],
+    "clipped": {
+     "refBlackPct": 0.013,
+     "decBlackPct": 1.933,
+     "refWhitePct": 0.0,
+     "decWhitePct": 0.202
+    },
+    "jpg90VsRef": 28.26,
+    "jpg90VsDecoded": 38.61,
+    "jpg100VsDecoded": 51.42
+   },
+   "tortoise-q90": {
+    "heic2anyVsRef": 28.58,
+    "libheifVsRef": 46.68,
+    "fit": [
+     [
+      1.15,
+      -16.532
+     ],
+     [
+      1.154,
+      -17.209
+     ],
+     [
+      1.15,
+      -17.018
+     ]
+    ],
+    "clipped": {
+     "refBlackPct": 0.013,
+     "decBlackPct": 1.951,
+     "refWhitePct": 0.0,
+     "decWhitePct": 0.203
+    },
+    "jpg90VsRef": 28.29,
+    "jpg90VsDecoded": 38.32,
+    "jpg100VsDecoded": 51.26
+   }
+  },
+  "decodeShare": {
+   "flower-q50": 0.91,
+   "flower-q70": 1.13,
+   "flower-q90": 0.99,
+   "tortoise-q50": 0.74,
+   "tortoise-q70": 1.25,
+   "tortoise-q90": 0.8
+  },
+  "pixelHashSameAcrossBrowsers": true,
+  "exif": {
+   "tortoiseExifBytesInHeic": 17642,
+   "flowerExifBytesInHeic": 39658,
+   "outputMarkers": {
+    "flower-q50": [
+     "FFE0",
+     "FFE2",
+     "FFDB",
+     "FFDB",
+     "FFC0",
+     "FFC4",
+     "FFC4",
+     "FFC4",
+     "FFC4",
+     "FFDA"
+    ],
+    "flower-q70": [
+     "FFE0",
+     "FFE2",
+     "FFDB",
+     "FFDB",
+     "FFC0",
+     "FFC4",
+     "FFC4",
+     "FFC4",
+     "FFC4",
+     "FFDA"
+    ],
+    "flower-q90": [
+     "FFE0",
+     "FFE2",
+     "FFDB",
+     "FFDB",
+     "FFC0",
+     "FFC4",
+     "FFC4",
+     "FFC4",
+     "FFC4",
+     "FFDA"
+    ],
+    "tortoise-q50": [
+     "FFE0",
+     "FFE2",
+     "FFDB",
+     "FFDB",
+     "FFC0",
+     "FFC4",
+     "FFC4",
+     "FFC4",
+     "FFC4",
+     "FFDA"
+    ],
+    "tortoise-q70": [
+     "FFE0",
+     "FFE2",
+     "FFDB",
+     "FFDB",
+     "FFC0",
+     "FFC4",
+     "FFC4",
+     "FFC4",
+     "FFC4",
+     "FFDA"
+    ],
+    "tortoise-q70-limited": [
+     "FFE0",
+     "FFE2",
+     "FFDB",
+     "FFDB",
+     "FFC0",
+     "FFC4",
+     "FFC4",
+     "FFC4",
+     "FFC4",
+     "FFDA"
+    ],
+    "tortoise-q70-rot": [
+     "FFE0",
+     "FFE2",
+     "FFDB",
+     "FFDB",
+     "FFC0",
+     "FFC4",
+     "FFC4",
+     "FFC4",
+     "FFC4",
+     "FFDA"
+    ],
+    "tortoise-q90": [
+     "FFE0",
+     "FFE2",
+     "FFDB",
+     "FFDB",
+     "FFC0",
+     "FFC4",
+     "FFC4",
+     "FFC4",
+     "FFC4",
+     "FFDA"
+    ]
+   },
+   "anyApp1InOutput": false
+  },
+  "rotation": {
+   "storedPixels": [
+    4032,
+    3024
+   ],
+   "outputSize": [
+    3024,
+    4032
+   ],
+   "psnrVsUprightRef": 28.51,
+   "psnrNonRotated": 28.51
+  },
+  "uiBatchMs": {
+   "1": {
+    "min": 11823,
+    "median": 11978,
+    "max": 12155,
+    "runs": [
+     11978,
+     11823,
+     12155
+    ],
+    "medianPerFile": 11978
+   },
+   "5": {
+    "min": 56157,
+    "median": 58978,
+    "max": 60016,
+    "runs": [
+     60016,
+     56157,
+     58978
+    ],
+    "medianPerFile": 11796
+   },
+   "10": {
+    "min": 105914,
+    "median": 107199,
+    "max": 108803,
+    "runs": [
+     105914,
+     107199,
+     108803
+    ],
+    "medianPerFile": 10720
+   }
+  },
+  "uiBatchAllDone": true,
+  "uiDownloadIdentical": {
+   "tortoise-q70": true,
+   "flower-q70": true
+  }
+ },
+ "browsers": {
+  "Chromium": {
+   "version": "151.0.7922.34",
+   "rows": [
+    {
+     "name": "flower-q50.heic",
+     "type": "",
+     "bytes": 184510,
+     "outputs": [
+      {
+       "quality": 0.9,
+       "bytes": 468228,
+       "ms": 1322,
+       "width": 4032,
+       "height": 3024,
+       "segments": [
+        {
+         "marker": "FFE0",
+         "bytes": 18
+        },
+        {
+         "marker": "FFE2",
+         "bytes": 474
+        },
+        {
+         "marker": "FFDB",
+         "bytes": 69
+        },
+        {
+         "marker": "FFDB",
+         "bytes": 69
+        },
+        {
+         "marker": "FFC0",
+         "bytes": 19
+        },
+        {
+         "marker": "FFC4",
+         "bytes": 31
+        },
+        {
+         "marker": "FFC4",
+         "bytes": 78
+        },
+        {
+         "marker": "FFC4",
+         "bytes": 30
+        },
+        {
+         "marker": "FFC4",
+         "bytes": 58
+        },
+        {
+         "marker": "FFDA",
+         "bytes": 14
+        }
+       ],
+       "jpegSize": [
+        4032,
+        3024
+       ]
+      },
+      {
+       "quality": 0.7,
+       "bytes": 216946,
+       "ms": 1118,
+       "width": 4032,
+       "height": 3024,
+       "segments": [
+        {
+         "marker": "FFE0",
+         "bytes": 18
+        },
+        {
+         "marker": "FFE2",
+         "bytes": 474
+        },
+        {
+         "marker": "FFDB",
+         "bytes": 69
+        },
+        {
+         "marker": "FFDB",
+         "bytes": 69
+        },
+        {
+         "marker": "FFC0",
+         "bytes": 19
+        },
+        {
+         "marker": "FFC4",
+         "bytes": 30
+        },
+        {
+         "marker": "FFC4",
+         "bytes": 66
+        },
+        {
+         "marker": "FFC4",
+         "bytes": 29
+        },
+        {
+         "marker": "FFC4",
+         "bytes": 45
+        },
+        {
+         "marker": "FFDA",
+         "bytes": 14
+        }
+       ],
+       "jpegSize": [
+        4032,
+        3024
+       ]
+      },
+      {
+       "quality": 0.8,
+       "bytes": 284616,
+       "ms": 3237,
+       "width": 4032,
+       "height": 3024,
+       "segments": [
+        {
+         "marker": "FFE0",
+         "bytes": 18
+        },
+        {
+         "marker": "FFE2",
+         "bytes": 474
+        },
+        {
+         "marker": "FFDB",
+         "bytes": 69
+        },
+        {
+         "marker": "FFDB",
+         "bytes": 69
+        },
+        {
+         "marker": "FFC0",
+         "bytes": 19
+        },
+        {
+         "marker": "FFC4",
+         "bytes": 30
+        },
+        {
+         "marker": "FFC4",
+         "bytes": 66
+        },
+        {
+         "marker": "FFC4",
+         "bytes": 29
+        },
+        {
+         "marker": "FFC4",
+         "bytes": 50
+        },
+        {
+         "marker": "FFDA",
+         "bytes": 14
+        }
+       ],
+       "jpegSize": [
+        4032,
+        3024
+       ]
+      },
+      {
+       "quality": 1,
+       "bytes": 2495028,
+       "ms": 8462,
+       "width": 4032,
+       "height": 3024,
+       "segments": [
+        {
+         "marker": "FFE0",
+         "bytes": 18
+        },
+        {
+         "marker": "FFE2",
+         "bytes": 474
+        },
+        {
+         "marker": "FFDB",
+         "bytes": 69
+        },
+        {
+         "marker": "FFDB",
+         "bytes": 69
+        },
+        {
+         "marker": "FFC0",
+         "bytes": 19
+        },
+        {
+         "marker": "FFC4",
+         "bytes": 33
+        },
+        {
+         "marker": "FFC4",
+         "bytes": 90
+        },
+        {
+         "marker": "FFC4",
+         "bytes": 31
+        },
+        {
+         "marker": "FFC4",
+         "bytes": 106
+        },
+        {
+         "marker": "FFDA",
+         "bytes": 14
+        }
+       ],
+       "jpegSize": [
+        4032,
+        3024
+       ]
+      }
+     ],
+     "repsMs": [
+      6919,
+      5042,
+      4820
+     ],
+     "decode": {
+      "ms": 4606,
+      "pngBytes": 4481714,
+      "width": 4032,
+      "height": 3024,
+      "pixelSha256": "b478091012870bc20d7c7f1a399ea82c353a7c1fd1efcceb6139fe20ee273e15"
+     }
+    },
+    {
+     "name": "flower-q70.heic",
+     "type": "",
+     "bytes": 2715496,
+     "outputs": [
+      {
+       "quality": 0.9,
+       "bytes": 767310,
+       "ms": 11265,
+       "width": 4032,
+       "height": 3024,
+       "segments": [
+        {
+         "marker": "FFE0",
+         "bytes": 18
+        },
+        {
+         "marker": "FFE2",
+         "bytes": 474
+        },
+        {
+         "marker": "FFDB",
+         "bytes": 69
+        },
+        {
+         "marker": "FFDB",
+         "bytes": 69
+        },
+        {
+         "marker": "FFC0",
+         "bytes": 19
+        },
+        {
+         "marker": "FFC4",
+         "bytes": 31
+        },
+        {
+         "marker": "FFC4",
+         "bytes": 74
+        },
+        {
+         "marker": "FFC4",
+         "bytes": 30
+        },
+        {
+         "marker": "FFC4",
+         "bytes": 57
+        },
+        {
+         "marker": "FFDA",
+         "bytes": 14
+        }
+       ],
+       "jpegSize": [
+        4032,
+        3024
+       ]
+      },
+      {
+       "quality": 0.7,
+       "bytes": 226022,
+       "ms": 12217,
+       "width": 4032,
+       "height": 3024,
+       "segments": [
+        {
+         "marker": "FFE0",
+         "bytes": 18
+        },
+        {
+         "marker": "FFE2",
+         "bytes": 474
+        },
+        {
+         "marker": "FFDB",
+         "bytes": 69
+        },
+        {
+         "marker": "FFDB",
+         "bytes": 69
+        },
+        {
+         "marker": "FFC0",
+         "bytes": 19
+        },
+        {
+         "marker": "FFC4",
+         "bytes": 30
+        },
+        {
+         "marker": "FFC4",
+         "bytes": 61
+        },
+        {
+         "marker": "FFC4",
+         "bytes": 28
+        },
+        {
+         "marker": "FFC4",
+         "bytes": 46
+        },
+        {
+         "marker": "FFDA",
+         "bytes": 14
+        }
+       ],
+       "jpegSize": [
+        4032,
+        3024
+       ]
+      },
+      {
+       "quality": 0.8,
+       "bytes": 334263,
+       "ms": 12641,
+       "width": 4032,
+       "height": 3024,
+       "segments": [
+        {
+         "marker": "FFE0",
+         "bytes": 18
+        },
+        {
+         "marker": "FFE2",
+         "bytes": 474
+        },
+        {
+         "marker": "FFDB",
+         "bytes": 69
+        },
+        {
+         "marker": "FFDB",
+         "bytes": 69
+        },
+        {
+         "marker": "FFC0",
+         "bytes": 19
+        },
+        {
+         "marker": "FFC4",
+         "bytes": 30
+        },
+        {
+         "marker": "FFC4",
+         "bytes": 67
+        },
+        {
+         "marker": "FFC4",
+         "bytes": 29
+        },
+        {
+         "marker": "FFC4",
+         "bytes": 50
+        },
+        {
+         "marker": "FFDA",
+         "bytes": 14
+        }
+       ],
+       "jpegSize": [
+        4032,
+        3024
+       ]
+      },
+      {
+       "quality": 1,
+       "bytes": 7581709,
+       "ms": 10532,
+       "width": 4032,
+       "height": 3024,
+       "segments": [
+        {
+         "marker": "FFE0",
+         "bytes": 18
+        },
+        {
+         "marker": "FFE2",
+         "bytes": 474
+        },
+        {
+         "marker": "FFDB",
+         "bytes": 69
+        },
+        {
+         "marker": "FFDB",
+         "bytes": 69
+        },
+        {
+         "marker": "FFC0",
+         "bytes": 19
+        },
+        {
+         "marker": "FFC4",
+         "bytes": 33
+        },
+        {
+         "marker": "FFC4",
+         "bytes": 87
+        },
+        {
+         "marker": "FFC4",
+         "bytes": 31
+        },
+        {
+         "marker": "FFC4",
+         "bytes": 98
+        },
+        {
+         "marker": "FFDA",
+         "bytes": 14
+        }
+       ],
+       "jpegSize": [
+        4032,
+        3024
+       ]
+      }
+     ],
+     "repsMs": [
+      10188,
+      12970,
+      11422,
+      10611,
+      10096
+     ],
+     "decode": {
+      "ms": 11992,
+      "pngBytes": 15929877,
+      "width": 4032,
+      "height": 3024,
+      "pixelSha256": "18c7408a5bc748f401e4b7968cf6d89c91971639d4d391251b72b7d1462afe7b"
+     }
+    },
+    {
+     "name": "flower-q90.heic",
+     "type": "",
+     "bytes": 5138566,
+     "outputs": [
+      {
+       "quality": 0.9,
+       "bytes": 760422,
+       "ms": 14412,
+       "width": 4032,
+       "height": 3024,
+       "segments": [
+        {
+         "marker": "FFE0",
+         "bytes": 18
+        },
+        {
+         "marker": "FFE2",
+         "bytes": 474
+        },
+        {
+         "marker": "FFDB",
+         "bytes": 69
+        },
+        {
+         "marker": "FFDB",
+         "bytes": 69
+        },
+        {
+         "marker": "FFC0",
+         "bytes": 19
+        },
+        {
+         "marker": "FFC4",
+         "bytes": 31
+        },
+        {
+         "marker": "FFC4",
+         "bytes": 78
+        },
+        {
+         "marker": "FFC4",
+         "bytes": 30
+        },
+        {
+         "marker": "FFC4",
+         "bytes": 60
+        },
+        {
+         "marker": "FFDA",
+         "bytes": 14
+        }
+       ],
+       "jpegSize": [
+        4032,
+        3024
+       ]
+      },
+      {
+       "quality": 0.7,
+       "bytes": 224626,
+       "ms": 14589,
+       "width": 4032,
+       "height": 3024,
+       "segments": [
+        {
+         "marker": "FFE0",
+         "bytes": 18
+        },
+        {
+         "marker": "FFE2",
+         "bytes": 474
+        },
+        {
+         "marker": "FFDB",
+         "bytes": 69
+        },
+        {
+         "marker": "FFDB",
+         "bytes": 69
+        },
+        {
+         "marker": "FFC0",
+         "bytes": 19
+        },
+        {
+         "marker": "FFC4",
+         "bytes": 30
+        },
+        {
+         "marker": "FFC4",
+         "bytes": 64
+        },
+        {
+         "marker": "FFC4",
+         "bytes": 28
+        },
+        {
+         "marker": "FFC4",
+         "bytes": 46
+        },
+        {
+         "marker": "FFDA",
+         "bytes": 14
+        }
+       ],
+       "jpegSize": [
+        4032,
+        3024
+       ]
+      },
+      {
+       "quality": 0.8,
+       "bytes": 330693,
+       "ms": 13004,
+       "width": 4032,
+       "height": 3024,
+       "segments": [
+        {
+         "marker": "FFE0",
+         "bytes": 18
+        },
+        {
+         "marker": "FFE2",
+         "bytes": 474
+        },
+        {
+         "marker": "FFDB",
+         "bytes": 69
+        },
+        {
+         "marker": "FFDB",
+         "bytes": 69
+        },
+        {
+         "marker": "FFC0",
+         "bytes": 19
+        },
+        {
+         "marker": "FFC4",
+         "bytes": 30
+        },
+        {
+         "marker": "FFC4",
+         "bytes": 69
+        },
+        {
+         "marker": "FFC4",
+         "bytes": 29
+        },
+        {
+         "marker": "FFC4",
+         "bytes": 49
+        },
+        {
+         "marker": "FFDA",
+         "bytes": 14
+        }
+       ],
+       "jpegSize": [
+        4032,
+        3024
+       ]
+      },
+      {
+       "quality": 1,
+       "bytes": 8181751,
+       "ms": 15083,
+       "width": 4032,
+       "height": 3024,
+       "segments": [
+        {
+         "marker": "FFE0",
+         "bytes": 18
+        },
+        {
+         "marker": "FFE2",
+         "bytes": 474
+        },
+        {
+         "marker": "FFDB",
+         "bytes": 69
+        },
+        {
+         "marker": "FFDB",
+         "bytes": 69
+        },
+        {
+         "marker": "FFC0",
+         "bytes": 19
+        },
+        {
+         "marker": "FFC4",
+         "bytes": 33
+        },
+        {
+         "marker": "FFC4",
+         "bytes": 82
+        },
+        {
+         "marker": "FFC4",
+         "bytes": 31
+        },
+        {
+         "marker": "FFC4",
+         "bytes": 96
+        },
+        {
+         "marker": "FFDA",
+         "bytes": 14
+        }
+       ],
+       "jpegSize": [
+        4032,
+        3024
+       ]
+      }
+     ],
+     "repsMs": [
+      11216,
+      10963,
+      11373
+     ],
+     "decode": {
+      "ms": 11153,
+      "pngBytes": 16330770,
+      "width": 4032,
+      "height": 3024,
+      "pixelSha256": "5f8b6d980df4deca51296aab00d777f65afe2f33a285d26d809584823bfa2a64"
+     }
+    },
+    {
+     "name": "tortoise-q50.heic",
+     "type": "",
+     "bytes": 1707890,
+     "outputs": [
+      {
+       "quality": 0.9,
+       "bytes": 3053579,
+       "ms": 11754,
+       "width": 4032,
+       "height": 3024,
+       "segments": [
+        {
+         "marker": "FFE0",
+         "bytes": 18
+        },
+        {
+         "marker": "FFE2",
+         "bytes": 474
+        },
+        {
+         "marker": "FFDB",
+         "bytes": 69
+        },
+        {
+         "marker": "FFDB",
+         "bytes": 69
+        },
+        {
+         "marker": "FFC0",
+         "bytes": 19
+        },
+        {
+         "marker": "FFC4",
+         "bytes": 32
+        },
+        {
+         "marker": "FFC4",
+         "bytes": 95
+        },
+        {
+         "marker": "FFC4",
+         "bytes": 30
+        },
+        {
+         "marker": "FFC4",
+         "bytes": 66
+        },
+        {
+         "marker": "FFDA",
+         "bytes": 14
+        }
+       ],
+       "jpegSize": [
+        4032,
+        3024
+       ]
+      },
+      {
+       "quality": 0.7,
+       "bytes": 1548954,
+       "ms": 9108,
+       "width": 4032,
+       "height": 3024,
+       "segments": [
+        {
+         "marker": "FFE0",
+         "bytes": 18
+        },
+        {
+         "marker": "FFE2",
+         "bytes": 474
+        },
+        {
+         "marker": "FFDB",
+         "bytes": 69
+        },
+        {
+         "marker": "FFDB",
+         "bytes": 69
+        },
+        {
+         "marker": "FFC0",
+         "bytes": 19
+        },
+        {
+         "marker": "FFC4",
+         "bytes": 30
+        },
+        {
+         "marker": "FFC4",
+         "bytes": 78
+        },
+        {
+         "marker": "FFC4",
+         "bytes": 29
+        },
+        {
+         "marker": "FFC4",
+         "bytes": 53
+        },
+        {
+         "marker": "FFDA",
+         "bytes": 14
+        }
+       ],
+       "jpegSize": [
+        4032,
+        3024
+       ]
+      },
+      {
+       "quality": 0.8,
+       "bytes": 1993548,
+       "ms": 11630,
+       "width": 4032,
+       "height": 3024,
+       "segments": [
+        {
+         "marker": "FFE0",
+         "bytes": 18
+        },
+        {
+         "marker": "FFE2",
+         "bytes": 474
+        },
+        {
+         "marker": "FFDB",
+         "bytes": 69
+        },
+        {
+         "marker": "FFDB",
+         "bytes": 69
+        },
+        {
+         "marker": "FFC0",
+         "bytes": 19
+        },
+        {
+         "marker": "FFC4",
+         "bytes": 31
+        },
+        {
+         "marker": "FFC4",
+         "bytes": 84
+        },
+        {
+         "marker": "FFC4",
+         "bytes": 29
+        },
+        {
+         "marker": "FFC4",
+         "bytes": 59
+        },
+        {
+         "marker": "FFDA",
+         "bytes": 14
+        }
+       ],
+       "jpegSize": [
+        4032,
+        3024
+       ]
+      },
+      {
+       "quality": 1,
+       "bytes": 10214903,
+       "ms": 11819,
+       "width": 4032,
+       "height": 3024,
+       "segments": [
+        {
+         "marker": "FFE0",
+         "bytes": 18
+        },
+        {
+         "marker": "FFE2",
+         "bytes": 474
+        },
+        {
+         "marker": "FFDB",
+         "bytes": 69
+        },
+        {
+         "marker": "FFDB",
+         "bytes": 69
+        },
+        {
+         "marker": "FFC0",
+         "bytes": 19
+        },
+        {
+         "marker": "FFC4",
+         "bytes": 33
+        },
+        {
+         "marker": "FFC4",
+         "bytes": 112
+        },
+        {
+         "marker": "FFC4",
+         "bytes": 32
+        },
+        {
+         "marker": "FFC4",
+         "bytes": 116
+        },
+        {
+         "marker": "FFDA",
+         "bytes": 14
+        }
+       ],
+       "jpegSize": [
+        4032,
+        3024
+       ]
+      }
+     ],
+     "repsMs": [
+      11795,
+      8652,
+      12155
+     ],
+     "decode": {
+      "ms": 8673,
+      "pngBytes": 23534764,
+      "width": 4032,
+      "height": 3024,
+      "pixelSha256": "e5f71d1d1346a14cc9dce4a5a82950708ec8ade5b127cd6b7eaf3290a3521ed1"
+     }
+    },
+    {
+     "name": "tortoise-q70-limited.heic",
+     "type": "",
+     "bytes": 4489494,
+     "outputs": [
+      {
+       "quality": 0.9,
+       "bytes": 3002477,
+       "ms": 12493,
+       "width": 4032,
+       "height": 3024,
+       "segments": [
+        {
+         "marker": "FFE0",
+         "bytes": 18
+        },
+        {
+         "marker": "FFE2",
+         "bytes": 474
+        },
+        {
+         "marker": "FFDB",
+         "bytes": 69
+        },
+        {
+         "marker": "FFDB",
+         "bytes": 69
+        },
+        {
+         "marker": "FFC0",
+         "bytes": 19
+        },
+        {
+         "marker": "FFC4",
+         "bytes": 31
+        },
+        {
+         "marker": "FFC4",
+         "bytes": 82
+        },
+        {
+         "marker": "FFC4",
+         "bytes": 30
+        },
+        {
+         "marker": "FFC4",
+         "bytes": 65
+        },
+        {
+         "marker": "FFDA",
+         "bytes": 14
+        }
+       ],
+       "jpegSize": [
+        4032,
+        3024
+       ]
+      },
+      {
+       "quality": 0.7,
+       "bytes": 1434459,
+       "ms": 11911,
+       "width": 4032,
+       "height": 3024,
+       "segments": [
+        {
+         "marker": "FFE0",
+         "bytes": 18
+        },
+        {
+         "marker": "FFE2",
+         "bytes": 474
+        },
+        {
+         "marker": "FFDB",
+         "bytes": 69
+        },
+        {
+         "marker": "FFDB",
+         "bytes": 69
+        },
+        {
+         "marker": "FFC0",
+         "bytes": 19
+        },
+        {
+         "marker": "FFC4",
+         "bytes": 30
+        },
+        {
+         "marker": "FFC4",
+         "bytes": 74
+        },
+        {
+         "marker": "FFC4",
+         "bytes": 29
+        },
+        {
+         "marker": "FFC4",
+         "bytes": 49
+        },
+        {
+         "marker": "FFDA",
+         "bytes": 14
+        }
+       ],
+       "jpegSize": [
+        4032,
+        3024
+       ]
+      },
+      {
+       "quality": 0.8,
+       "bytes": 1881274,
+       "ms": 11341,
+       "width": 4032,
+       "height": 3024,
+       "segments": [
+        {
+         "marker": "FFE0",
+         "bytes": 18
+        },
+        {
+         "marker": "FFE2",
+         "bytes": 474
+        },
+        {
+         "marker": "FFDB",
+         "bytes": 69
+        },
+        {
+         "marker": "FFDB",
+         "bytes": 69
+        },
+        {
+         "marker": "FFC0",
+         "bytes": 19
+        },
+        {
+         "marker": "FFC4",
+         "bytes": 30
+        },
+        {
+         "marker": "FFC4",
+         "bytes": 76
+        },
+        {
+         "marker": "FFC4",
+         "bytes": 29
+        },
+        {
+         "marker": "FFC4",
+         "bytes": 58
+        },
+        {
+         "marker": "FFDA",
+         "bytes": 14
+        }
+       ],
+       "jpegSize": [
+        4032,
+        3024
+       ]
+      },
+      {
+       "quality": 1,
+       "bytes": 10795975,
+       "ms": 12065,
+       "width": 4032,
+       "height": 3024,
+       "segments": [
+        {
+         "marker": "FFE0",
+         "bytes": 18
+        },
+        {
+         "marker": "FFE2",
+         "bytes": 474
+        },
+        {
+         "marker": "FFDB",
+         "bytes": 69
+        },
+        {
+         "marker": "FFDB",
+         "bytes": 69
+        },
+        {
+         "marker": "FFC0",
+         "bytes": 19
+        },
+        {
+         "marker": "FFC4",
+         "bytes": 33
+        },
+        {
+         "marker": "FFC4",
+         "bytes": 92
+        },
+        {
+         "marker": "FFC4",
+         "bytes": 32
+        },
+        {
+         "marker": "FFC4",
+         "bytes": 113
+        },
+        {
+         "marker": "FFDA",
+         "bytes": 14
+        }
+       ],
+       "jpegSize": [
+        4032,
+        3024
+       ]
+      }
+     ],
+     "repsMs": [
+      11154,
+      10860,
+      10915
+     ],
+     "decode": {
+      "ms": 10311,
+      "pngBytes": 24458464,
+      "width": 4032,
+      "height": 3024,
+      "pixelSha256": "577ef3351f605f2fbe2c3c692722e2f0261ef42b0ff63c5a7728323bc9f1f862"
+     }
+    },
+    {
+     "name": "tortoise-q70-rot.heic",
+     "type": "",
+     "bytes": 4724408,
+     "outputs": [
+      {
+       "quality": 0.9,
+       "bytes": 3282706,
+       "ms": 16027,
+       "width": 3024,
+       "height": 4032,
+       "segments": [
+        {
+         "marker": "FFE0",
+         "bytes": 18
+        },
+        {
+         "marker": "FFE2",
+         "bytes": 474
+        },
+        {
+         "marker": "FFDB",
+         "bytes": 69
+        },
+        {
+         "marker": "FFDB",
+         "bytes": 69
+        },
+        {
+         "marker": "FFC0",
+         "bytes": 19
+        },
+        {
+         "marker": "FFC4",
+         "bytes": 31
+        },
+        {
+         "marker": "FFC4",
+         "bytes": 83
+        },
+        {
+         "marker": "FFC4",
+         "bytes": 31
+        },
+        {
+         "marker": "FFC4",
+         "bytes": 63
+        },
+        {
+         "marker": "FFDA",
+         "bytes": 14
+        }
+       ],
+       "jpegSize": [
+        3024,
+        4032
+       ]
+      },
+      {
+       "quality": 0.7,
+       "bytes": 1585322,
+       "ms": 11501,
+       "width": 3024,
+       "height": 4032,
+       "segments": [
+        {
+         "marker": "FFE0",
+         "bytes": 18
+        },
+        {
+         "marker": "FFE2",
+         "bytes": 474
+        },
+        {
+         "marker": "FFDB",
+         "bytes": 69
+        },
+        {
+         "marker": "FFDB",
+         "bytes": 69
+        },
+        {
+         "marker": "FFC0",
+         "bytes": 19
+        },
+        {
+         "marker": "FFC4",
+         "bytes": 30
+        },
+        {
+         "marker": "FFC4",
+         "bytes": 75
+        },
+        {
+         "marker": "FFC4",
+         "bytes": 29
+        },
+        {
+         "marker": "FFC4",
+         "bytes": 52
+        },
+        {
+         "marker": "FFDA",
+         "bytes": 14
+        }
+       ],
+       "jpegSize": [
+        3024,
+        4032
+       ]
+      },
+      {
+       "quality": 0.8,
+       "bytes": 2072466,
+       "ms": 13352,
+       "width": 3024,
+       "height": 4032,
+       "segments": [
+        {
+         "marker": "FFE0",
+         "bytes": 18
+        },
+        {
+         "marker": "FFE2",
+         "bytes": 474
+        },
+        {
+         "marker": "FFDB",
+         "bytes": 69
+        },
+        {
+         "marker": "FFDB",
+         "bytes": 69
+        },
+        {
+         "marker": "FFC0",
+         "bytes": 19
+        },
+        {
+         "marker": "FFC4",
+         "bytes": 30
+        },
+        {
+         "marker": "FFC4",
+         "bytes": 78
+        },
+        {
+         "marker": "FFC4",
+         "bytes": 30
+        },
+        {
+         "marker": "FFC4",
+         "bytes": 57
+        },
+        {
+         "marker": "FFDA",
+         "bytes": 14
+        }
+       ],
+       "jpegSize": [
+        3024,
+        4032
+       ]
+      },
+      {
+       "quality": 1,
+       "bytes": 11376050,
+       "ms": 12085,
+       "width": 3024,
+       "height": 4032,
+       "segments": [
+        {
+         "marker": "FFE0",
+         "bytes": 18
+        },
+        {
+         "marker": "FFE2",
+         "bytes": 474
+        },
+        {
+         "marker": "FFDB",
+         "bytes": 69
+        },
+        {
+         "marker": "FFDB",
+         "bytes": 69
+        },
+        {
+         "marker": "FFC0",
+         "bytes": 19
+        },
+        {
+         "marker": "FFC4",
+         "bytes": 33
+        },
+        {
+         "marker": "FFC4",
+         "bytes": 93
+        },
+        {
+         "marker": "FFC4",
+         "bytes": 32
+        },
+        {
+         "marker": "FFC4",
+         "bytes": 121
+        },
+        {
+         "marker": "FFDA",
+         "bytes": 14
+        }
+       ],
+       "jpegSize": [
+        3024,
+        4032
+       ]
+      }
+     ],
+     "repsMs": [
+      12805,
+      11970,
+      14405
+     ],
+     "decode": {
+      "ms": 10884,
+      "pngBytes": 24820412,
+      "width": 3024,
+      "height": 4032,
+      "pixelSha256": "f1d34ad7e4cdbee8f4971c0b3ece253118f443362e0e7ccc6ab31b12285781c9"
+     }
+    },
+    {
+     "name": "tortoise-q70.heic",
+     "type": "",
+     "bytes": 4742008,
+     "outputs": [
+      {
+       "quality": 0.9,
+       "bytes": 3272521,
+       "ms": 14618,
+       "width": 4032,
+       "height": 3024,
+       "segments": [
+        {
+         "marker": "FFE0",
+         "bytes": 18
+        },
+        {
+         "marker": "FFE2",
+         "bytes": 474
+        },
+        {
+         "marker": "FFDB",
+         "bytes": 69
+        },
+        {
+         "marker": "FFDB",
+         "bytes": 69
+        },
+        {
+         "marker": "FFC0",
+         "bytes": 19
+        },
+        {
+         "marker": "FFC4",
+         "bytes": 32
+        },
+        {
+         "marker": "FFC4",
+         "bytes": 84
+        },
+        {
+         "marker": "FFC4",
+         "bytes": 30
+        },
+        {
+         "marker": "FFC4",
+         "bytes": 65
+        },
+        {
+         "marker": "FFDA",
+         "bytes": 14
+        }
+       ],
+       "jpegSize": [
+        4032,
+        3024
+       ]
+      },
+      {
+       "quality": 0.7,
+       "bytes": 1580791,
+       "ms": 11218,
+       "width": 4032,
+       "height": 3024,
+       "segments": [
+        {
+         "marker": "FFE0",
+         "bytes": 18
+        },
+        {
+         "marker": "FFE2",
+         "bytes": 474
+        },
+        {
+         "marker": "FFDB",
+         "bytes": 69
+        },
+        {
+         "marker": "FFDB",
+         "bytes": 69
+        },
+        {
+         "marker": "FFC0",
+         "bytes": 19
+        },
+        {
+         "marker": "FFC4",
+         "bytes": 30
+        },
+        {
+         "marker": "FFC4",
+         "bytes": 76
+        },
+        {
+         "marker": "FFC4",
+         "bytes": 29
+        },
+        {
+         "marker": "FFC4",
+         "bytes": 55
+        },
+        {
+         "marker": "FFDA",
+         "bytes": 14
+        }
+       ],
+       "jpegSize": [
+        4032,
+        3024
+       ]
+      },
+      {
+       "quality": 0.8,
+       "bytes": 2062999,
+       "ms": 13283,
+       "width": 4032,
+       "height": 3024,
+       "segments": [
+        {
+         "marker": "FFE0",
+         "bytes": 18
+        },
+        {
+         "marker": "FFE2",
+         "bytes": 474
+        },
+        {
+         "marker": "FFDB",
+         "bytes": 69
+        },
+        {
+         "marker": "FFDB",
+         "bytes": 69
+        },
+        {
+         "marker": "FFC0",
+         "bytes": 19
+        },
+        {
+         "marker": "FFC4",
+         "bytes": 31
+        },
+        {
+         "marker": "FFC4",
+         "bytes": 78
+        },
+        {
+         "marker": "FFC4",
+         "bytes": 29
+        },
+        {
+         "marker": "FFC4",
+         "bytes": 58
+        },
+        {
+         "marker": "FFDA",
+         "bytes": 14
+        }
+       ],
+       "jpegSize": [
+        4032,
+        3024
+       ]
+      },
+      {
+       "quality": 1,
+       "bytes": 11359082,
+       "ms": 11698,
+       "width": 4032,
+       "height": 3024,
+       "segments": [
+        {
+         "marker": "FFE0",
+         "bytes": 18
+        },
+        {
+         "marker": "FFE2",
+         "bytes": 474
+        },
+        {
+         "marker": "FFDB",
+         "bytes": 69
+        },
+        {
+         "marker": "FFDB",
+         "bytes": 69
+        },
+        {
+         "marker": "FFC0",
+         "bytes": 19
+        },
+        {
+         "marker": "FFC4",
+         "bytes": 33
+        },
+        {
+         "marker": "FFC4",
+         "bytes": 94
+        },
+        {
+         "marker": "FFC4",
+         "bytes": 32
+        },
+        {
+         "marker": "FFC4",
+         "bytes": 112
+        },
+        {
+         "marker": "FFDA",
+         "bytes": 14
+        }
+       ],
+       "jpegSize": [
+        4032,
+        3024
+       ]
+      }
+     ],
+     "repsMs": [
+      14086,
+      10155,
+      13779,
+      11395,
+      11118
+     ],
+     "decode": {
+      "ms": 14232,
+      "pngBytes": 24888179,
+      "width": 4032,
+      "height": 3024,
+      "pixelSha256": "0b45ccaf0872e14b232f81b74d74da6344bc5c9c2cc6424ba25cbf304f009761"
+     }
+    },
+    {
+     "name": "tortoise-q90.heic",
+     "type": "",
+     "bytes": 8385266,
+     "outputs": [
+      {
+       "quality": 0.9,
+       "bytes": 3279257,
+       "ms": 15596,
+       "width": 4032,
+       "height": 3024,
+       "segments": [
+        {
+         "marker": "FFE0",
+         "bytes": 18
+        },
+        {
+         "marker": "FFE2",
+         "bytes": 474
+        },
+        {
+         "marker": "FFDB",
+         "bytes": 69
+        },
+        {
+         "marker": "FFDB",
+         "bytes": 69
+        },
+        {
+         "marker": "FFC0",
+         "bytes": 19
+        },
+        {
+         "marker": "FFC4",
+         "bytes": 32
+        },
+        {
+         "marker": "FFC4",
+         "bytes": 83
+        },
+        {
+         "marker": "FFC4",
+         "bytes": 30
+        },
+        {
+         "marker": "FFC4",
+         "bytes": 64
+        },
+        {
+         "marker": "FFDA",
+         "bytes": 14
+        }
+       ],
+       "jpegSize": [
+        4032,
+        3024
+       ]
+      },
+      {
+       "quality": 0.7,
+       "bytes": 1581492,
+       "ms": 12805,
+       "width": 4032,
+       "height": 3024,
+       "segments": [
+        {
+         "marker": "FFE0",
+         "bytes": 18
+        },
+        {
+         "marker": "FFE2",
+         "bytes": 474
+        },
+        {
+         "marker": "FFDB",
+         "bytes": 69
+        },
+        {
+         "marker": "FFDB",
+         "bytes": 69
+        },
+        {
+         "marker": "FFC0",
+         "bytes": 19
+        },
+        {
+         "marker": "FFC4",
+         "bytes": 30
+        },
+        {
+         "marker": "FFC4",
+         "bytes": 75
+        },
+        {
+         "marker": "FFC4",
+         "bytes": 29
+        },
+        {
+         "marker": "FFC4",
+         "bytes": 56
+        },
+        {
+         "marker": "FFDA",
+         "bytes": 14
+        }
+       ],
+       "jpegSize": [
+        4032,
+        3024
+       ]
+      },
+      {
+       "quality": 0.8,
+       "bytes": 2064813,
+       "ms": 15119,
+       "width": 4032,
+       "height": 3024,
+       "segments": [
+        {
+         "marker": "FFE0",
+         "bytes": 18
+        },
+        {
+         "marker": "FFE2",
+         "bytes": 474
+        },
+        {
+         "marker": "FFDB",
+         "bytes": 69
+        },
+        {
+         "marker": "FFDB",
+         "bytes": 69
+        },
+        {
+         "marker": "FFC0",
+         "bytes": 19
+        },
+        {
+         "marker": "FFC4",
+         "bytes": 31
+        },
+        {
+         "marker": "FFC4",
+         "bytes": 79
+        },
+        {
+         "marker": "FFC4",
+         "bytes": 29
+        },
+        {
+         "marker": "FFC4",
+         "bytes": 58
+        },
+        {
+         "marker": "FFDA",
+         "bytes": 14
+        }
+       ],
+       "jpegSize": [
+        4032,
+        3024
+       ]
+      },
+      {
+       "quality": 1,
+       "bytes": 12629451,
+       "ms": 13639,
+       "width": 4032,
+       "height": 3024,
+       "segments": [
+        {
+         "marker": "FFE0",
+         "bytes": 18
+        },
+        {
+         "marker": "FFE2",
+         "bytes": 474
+        },
+        {
+         "marker": "FFDB",
+         "bytes": 69
+        },
+        {
+         "marker": "FFDB",
+         "bytes": 69
+        },
+        {
+         "marker": "FFC0",
+         "bytes": 19
+        },
+        {
+         "marker": "FFC4",
+         "bytes": 33
+        },
+        {
+         "marker": "FFC4",
+         "bytes": 84
+        },
+        {
+         "marker": "FFC4",
+         "bytes": 32
+        },
+        {
+         "marker": "FFC4",
+         "bytes": 109
+        },
+        {
+         "marker": "FFDA",
+         "bytes": 14
+        }
+       ],
+       "jpegSize": [
+        4032,
+        3024
+       ]
+      }
+     ],
+     "repsMs": [
+      15312,
+      12306,
+      15458
+     ],
+     "decode": {
+      "ms": 12178,
+      "pngBytes": 25724948,
+      "width": 4032,
+      "height": 3024,
+      "pixelSha256": "111ba46fae7fe5feb6f92aad738708e7076144d6466da3d6097bdb47b0760c1f"
+     }
+    }
+   ]
+  },
+  "Firefox": {
+   "version": "153.0",
+   "rows": [
+    {
+     "name": "flower-q50.heic",
+     "type": "",
+     "bytes": 184510,
+     "outputs": [
+      {
+       "quality": 0.9,
+       "bytes": 763830,
+       "ms": 1700,
+       "width": 4032,
+       "height": 3024,
+       "segments": [
+        {
+         "marker": "FFE0",
+         "bytes": 18
+        },
+        {
+         "marker": "FFDB",
+         "bytes": 69
+        },
+        {
+         "marker": "FFDB",
+         "bytes": 69
+        },
+        {
+         "marker": "FFC0",
+         "bytes": 19
+        },
+        {
+         "marker": "FFC4",
+         "bytes": 33
+        },
+        {
+         "marker": "FFC4",
+         "bytes": 183
+        },
+        {
+         "marker": "FFC4",
+         "bytes": 33
+        },
+        {
+         "marker": "FFC4",
+         "bytes": 183
+        },
+        {
+         "marker": "FFDA",
+         "bytes": 14
+        }
+       ],
+       "jpegSize": [
+        4032,
+        3024
+       ]
+      }
+     ],
+     "repsMs": [
+      1415,
+      1551,
+      1645
+     ],
+     "decode": {
+      "ms": 1422,
+      "pngBytes": 4530907,
+      "width": 4032,
+      "height": 3024,
+      "pixelSha256": "b478091012870bc20d7c7f1a399ea82c353a7c1fd1efcceb6139fe20ee273e15"
+     }
+    },
+    {
+     "name": "flower-q70.heic",
+     "type": "",
+     "bytes": 2715496,
+     "outputs": [
+      {
+       "quality": 0.9,
+       "bytes": 1313522,
+       "ms": 3020,
+       "width": 4032,
+       "height": 3024,
+       "segments": [
+        {
+         "marker": "FFE0",
+         "bytes": 18
+        },
+        {
+         "marker": "FFDB",
+         "bytes": 69
+        },
+        {
+         "marker": "FFDB",
+         "bytes": 69
+        },
+        {
+         "marker": "FFC0",
+         "bytes": 19
+        },
+        {
+         "marker": "FFC4",
+         "bytes": 33
+        },
+        {
+         "marker": "FFC4",
+         "bytes": 183
+        },
+        {
+         "marker": "FFC4",
+         "bytes": 33
+        },
+        {
+         "marker": "FFC4",
+         "bytes": 183
+        },
+        {
+         "marker": "FFDA",
+         "bytes": 14
+        }
+       ],
+       "jpegSize": [
+        4032,
+        3024
+       ]
+      }
+     ],
+     "repsMs": [
+      3038,
+      3029,
+      4543,
+      2957,
+      2926
+     ],
+     "decode": {
+      "ms": 2819,
+      "pngBytes": 13039327,
+      "width": 4032,
+      "height": 3024,
+      "pixelSha256": "18c7408a5bc748f401e4b7968cf6d89c91971639d4d391251b72b7d1462afe7b"
+     }
+    },
+    {
+     "name": "flower-q90.heic",
+     "type": "",
+     "bytes": 5138566,
+     "outputs": [
+      {
+       "quality": 0.9,
+       "bytes": 1306422,
+       "ms": 3730,
+       "width": 4032,
+       "height": 3024,
+       "segments": [
+        {
+         "marker": "FFE0",
+         "bytes": 18
+        },
+        {
+         "marker": "FFDB",
+         "bytes": 69
+        },
+        {
+         "marker": "FFDB",
+         "bytes": 69
+        },
+        {
+         "marker": "FFC0",
+         "bytes": 19
+        },
+        {
+         "marker": "FFC4",
+         "bytes": 33
+        },
+        {
+         "marker": "FFC4",
+         "bytes": 183
+        },
+        {
+         "marker": "FFC4",
+         "bytes": 33
+        },
+        {
+         "marker": "FFC4",
+         "bytes": 183
+        },
+        {
+         "marker": "FFDA",
+         "bytes": 14
+        }
+       ],
+       "jpegSize": [
+        4032,
+        3024
+       ]
+      }
+     ],
+     "repsMs": [
+      3524,
+      3633,
+      3509
+     ],
+     "decode": {
+      "ms": 3446,
+      "pngBytes": 13382502,
+      "width": 4032,
+      "height": 3024,
+      "pixelSha256": "5f8b6d980df4deca51296aab00d777f65afe2f33a285d26d809584823bfa2a64"
+     }
+    },
+    {
+     "name": "tortoise-q50.heic",
+     "type": "",
+     "bytes": 1707890,
+     "outputs": [
+      {
+       "quality": 0.9,
+       "bytes": 3403691,
+       "ms": 3437,
+       "width": 4032,
+       "height": 3024,
+       "segments": [
+        {
+         "marker": "FFE0",
+         "bytes": 18
+        },
+        {
+         "marker": "FFDB",
+         "bytes": 69
+        },
+        {
+         "marker": "FFDB",
+         "bytes": 69
+        },
+        {
+         "marker": "FFC0",
+         "bytes": 19
+        },
+        {
+         "marker": "FFC4",
+         "bytes": 33
+        },
+        {
+         "marker": "FFC4",
+         "bytes": 183
+        },
+        {
+         "marker": "FFC4",
+         "bytes": 33
+        },
+        {
+         "marker": "FFC4",
+         "bytes": 183
+        },
+        {
+         "marker": "FFDA",
+         "bytes": 14
+        }
+       ],
+       "jpegSize": [
+        4032,
+        3024
+       ]
+      }
+     ],
+     "repsMs": [
+      3122,
+      3332,
+      3145
+     ],
+     "decode": {
+      "ms": 2737,
+      "pngBytes": 18758865,
+      "width": 4032,
+      "height": 3024,
+      "pixelSha256": "e5f71d1d1346a14cc9dce4a5a82950708ec8ade5b127cd6b7eaf3290a3521ed1"
+     }
+    },
+    {
+     "name": "tortoise-q70-limited.heic",
+     "type": "",
+     "bytes": 4489494,
+     "outputs": [
+      {
+       "quality": 0.9,
+       "bytes": 3409125,
+       "ms": 3445,
+       "width": 4032,
+       "height": 3024,
+       "segments": [
+        {
+         "marker": "FFE0",
+         "bytes": 18
+        },
+        {
+         "marker": "FFDB",
+         "bytes": 69
+        },
+        {
+         "marker": "FFDB",
+         "bytes": 69
+        },
+        {
+         "marker": "FFC0",
+         "bytes": 19
+        },
+        {
+         "marker": "FFC4",
+         "bytes": 33
+        },
+        {
+         "marker": "FFC4",
+         "bytes": 183
+        },
+        {
+         "marker": "FFC4",
+         "bytes": 33
+        },
+        {
+         "marker": "FFC4",
+         "bytes": 183
+        },
+        {
+         "marker": "FFDA",
+         "bytes": 14
+        }
+       ],
+       "jpegSize": [
+        4032,
+        3024
+       ]
+      }
+     ],
+     "repsMs": [
+      3263,
+      3270,
+      3215
+     ],
+     "decode": {
+      "ms": 3028,
+      "pngBytes": 19619573,
+      "width": 4032,
+      "height": 3024,
+      "pixelSha256": "577ef3351f605f2fbe2c3c692722e2f0261ef42b0ff63c5a7728323bc9f1f862"
+     }
+    },
+    {
+     "name": "tortoise-q70-rot.heic",
+     "type": "",
+     "bytes": 4724408,
+     "outputs": [
+      {
+       "quality": 0.9,
+       "bytes": 3741761,
+       "ms": 4148,
+       "width": 3024,
+       "height": 4032,
+       "segments": [
+        {
+         "marker": "FFE0",
+         "bytes": 18
+        },
+        {
+         "marker": "FFDB",
+         "bytes": 69
+        },
+        {
+         "marker": "FFDB",
+         "bytes": 69
+        },
+        {
+         "marker": "FFC0",
+         "bytes": 19
+        },
+        {
+         "marker": "FFC4",
+         "bytes": 33
+        },
+        {
+         "marker": "FFC4",
+         "bytes": 183
+        },
+        {
+         "marker": "FFC4",
+         "bytes": 33
+        },
+        {
+         "marker": "FFC4",
+         "bytes": 183
+        },
+        {
+         "marker": "FFDA",
+         "bytes": 14
+        }
+       ],
+       "jpegSize": [
+        3024,
+        4032
+       ]
+      }
+     ],
+     "repsMs": [
+      3510,
+      3548,
+      3537
+     ],
+     "decode": {
+      "ms": 3476,
+      "pngBytes": 21648433,
+      "width": 3024,
+      "height": 4032,
+      "pixelSha256": "f1d34ad7e4cdbee8f4971c0b3ece253118f443362e0e7ccc6ab31b12285781c9"
+     }
+    },
+    {
+     "name": "tortoise-q70.heic",
+     "type": "",
+     "bytes": 4742008,
+     "outputs": [
+      {
+       "quality": 0.9,
+       "bytes": 3715593,
+       "ms": 3857,
+       "width": 4032,
+       "height": 3024,
+       "segments": [
+        {
+         "marker": "FFE0",
+         "bytes": 18
+        },
+        {
+         "marker": "FFDB",
+         "bytes": 69
+        },
+        {
+         "marker": "FFDB",
+         "bytes": 69
+        },
+        {
+         "marker": "FFC0",
+         "bytes": 19
+        },
+        {
+         "marker": "FFC4",
+         "bytes": 33
+        },
+        {
+         "marker": "FFC4",
+         "bytes": 183
+        },
+        {
+         "marker": "FFC4",
+         "bytes": 33
+        },
+        {
+         "marker": "FFC4",
+         "bytes": 183
+        },
+        {
+         "marker": "FFDA",
+         "bytes": 14
+        }
+       ],
+       "jpegSize": [
+        4032,
+        3024
+       ]
+      }
+     ],
+     "repsMs": [
+      3593,
+      3457,
+      3431,
+      3388,
+      3399
+     ],
+     "decode": {
+      "ms": 3120,
+      "pngBytes": 20238446,
+      "width": 4032,
+      "height": 3024,
+      "pixelSha256": "0b45ccaf0872e14b232f81b74d74da6344bc5c9c2cc6424ba25cbf304f009761"
+     }
+    },
+    {
+     "name": "tortoise-q90.heic",
+     "type": "",
+     "bytes": 8385266,
+     "outputs": [
+      {
+       "quality": 0.9,
+       "bytes": 3820297,
+       "ms": 4184,
+       "width": 4032,
+       "height": 3024,
+       "segments": [
+        {
+         "marker": "FFE0",
+         "bytes": 18
+        },
+        {
+         "marker": "FFDB",
+         "bytes": 69
+        },
+        {
+         "marker": "FFDB",
+         "bytes": 69
+        },
+        {
+         "marker": "FFC0",
+         "bytes": 19
+        },
+        {
+         "marker": "FFC4",
+         "bytes": 33
+        },
+        {
+         "marker": "FFC4",
+         "bytes": 183
+        },
+        {
+         "marker": "FFC4",
+         "bytes": 33
+        },
+        {
+         "marker": "FFC4",
+         "bytes": 183
+        },
+        {
+         "marker": "FFDA",
+         "bytes": 14
+        }
+       ],
+       "jpegSize": [
+        4032,
+        3024
+       ]
+      }
+     ],
+     "repsMs": [
+      3975,
+      3996,
+      3960
+     ],
+     "decode": {
+      "ms": 3788,
+      "pngBytes": 21347625,
+      "width": 4032,
+      "height": 3024,
+      "pixelSha256": "111ba46fae7fe5feb6f92aad738708e7076144d6466da3d6097bdb47b0760c1f"
+     }
+    }
+   ]
+  },
+  "WebKit": {
+   "version": "26.5",
+   "rows": [
+    {
+     "name": "flower-q50.heic",
+     "type": "",
+     "bytes": 184510,
+     "outputs": [
+      {
+       "quality": 0.9,
+       "bytes": 468228,
+       "ms": 1769,
+       "width": 4032,
+       "height": 3024,
+       "segments": [
+        {
+         "marker": "FFE0",
+         "bytes": 18
+        },
+        {
+         "marker": "FFE2",
+         "bytes": 474
+        },
+        {
+         "marker": "FFDB",
+         "bytes": 69
+        },
+        {
+         "marker": "FFDB",
+         "bytes": 69
+        },
+        {
+         "marker": "FFC0",
+         "bytes": 19
+        },
+        {
+         "marker": "FFC4",
+         "bytes": 31
+        },
+        {
+         "marker": "FFC4",
+         "bytes": 78
+        },
+        {
+         "marker": "FFC4",
+         "bytes": 30
+        },
+        {
+         "marker": "FFC4",
+         "bytes": 58
+        },
+        {
+         "marker": "FFDA",
+         "bytes": 14
+        }
+       ],
+       "jpegSize": [
+        4032,
+        3024
+       ]
+      }
+     ],
+     "repsMs": [
+      2802,
+      4950,
+      4974
+     ],
+     "decode": {
+      "ms": 4492,
+      "pngBytes": 3155279,
+      "width": 4032,
+      "height": 3024,
+      "pixelSha256": "b478091012870bc20d7c7f1a399ea82c353a7c1fd1efcceb6139fe20ee273e15"
+     }
+    },
+    {
+     "name": "flower-q70.heic",
+     "type": "",
+     "bytes": 2715496,
+     "outputs": [
+      {
+       "quality": 0.9,
+       "bytes": 767310,
+       "ms": 14303,
+       "width": 4032,
+       "height": 3024,
+       "segments": [
+        {
+         "marker": "FFE0",
+         "bytes": 18
+        },
+        {
+         "marker": "FFE2",
+         "bytes": 474
+        },
+        {
+         "marker": "FFDB",
+         "bytes": 69
+        },
+        {
+         "marker": "FFDB",
+         "bytes": 69
+        },
+        {
+         "marker": "FFC0",
+         "bytes": 19
+        },
+        {
+         "marker": "FFC4",
+         "bytes": 31
+        },
+        {
+         "marker": "FFC4",
+         "bytes": 74
+        },
+        {
+         "marker": "FFC4",
+         "bytes": 30
+        },
+        {
+         "marker": "FFC4",
+         "bytes": 57
+        },
+        {
+         "marker": "FFDA",
+         "bytes": 14
+        }
+       ],
+       "jpegSize": [
+        4032,
+        3024
+       ]
+      }
+     ],
+     "repsMs": [
+      14019,
+      13807,
+      13720,
+      13719,
+      13567
+     ],
+     "decode": {
+      "ms": 12241,
+      "pngBytes": 11619370,
+      "width": 4032,
+      "height": 3024,
+      "pixelSha256": "18c7408a5bc748f401e4b7968cf6d89c91971639d4d391251b72b7d1462afe7b"
+     }
+    },
+    {
+     "name": "flower-q90.heic",
+     "type": "",
+     "bytes": 5138566,
+     "outputs": [
+      {
+       "quality": 0.9,
+       "bytes": 760422,
+       "ms": 15618,
+       "width": 4032,
+       "height": 3024,
+       "segments": [
+        {
+         "marker": "FFE0",
+         "bytes": 18
+        },
+        {
+         "marker": "FFE2",
+         "bytes": 474
+        },
+        {
+         "marker": "FFDB",
+         "bytes": 69
+        },
+        {
+         "marker": "FFDB",
+         "bytes": 69
+        },
+        {
+         "marker": "FFC0",
+         "bytes": 19
+        },
+        {
+         "marker": "FFC4",
+         "bytes": 31
+        },
+        {
+         "marker": "FFC4",
+         "bytes": 78
+        },
+        {
+         "marker": "FFC4",
+         "bytes": 30
+        },
+        {
+         "marker": "FFC4",
+         "bytes": 60
+        },
+        {
+         "marker": "FFDA",
+         "bytes": 14
+        }
+       ],
+       "jpegSize": [
+        4032,
+        3024
+       ]
+      }
+     ],
+     "repsMs": [
+      14990,
+      15923,
+      14875
+     ],
+     "decode": {
+      "ms": 14036,
+      "pngBytes": 11925047,
+      "width": 4032,
+      "height": 3024,
+      "pixelSha256": "5f8b6d980df4deca51296aab00d777f65afe2f33a285d26d809584823bfa2a64"
+     }
+    },
+    {
+     "name": "tortoise-q50.heic",
+     "type": "",
+     "bytes": 1707890,
+     "outputs": [
+      {
+       "quality": 0.9,
+       "bytes": 3053579,
+       "ms": 14267,
+       "width": 4032,
+       "height": 3024,
+       "segments": [
+        {
+         "marker": "FFE0",
+         "bytes": 18
+        },
+        {
+         "marker": "FFE2",
+         "bytes": 474
+        },
+        {
+         "marker": "FFDB",
+         "bytes": 69
+        },
+        {
+         "marker": "FFDB",
+         "bytes": 69
+        },
+        {
+         "marker": "FFC0",
+         "bytes": 19
+        },
+        {
+         "marker": "FFC4",
+         "bytes": 32
+        },
+        {
+         "marker": "FFC4",
+         "bytes": 95
+        },
+        {
+         "marker": "FFC4",
+         "bytes": 30
+        },
+        {
+         "marker": "FFC4",
+         "bytes": 66
+        },
+        {
+         "marker": "FFDA",
+         "bytes": 14
+        }
+       ],
+       "jpegSize": [
+        4032,
+        3024
+       ]
+      }
+     ],
+     "repsMs": [
+      13144,
+      13067,
+      14320
+     ],
+     "decode": {
+      "ms": 12256,
+      "pngBytes": 18448560,
+      "width": 4032,
+      "height": 3024,
+      "pixelSha256": "e5f71d1d1346a14cc9dce4a5a82950708ec8ade5b127cd6b7eaf3290a3521ed1"
+     }
+    },
+    {
+     "name": "tortoise-q70-limited.heic",
+     "type": "",
+     "bytes": 4489494,
+     "outputs": [
+      {
+       "quality": 0.9,
+       "bytes": 3002477,
+       "ms": 15932,
+       "width": 4032,
+       "height": 3024,
+       "segments": [
+        {
+         "marker": "FFE0",
+         "bytes": 18
+        },
+        {
+         "marker": "FFE2",
+         "bytes": 474
+        },
+        {
+         "marker": "FFDB",
+         "bytes": 69
+        },
+        {
+         "marker": "FFDB",
+         "bytes": 69
+        },
+        {
+         "marker": "FFC0",
+         "bytes": 19
+        },
+        {
+         "marker": "FFC4",
+         "bytes": 31
+        },
+        {
+         "marker": "FFC4",
+         "bytes": 82
+        },
+        {
+         "marker": "FFC4",
+         "bytes": 30
+        },
+        {
+         "marker": "FFC4",
+         "bytes": 65
+        },
+        {
+         "marker": "FFDA",
+         "bytes": 14
+        }
+       ],
+       "jpegSize": [
+        4032,
+        3024
+       ]
+      }
+     ],
+     "repsMs": [
+      14658,
+      15641,
+      14595
+     ],
+     "decode": {
+      "ms": 13820,
+      "pngBytes": 19332378,
+      "width": 4032,
+      "height": 3024,
+      "pixelSha256": "577ef3351f605f2fbe2c3c692722e2f0261ef42b0ff63c5a7728323bc9f1f862"
+     }
+    },
+    {
+     "name": "tortoise-q70-rot.heic",
+     "type": "",
+     "bytes": 4724408,
+     "outputs": [
+      {
+       "quality": 0.9,
+       "bytes": 3282706,
+       "ms": 16348,
+       "width": 3024,
+       "height": 4032,
+       "segments": [
+        {
+         "marker": "FFE0",
+         "bytes": 18
+        },
+        {
+         "marker": "FFE2",
+         "bytes": 474
+        },
+        {
+         "marker": "FFDB",
+         "bytes": 69
+        },
+        {
+         "marker": "FFDB",
+         "bytes": 69
+        },
+        {
+         "marker": "FFC0",
+         "bytes": 19
+        },
+        {
+         "marker": "FFC4",
+         "bytes": 31
+        },
+        {
+         "marker": "FFC4",
+         "bytes": 83
+        },
+        {
+         "marker": "FFC4",
+         "bytes": 31
+        },
+        {
+         "marker": "FFC4",
+         "bytes": 63
+        },
+        {
+         "marker": "FFDA",
+         "bytes": 14
+        }
+       ],
+       "jpegSize": [
+        3024,
+        4032
+       ]
+      }
+     ],
+     "repsMs": [
+      15952,
+      16193,
+      20172
+     ],
+     "decode": {
+      "ms": 14309,
+      "pngBytes": 20667337,
+      "width": 3024,
+      "height": 4032,
+      "pixelSha256": "f1d34ad7e4cdbee8f4971c0b3ece253118f443362e0e7ccc6ab31b12285781c9"
+     }
+    },
+    {
+     "name": "tortoise-q70.heic",
+     "type": "",
+     "bytes": 4742008,
+     "outputs": [
+      {
+       "quality": 0.9,
+       "bytes": 3272521,
+       "ms": 16087,
+       "width": 4032,
+       "height": 3024,
+       "segments": [
+        {
+         "marker": "FFE0",
+         "bytes": 18
+        },
+        {
+         "marker": "FFE2",
+         "bytes": 474
+        },
+        {
+         "marker": "FFDB",
+         "bytes": 69
+        },
+        {
+         "marker": "FFDB",
+         "bytes": 69
+        },
+        {
+         "marker": "FFC0",
+         "bytes": 19
+        },
+        {
+         "marker": "FFC4",
+         "bytes": 32
+        },
+        {
+         "marker": "FFC4",
+         "bytes": 84
+        },
+        {
+         "marker": "FFC4",
+         "bytes": 30
+        },
+        {
+         "marker": "FFC4",
+         "bytes": 65
+        },
+        {
+         "marker": "FFDA",
+         "bytes": 14
+        }
+       ],
+       "jpegSize": [
+        4032,
+        3024
+       ]
+      }
+     ],
+     "repsMs": [
+      15551,
+      15604,
+      15666,
+      15686,
+      15874
+     ],
+     "decode": {
+      "ms": 14657,
+      "pngBytes": 19958273,
+      "width": 4032,
+      "height": 3024,
+      "pixelSha256": "0b45ccaf0872e14b232f81b74d74da6344bc5c9c2cc6424ba25cbf304f009761"
+     }
+    },
+    {
+     "name": "tortoise-q90.heic",
+     "type": "",
+     "bytes": 8385266,
+     "outputs": [
+      {
+       "quality": 0.9,
+       "bytes": 3279257,
+       "ms": 17479,
+       "width": 4032,
+       "height": 3024,
+       "segments": [
+        {
+         "marker": "FFE0",
+         "bytes": 18
+        },
+        {
+         "marker": "FFE2",
+         "bytes": 474
+        },
+        {
+         "marker": "FFDB",
+         "bytes": 69
+        },
+        {
+         "marker": "FFDB",
+         "bytes": 69
+        },
+        {
+         "marker": "FFC0",
+         "bytes": 19
+        },
+        {
+         "marker": "FFC4",
+         "bytes": 32
+        },
+        {
+         "marker": "FFC4",
+         "bytes": 83
+        },
+        {
+         "marker": "FFC4",
+         "bytes": 30
+        },
+        {
+         "marker": "FFC4",
+         "bytes": 64
+        },
+        {
+         "marker": "FFDA",
+         "bytes": 14
+        }
+       ],
+       "jpegSize": [
+        4032,
+        3024
+       ]
+      }
+     ],
+     "repsMs": [
+      17840,
+      21019,
+      17453
+     ],
+     "decode": {
+      "ms": 14884,
+      "pngBytes": 21003500,
+      "width": 4032,
+      "height": 3024,
+      "pixelSha256": "111ba46fae7fe5feb6f92aad738708e7076144d6466da3d6097bdb47b0760c1f"
+     }
+    }
+   ]
+  }
+ },
+ "direct": {
+  "ref-flower.png": {
+   "name": "ref-flower.png",
+   "type": "image/png",
+   "bytes": 11859350,
+   "outputs": [
+    {
+     "quality": 0.5,
+     "bytes": 165661,
+     "ms": 1097,
+     "width": 4032,
+     "height": 3024
+    },
+    {
+     "quality": 0.6,
+     "bytes": 183841,
+     "ms": 333,
+     "width": 4032,
+     "height": 3024
+    },
+    {
+     "quality": 0.7,
+     "bytes": 213541,
+     "ms": 332,
+     "width": 4032,
+     "height": 3024
+    },
+    {
+     "quality": 0.75,
+     "bytes": 235960,
+     "ms": 336,
+     "width": 4032,
+     "height": 3024
+    },
+    {
+     "quality": 0.8,
+     "bytes": 284261,
+     "ms": 329,
+     "width": 4032,
+     "height": 3024
+    },
+    {
+     "quality": 0.85,
+     "bytes": 378620,
+     "ms": 369,
+     "width": 4032,
+     "height": 3024
+    },
+    {
+     "quality": 0.9,
+     "bytes": 626427,
+     "ms": 377,
+     "width": 4032,
+     "height": 3024
+    },
+    {
+     "quality": 0.95,
+     "bytes": 1340034,
+     "ms": 480,
+     "width": 4032,
+     "height": 3024
+    },
+    {
+     "quality": 1,
+     "bytes": 8055165,
+     "ms": 1024,
+     "width": 4032,
+     "height": 3024
+    }
+   ],
+   "repsMs": []
+  },
+  "ref-tortoise.png": {
+   "name": "ref-tortoise.png",
+   "type": "image/png",
+   "bytes": 19518939,
+   "outputs": [
+    {
+     "quality": 0.5,
+     "bytes": 980104,
+     "ms": 1524,
+     "width": 4032,
+     "height": 3024
+    },
+    {
+     "quality": 0.6,
+     "bytes": 1151403,
+     "ms": 579,
+     "width": 4032,
+     "height": 3024
+    },
+    {
+     "quality": 0.7,
+     "bytes": 1434399,
+     "ms": 637,
+     "width": 4032,
+     "height": 3024
+    },
+    {
+     "quality": 0.75,
+     "bytes": 1606990,
+     "ms": 694,
+     "width": 4032,
+     "height": 3024
+    },
+    {
+     "quality": 0.8,
+     "bytes": 1881213,
+     "ms": 620,
+     "width": 4032,
+     "height": 3024
+    },
+    {
+     "quality": 0.85,
+     "bytes": 2284440,
+     "ms": 556,
+     "width": 4032,
+     "height": 3024
+    },
+    {
+     "quality": 0.9,
+     "bytes": 3004192,
+     "ms": 554,
+     "width": 4032,
+     "height": 3024
+    },
+    {
+     "quality": 0.95,
+     "bytes": 4596692,
+     "ms": 762,
+     "width": 4032,
+     "height": 3024
+    },
+    {
+     "quality": 1,
+     "bytes": 12566951,
+     "ms": 1205,
+     "width": 4032,
+     "height": 3024
+    }
+   ],
+   "repsMs": []
+  }
+ },
+ "psnr": {
+  "heic": {
+   "flower-q50": {
+    "decodedSize": [
+     4032,
+     3024
+    ],
+    "heicVsRef": 29.75,
+    "heic2anyVsLibheif": {
+     "maxDiff": 31,
+     "psnr": 29.86
+    },
+    "libheifVsRef": 44.96,
+    "heic2anyLevelFit": [
+     [
+      1.062,
+      -3.058
+     ],
+     [
+      1.074,
+      -3.662
+     ],
+     [
+      1.085,
+      -9.762
+     ]
+    ],
+    "clipped": {
+     "refBlackPct": 0.0,
+     "decBlackPct": 0.0,
+     "refWhitePct": 1.414,
+     "decWhitePct": 5.01
+    },
+    "jpg": {
+     "100": {
+      "bytes": 2495028,
+      "jpgVsDecoded": 52.59,
+      "jpgVsRef": 29.73
+     },
+     "70": {
+      "bytes": 216946,
+      "jpgVsDecoded": 45.05,
+      "jpgVsRef": 29.7
+     },
+     "80": {
+      "bytes": 284616,
+      "jpgVsDecoded": 47.39,
+      "jpgVsRef": 29.73
+     },
+     "90": {
+      "bytes": 468228,
+      "jpgVsDecoded": 48.68,
+      "jpgVsRef": 29.75
+     }
+    }
+   },
+   "flower-q70-limited": {
+    "decodedSize": [
+     4032,
+     3024
+    ],
+    "heicVsRef": 29.77,
+    "heic2anyVsLibheif": {
+     "maxDiff": 25,
+     "psnr": 29.85
+    },
+    "libheifVsRef": 47.18,
+    "heic2anyLevelFit": [
+     [
+      1.063,
+      -3.213
+     ],
+     [
+      1.075,
+      -3.747
+     ],
+     [
+      1.086,
+      -9.935
+     ]
+    ],
+    "clipped": {
+     "refBlackPct": 0.0,
+     "decBlackPct": 0.0,
+     "refWhitePct": 1.414,
+     "decWhitePct": 5.011
+    },
+    "jpg": {
+     "100": {
+      "bytes": 8200328,
+      "jpgVsDecoded": 51.21,
+      "jpgVsRef": 29.74
+     },
+     "70": {
+      "bytes": 240139,
+      "jpgVsDecoded": 42.54,
+      "jpgVsRef": 29.75
+     },
+     "80": {
+      "bytes": 372002,
+      "jpgVsDecoded": 43.37,
+      "jpgVsRef": 29.72
+     },
+     "90": {
+      "bytes": 844366,
+      "jpgVsDecoded": 44.17,
+      "jpgVsRef": 29.76
+     }
+    }
+   },
+   "flower-q70": {
+    "decodedSize": [
+     4032,
+     3024
+    ],
+    "heicVsRef": 29.81,
+    "heic2anyVsLibheif": {
+     "maxDiff": 24,
+     "psnr": 29.86
+    },
+    "libheifVsRef": 48.0,
+    "heic2anyLevelFit": [
+     [
+      1.063,
+      -3.303
+     ],
+     [
+      1.075,
+      -3.781
+     ],
+     [
+      1.085,
+      -9.805
+     ]
+    ],
+    "clipped": {
+     "refBlackPct": 0.0,
+     "decBlackPct": 0.0,
+     "refWhitePct": 1.414,
+     "decWhitePct": 5.014
+    },
+    "jpg": {
+     "100": {
+      "bytes": 7581709,
+      "jpgVsDecoded": 51.22,
+      "jpgVsRef": 29.78
+     },
+     "70": {
+      "bytes": 226022,
+      "jpgVsDecoded": 43.09,
+      "jpgVsRef": 29.76
+     },
+     "80": {
+      "bytes": 334263,
+      "jpgVsDecoded": 43.96,
+      "jpgVsRef": 29.73
+     },
+     "90": {
+      "bytes": 767310,
+      "jpgVsDecoded": 44.74,
+      "jpgVsRef": 29.78
+     }
+    }
+   },
+   "flower-q90": {
+    "decodedSize": [
+     4032,
+     3024
+    ],
+    "heicVsRef": 29.84,
+    "heic2anyVsLibheif": {
+     "maxDiff": 22,
+     "psnr": 29.86
+    },
+    "libheifVsRef": 49.88,
+    "heic2anyLevelFit": [
+     [
+      1.064,
+      -3.39
+     ],
+     [
+      1.075,
+      -3.8
+     ],
+     [
+      1.086,
+      -9.867
+     ]
+    ],
+    "clipped": {
+     "refBlackPct": 0.0,
+     "decBlackPct": 0.0,
+     "refWhitePct": 1.414,
+     "decWhitePct": 5.016
+    },
+    "jpg": {
+     "100": {
+      "bytes": 8181751,
+      "jpgVsDecoded": 51.06,
+      "jpgVsRef": 29.8
+     },
+     "70": {
+      "bytes": 224626,
+      "jpgVsDecoded": 42.97,
+      "jpgVsRef": 29.76
+     },
+     "80": {
+      "bytes": 330693,
+      "jpgVsDecoded": 43.8,
+      "jpgVsRef": 29.73
+     },
+     "90": {
+      "bytes": 760422,
+      "jpgVsDecoded": 44.54,
+      "jpgVsRef": 29.79
+     }
+    }
+   },
+   "tortoise-q50": {
+    "decodedSize": [
+     4032,
+     3024
+    ],
+    "heicVsRef": 28.11,
+    "heic2anyVsLibheif": {
+     "maxDiff": 29,
+     "psnr": 28.57
+    },
+    "libheifVsRef": 37.98,
+    "heic2anyLevelFit": [
+     [
+      1.149,
+      -16.299
+     ],
+     [
+      1.152,
+      -16.95
+     ],
+     [
+      1.149,
+      -16.75
+     ]
+    ],
+    "clipped": {
+     "refBlackPct": 0.013,
+     "decBlackPct": 1.889,
+     "refWhitePct": 0.0,
+     "decWhitePct": 0.185
+    },
+    "jpg": {
+     "100": {
+      "bytes": 10214903,
+      "jpgVsDecoded": 51.48,
+      "jpgVsRef": 28.11
+     },
+     "70": {
+      "bytes": 1548954,
+      "jpgVsDecoded": 36.59,
+      "jpgVsRef": 27.75
+     },
+     "80": {
+      "bytes": 1993548,
+      "jpgVsDecoded": 37.93,
+      "jpgVsRef": 27.86
+     },
+     "90": {
+      "bytes": 3053579,
+      "jpgVsDecoded": 40.4,
+      "jpgVsRef": 28.0
+     }
+    }
+   },
+   "tortoise-q70-limited": {
+    "decodedSize": [
+     4032,
+     3024
+    ],
+    "heicVsRef": 42.79,
+    "heic2anyVsLibheif": {
+     "maxDiff": 7,
+     "psnr": 50.08
+    },
+    "libheifVsRef": 43.26,
+    "heic2anyLevelFit": [
+     [
+      0.994,
+      0.275
+     ],
+     [
+      0.996,
+      0.024
+     ],
+     [
+      0.997,
+      -0.067
+     ]
+    ],
+    "clipped": {
+     "refBlackPct": 0.013,
+     "decBlackPct": 0.013,
+     "refWhitePct": 0.0,
+     "decWhitePct": 0.0
+    },
+    "jpg": {
+     "100": {
+      "bytes": 10795975,
+      "jpgVsDecoded": 51.35,
+      "jpgVsRef": 42.21
+     },
+     "70": {
+      "bytes": 1434459,
+      "jpgVsDecoded": 36.17,
+      "jpgVsRef": 35.75
+     },
+     "80": {
+      "bytes": 1881274,
+      "jpgVsDecoded": 37.24,
+      "jpgVsRef": 36.68
+     },
+     "90": {
+      "bytes": 3002477,
+      "jpgVsDecoded": 39.27,
+      "jpgVsRef": 38.36
+     }
+    }
+   },
+   "tortoise-q70-rot": {
+    "decodedSize": [
+     3024,
+     4032
+    ],
+    "heicVsRef": 28.51,
+    "heicVsLandscapeRef": {
+     "error": "크기 다름 3024x4032 vs 4032x3024"
+    },
+    "heic2anyVsLibheif": {
+     "maxDiff": 23,
+     "psnr": 28.63
+    },
+    "libheifVsRef": 43.86,
+    "heic2anyLevelFit": [
+     [
+      1.153,
+      -16.795
+     ],
+     [
+      1.153,
+      -17.097
+     ],
+     [
+      1.146,
+      -16.368
+     ]
+    ],
+    "clipped": {
+     "refBlackPct": 0.013,
+     "decBlackPct": 1.933,
+     "refWhitePct": 0.0,
+     "decWhitePct": 0.202
+    },
+    "jpg": {
+     "100": {
+      "bytes": 11376050,
+      "jpgVsDecoded": 51.42,
+      "jpgVsRef": 28.5
+     },
+     "70": {
+      "bytes": 1585322,
+      "jpgVsDecoded": 35.31,
+      "jpgVsRef": 27.9
+     },
+     "80": {
+      "bytes": 2072466,
+      "jpgVsDecoded": 36.42,
+      "jpgVsRef": 28.06
+     },
+     "90": {
+      "bytes": 3282706,
+      "jpgVsDecoded": 38.61,
+      "jpgVsRef": 28.26
+     }
+    }
+   },
+   "tortoise-q70": {
+    "decodedSize": [
+     4032,
+     3024
+    ],
+    "heicVsRef": 28.51,
+    "heic2anyVsLibheif": {
+     "maxDiff": 23,
+     "psnr": 28.63
+    },
+    "libheifVsRef": 43.86,
+    "heic2anyLevelFit": [
+     [
+      1.15,
+      -16.445
+     ],
+     [
+      1.154,
+      -17.164
+     ],
+     [
+      1.15,
+      -16.962
+     ]
+    ],
+    "clipped": {
+     "refBlackPct": 0.013,
+     "decBlackPct": 1.933,
+     "refWhitePct": 0.0,
+     "decWhitePct": 0.202
+    },
+    "jpg": {
+     "100": {
+      "bytes": 11359082,
+      "jpgVsDecoded": 51.42,
+      "jpgVsRef": 28.5
+     },
+     "70": {
+      "bytes": 1580791,
+      "jpgVsDecoded": 35.33,
+      "jpgVsRef": 27.91
+     },
+     "80": {
+      "bytes": 2062999,
+      "jpgVsDecoded": 36.42,
+      "jpgVsRef": 28.06
+     },
+     "90": {
+      "bytes": 3272521,
+      "jpgVsDecoded": 38.59,
+      "jpgVsRef": 28.25
+     }
+    }
+   },
+   "tortoise-q90": {
+    "decodedSize": [
+     4032,
+     3024
+    ],
+    "heicVsRef": 28.58,
+    "heic2anyVsLibheif": {
+     "maxDiff": 22,
+     "psnr": 28.64
+    },
+    "libheifVsRef": 46.68,
+    "heic2anyLevelFit": [
+     [
+      1.15,
+      -16.532
+     ],
+     [
+      1.154,
+      -17.209
+     ],
+     [
+      1.15,
+      -17.018
+     ]
+    ],
+    "clipped": {
+     "refBlackPct": 0.013,
+     "decBlackPct": 1.951,
+     "refWhitePct": 0.0,
+     "decWhitePct": 0.203
+    },
+    "jpg": {
+     "100": {
+      "bytes": 12629451,
+      "jpgVsDecoded": 51.26,
+      "jpgVsRef": 28.57
+     },
+     "70": {
+      "bytes": 1581492,
+      "jpgVsDecoded": 35.19,
+      "jpgVsRef": 27.93
+     },
+     "80": {
+      "bytes": 2064813,
+      "jpgVsDecoded": 36.25,
+      "jpgVsRef": 28.09
+     },
+     "90": {
+      "bytes": 3279257,
+      "jpgVsDecoded": 38.32,
+      "jpgVsRef": 28.29
+     }
+    }
+   }
+  },
+  "direct": {
+   "tortoise": {
+    "50": {
+     "bytes": 980104,
+     "psnr": 34.63
+    },
+    "60": {
+     "bytes": 1151403,
+     "psnr": 35.19
+    },
+    "70": {
+     "bytes": 1434399,
+     "psnr": 35.98
+    },
+    "75": {
+     "bytes": 1606990,
+     "psnr": 36.42
+    },
+    "80": {
+     "bytes": 1881213,
+     "psnr": 37.03
+    },
+    "85": {
+     "bytes": 2284440,
+     "psnr": 37.81
+    },
+    "90": {
+     "bytes": 3004192,
+     "psnr": 39.02
+    },
+    "95": {
+     "bytes": 4596692,
+     "psnr": 41.58
+    },
+    "100": {
+     "bytes": 12566951,
+     "psnr": 51.64
+    }
+   },
+   "flower": {
+    "50": {
+     "bytes": 165661,
+     "psnr": 42.44
+    },
+    "60": {
+     "bytes": 183841,
+     "psnr": 43.09
+    },
+    "70": {
+     "bytes": 213541,
+     "psnr": 43.86
+    },
+    "75": {
+     "bytes": 235960,
+     "psnr": 44.46
+    },
+    "80": {
+     "bytes": 284261,
+     "psnr": 44.75
+    },
+    "85": {
+     "bytes": 378620,
+     "psnr": 45.18
+    },
+    "90": {
+     "bytes": 626427,
+     "psnr": 45.75
+    },
+    "95": {
+     "bytes": 1340034,
+     "psnr": 46.55
+    },
+    "100": {
+     "bytes": 8055165,
+     "psnr": 51.73
+    }
+   }
+  },
+  "otherBrowsers": {
+   "Firefox": {
+    "flower-q50": {
+     "bytes": 763830,
+     "size": [
+      4032,
+      3024
+     ],
+     "jpgVsRef": 29.74
+    },
+    "flower-q70-limited": {
+     "bytes": 1421880,
+     "size": [
+      4032,
+      3024
+     ],
+     "jpgVsRef": 29.74
+    },
+    "flower-q70": {
+     "bytes": 1313522,
+     "size": [
+      4032,
+      3024
+     ],
+     "jpgVsRef": 29.77
+    },
+    "flower-q90": {
+     "bytes": 1306422,
+     "size": [
+      4032,
+      3024
+     ],
+     "jpgVsRef": 29.78
+    },
+    "tortoise-q50": {
+     "bytes": 3403691,
+     "size": [
+      4032,
+      3024
+     ],
+     "jpgVsRef": 27.98
+    },
+    "tortoise-q70-limited": {
+     "bytes": 3409125,
+     "size": [
+      4032,
+      3024
+     ],
+     "jpgVsRef": 38.55
+    },
+    "tortoise-q70-rot": {
+     "bytes": 3741761,
+     "size": [
+      3024,
+      4032
+     ],
+     "jpgVsRef": 28.26
+    },
+    "tortoise-q70": {
+     "bytes": 3715593,
+     "size": [
+      4032,
+      3024
+     ],
+     "jpgVsRef": 28.26
+    },
+    "tortoise-q90": {
+     "bytes": 3820297,
+     "size": [
+      4032,
+      3024
+     ],
+     "jpgVsRef": 28.31
+    }
+   },
+   "WebKit": {
+    "flower-q50": {
+     "bytes": 468228,
+     "size": [
+      4032,
+      3024
+     ],
+     "jpgVsRef": 29.75
+    },
+    "flower-q70-limited": {
+     "bytes": 844366,
+     "size": [
+      4032,
+      3024
+     ],
+     "jpgVsRef": 29.76
+    },
+    "flower-q70": {
+     "bytes": 767310,
+     "size": [
+      4032,
+      3024
+     ],
+     "jpgVsRef": 29.78
+    },
+    "flower-q90": {
+     "bytes": 760422,
+     "size": [
+      4032,
+      3024
+     ],
+     "jpgVsRef": 29.79
+    },
+    "tortoise-q50": {
+     "bytes": 3053579,
+     "size": [
+      4032,
+      3024
+     ],
+     "jpgVsRef": 28.0
+    },
+    "tortoise-q70-limited": {
+     "bytes": 3002477,
+     "size": [
+      4032,
+      3024
+     ],
+     "jpgVsRef": 38.36
+    },
+    "tortoise-q70-rot": {
+     "bytes": 3282706,
+     "size": [
+      3024,
+      4032
+     ],
+     "jpgVsRef": 28.26
+    },
+    "tortoise-q70": {
+     "bytes": 3272521,
+     "size": [
+      4032,
+      3024
+     ],
+     "jpgVsRef": 28.25
+    },
+    "tortoise-q90": {
+     "bytes": 3279257,
+     "size": [
+      4032,
+      3024
+     ],
+     "jpgVsRef": 28.29
+    }
+   }
+  }
+ },
+ "ui": {
+  "measuredAt": "2026-11-22T19:49:09.952Z",
+  "browser": "151.0.7922.34",
+  "url": "http://127.0.0.1:3145/tools/image/heic-to-jpg",
+  "single": {
+   "tortoise-q70": {
+    "files": 1,
+    "inputBytes": 4742008,
+    "ms": 12193,
+    "done": 1,
+    "pageErrors": [],
+    "download": {
+     "name": "tortoise-q70.jpg",
+     "bytes": 3272521,
+     "sha256": "8e1ab83da2f26b1508a91093d8a2167a32532ea61571b4ba4ccc39c45d348f11"
+    },
+    "measuredSha256": "8e1ab83da2f26b1508a91093d8a2167a32532ea61571b4ba4ccc39c45d348f11",
+    "measuredBytes": 3272521,
+    "identical": true
+   },
+   "flower-q70": {
+    "files": 1,
+    "inputBytes": 2715496,
+    "ms": 10304,
+    "done": 1,
+    "pageErrors": [],
+    "download": {
+     "name": "flower-q70.jpg",
+     "bytes": 767310,
+     "sha256": "999190c57a9da60532aa3dbb62c9004c5b7d55e42553e6478992bc3444f2fe4c"
+    },
+    "measuredSha256": "999190c57a9da60532aa3dbb62c9004c5b7d55e42553e6478992bc3444f2fe4c",
+    "measuredBytes": 767310,
+    "identical": true
+   }
+  },
+  "batch": [
+   {
+    "files": 1,
+    "inputBytes": 4742008,
+    "ms": 11978,
+    "done": 1,
+    "pageErrors": []
+   },
+   {
+    "files": 1,
+    "inputBytes": 4742008,
+    "ms": 11823,
+    "done": 1,
+    "pageErrors": []
+   },
+   {
+    "files": 1,
+    "inputBytes": 4742008,
+    "ms": 12155,
+    "done": 1,
+    "pageErrors": []
+   },
+   {
+    "files": 5,
+    "inputBytes": 22689226,
+    "ms": 60016,
+    "done": 5,
+    "pageErrors": [],
+    "download": {
+     "name": "floor05-converted-images.zip",
+     "bytes": 11133643,
+     "sha256": "0a19d1bec99ae614b6198ffb47ef54c4c275bb81e2e224457a1df7a69fa9697f"
+    }
+   },
+   {
+    "files": 5,
+    "inputBytes": 22689226,
+    "ms": 56157,
+    "done": 5,
+    "pageErrors": []
+   },
+   {
+    "files": 5,
+    "inputBytes": 22689226,
+    "ms": 58978,
+    "done": 5,
+    "pageErrors": []
+   },
+   {
+    "files": 10,
+    "inputBytes": 39545142,
+    "ms": 105914,
+    "done": 10,
+    "pageErrors": [],
+    "download": {
+     "name": "floor05-converted-images.zip",
+     "bytes": 21927461,
+     "sha256": "0e9270ec0a2d76f102acb03aaee276446cf6c69b23e31eec87577ea9abb7de06"
+    }
+   },
+   {
+    "files": 10,
+    "inputBytes": 39545142,
+    "ms": 107199,
+    "done": 10,
+    "pageErrors": []
+   },
+   {
+    "files": 10,
+    "inputBytes": 39545142,
+    "ms": 108803,
+    "done": 10,
+    "pageErrors": []
+   }
+  ]
+ }
+}
