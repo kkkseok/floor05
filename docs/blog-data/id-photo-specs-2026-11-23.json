@@ -1,0 +1,175 @@
+{
+  "checkedAt": "2026-11-23",
+  "checkedAtNote": "한국 시간 기준(2026-11-23 01:33~01:36 KST에 받음)",
+  "method": "발급·접수 기관의 공식 페이지를 HTTP 요청으로 직접 받아 본문 문장에서 수치를 읽었다(로그인하지 않음). 도로교통공단 사진규격 페이지는 규격이 이미지 한 장으로 실려 있어 그 이미지 파일을 받아 직접 열어 읽었다. 블로그·사진관·검색 결과 요약은 근거로 쓰지 않았다. quote는 페이지에 적힌 문장 그대로다.",
+  "confirmed": [
+    {
+      "id": "resident-card",
+      "type": "주민등록증",
+      "item": "제출 사진 크기",
+      "values": { "printCm": [3.5, 4.5], "takenWithinMonths": 6 },
+      "quote": "규격 : 6개월 이내 촬영한 가로 3.5cm×세로 4.5cm의 모자 등을 쓰지 않은 상반신 사진 / 여권 사진 규격으로 촬영하면 주민등록증과 여권 발급 시 모두 사용 가능 / 사진크기는 가로 3.5cm×세로 4.5cm로, 6개월 이내에 촬영한 천연색 상반신 정면 탈모 사진",
+      "url": "https://www.mois.go.kr/frt/sub/a06/b06/IDCard_5/screen.do",
+      "pageTitle": "행정안전부> 업무안내> 자치혁신실> 주민등록,인감> 주민등록증 (사진 탭)",
+      "also": [
+        {
+          "url": "https://www.gov.kr/mw/AA020InfoCappView.do?CappBizCD=13100000018",
+          "pageTitle": "주민등록증 재발급 신청 | 민원안내 및 신청 | 정부24",
+          "quote": "6개월 이내에 촬영한 3.5㎝×4.5㎝의 모자 등을 쓰지 않은 상반신 사진 1장"
+        }
+      ],
+      "note": "정부24로 신청할 때 내는 사진 파일의 픽셀·용량은 공개된 안내 페이지에서 찾지 못했다(행정안전부 재발급 탭에는 '정부24로 신청시 사진파일'이라고만 적혀 있음).",
+      "status": "확인"
+    },
+    {
+      "id": "driver-license-print",
+      "type": "운전면허증·국제운전면허증",
+      "item": "인화 사진 크기",
+      "values": { "printCm": [3.5, 4.5], "headLengthCm": [3.2, 3.6], "takenWithinMonths": 6, "background": "흰색" },
+      "quote": "표준 사진 - 신청일로부터 6개월 이내에 촬영한 3.5cm x 4.5cm 탈모, 상반신, 흰색 배경 컬러 사진 / 머리 길이가 정수리(머리카락 제외 머리 최상부)부터 턱까지 3.2~3.6cm 사이인 사진",
+      "url": "https://www.safedriving.or.kr/etGuide/selectEtGuide04.do",
+      "imageUrl": "https://www.safedriving.or.kr/resources/img/photo.png",
+      "pageTitle": "홈 | 한국도로교통공단 안전운전 통합민원 (홈페이지 도움말 > 사진규격)",
+      "also": [
+        {
+          "url": "https://www.koroad.or.kr/main/board/9/306204/board_view.do?cp=5&listType=list&bdOpenYn=Y&bdNoticeYn=N",
+          "pageTitle": "2026년 3월 1일부터 여권용 사진 규격 엄격히 적용(도로교통법 시행규칙 제57조) (한국도로교통공단 운전면허시험장 공지사항, 작성일 2026-02-24)",
+          "quote": "2026년 3월 1일부터 운전면허증에 여권용 사진 규격을 엄격히 적용합니다. 여권용 규격이 아닌 사진은 현장에서 반려됩니다. / 5) (사진 및 얼굴 크기) 사진 3.5 X 4.5cm, 머리 길이는 3.2~3.6cm 사이인 것으로 해야 함."
+        }
+      ],
+      "note": "규격 안내 이미지의 부적합 예시 첫 칸이 '반명함판 얼굴 비율'이다.",
+      "status": "확인"
+    },
+    {
+      "id": "driver-license-online",
+      "type": "운전면허증·국제운전면허증",
+      "item": "온라인 신청 사진 파일",
+      "values": {
+        "maxFileKB": 500,
+        "format": "JPG",
+        "recommendedPx": [413, 531],
+        "allowedWidthPx": [395, 431],
+        "allowedHeightPx": [507, 550],
+        "recommendedDpi": 300
+      },
+      "quote": "온라인 신청 시 - 파일 크기 500킬로바이트(KB) 이하의 JPG 파일(300dpi 해상도 권장) / 413 × 531 픽셀(Pixel) 권장(가로 395~431 픽셀, 세로 507~550 픽셀 이내만 업로드 가능) / 인화 사진을 휴대전화로 재촬영하거나 여권 등 타 신분증의 사진을 스캔하여 사용할 수 없음",
+      "url": "https://www.safedriving.or.kr/etGuide/selectEtGuide04.do",
+      "imageUrl": "https://www.safedriving.or.kr/resources/img/photo.png",
+      "pageTitle": "홈 | 한국도로교통공단 안전운전 통합민원 (홈페이지 도움말 > 사진규격)",
+      "note": "수치는 페이지의 안내 이미지(경찰청·한국도로교통공단 '운전면허증·국제운전면허증 사진 규격')에서 읽었다. 이미지의 대체 텍스트(alt)에는 '500킬로바이트(KB) 이하의 JPG 파일, 가로 413 세로 531 픽셀'까지만 있고 허용 범위는 이미지에만 있다. 같은 페이지의 HTML 소스에는 주석 처리된 예전 안내(250KB 이하, 가로 350·세로 450픽셀, 200~500픽셀)가 남아 있으나 화면에 표시되지 않는다. floor05의 이전 글과 압축 도구 페이지 표가 쓰던 350×450px·250KB는 이 예전 안내와 같은 값이다.",
+      "status": "확인"
+    },
+    {
+      "id": "gosi-application",
+      "type": "국가공무원 채용시험 응시원서",
+      "item": "응시원서 등록용 사진 파일",
+      "values": {
+        "printCm": [3.5, 4.5],
+        "px": [137, 177],
+        "maxFileKBExclusive": 350,
+        "formats": ["JPG", "PNG"]
+      },
+      "quote": "응시원서 등록용 사진파일(JPG, PNG) 규격 / 크기 3.5cm x 4.5cm(137 x 177 pixel) 기준 / 파일용량 350KB 미만(중증장애인 선발시험 제외)",
+      "url": "https://gongmuwon.gosi.kr/oprut/AppApAplfSbmsnAplfRcptGd.do",
+      "pageTitle": "국가공무원 채용시스템 (원서접수 > 응시원서 제출)",
+      "note": "floor05의 이전 글과 압축 도구 페이지 표는 '100KB 미만, JPG'로 적었으나 이 페이지에는 350KB 미만, JPG·PNG로 적혀 있다. 지방공무원 원서접수(지방자치단체 인터넷원서접수센터)는 확인하지 않았다.",
+      "status": "확인"
+    },
+    {
+      "id": "csat-online",
+      "type": "대학수학능력시험 응시원서(2027학년도)",
+      "item": "온라인 사전입력 사진 파일",
+      "values": {
+        "maxFileKB": 500,
+        "formats": ["JPG", "JPEG"],
+        "recommendedPx": [413, 531],
+        "allowedWidthPx": [395, 431],
+        "allowedHeightPx": [507, 550],
+        "recommendedDpi": 300,
+        "takenWithinMonths": 6
+      },
+      "quote": "여권용 규격 사진 업로드(사진규격 : 파일 크기 500KB 이하, 파일 형식 JPG/JPEG, 가로 413 픽셀(pixel), 세로 531 픽셀 사이즈 권장(가로 395~431 픽셀, 세로 507~550 픽셀 이내만 업로드 가능), 해상도는 300dpi 권장, 6개월 이내에 촬영된 사진)",
+      "url": "https://www.suneung.re.kr/sub/info.do?m=0102&s=suneung",
+      "pageTitle": "한국교육과정평가원 대학수학능력시험 홈페이지 (대학수학능력시험 > 응시원서 접수)",
+      "status": "확인"
+    },
+    {
+      "id": "csat-print",
+      "type": "대학수학능력시험 응시원서(2027학년도)",
+      "item": "현장 접수 부착 사진",
+      "values": { "printCm": [3.5, 4.5], "headLengthCm": [3.2, 3.6], "copies": 2, "takenWithinMonths": 6 },
+      "quote": "여권용 규격 사진 2매(응시원서 부착용) / 원서접수 시작일로부터 최근 6개월 이내에 촬영된 천연색 상반신 정면 여권용 규격 사진(가로 3.5cm×세로 4.5cm)으로, 머리의 길이(정수리부터 턱까지)는 3.2cm∼3.6cm이어야 함.",
+      "url": "https://www.suneung.re.kr/sub/info.do?m=0102&s=suneung",
+      "pageTitle": "한국교육과정평가원 대학수학능력시험 홈페이지 (대학수학능력시험 > 응시원서 접수)",
+      "status": "확인"
+    },
+    {
+      "id": "passport-print",
+      "type": "여권",
+      "item": "여권사진 크기(이 글에서는 한 줄 요약만 씀)",
+      "values": { "printCm": [3.5, 4.5], "takenWithinMonths": 6 },
+      "quote": "여권사진의 크기는 가로 3.5cm X 세로 4.5cm, / 여권발급 신청일 전 6개월 이내에 모자 등을 쓰지 않고 촬영한 천연색 상반신 정면 사진을 제출해야 함",
+      "url": "https://www.passport.go.kr/home/kor/contents.do?menuPos=32",
+      "pageTitle": "외교부 여권안내 홈페이지 (여권기본사항 > 여권 사진)",
+      "note": "머리 길이·온라인 재발급 파일 규격 등 상세는 passport-photo-size 글에서 다룬다.",
+      "status": "확인"
+    },
+    {
+      "id": "toeic-sw",
+      "type": "TOEIC Speaking·Writing 인터넷 접수",
+      "item": "첨부 사진 파일",
+      "values": { "printCm": [3, 4], "format": "JPG", "maxFileMB": 6 },
+      "quote": "[TOEIC SW] 인터넷 접수 시 첨부하는 사진파일은 어떻게 등록해야 하나요? … jpg(jpeg) 파일만 가능하며 파일의 크기는 6MB 이하이어야 합니다. 만약 파일의 크기가 6MB를 초과할 경우 용량을 줄이셔야 합니다. * jpg(jpeg) 파일 사이즈: 3X4 cm / [TOEIC SW] 인터넷으로 접수 중인데 사진파일만 올리면 오류가 나요. 사진 사이즈는 3*4cm로 만들어야 하며, 반드시 jpg파일로 저장하시기 바랍니다.",
+      "url": "https://www.toeic.co.kr/customer/csFaq.php?currentPage=10",
+      "pageTitle": "YBM 어학시험 공식 사이트 고객센터 FAQ",
+      "note": "FAQ 목록의 10번째 쪽에서 읽었다. 목록이 바뀌면 쪽 번호가 달라질 수 있다. 문항 머리말이 [TOEIC SW]라서 TOEIC 정기시험에 그대로 적용된다고 볼 근거는 없다. 같은 문항이 '머리의 길이(정수리부터 턱까지)가 3.2~3.6cm'도 요구하는데, 이는 3.5×4.5cm 여권용 규격의 값과 같다. 픽셀 규격은 적혀 있지 않다.",
+      "status": "확인"
+    }
+  ],
+  "failed": [
+    {
+      "id": "us-visa",
+      "type": "미국 비자 사진(2×2인치, 600×600px 등)",
+      "tried": [
+        "https://travel.state.gov/content/travel/en/us-visas/visa-information-resources/photos.html",
+        "https://travel.state.gov/content/travel/en/us-visas/visa-information-resources/photos/digital-image-requirements.html"
+      ],
+      "reason": "두 페이지 모두 HTTP 403(자동 접속 차단 화면)으로 본문을 읽지 못했다. 차단을 우회하지 않았다.",
+      "status": "확인 실패"
+    },
+    {
+      "id": "toeic-regular",
+      "type": "TOEIC 정기시험 응시원서 사진(이전 글의 115×150px, 500KB)",
+      "tried": [
+        "https://exam.toeic.co.kr/customer/csFaq.php?currentPage=1~7",
+        "https://www.toeic.co.kr/customer/csFaq.php?currentPage=1~14"
+      ],
+      "reason": "공개 FAQ에서 115×150px·500KB라는 수치를 찾지 못했다. 사진 등록 화면은 접수 절차 안에 있어 열지 않았다.",
+      "status": "확인 실패"
+    },
+    {
+      "id": "half-business-card",
+      "type": "반명함판(3×4cm)·명함판이라는 이름의 규격",
+      "tried": ["위 기관 페이지 전부"],
+      "reason": "'반명함판 = 3×4cm'라고 정의한 공식 규격 문서는 찾지 못했다. 3×4cm를 요구하는 공식 안내는 TOEIC Speaking·Writing FAQ 하나만 확인했다.",
+      "status": "확인 실패"
+    },
+    {
+      "id": "resident-card-online",
+      "type": "주민등록증 정부24 신청 사진 파일의 픽셀·용량",
+      "tried": [
+        "https://www.mois.go.kr/frt/sub/a06/b06/IDCard_3/screen.do",
+        "https://www.gov.kr/mw/AA020InfoCappView.do?CappBizCD=13100000018"
+      ],
+      "reason": "'정부24로 신청시 사진파일'이라고만 적혀 있고 픽셀·용량 수치는 없다. 신청 화면은 로그인 뒤에 있어 열지 않았다.",
+      "status": "확인 실패"
+    },
+    {
+      "id": "job-sites",
+      "type": "잡코리아·사람인 이력서 사진(이전 글의 1MB, 10MB)",
+      "tried": [],
+      "reason": "로그인 뒤 이력서 작성 화면의 안내라 확인하지 않았다.",
+      "status": "확인 실패"
+    }
+  ]
+}
