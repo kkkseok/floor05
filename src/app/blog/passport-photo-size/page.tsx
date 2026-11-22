@@ -152,24 +152,6 @@ const bars = [
   { label: "PNG", value: "470KB", pct: 94.1 },
 ];
 
-const summary = [
-  {
-    situation: "온라인 재발급용 파일",
-    action: "35:45로 잘라 413×531px JPG로",
-    basis: "10~70KB, 한도의 2.1~14.1%",
-  },
-  {
-    situation: "규격보다 작은 사진",
-    action: "키우지 말고 큰 원본에서 다시",
-    basis: "207×266에서 키우면 26.79dB, 바로 줄이면 36.99dB",
-  },
-  {
-    situation: "500KB가 넘는 원본",
-    action: "압축보다 자르기를 먼저",
-    basis: "목표 용량 500KB만 쓰면 2485×1940px",
-  },
-];
-
 function OfficialLink({ source }: { source: { label: string; url: string } }) {
   return (
     <a
@@ -224,17 +206,15 @@ export default function PassportPhotoSizePage() {
               수치이고, 이전 판에 출처 없이 적혀 있던 숫자는 지웠습니다.
             </p>
             <p className="text-brand-mid leading-relaxed mb-8">
-              그 크기로 파일을 만들어 용량도 쟀습니다. 카메라 원본을 413×531 JPG로 저장하면
-              10~70KB로, 한도 500KB의 2.1~14.1%였습니다. 신경 쓸 곳은 용량보다 픽셀 범위와 파일
-              형식이었습니다.
+              그 크기로 저장한 파일도 쟀습니다. 카메라 원본을 413×531 JPG로 만들면 10~70KB로, 한도
+              500KB의 2.1~14.1%였습니다.
             </p>
 
             <h2 className="text-2xl font-bold text-brand-black mt-12 mb-4">
               외교부 안내에서 확인한 규격
             </h2>
             <p className="text-brand-mid leading-relaxed mb-4">
-              아래 수치는 {CHECKED}에 외교부 여권안내와 정부24 본문에서 읽은 것입니다. 출처 칸의 링크가
-              그 페이지입니다.
+              아래 수치는 {CHECKED}에 외교부 여권안내와 정부24 본문에서 읽은 것입니다.
             </p>
             <div className="overflow-x-auto mb-4">
               <table className="w-full text-sm border-collapse">
@@ -276,8 +256,8 @@ export default function PassportPhotoSizePage() {
               가능&rsquo;이라고 적혀 있습니다. 두 곳 모두 받는 JPG가 안전합니다.
             </p>
             <p className="text-brand-mid leading-relaxed mb-6">
-              방문 신청 때 내는 사진 매수, 눈 위치 같은 세부 수치, 500KB를 500,000바이트와
-              512,000바이트 중 어느 쪽으로 세는지는 공식 페이지 본문에서 찾지 못해 적지 않았습니다.
+              방문 신청 때 내는 사진 매수와 눈 위치 같은 세부 수치는 공식 페이지 본문에서 찾지 못해
+              적지 않았습니다.
               다른 증명사진은{" "}
               <Link href="/blog/id-photo-size-guide" className="text-brand-accent hover:underline">
                 증명사진 크기 글
@@ -301,7 +281,7 @@ export default function PassportPhotoSizePage() {
               </li>
               <li>
                 <strong className="text-brand-black">흰 배경 도형</strong>: 스크립트로 그린
-                3024×4032 그림, 1.02MB. 옅은 회색 배경에 타원과 어깨 모양
+                3024×4032 그림, 1.02MB
               </li>
             </ul>
             <p className="text-brand-mid leading-relaxed mb-8">
@@ -311,8 +291,8 @@ export default function PassportPhotoSizePage() {
               </Link>
               의 &lsquo;여권 3.5×4.5&rsquo; 프리셋 코드를 Chromium에서 그대로 돌렸습니다. 35:45
               비율로 가운데를 가장 크게 자르고 413×531로 줄여 JPG 품질 92%로 저장합니다. 거북이
-              사진은 실제 도구에서 내려받은 파일과 바이트 수가 같았습니다. 1KB는 1,000바이트, 한도
-              대비 비율은 500,000바이트 기준입니다.
+              사진은 실제 도구에서 내려받은 파일과 바이트 수가 같았습니다. 1KB는 1,000바이트로
+              적었습니다.
             </p>
 
             <h2 className="text-2xl font-bold text-brand-black mt-12 mb-4">
@@ -390,11 +370,12 @@ export default function PassportPhotoSizePage() {
               </Link>
               의 목표 용량 500KB에 넣으니 2485×1940픽셀, 506KB 파일이 나왔습니다. 꽃 사진은
               7373×4918픽셀이었습니다. 가로 395~431픽셀이라는 업로드 범위와 거리가 멉니다. 압축은
-              용량을 맞출 뿐 픽셀을 규격 크기로 만들지 않습니다.
+              용량만 맞춥니다.
             </p>
             <p className="text-brand-mid leading-relaxed mb-6">
               506KB인 것은 도구가 1KB를 1,024바이트로 계산해 512,000바이트 아래로 맞추기 때문입니다.
-              413×531로 먼저 자르면 어느 기준으로도 한참 아래입니다. 품질과 용량의 관계는{" "}
+              공식 페이지에는 500KB를 어느 기준으로 세는지 적혀 있지 않지만, 413×531로 먼저 자르면
+              어느 쪽으로도 한참 아래입니다. 품질과 용량의 관계는{" "}
               <Link href="/blog/image-compression-guide" className="text-brand-accent hover:underline">
                 이미지 용량 줄이기 실측
               </Link>
@@ -409,8 +390,7 @@ export default function PassportPhotoSizePage() {
               3. PNG로 저장하면 한도에 바짝 붙는다
             </h2>
             <p className="text-brand-mid leading-relaxed mb-6">
-              같은 413×531을 PNG로 저장하면 거북이 사진이 470KB였습니다. 한도의 94.1%, JPG 92%의
-              6.7배입니다. 온라인용 사진파일 안내가 적은 형식도 JPG/JPEG입니다. floor05 크롭은
+              같은 413×531을 PNG로 저장하면 거북이 사진이 470KB였습니다. 한도의 94.1%, JPG 92%의 6.7배입니다. floor05 크롭은
               PNG를 넣으면 PNG로 저장하니, PNG 사진은{" "}
               <Link href="/tools/image/convert" className="text-brand-accent hover:underline">
                 이미지 변환
@@ -442,22 +422,17 @@ export default function PassportPhotoSizePage() {
                 207×266에서 키움(26.79dB). 사진: NASA(공공 도메인)
               </figcaption>
             </figure>
-            <p className="text-brand-mid leading-relaxed mb-6">
-              floor05 크롭의 &lsquo;증명사진 3×4&rsquo; 프리셋(354×472픽셀) 파일도 그대로는 올릴 수
-              없습니다. 가로 354픽셀이 하한 395픽셀보다 작습니다.
-            </p>
-
             <h2 className="text-2xl font-bold text-brand-black mt-12 mb-4">
               5. 300dpi와 머리 길이는 파일에서 어떻게 보이나
             </h2>
             <p className="text-brand-mid leading-relaxed mb-4">
               413×531픽셀을 3.5×4.5cm로 인화하면 계산상 299.7dpi로, 공식 안내의 300dpi 권장과
               맞습니다. 다만 floor05가 저장한 JPG에는 dpi 값이 기록돼 있지 않았습니다(JFIF 밀도 단위
-              0, Chromium 기준). 업로드 시스템이 이 값을 보는지는 확인하지 못했습니다.
+              0, Chromium 기준).
             </p>
             <p className="text-brand-mid leading-relaxed mb-4">
               머리 길이 3.2~3.6cm는 세로 4.5cm의 71.1~80.0%이고, 세로 531픽셀로 환산하면 약
-              378~425픽셀입니다. 공식 수치를 직접 계산한 값이며 공식 페이지에 적힌 숫자는 아닙니다.
+              378~425픽셀입니다. 공식 수치로 직접 계산한 값입니다.
             </p>
             <p className="text-brand-mid leading-relaxed mb-6">
               floor05 크롭은 얼굴을 인식하지 않습니다. 머리 길이는 외교부의{" "}
@@ -470,30 +445,6 @@ export default function PassportPhotoSizePage() {
               </Link>
               에 있습니다.
             </p>
-
-            <h2 className="text-2xl font-bold text-brand-black mt-12 mb-4">정리</h2>
-            <div className="overflow-x-auto mb-8">
-              <table className="w-full text-sm border-collapse">
-                <thead>
-                  <tr className="border-b border-brand-light/40 text-left">
-                    <th className="py-2 pr-4 text-brand-black">상황</th>
-                    <th className="py-2 pr-4 text-brand-black">이렇게</th>
-                    <th className="py-2 pr-4 text-brand-black">근거 (이번 측정)</th>
-                  </tr>
-                </thead>
-                <tbody className="text-brand-mid">
-                  {summary.map((row) => (
-                    <tr key={row.situation} className="border-b border-brand-light/20 align-top">
-                      <td className="py-2 pr-4 font-medium text-brand-black whitespace-nowrap">
-                        {row.situation}
-                      </td>
-                      <td className="py-2 pr-4 min-w-[11rem]">{row.action}</td>
-                      <td className="py-2 pr-4 min-w-[12rem]">{row.basis}</td>
-                    </tr>
-                  ))}
-                </tbody>
-              </table>
-            </div>
 
             <h2 className="text-2xl font-bold text-brand-black mt-12 mb-6">자주 묻는 질문</h2>
             <div className="space-y-6">
