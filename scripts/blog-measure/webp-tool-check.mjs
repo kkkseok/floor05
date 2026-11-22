@@ -57,6 +57,10 @@ for (const spec of specs) {
     const buf = fs.readFileSync(saved);
     row.downloadName = d.suggestedFilename();
     row.bytes = buf.length;
+    row.decoded = await page.evaluate(async (b64) => {
+      const blob = await (await fetch("data:application/octet-stream;base64," + b64)).blob();
+      try { const bm = await createImageBitmap(blob); return { width: bm.width, height: bm.height }; } catch (e) { return { error: String(e && e.message || e) }; }
+    }, buf.toString("base64"));
     row.magic = buf.toString("latin1", 0, 4) === "RIFF" ? `RIFF/${buf.toString("latin1", 8, 16)}` : buf[0] === 0xff ? "JPEG" : buf.toString("latin1", 1, 4);
   } else {
     row.failed = true;

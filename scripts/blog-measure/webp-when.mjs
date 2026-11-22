@@ -7,7 +7,7 @@
  *                PSNR 기준 = 저장 직전 캔버스 픽셀(RGB). matched = 같은 PSNR 이상을 내는 가장 작은 상대 형식.
  *  B. reconvert: 이미 JPG로 저장된 파일을 WebP 품질 1~100%로 변환한 용량. PSNR 기준 = (1) 입력 JPG, (2) JPG 이전의 무손실 기준.
  *  C. originals: 카메라 원본 JPG를 원본 크기 그대로 WebP/JPG로 변환. PSNR 기준 = 디코딩한 원본 픽셀.
- *  D. limits   : 세로 16383 / 16384px 캔버스의 WebP·JPG·PNG 저장 결과(형식, 용량, 오류).
+ *  D. limits   : 세로 16383 / 16384 / 20000px 캔버스의 WebP·JPG·PNG 저장 결과(형식, 용량, 다시 열었을 때 픽셀 크기, 오류).
  *  E. engines  : Chromium·WebKit·Firefox에서 품질 100% WebP가 무손실인지, 16384px에서 무엇이 나오는지(canvas.toBlob).
  *
  * 사용: (저장소 루트에서, 빌드된 사이트를 띄운 뒤)
@@ -206,7 +206,7 @@ const limitTest = async (pg, deskB64, mobileB64) => pg.evaluate(async ({ deskB64
   }
   // 세로로 긴 이미지: 휴대폰 캡처(1080×2340)를 이어 붙여 높이를 맞춘다
   const mob = await load("data:image/png;base64," + mobileB64);
-  for (const h of [16383, 16384]) {
+  for (const h of [16383, 16384, 20000]) {
     const t = document.createElement("canvas"); t.width = mob.width; t.height = h;
     const x = t.getContext("2d");
     for (let y = 0; y < h; y += mob.height) x.drawImage(mob, 0, y);
@@ -215,11 +215,13 @@ const limitTest = async (pg, deskB64, mobileB64) => pg.evaluate(async ({ deskB64
       try {
         const blob = await toBlob(t, type, q);
         row = blob ? { ...row, gotType: blob.type, bytes: blob.size } : { ...row, gotType: null, bytes: null, note: "toBlob이 null을 돌려줌" };
+        if (blob) { try { const back = await load(URL.createObjectURL(blob)); row.decodedWidth = back.naturalWidth; row.decodedHeight = back.naturalHeight; } catch { row.decodeError = true; } }
         if (typeof OffscreenCanvas !== "undefined" && type === "image/webp") {
           try {
             const o = new OffscreenCanvas(t.width, h); o.getContext("2d").drawImage(t, 0, 0);
             const ob = await o.convertToBlob({ type, quality: q });
             row.offscreen = { gotType: ob.type, bytes: ob.size };
+            try { const bm = await createImageBitmap(ob); row.offscreen.decodedWidth = bm.width; row.offscreen.decodedHeight = bm.height; bm.close(); } catch { row.offscreen.decodeError = true; }
           } catch (e) { row.offscreen = { error: String(e && e.message || e) }; }
         }
       } catch (e) { row.error = String(e && e.message || e); }
