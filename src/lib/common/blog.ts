@@ -198,7 +198,7 @@ export const POSTS: BlogPost[] = [
       "사진 저작권 정보",
     ],
     datePublished: "2026-06-20",
-    dateModified: "2026-12-08",
+    dateModified: "2026-12-04",
     readTime: "6분",
     related: ["image-watermark-guide", "browser-image-tools-privacy"],
   },
