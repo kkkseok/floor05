@@ -6,6 +6,15 @@
   "units": "bytes. 글에서는 1KB=1,000B, 1MB=1,000,000B로 환산",
   "specs": "규격 수치의 출처는 docs/blog-data/id-photo-specs-*.json",
   "notMeasured": "얼굴 길이(3.2~3.6cm)·배경색·표정 같은 사진 내용 조건, 접수 시스템의 실제 업로드 판정, Firefox·Safari 결과. 측정에 인물 사진을 쓰지 않았다.",
+  "toolCheck": {
+    "note": "빌드된 사이트(next start)의 실제 이미지 크롭 도구에 tortoise를 넣고 받은 파일(scripts/blog-measure/id-photo-tool-check.mjs). 413x531은 여권 3.5×4.5 프리셋, 354x472는 증명사진 3×4 프리셋, 137x177은 정확한 크기로 출력에 직접 입력. 세 값 모두 photos.tortoise.sizes[].jpgByQuality[0.92]와 바이트 단위로 같다.",
+    "browser": "Playwright Chromium 151.0.7922.34",
+    "downloads": {
+      "413x531": 70400,
+      "354x472": 54440,
+      "137x177": 10464
+    }
+  },
   "calc": {
     "note": "계산값(측정 아님). 1인치 = 2.54cm. px = cm × dpi ÷ 2.54, w·h는 반올림",
     "cmToPx": [
