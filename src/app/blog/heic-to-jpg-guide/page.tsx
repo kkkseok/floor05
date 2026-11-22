@@ -235,7 +235,8 @@ export default function HeicToJpgGuidePage() {
             </div>
             <p className="text-sm text-brand-light mb-6">
               거북이 품질 70 파일의 같은 영역(1200×900)을 줄인 것. 이 영역의 평균 밝기는 기준 58.0,
-              가운데 50.5, 오른쪽 57.8이고, 가운데 그림에서는 영역의 8.8%가 새로 완전한 검정이 됐습니다.
+              전체 범위 결과 50.5, 제한 범위 결과 57.8이고, 전체 범위 결과에서는 영역의 8.8%가 새로 완전한
+              검정이 됐습니다.
             </p>
             <p className="text-brand-mid leading-relaxed mb-4">
               원인은 heic2any 안에 든 변환식입니다. HEIC는 밝기를 0~255 전체로 담을 수도 있고(전체 범위),
