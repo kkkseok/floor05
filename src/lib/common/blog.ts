@@ -322,19 +322,19 @@ export const POSTS: BlogPost[] = [
   },
   {
     slug: "youtube-thumbnail-size",
-    title: "유튜브 썸네일 크기와 만드는 법",
+    title: "유튜브 썸네일 크기 — 공식 권장 3840×2160과 용량 한도",
     description:
-      "유튜브 썸네일 권장 크기 1280×720과 비율, 용량 제한, 무료로 만드는 방법을 정리했습니다.",
+      "유튜브 도움말에서 확인한 썸네일 권장 크기 3840×2160, 최소 너비, 모바일 2MB·데스크톱 50MB 한도와 Shorts 썸네일, 채널 배너 규격을 정리했습니다.",
     keywords: [
       "유튜브 썸네일 크기",
       "썸네일 크기",
       "유튜브 썸네일 만들기",
-      "1280x720",
+      "3840x2160",
       "유튜브 썸네일 규격",
       "썸네일 사이즈",
     ],
     datePublished: "2026-06-11",
-    dateModified: "2026-07-23",
+    dateModified: "2026-11-22",
     readTime: "6분",
     related: ["sns-image-size", "image-crop-guide"],
   },
