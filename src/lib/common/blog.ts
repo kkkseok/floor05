@@ -119,7 +119,7 @@ export const POSTS: BlogPost[] = [
       "사진 가리기",
     ],
     datePublished: "2026-06-29",
-    dateModified: "2026-12-22",
+    dateModified: "2026-12-18",
     related: ["browser-image-tools-privacy", "prevent-photo-theft", "image-watermark-guide"],
     readTime: "7분",
   },
