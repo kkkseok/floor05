@@ -472,8 +472,8 @@ export default function PassportPhotoSizePage() {
             </h2>
             <p className="text-brand-mid leading-relaxed mb-4">
               413×531픽셀을 3.5×4.5cm로 인화하면 계산상 299.7dpi입니다. 공식 안내의 300dpi 권장과
-              맞는 크기입니다. 다만 floor05가 저장한 JPG를 열어 보니 dpi 값은 기록돼 있지 않았습니다
-              (JFIF 밀도 단위 0, 측정한 Chromium 기준). 업로드 시스템이 이 값을 보는지는 확인하지
+              맞는 크기입니다. 다만 floor05가 저장한 JPG를 열어 보니 dpi 값은 기록돼 있지
+              않았습니다(JFIF 밀도 단위 0, 측정한 Chromium 기준). 업로드 시스템이 이 값을 보는지는 확인하지
               못했습니다.
             </p>
             <p className="text-brand-mid leading-relaxed mb-4">
