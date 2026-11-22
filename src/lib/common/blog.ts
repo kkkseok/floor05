@@ -393,7 +393,7 @@ export const POSTS: BlogPost[] = [
       "소셜미디어 이미지 규격",
     ],
     datePublished: "2026-03-10",
-    dateModified: "2026-12-11",
+    dateModified: "2026-12-08",
     readTime: "7분",
     related: ["youtube-thumbnail-size", "image-crop-guide"],
   },
