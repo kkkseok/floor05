@@ -496,21 +496,21 @@ export const POSTS: BlogPost[] = [
   },
   {
     slug: "heic-to-jpg-guide",
-    title: "아이폰 HEIC 사진 JPG 변환 방법",
+    title: "HEIC를 JPG로 바꾸면 — 용량·밝기·시간 실측",
     description:
-      "아이폰에서 찍은 HEIC 사진을 JPG로 변환하는 가장 쉬운 방법을 소개합니다.",
+      "NASA 사진을 HEIC로 직접 인코딩해 브라우저에서 JPG로 바꿔 봤습니다. JPG는 HEIC의 0.15~2.54배였고, 1,200만 화소 한 장에 브라우저별로 3~15초가 걸렸습니다. 변환 중 밝기가 달라지는 문제도 찾았습니다.",
     keywords: [
       "HEIC JPG 변환",
-      "아이폰 사진 변환",
       "HEIC 변환",
       "HEIC to JPG",
-      "아이폰 HEIC",
+      "HEIC JPG 용량",
+      "HEIC 변환 화질",
+      "HEIC 변환 시간",
       "HEIC 파일 열기",
-      "아이폰 사진 JPG",
     ],
     datePublished: "2026-03-07",
-    dateModified: "2026-07-23",
-    readTime: "3분",
+    dateModified: "2026-12-25",
+    readTime: "7분",
     related: ["png-vs-jpg", "image-compression-guide", "browser-image-tools-privacy"],
   },
 ];
