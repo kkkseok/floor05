@@ -2,7 +2,8 @@
 블로그 실측용(heic-to-jpg-guide): heic-convert.mjs 결과의 화질(PSNR, dB)을 계산한다.
 기준은 항상 ref-<이름>.png (HEIC로 만들기 전의 무손실 4032x3024 이미지).
 
-  heicVsRef      heic2any가 푼 PNG ↔ 기준          = HEIC 인코딩에서 이미 잃은 것
+  heicVsRef      heic2any가 푼 PNG ↔ 기준          = HEIC 인코딩 손실 + heic2any 디코딩 차이
+  libheifVsRef   같은 HEIC를 libheif(pillow-heif)로 푼 것 ↔ 기준 = HEIC 인코딩 손실만
   jpgVsDecoded   변환된 JPG ↔ heic2any가 푼 PNG    = JPG로 다시 저장하면서 잃은 것
   jpgVsRef       변환된 JPG ↔ 기준                 = 둘을 합친 최종 결과
   direct         기준 PNG를 HEIC 없이 바로 JPG로 저장한 것 ↔ 기준 (같은 Canvas 인코더)
@@ -57,6 +58,11 @@ for heic in sorted(SRC.glob("*.heic")):
     if lib.shape == dec.shape:
         diff = np.abs(lib - dec)
         row["heic2anyVsLibheif"] = {"maxDiff": int(diff.max()), "psnr": psnr(lib, dec)}
+        row["libheifVsRef"] = psnr(lib, ref)  # 같은 HEIC를 지금의 libheif로 풀었을 때
+        # 밝기 범위가 어긋났는지: 기준 대비 heic2any 결과의 채널별 1차 근사(기울기, 절편)
+        row["heic2anyLevelFit"] = [[round(float(v), 3) for v in np.polyfit(ref[::8, ::8, c].ravel(), dec[::8, ::8, c].ravel(), 1)] for c in range(3)]
+        row["clipped"] = {"refBlackPct": round(float((ref.max(axis=2) == 0).mean() * 100), 3), "decBlackPct": round(float((dec.max(axis=2) == 0).mean() * 100), 3),
+                          "refWhitePct": round(float((ref.min(axis=2) == 255).mean() * 100), 3), "decWhitePct": round(float((dec.min(axis=2) == 255).mean() * 100), 3)}
     else:
         row["heic2anyVsLibheif"] = {"error": f"크기 다름: libheif {lib.shape[1]}x{lib.shape[0]}"}
     row["jpg"] = {}

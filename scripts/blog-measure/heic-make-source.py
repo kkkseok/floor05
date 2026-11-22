@@ -11,6 +11,7 @@
 만드는 것(<출력폴더>, 저장소에 커밋하지 않는다):
   ref-<이름>.png            기준 이미지. 원본을 가운데 4:3으로 자르고 Lanczos로 4032x3024로 줄인 무손실 PNG
   <이름>-q<품질>.heic       기준 이미지를 HEIC로 인코딩(품질 50·70·90, 4:2:0, 8비트). 원본 사진의 EXIF를 넣는다
+  tortoise-q70-limited.heic 같은 사진을 제한 범위(16~235)로 인코딩한 파일(밝기 범위 처리 확인용)
   tortoise-q70-rot.heic     회전 정보(irot)가 든 세로 사진 확인용. 픽셀은 가로로 누워 있고 표시할 때 돌려야 바로 선다
   sources.json              인코더 버전·설정·파일 크기
 """
@@ -55,13 +56,26 @@ for name, nasa_id in PHOTOS.items():
     left, top = (w - cw) // 2, (h - ch) // 2
     ref = im.crop((left, top, left + cw, top + ch)).resize((W, H), Image.LANCZOS)
     ref_path = OUT / f"ref-{name}.png"
-    ref.save(ref_path, icc_profile=None)  # 브라우저가 색 변환을 하지 않도록 PNG에는 ICC를 넣지 않는다(픽셀 값 그대로 비교)
+    if not ref_path.exists():
+        ref.save(ref_path, icc_profile=None)  # 브라우저가 색 변환을 하지 않도록 PNG에는 ICC를 넣지 않는다(픽셀 값 그대로 비교)
     info["files"][ref_path.name] = {"nasaId": nasa_id, "original": [w, h], "crop": [left, top, cw, ch],
                                     "bytes": ref_path.stat().st_size, "exifBytesInOriginal": len(exif)}
     for q in QUALITIES:
         p = OUT / f"{name}-q{q}.heic"
-        ref.save(p, format="HEIF", quality=q, chroma=420, exif=exif)
-        info["files"][p.name] = {"quality": q, "bytes": p.stat().st_size}
+        if not p.exists():  # 이미 만든 소스는 다시 인코딩하지 않는다(측정한 파일과 같은 바이트 유지)
+            ref.save(p, format="HEIF", quality=q, chroma=420, exif=exif)
+        info["files"][p.name] = {"quality": q, "bytes": p.stat().st_size, "range": "full (libheif 기본)"}
+        print(p.name, p.stat().st_size)
+
+    if name == "tortoise":
+        # 밝기 범위 확인용: 같은 사진을 제한 범위(16~235, full_range_flag=0)로 인코딩한 파일.
+        # heic2any 안의 변환식이 제한 범위(1.164*(Y-16))로 고정돼 있어, 전체 범위 파일과 결과가 달라지는지 본다.
+        # 꽃 사진(ICC 없음)은 같은 옵션을 줘도 픽셀이 전체 범위로 인코딩돼 대조군이 되지 못해 만들지 않는다.
+        p = OUT / f"{name}-q70-limited.heic"
+        if not p.exists():
+            ref.save(p, format="HEIF", quality=70, chroma=420, exif=exif,
+                     color_primaries=1, transfer_characteristics=13, matrix_coefficients=6, full_range_flag=0)
+        info["files"][p.name] = {"quality": 70, "bytes": p.stat().st_size, "range": "limited (full_range_flag=0, matrix 6)"}
         print(p.name, p.stat().st_size)
 
     if name == "tortoise":
@@ -72,7 +86,8 @@ for name, nasa_id in PHOTOS.items():
         ex = Image.Exif()
         ex[0x0112] = 6
         p = OUT / "tortoise-q70-rot.heic"
-        ref.save(p, format="HEIF", quality=70, chroma=420, exif=ex.tobytes())
+        if not p.exists():
+            ref.save(p, format="HEIF", quality=70, chroma=420, exif=ex.tobytes())
         back = pillow_heif.open_heif(p)
         info["files"][p.name] = {"quality": 70, "bytes": p.stat().st_size,
                                  "storedPixels": [W, H], "decodedByLibheif": list(back.size),

@@ -6,8 +6,9 @@
  * (heic2any → PNG → <img> → Canvas drawImage → toBlob("image/jpeg", 품질)). 도구 화면 기본 품질은 90%.
  * 실제 도구 화면에서 내려받은 파일과 바이트가 같은지는 heic-ui-check.mjs 로 따로 확인한다.
  *
- * 사용(저장소 루트에서): node scripts/blog-measure/heic-convert.mjs <소스폴더> <결과폴더> <출력.json>
+ * 사용(저장소 루트에서): node scripts/blog-measure/heic-convert.mjs <소스폴더> <결과폴더> <출력.json> [필터]
  *   <소스폴더>: heic-make-source.py 가 만든 폴더(*.heic, ref-*.png)
+ *   [필터]를 네 번째 인자로 주면 이름이 맞는 HEIC만 잰다(예: limited).
  *   <결과폴더>: 변환된 JPG와 heic2any가 푼 PNG를 저장(PSNR은 heic-psnr.py 가 계산)
  * 시간은 performance.now() 로 convertImage 호출 전후를 잰 값(ms)이다. 첫 호출은 heic2any 준비 시간이 섞이므로 따로 적는다.
  */
@@ -17,7 +18,7 @@ import path from "node:path";
 import { execFileSync } from "node:child_process";
 import { chromium, firefox, webkit } from "@playwright/test";
 
-const [, , srcDir, outDir, outJson] = process.argv;
+const [, , srcDir, outDir, outJson, only] = process.argv; // only: 파일 이름 필터(정규식). 주면 그 파일만 재고 비교군은 건너뛴다
 if (!srcDir || !outDir || !outJson) throw new Error("사용: node heic-convert.mjs <소스폴더> <결과폴더> <출력.json>");
 fs.mkdirSync(outDir, { recursive: true });
 const root = process.cwd().replace(/\\/g, "/");
@@ -51,7 +52,7 @@ function jpegSize(buf) {
   return null;
 }
 
-const heics = fs.readdirSync(srcDir).filter((f) => f.endsWith(".heic")).sort();
+const heics = fs.readdirSync(srcDir).filter((f) => f.endsWith(".heic") && (!only || new RegExp(only).test(f))).sort();
 const refs = fs.readdirSync(srcDir).filter((f) => /^ref-(tortoise|flower)\.png$/.test(f)).sort();
 const HTML = `<!doctype html><html><body><input type="file" id="f"></body></html>`;
 
@@ -120,7 +121,7 @@ for (const [name, engine] of [["Chromium", chromium], ["Firefox", firefox], ["We
     try {
       r = await ctx.p.evaluate(runInPage, {
         qualities: full ? [0.9, 0.7, 0.8, 1] : [0.9],
-        reps: f.includes("-q70.") ? 5 : 0,
+        reps: f.includes("-q70.") ? 5 : 3, // 시간은 파일당 3회 이상(품질 70은 5회)
         wantPng: full,
       });
     } catch (e) {
@@ -139,7 +140,7 @@ for (const [name, engine] of [["Chromium", chromium], ["Firefox", firefox], ["We
   }
   result.browsers[name] = { version: ctx.b.version(), rows };
 
-  if (full) {
+  if (full && !only) {
     // HEIC를 거치지 않은 비교군: 기준 PNG를 같은 convertImage로 바로 JPG 저장(품질 사다리)
     for (const f of refs) {
       await ctx.p.setInputFiles("#f", path.join(srcDir, f));
