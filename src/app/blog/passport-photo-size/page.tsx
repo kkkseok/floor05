@@ -15,22 +15,22 @@ const faqs = [
   {
     question: "온라인 여권 재발급에 올릴 사진은 몇 픽셀, 몇 KB로 맞추나요?",
     answer:
-      "외교부 여권안내(2026-11-23 확인)에는 가로 413, 세로 531픽셀 권장, 가로 395~431·세로 507~550픽셀 안에서만 업로드 가능, 500KB 이하, JPG/JPEG로 적혀 있습니다. 카메라 원본을 413×531 JPG로 저장해 보니 10~70KB였습니다. 규격은 바뀔 수 있으니 신청 전에 공식 페이지를 확인하세요.",
+      "외교부 여권안내(2026-11-23 확인) 기준으로 가로 413, 세로 531픽셀 권장(가로 395~431·세로 507~550픽셀만 업로드 가능), 500KB 이하, JPG/JPEG입니다. 카메라 원본을 413×531 JPG로 저장하니 10~70KB였습니다. 규격은 바뀔 수 있으니 신청 전에 공식 페이지를 확인하세요.",
   },
   {
     question: "500KB가 넘는 사진은 압축만 하면 되나요?",
     answer:
-      "용량만 맞추면 픽셀 범위를 벗어납니다. 15.78MB 원본을 자르지 않고 목표 용량 500KB로 압축하니 2485×1940픽셀이 됐고, 이는 업로드 가능 범위(가로 395~431픽셀) 밖입니다. 같은 사진을 35:45 비율로 잘라 413×531픽셀로 저장하면 70KB입니다.",
+      "용량만 맞추면 픽셀 범위를 벗어납니다. 15.78MB 원본을 목표 용량 500KB로 압축하니 2485×1940픽셀이 됐습니다. 35:45 비율로 잘라 413×531픽셀로 저장하면 70KB입니다.",
   },
   {
     question: "예전에 쓰던 작은 증명사진 파일을 키워서 써도 되나요?",
     answer:
-      "외교부 안내는 다른 용도의 사진을 재사용해 해상도가 낮아졌거나 흐릿해진 경우를 제출 불가로 적고 있습니다. 207×266픽셀 파일을 413×531로 키운 결과는 PSNR 26.79dB로, 원본에서 바로 줄인 36.99dB보다 10dB 낮았습니다. 촬영한 지 6개월이 지난 사진도 쓸 수 없습니다.",
+      "외교부 안내는 다른 용도의 사진을 재사용해 해상도가 낮아지거나 흐릿해진 경우를 제출 불가로 적고 있습니다. 207×266픽셀 파일을 413×531로 키우니 PSNR 26.79dB로, 원본에서 바로 줄인 36.99dB보다 10dB 낮았습니다.",
   },
   {
     question: "여권사진 파일이 정부24에 올리기 전에 다른 서버를 거치나요?",
     answer:
-      "floor05에서 자르고 줄이는 일은 열어 둔 브라우저 탭 안에서 끝납니다. 이 글의 측정도 같은 크롭 코드를 빈 페이지에 넣어 돌린 것입니다. 얼굴이 담긴 파일이 기기 밖으로 처음 나가는 때는 정부24에서 직접 업로드할 때입니다.",
+      "자르고 줄이는 일은 열어 둔 브라우저 탭 안에서 끝납니다. 이 글의 측정도 같은 크롭 코드를 빈 페이지에서 돌린 것입니다. 얼굴이 담긴 파일이 기기 밖으로 처음 나가는 때는 정부24에 직접 올릴 때입니다.",
   },
 ];
 
@@ -48,15 +48,15 @@ const faqSchema = {
 const CHECKED = "2026-11-23";
 const SOURCES = {
   spec: {
-    label: "외교부 여권안내 · 여권사진 규격 안내",
+    label: "여권사진 규격 안내",
     url: "https://www.passport.go.kr/home/kor/contents.do?menuPos=32",
   },
   online: {
-    label: "외교부 여권안내 · 온라인용 사진파일 안내",
+    label: "온라인용 사진파일 안내",
     url: "https://www.passport.go.kr/home/kor/contents.do?menuPos=12",
   },
   gov24: {
-    label: "정부24 · 여권 재발급 온라인 신청",
+    label: "정부24 여권 재발급 안내",
     url: "https://www.gov.kr/portal/service/serviceInfo/126200000030",
   },
   verify: {
@@ -82,7 +82,7 @@ const specs = [
   },
   {
     item: "배경",
-    value: "균일한 흰색, 테두리 없음. 편집 프로그램으로 배경을 지우거나 합성한 사진은 제출 불가",
+    value: "균일한 흰색, 테두리 없음. 배경을 지우거나 합성한 사진은 제출 불가",
     source: SOURCES.spec,
   },
   {
@@ -92,12 +92,12 @@ const specs = [
   },
   {
     item: "인화 품질",
-    value: "인화지(유광 또는 무광), 해상도 300DPI 권장. 일반 종이에 인쇄한 사진은 불가",
+    value: "인화지(유광·무광), 300DPI 권장. 일반 종이 인쇄는 불가",
     source: SOURCES.spec,
   },
   {
     item: "보정",
-    value: "편집 프로그램·필터로 임의 보정한 사진(AI 편집·가공·합성 포함)은 허용 불가",
+    value: "편집 프로그램·필터로 보정한 사진(AI 편집·합성 포함)은 허용 불가",
     source: SOURCES.spec,
   },
   {
@@ -155,28 +155,18 @@ const bars = [
 const summary = [
   {
     situation: "온라인 재발급용 파일",
-    action: "35:45 비율로 잘라 413×531px JPG로 저장",
-    basis: "결과 10~70KB, 500KB 한도의 2.1~14.1%",
+    action: "35:45로 잘라 413×531px JPG로",
+    basis: "10~70KB, 한도의 2.1~14.1%",
+  },
+  {
+    situation: "규격보다 작은 사진",
+    action: "키우지 말고 큰 원본에서 다시",
+    basis: "207×266에서 키우면 26.79dB, 바로 줄이면 36.99dB",
   },
   {
     situation: "500KB가 넘는 원본",
     action: "압축보다 자르기를 먼저",
-    basis: "목표 용량 500KB만 적용하면 2485×1940px, 업로드 범위 밖",
-  },
-  {
-    situation: "PNG로 저장된 사진",
-    action: "JPG로 바꾼 뒤 자르기",
-    basis: "같은 413×531이 PNG 470KB, JPG 70KB",
-  },
-  {
-    situation: "규격보다 작은 사진",
-    action: "키우지 말고 큰 원본에서 다시 만들기",
-    basis: "207×266에서 키우면 26.79dB, 바로 줄이면 36.99dB",
-  },
-  {
-    situation: "JPG 품질",
-    action: "용량 때문에 낮출 필요 없음",
-    basis: "품질 100%로 저장해도 267KB",
+    basis: "목표 용량 500KB만 쓰면 2485×1940px",
   },
 ];
 
@@ -230,22 +220,21 @@ export default function PassportPhotoSizePage() {
           <div className="max-w-none">
             <p className="text-brand-mid text-lg leading-relaxed mb-6">
               여권사진은 가로 3.5cm, 세로 4.5cm입니다. 온라인 재발급에 올리는 파일은 413×531픽셀
-              권장, 500KB 이하, JPG입니다. 모두 외교부 여권안내 페이지에서 2026년 11월 23일에 직접
-              읽은 수치입니다. 이 글의 이전 판에는 출처 없이 적은 숫자가 섞여 있었고, 이번에 공식
-              페이지에서 확인하지 못한 것은 지웠습니다.
+              권장, 500KB 이하, JPG입니다. 외교부 여권안내 페이지에서 2026년 11월 23일에 직접 읽은
+              수치이고, 이전 판에 출처 없이 적혀 있던 숫자는 지웠습니다.
             </p>
             <p className="text-brand-mid leading-relaxed mb-8">
-              그리고 그 크기로 파일을 만들어 용량을 쟀습니다. 카메라 원본을 413×531 JPG로 저장하면
-              10~70KB로, 한도 500KB의 2.1~14.1%였습니다. 용량 한도까지는 여유가 많았고, 신경 쓸 곳은
-              픽셀 범위와 파일 형식이었습니다.
+              그 크기로 파일을 만들어 용량도 쟀습니다. 카메라 원본을 413×531 JPG로 저장하면
+              10~70KB로, 한도 500KB의 2.1~14.1%였습니다. 신경 쓸 곳은 용량보다 픽셀 범위와 파일
+              형식이었습니다.
             </p>
 
             <h2 className="text-2xl font-bold text-brand-black mt-12 mb-4">
               외교부 안내에서 확인한 규격
             </h2>
             <p className="text-brand-mid leading-relaxed mb-4">
-              아래 수치는 {CHECKED}에 각 페이지 본문에서 읽은 것입니다. 출처 칸의 링크가 그
-              페이지입니다.
+              아래 수치는 {CHECKED}에 외교부 여권안내와 정부24 본문에서 읽은 것입니다. 출처 칸의 링크가
+              그 페이지입니다.
             </p>
             <div className="overflow-x-auto mb-4">
               <table className="w-full text-sm border-collapse">
@@ -274,23 +263,22 @@ export default function PassportPhotoSizePage() {
               </table>
             </div>
             <p className="text-sm text-brand-subtle mb-6">
-              픽셀 범위는 <OfficialLink source={SOURCES.gov24} /> 안내에도 같은 수치로 적혀
-              있습니다({CHECKED} 확인).
+              픽셀 범위는 <OfficialLink source={SOURCES.gov24} />에도 같은 수치로 적혀 있습니다({CHECKED}
+              확인).
             </p>
             <p className="text-brand-mid leading-relaxed mb-4">
               <strong className="text-brand-black">
                 규격은 바뀔 수 있으니 신청 전에 공식 페이지를 확인하세요.
               </strong>{" "}
-              규격 안내 페이지에는 &lsquo;2022. 10. 개정&rsquo;이라고 적혀 있습니다. 공식 페이지끼리
-              다른 곳도 하나 있었습니다. 온라인용 사진파일 안내는 형식을 JPG/JPEG로만 적는데,{" "}
+              규격 안내에는 &lsquo;2022. 10. 개정&rsquo;이라고 적혀 있습니다. 형식 표기는 공식
+              페이지끼리 다릅니다. 온라인용 사진파일 안내는 JPG/JPEG만 적는데,{" "}
               <OfficialLink source={SOURCES.verify} /> 페이지에는 &lsquo;JPG/JPEG 또는 PNG
-              가능&rsquo;이라고 적혀 있습니다. 두 곳 모두 받는 JPG로 만드는 편이 안전합니다.
+              가능&rsquo;이라고 적혀 있습니다. 두 곳 모두 받는 JPG가 안전합니다.
             </p>
             <p className="text-brand-mid leading-relaxed mb-6">
-              확인하지 못해 뺀 것도 적어 둡니다. 방문 신청 때 내는 사진 매수, 눈 위치나 얼굴 너비
-              같은 세부 수치는 확인한 페이지 본문에서 찾지 못했습니다. 500KB를 500,000바이트로
-              세는지 512,000바이트로 세는지도 적혀 있지 않습니다. 이전 판에 있던 취업 사이트·시험
-              원서·운전면허 사진 수치는 여권 글의 범위가 아니어서 뺐습니다. 다른 증명사진은{" "}
+              방문 신청 때 내는 사진 매수, 눈 위치 같은 세부 수치, 500KB를 500,000바이트와
+              512,000바이트 중 어느 쪽으로 세는지는 공식 페이지 본문에서 찾지 못해 적지 않았습니다.
+              다른 증명사진은{" "}
               <Link href="/blog/id-photo-size-guide" className="text-brand-accent hover:underline">
                 증명사진 크기 글
               </Link>
@@ -299,14 +287,13 @@ export default function PassportPhotoSizePage() {
 
             <h2 className="text-2xl font-bold text-brand-black mt-12 mb-4">어떻게 측정했나</h2>
             <p className="text-brand-mid leading-relaxed mb-4">
-              사람 얼굴 사진은 쓰지 않았습니다. 초상권 문제가 없는 인물 사진을 구할 수 없어서입니다.
-              대신 아래 세 장으로 크기와 용량만 쟀습니다. 머리 길이나 배경색이 규격에 맞는지는 이
-              측정으로 알 수 없습니다.
+              사람 얼굴 사진은 초상권이 깨끗한 소스가 없어 쓰지 않았습니다. 아래 세 장으로 크기와
+              용량만 쟀고, 머리 길이나 배경색 판정은 하지 않았습니다.
             </p>
             <ul className="list-disc pl-5 text-brand-mid space-y-2 mb-4 leading-relaxed">
               <li>
                 <strong className="text-brand-black">거북이 사진</strong>: NASA 공공 도메인,
-                5522×4312, 15.78MB. 잔무늬가 많아 용량이 크게 나오는 쪽입니다
+                5522×4312, 15.78MB. 잔무늬가 많습니다
               </li>
               <li>
                 <strong className="text-brand-black">꽃 사진</strong>: NASA 공공 도메인, 8192×5464,
@@ -314,8 +301,7 @@ export default function PassportPhotoSizePage() {
               </li>
               <li>
                 <strong className="text-brand-black">흰 배경 도형</strong>: 스크립트로 그린
-                3024×4032 그림, 1.02MB. 옅은 회색 배경에 타원과 어깨 모양을 놓고 잡음을 넣었습니다.
-                배경이 밝고 단순한 사진이 얼마나 작아지는지 보려는 것입니다
+                3024×4032 그림, 1.02MB. 옅은 회색 배경에 타원과 어깨 모양
               </li>
             </ul>
             <p className="text-brand-mid leading-relaxed mb-8">
@@ -323,10 +309,10 @@ export default function PassportPhotoSizePage() {
               <Link href="/tools/image/crop" className="text-brand-accent hover:underline">
                 이미지 크롭
               </Link>
-              의 &lsquo;여권 3.5×4.5&rsquo; 프리셋과 같은 코드를 Chromium에서 돌렸습니다. 35:45
-              비율로 가운데를 가장 크게 자르고, 413×531로 줄여, JPG 품질 92%로 저장합니다. 거북이
-              사진은 실제 도구에서 내려받은 파일과 바이트 수가 같은 것을 확인했습니다. 용량은 1KB =
-              1,000바이트로 적었고, 한도 대비 비율은 500,000바이트로 계산했습니다.
+              의 &lsquo;여권 3.5×4.5&rsquo; 프리셋 코드를 Chromium에서 그대로 돌렸습니다. 35:45
+              비율로 가운데를 가장 크게 자르고 413×531로 줄여 JPG 품질 92%로 저장합니다. 거북이
+              사진은 실제 도구에서 내려받은 파일과 바이트 수가 같았습니다. 1KB는 1,000바이트, 한도
+              대비 비율은 500,000바이트 기준입니다.
             </p>
 
             <h2 className="text-2xl font-bold text-brand-black mt-12 mb-4">
@@ -361,15 +347,14 @@ export default function PassportPhotoSizePage() {
               </table>
             </div>
             <p className="text-sm text-brand-subtle mb-8">
-              괄호는 500KB 대비 비율. 남는 면적은 35:45로 가운데를 잘랐을 때 원본 대비 비율입니다.
+              괄호는 500KB 대비 비율, 남는 면적은 원본 대비입니다.
             </p>
 
             <h2 className="text-2xl font-bold text-brand-black mt-12 mb-4">
               1. 용량 한도 500KB에는 걸리지 않았다
             </h2>
             <p className="text-brand-mid leading-relaxed mb-4">
-              세 장 가운데 가장 큰 거북이 사진이 70KB였습니다. 한도의 14.1%입니다. 품질을 100%로
-              올려 저장해도 267KB로 절반을 조금 넘는 정도입니다. 업로드가 허용되는 가장 큰 크기인
+              세 장 가운데 가장 큰 거북이 사진이 70KB였습니다. 한도의 14.1%입니다. 품질 100%로 저장해도 267KB입니다. 업로드가 허용되는 가장 큰 크기인
               431×550으로 저장한 것도 75KB였습니다.
             </p>
             <div className="my-6 space-y-3" role="img" aria-label="거북이 사진을 413×531로 저장한 용량. JPG 92% 70KB, JPG 100% 267KB, PNG 470KB. 한도는 500KB">
@@ -387,33 +372,29 @@ export default function PassportPhotoSizePage() {
                 </div>
               ))}
               <p className="text-sm text-brand-subtle">
-                거북이 사진 413×531. 막대 끝까지가 한도 500KB입니다.
+                거북이 사진 413×531. 막대 끝이 한도 500KB.
               </p>
             </div>
             <p className="text-brand-mid leading-relaxed mb-6">
-              그래서 용량을 줄이려고 품질을 낮출 이유가 없습니다. 품질을 60%로 내리면 30KB까지
-              줄지만 PSNR이 36.99dB에서 31.76dB로 떨어집니다. PSNR은 저장 전 픽셀과 얼마나 가까운지
-              나타내는 수치로, 높을수록 가깝습니다. 한도까지 400KB 넘게 남는데 화질을 내줄 필요는
-              없습니다.
+              용량 때문에 품질을 낮출 이유가 없습니다. 품질을 60%로 내리면 30KB가 되지만 PSNR(저장
+              전 픽셀과 가까운 정도, 높을수록 가까움)이 36.99dB에서 31.76dB로 떨어집니다.
             </p>
 
             <h2 className="text-2xl font-bold text-brand-black mt-12 mb-4">
               2. 용량만 맞추면 픽셀 범위를 벗어난다
             </h2>
             <p className="text-brand-mid leading-relaxed mb-4">
-              반대 순서로도 해 봤습니다. 거북이 원본을 자르지 않고{" "}
+              거북이 원본을 자르지 않고{" "}
               <Link href="/tools/image/compress" className="text-brand-accent hover:underline">
                 이미지 압축
               </Link>
               의 목표 용량 500KB에 넣으니 2485×1940픽셀, 506KB 파일이 나왔습니다. 꽃 사진은
-              7373×4918픽셀이었습니다. 둘 다 가로 395~431픽셀이라는 업로드 범위와 거리가 멉니다.
-              압축 도구는 용량을 맞추는 도구라서 픽셀을 규격 크기로 만들어 주지 않습니다.
+              7373×4918픽셀이었습니다. 가로 395~431픽셀이라는 업로드 범위와 거리가 멉니다. 압축은
+              용량을 맞출 뿐 픽셀을 규격 크기로 만들지 않습니다.
             </p>
             <p className="text-brand-mid leading-relaxed mb-6">
-              506KB라는 숫자도 눈여겨볼 만합니다. 도구는 1KB를 1,024바이트로 계산해 512,000바이트
-              아래로 맞추는데, 1,000바이트 기준으로 읽으면 500KB를 넘습니다. 공식 페이지에는 어느
-              기준인지 적혀 있지 않습니다. 어느 쪽이든 413×531로 먼저 자르면 한참 아래라 따질 일이
-              없어집니다. 압축 품질과 용량의 관계는{" "}
+              506KB인 것은 도구가 1KB를 1,024바이트로 계산해 512,000바이트 아래로 맞추기 때문입니다.
+              413×531로 먼저 자르면 어느 기준으로도 한참 아래입니다. 품질과 용량의 관계는{" "}
               <Link href="/blog/image-compression-guide" className="text-brand-accent hover:underline">
                 이미지 용량 줄이기 실측
               </Link>
@@ -428,9 +409,9 @@ export default function PassportPhotoSizePage() {
               3. PNG로 저장하면 한도에 바짝 붙는다
             </h2>
             <p className="text-brand-mid leading-relaxed mb-6">
-              같은 413×531 캔버스를 PNG로 저장하면 거북이 사진이 470KB였습니다. 한도의 94.1%이고
-              JPG 92%의 6.7배입니다. 온라인용 사진파일 안내가 적은 형식도 JPG/JPEG입니다. floor05
-              크롭은 PNG 파일을 넣으면 PNG로 저장합니다. 화면 캡처나 메신저로 받은 PNG 사진이라면{" "}
+              같은 413×531을 PNG로 저장하면 거북이 사진이 470KB였습니다. 한도의 94.1%, JPG 92%의
+              6.7배입니다. 온라인용 사진파일 안내가 적은 형식도 JPG/JPEG입니다. floor05 크롭은
+              PNG를 넣으면 PNG로 저장하니, PNG 사진은{" "}
               <Link href="/tools/image/convert" className="text-brand-accent hover:underline">
                 이미지 변환
               </Link>
@@ -443,10 +424,10 @@ export default function PassportPhotoSizePage() {
             <p className="text-brand-mid leading-relaxed mb-4">
               <OfficialLink source={SOURCES.online} />는 &lsquo;다른 용도의 사진을 재사용하여
               해상도가 낮아졌거나 흐릿해진 경우&rsquo;를 제출 불가로 적고 있습니다({CHECKED} 확인).
-              얼마나 흐려지는지 쟀습니다. 거북이 사진을 207×266으로 저장한 파일을 413×531로 키우니
-              PSNR이 26.79dB였습니다. 원본에서 바로 413×531로 줄인 것은 36.99dB입니다. 310×398에서
-              키운 것도 30.22dB에 그쳤습니다.
+              거북이 사진을 207×266으로 저장한 파일을 413×531로 키우니 PSNR이 26.79dB였습니다.
+              원본에서 바로 줄인 것은 36.99dB, 310×398에서 키운 것은 30.22dB입니다.
             </p>
+
             <figure className="my-8">
               <img
                 src="/images/blog/passport-photo-size/upscale-compare.jpg"
@@ -457,40 +438,33 @@ export default function PassportPhotoSizePage() {
                 className="block w-full border border-brand-light/30"
               />
               <figcaption className="mt-3 text-sm text-brand-mid text-center">
-                413×531 결과의 가운데를 2배로 확대한 것. 1 = 원본에서 바로 줄임(36.99dB), 2 =
+                413×531 결과의 가운데를 2배 확대. 1 = 원본에서 바로 줄임(36.99dB), 2 =
                 207×266에서 키움(26.79dB). 사진: NASA(공공 도메인)
               </figcaption>
             </figure>
             <p className="text-brand-mid leading-relaxed mb-6">
-              floor05 크롭의 &lsquo;증명사진 3×4&rsquo; 프리셋(354×472픽셀)으로 만든 파일도 그대로는
-              올릴 수 없습니다. 가로 354픽셀이 하한 395픽셀보다 작습니다. 큰 원본이 남아 있다면
-              거기서 다시 자르는 편이 낫습니다.
+              floor05 크롭의 &lsquo;증명사진 3×4&rsquo; 프리셋(354×472픽셀) 파일도 그대로는 올릴 수
+              없습니다. 가로 354픽셀이 하한 395픽셀보다 작습니다.
             </p>
 
             <h2 className="text-2xl font-bold text-brand-black mt-12 mb-4">
               5. 300dpi와 머리 길이는 파일에서 어떻게 보이나
             </h2>
             <p className="text-brand-mid leading-relaxed mb-4">
-              413×531픽셀을 3.5×4.5cm로 인화하면 계산상 299.7dpi입니다. 공식 안내의 300dpi 권장과
-              맞는 크기입니다. 다만 floor05가 저장한 JPG를 열어 보니 dpi 값은 기록돼 있지
-              않았습니다(JFIF 밀도 단위 0, 측정한 Chromium 기준). 업로드 시스템이 이 값을 보는지는 확인하지
-              못했습니다.
+              413×531픽셀을 3.5×4.5cm로 인화하면 계산상 299.7dpi로, 공식 안내의 300dpi 권장과
+              맞습니다. 다만 floor05가 저장한 JPG에는 dpi 값이 기록돼 있지 않았습니다(JFIF 밀도 단위
+              0, Chromium 기준). 업로드 시스템이 이 값을 보는지는 확인하지 못했습니다.
             </p>
             <p className="text-brand-mid leading-relaxed mb-4">
-              머리 길이 3.2~3.6cm는 세로 4.5cm의 71.1~80.0%입니다. 세로 531픽셀로 환산하면 정수리부터
-              턱까지 약 378~425픽셀입니다. 이것은 공식 수치를 직접 계산한 값이고 공식 페이지에 적힌
-              숫자는 아닙니다. 세로 4:3 휴대폰 사진(3024×4032)은 35:45로 자르면 면적의 96.4%가 남아
-              위아래로 합쳐 144픽셀만 잘립니다. 가장 크게 자르면 얼굴이 차지하는 비율은 찍힌 그대로에
-              가깝고, 자르는 영역을 좁힐수록 머리가 크게 들어갑니다.
+              머리 길이 3.2~3.6cm는 세로 4.5cm의 71.1~80.0%이고, 세로 531픽셀로 환산하면 약
+              378~425픽셀입니다. 공식 수치를 직접 계산한 값이며 공식 페이지에 적힌 숫자는 아닙니다.
             </p>
             <p className="text-brand-mid leading-relaxed mb-6">
-              floor05 크롭은 얼굴을 인식하지 않습니다. 머리 길이가 범위에 드는지는 외교부의{" "}
-              <OfficialLink source={SOURCES.resize} />(붉은 점선 안에 얼굴을 맞추는 방식, PC 전용)과{" "}
-              <OfficialLink source={SOURCES.verify} />
-              으로 확인할 수 있습니다. 검증 페이지에는 결과가 참고용이며 실제 심사와 다를 수 있다고
-              적혀 있습니다. 보정 금지 규정도 있습니다. 배경을 지우거나 얼굴 비율을 바꾸는 편집은
-              제출 불가이고, 이 글에서 한 일은 비율을 유지한 채 자르고 줄이는 것까지입니다. 심사
-              결과는 접수 기관이 판단합니다. 자르는 영역을 고르는 요령은{" "}
+              floor05 크롭은 얼굴을 인식하지 않습니다. 머리 길이는 외교부의{" "}
+              <OfficialLink source={SOURCES.resize} />
+              (PC 전용)과 <OfficialLink source={SOURCES.verify} />
+              으로 확인하세요. 검증 결과도 참고용이며 실제 심사와 다를 수 있다고 적혀 있습니다. 자를
+              영역을 고르는 요령은{" "}
               <Link href="/blog/image-crop-guide" className="text-brand-accent hover:underline">
                 사진 자르기 실측
               </Link>
