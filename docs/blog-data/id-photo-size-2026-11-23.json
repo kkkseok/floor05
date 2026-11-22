@@ -1,0 +1,330 @@
+{
+  "measuredAt": "2026-11-22T16:40:24.452Z",
+  "browser": "Playwright Chromium 151.0.7922.34",
+  "script": "scripts/blog-measure/id-photo-size.mjs (도구 대조: id-photo-tool-check.mjs)",
+  "method": "Image 로드 → 규격 비율로 가운데 최대 영역을 정수 좌표로 자른 캔버스 → drawImageDownscaled(src/lib/image/downscale.ts esbuild 번들) → canvas.toBlob. src/lib/image/crop.ts의 cropImage와 같은 순서. 크롭 도구의 JPG 품질은 0.92 고정이고, 다른 품질 값은 같은 캔버스를 품질만 바꿔 저장한 것이다.",
+  "units": "bytes. 글에서는 1KB=1,000B, 1MB=1,000,000B로 환산",
+  "specs": "규격 수치의 출처는 docs/blog-data/id-photo-specs-*.json",
+  "notMeasured": "얼굴 길이(3.2~3.6cm)·배경색·표정 같은 사진 내용 조건, 접수 시스템의 실제 업로드 판정, Firefox·Safari 결과. 측정에 인물 사진을 쓰지 않았다.",
+  "calc": {
+    "note": "계산값(측정 아님). 1인치 = 2.54cm. px = cm × dpi ÷ 2.54, w·h는 반올림",
+    "cmToPx": [
+      {
+        "id": "3.5x4.5",
+        "wCm": 3.5,
+        "hCm": 4.5,
+        "ratio": 0.7778,
+        "byDpi": [
+          {
+            "dpi": 100,
+            "exactW": 137.8,
+            "exactH": 177.17,
+            "w": 138,
+            "h": 177
+          },
+          {
+            "dpi": 150,
+            "exactW": 206.69,
+            "exactH": 265.75,
+            "w": 207,
+            "h": 266
+          },
+          {
+            "dpi": 200,
+            "exactW": 275.59,
+            "exactH": 354.33,
+            "w": 276,
+            "h": 354
+          },
+          {
+            "dpi": 300,
+            "exactW": 413.39,
+            "exactH": 531.5,
+            "w": 413,
+            "h": 531
+          },
+          {
+            "dpi": 600,
+            "exactW": 826.77,
+            "exactH": 1062.99,
+            "w": 827,
+            "h": 1063
+          }
+        ]
+      },
+      {
+        "id": "3x4",
+        "wCm": 3,
+        "hCm": 4,
+        "ratio": 0.75,
+        "byDpi": [
+          {
+            "dpi": 100,
+            "exactW": 118.11,
+            "exactH": 157.48,
+            "w": 118,
+            "h": 157
+          },
+          {
+            "dpi": 150,
+            "exactW": 177.17,
+            "exactH": 236.22,
+            "w": 177,
+            "h": 236
+          },
+          {
+            "dpi": 200,
+            "exactW": 236.22,
+            "exactH": 314.96,
+            "w": 236,
+            "h": 315
+          },
+          {
+            "dpi": 300,
+            "exactW": 354.33,
+            "exactH": 472.44,
+            "w": 354,
+            "h": 472
+          },
+          {
+            "dpi": 600,
+            "exactW": 708.66,
+            "exactH": 944.88,
+            "w": 709,
+            "h": 945
+          }
+        ]
+      }
+    ],
+    "officialPixelSizes": [
+      {
+        "id": "413x531",
+        "w": 413,
+        "h": 531,
+        "ratio": 0.7778,
+        "impliedDpiW": 299.72,
+        "impliedDpiH": 299.72,
+        "stretchVs35x45Pct": 0,
+        "megapixels": 0.219,
+        "printCmAt300": {
+          "w": 3.5,
+          "h": 4.5
+        }
+      },
+      {
+        "id": "137x177",
+        "w": 137,
+        "h": 177,
+        "ratio": 0.774,
+        "impliedDpiW": 99.42,
+        "impliedDpiH": 99.91,
+        "stretchVs35x45Pct": -0.48,
+        "megapixels": 0.024,
+        "printCmAt300": {
+          "w": 1.16,
+          "h": 1.5
+        }
+      },
+      {
+        "id": "min-395x507",
+        "w": 395,
+        "h": 507,
+        "ratio": 0.7791,
+        "impliedDpiW": 286.66,
+        "impliedDpiH": 286.17,
+        "stretchVs35x45Pct": 0.17,
+        "megapixels": 0.2,
+        "printCmAt300": {
+          "w": 3.34,
+          "h": 4.29
+        }
+      },
+      {
+        "id": "max-431x550",
+        "w": 431,
+        "h": 550,
+        "ratio": 0.7836,
+        "impliedDpiW": 312.78,
+        "impliedDpiH": 310.44,
+        "stretchVs35x45Pct": 0.75,
+        "megapixels": 0.237,
+        "printCmAt300": {
+          "w": 3.65,
+          "h": 4.66
+        }
+      }
+    ],
+    "headLength": {
+      "cm": [
+        3.2,
+        3.6
+      ],
+      "pctOfHeight": [
+        71.1,
+        80
+      ],
+      "pxAtHeight531": [
+        378,
+        425
+      ]
+    },
+    "keptByAspect": {
+      "note": "원본 비율별로 규격 비율의 가운데 최대 영역을 잡을 때 남는 면적(%)",
+      "rows": [
+        {
+          "source": "3:4 세로",
+          "to35x45": 96.4,
+          "to3x4": 100
+        },
+        {
+          "source": "9:16 세로",
+          "to35x45": 72.3,
+          "to3x4": 75
+        },
+        {
+          "source": "2:3 세로",
+          "to35x45": 85.7,
+          "to3x4": 88.9
+        },
+        {
+          "source": "1:1",
+          "to35x45": 77.8,
+          "to3x4": 75
+        },
+        {
+          "source": "4:3 가로",
+          "to35x45": 58.3,
+          "to3x4": 56.3
+        },
+        {
+          "source": "3:2 가로",
+          "to35x45": 51.9,
+          "to3x4": 50
+        },
+        {
+          "source": "16:9 가로",
+          "to35x45": 43.8,
+          "to3x4": 42.2
+        }
+      ]
+    }
+  },
+  "photos": {
+    "tortoise": {
+      "fileBytes": 15781842,
+      "width": 5522,
+      "height": 4312,
+      "sizes": [
+        {
+          "id": "413x531",
+          "width": 413,
+          "height": 531,
+          "cropW": 3354,
+          "cropH": 4312,
+          "keptPct": 60.7,
+          "scaleDown": 8.12,
+          "jpgByQuality": {
+            "1": 266814,
+            "0.92": 70400,
+            "0.8": 44052,
+            "0.6": 29825,
+            "0.4": 22917
+          },
+          "pngBytes": 470366
+        },
+        {
+          "id": "137x177",
+          "width": 137,
+          "height": 177,
+          "cropW": 3338,
+          "cropH": 4312,
+          "keptPct": 60.4,
+          "scaleDown": 24.36,
+          "jpgByQuality": {
+            "1": 35014,
+            "0.92": 10464,
+            "0.8": 6941,
+            "0.6": 4948,
+            "0.4": 3974
+          },
+          "pngBytes": 56864
+        },
+        {
+          "id": "354x472",
+          "width": 354,
+          "height": 472,
+          "cropW": 3234,
+          "cropH": 4312,
+          "keptPct": 58.6,
+          "scaleDown": 9.14,
+          "jpgByQuality": {
+            "1": 204884,
+            "0.92": 54440,
+            "0.8": 34239,
+            "0.6": 23316,
+            "0.4": 17896
+          },
+          "pngBytes": 360155
+        }
+      ]
+    },
+    "flower": {
+      "fileBytes": 9177109,
+      "width": 8192,
+      "height": 5464,
+      "sizes": [
+        {
+          "id": "413x531",
+          "width": 413,
+          "height": 531,
+          "cropW": 4250,
+          "cropH": 5464,
+          "keptPct": 51.9,
+          "scaleDown": 10.29,
+          "jpgByQuality": {
+            "1": 183284,
+            "0.92": 29566,
+            "0.8": 18793,
+            "0.6": 12715,
+            "0.4": 9899
+          },
+          "pngBytes": 359590
+        },
+        {
+          "id": "137x177",
+          "width": 137,
+          "height": 177,
+          "cropW": 4229,
+          "cropH": 5464,
+          "keptPct": 51.6,
+          "scaleDown": 30.87,
+          "jpgByQuality": {
+            "1": 25985,
+            "0.92": 6168,
+            "0.8": 4046,
+            "0.6": 2952,
+            "0.4": 2405
+          },
+          "pngBytes": 43121
+        },
+        {
+          "id": "354x472",
+          "width": 354,
+          "height": 472,
+          "cropW": 4098,
+          "cropH": 5464,
+          "keptPct": 50,
+          "scaleDown": 11.58,
+          "jpgByQuality": {
+            "1": 146146,
+            "0.92": 24766,
+            "0.8": 15747,
+            "0.6": 10751,
+            "0.4": 8355
+          },
+          "pngBytes": 279850
+        }
+      ]
+    }
+  }
+}
