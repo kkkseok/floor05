@@ -35,7 +35,7 @@ const trustItems = [
 ];
 
 const teamFacts = [
-  { label: "상호·운영", value: "플로어공오 (floor05 팀)" },
+  { label: "상호·대표", value: "플로어공오 (대표 송규석)" },
   { label: "사업자등록번호", value: "530-27-02224" },
   { label: "사업장 주소", value: "서울특별시 강남구 논현로38길 30, 3층 a106호(도곡동)" },
   { label: "시작", value: "2026년 3월, 이미지 압축 도구 공개" },
