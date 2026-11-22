@@ -257,7 +257,7 @@ export const POSTS: BlogPost[] = [
       "퇴직금 통상임금",
     ],
     datePublished: "2026-06-12",
-    dateModified: "2026-12-04",
+    dateModified: "2026-12-01",
     readTime: "6분",
     related: ["salary-net-pay-guide", "character-count-guide"],
   },

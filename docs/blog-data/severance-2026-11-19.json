@@ -1,5 +1,5 @@
 {
-  "computedAt": "2026-11-19T14:12:33.454Z",
+  "computedAt": "2026-11-22T14:51:45.457Z",
   "calculator": "src/lib/calc/severance.ts calcSeverance (상수: src/lib/calc/rates.ts SEVERANCE)",
   "constants": {
     "daysPerYear": 30,
@@ -870,7 +870,7 @@
           "ordinaryDailyWage": 0,
           "ordinaryApplied": false,
           "severancePay": 2934783,
-          "eligible": true,
+          "eligible": false,
           "valid": true,
           "serviceYearsFixed2": "1.00"
         }
