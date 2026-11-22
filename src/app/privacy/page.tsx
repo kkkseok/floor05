@@ -28,7 +28,7 @@ export default function PrivacyPage() {
       <main className="flex-1">
         <article className="max-w-3xl mx-auto px-4 sm:px-6 lg:px-8 py-16">
           <h1 className="text-3xl font-bold text-brand-black mb-2">개인정보처리방침</h1>
-          <p className="text-sm text-brand-subtle mb-12">시행: 2026년 8월 25일 · 최종 수정: 2026년 11월 19일</p>
+          <p className="text-sm text-brand-subtle mb-12">시행: 2026년 8월 25일 · 최종 수정: 2026년 11월 22일</p>
 
           <div className="prose prose-lg max-w-none space-y-10 text-brand-mid">
             <section>
@@ -128,6 +128,18 @@ export default function PrivacyPage() {
                   광고 설정
                 </a>
                 에서도 관리할 수 있습니다.
+              </p>
+              <p className="leading-relaxed mt-4">
+                Google 및 서드 파티 공급업체는 쿠키를 사용해 이용자가 이 사이트나 다른 웹사이트를 방문한 기록을
+                토대로 광고를 게재합니다. 지역과 관계없이 이용자는 Google{" "}
+                <a href="https://www.google.com/settings/ads" target="_blank" rel="noopener noreferrer" className={externalLinkClass}>
+                  광고 설정
+                </a>
+                에서 개인 맞춤 광고를 거부할 수 있고,{" "}
+                <a href="https://www.aboutads.info" target="_blank" rel="noopener noreferrer" className={externalLinkClass}>
+                  www.aboutads.info
+                </a>
+                에서 서드 파티 공급업체의 개인 맞춤 광고용 쿠키 사용을 거부하는 방법을 확인할 수 있습니다.
               </p>
               <CookieSettings className="mt-4 inline-flex rounded-md border border-brand-accent px-4 py-2 text-sm font-medium text-brand-accent transition-colors hover:bg-brand-accent hover:text-white" />
             </section>

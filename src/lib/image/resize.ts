@@ -83,33 +83,6 @@ export const SNS_PRESETS: SnsPreset[] = [
     height: 1440,
     description: "채널 배너",
   },
-  // 네이버
-  {
-    id: "naver-blog",
-    name: "블로그",
-    platform: "네이버",
-    width: 860,
-    height: 0, // 높이 자동
-    description: "최적 너비",
-  },
-  // 카카오
-  {
-    id: "kakao-profile",
-    name: "프로필",
-    platform: "KakaoTalk",
-    width: 640,
-    height: 640,
-    description: "프로필 사진",
-  },
-  // 당근
-  {
-    id: "daangn-product",
-    name: "상품",
-    platform: "당근마켓",
-    width: 960,
-    height: 960,
-    description: "상품 이미지",
-  },
 ];
 
 /**

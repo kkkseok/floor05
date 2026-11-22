@@ -29,7 +29,7 @@ export const TOOLS: Tool[] = [
     name: "이미지 리사이즈",
     href: "/tools/image/resize",
     lastModified: "2026-11-19",
-    description: "px, %, SNS 프리셋으로 크기 조절. 인스타, 유튜브, 네이버 블로그까지.",
+    description: "px, %, SNS 프리셋으로 크기 조절. 인스타 피드와 유튜브 썸네일까지.",
     shortDescription: "크기 조절",
     category: "image",
   },
