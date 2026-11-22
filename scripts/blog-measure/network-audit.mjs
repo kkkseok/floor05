@@ -348,7 +348,7 @@ const TOOLS = [
 ];
 
 async function runTool(browser, tool, files, { offline }) {
-  const context = await browser.newContext({ acceptDownloads: true, viewport: { width: 1280, height: 900 }, locale: "ko-KR" });
+  const context = await browser.newContext({ acceptDownloads: true, viewport: { width: 1280, height: 900 }, locale: "ko-KR", ...ctxExtra });
   let phase = "load";
   const used = tool.inputs.map((n) => files[n]);
   const w = watch(context, () => phase, () => used);
@@ -386,7 +386,7 @@ async function runTool(browser, tool, files, { offline }) {
 }
 
 async function runPage(browser, route) {
-  const context = await browser.newContext({ viewport: { width: 1280, height: 900 }, locale: "ko-KR" });
+  const context = await browser.newContext({ viewport: { width: 1280, height: 900 }, locale: "ko-KR", ...ctxExtra });
   const w = watch(context, () => "load", () => []);
   const page = await context.newPage();
   const res = await page.goto(BASE + route, { waitUntil: "load" });
@@ -408,6 +408,7 @@ if (BLOCK) {
   const hosts = ["*.googlesyndication.com", "*.doubleclick.net", "*.adtrafficquality.google", "*.google.com", "*.gstatic.com", "*.googletagservices.com", "*.vercel-scripts.com", "*.kakao.com", "*.daumcdn.net"];
   launchArgs.push(`--host-resolver-rules=${hosts.map((h) => `MAP ${h} ~NOTFOUND`).join(", ")}`);
 }
+const ctxExtra = {};
 const analyticsReceived = [];
 let proxy = null;
 if (VA_SCRIPT) {
@@ -441,6 +442,9 @@ if (VA_SCRIPT) {
 try { browser = await chromium.launch({ channel: "chromium", args: launchArgs }); } catch { channel = "headless-shell"; browser = await chromium.launch({ args: launchArgs }); }
 const probe = await browser.newPage();
 const identity = await probe.evaluate(() => ({ userAgent: navigator.userAgent, webdriver: navigator.webdriver }));
+// 통계 재현 때만: UA의 HeadlessChrome 을 Chrome 으로 바꿔 일반 방문자와 같은 조건을 만든다(로컬 전용).
+if (VA_SCRIPT) ctxExtra.userAgent = identity.userAgent.replace("HeadlessChrome", "Chrome");
+identity.userAgentUsed = ctxExtra.userAgent ?? identity.userAgent;
 console.log("identity", JSON.stringify(identity));
 await probe.close();
 const files = await makeFiles(browser);
