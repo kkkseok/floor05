@@ -4,6 +4,7 @@ import { Suspense } from "react";
 import Header from "@/components/common/Header";
 import Footer from "@/components/common/Footer";
 import ContactForm from "@/components/common/ContactForm";
+import { CONTACT_EMAIL } from "@/lib/common/constants";
 
 export const metadata: Metadata = {
   title: "문의 - 도구 오류 신고와 기능 제안",
@@ -51,6 +52,12 @@ export default function ContactPage() {
               >
                 <ContactForm />
               </Suspense>
+              <p className="mt-4 text-sm text-brand-mid">
+                폼이 열리지 않거나 파일을 첨부해야 하면 메일로 보내주세요.{" "}
+                <a href={`mailto:${CONTACT_EMAIL}`} className="font-medium text-brand-accent hover:underline">
+                  {CONTACT_EMAIL}
+                </a>
+              </p>
             </section>
 
             {/* 응답 안내 */}

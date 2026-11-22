@@ -7,9 +7,9 @@ import { TOOLS, TOOL_CATEGORIES, type ToolCategory } from "@/lib/common/tools";
 // 정보·정책 페이지의 내용 최종 수정일. 본문을 고치면 함께 갱신한다.
 // (privacy·terms는 페이지에 적힌 시행·최종 수정일과 같아야 한다)
 const INFO_PAGES: Record<string, string> = {
-  "/about": "2026-11-19",
-  "/contact": "2026-10-16",
-  "/privacy": "2026-11-19",
+  "/about": "2026-11-22",
+  "/contact": "2026-11-22",
+  "/privacy": "2026-11-22",
   "/terms": "2026-10-15",
 };
 
