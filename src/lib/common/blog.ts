@@ -164,21 +164,21 @@ export const POSTS: BlogPost[] = [
   // ── 신규 (2026-06-23) ───────────────────────────────────────────
   {
     slug: "avif-guide",
-    title: "AVIF란? WebP·JPG와 비교 + 변환 방법",
+    title: "AVIF 변환 실측 — 브라우저 5종에서 저장은 0곳, 열기는 4곳",
     description:
-      "차세대 이미지 포맷 AVIF의 장단점, WebP·JPG와의 차이, 브라우저 지원 현황과 변환 방법까지. 웹에서 받은 AVIF가 안 열릴 때 여는 법도 정리했습니다.",
+      "브라우저 5종에 AVIF 저장을 요청하니 모두 PNG가 나왔습니다. 받은 AVIF 6종은 4곳에서 열렸고, JPG 90%로 되돌리면 용량이 1.53~4.67배, PNG는 6.46~20.95배가 됐습니다.",
     keywords: [
       "AVIF",
       "AVIF 변환",
-      "AVIF란",
       "AVIF JPG 변환",
-      "AVIF WebP 차이",
+      "AVIF PNG 변환",
       "AVIF 안열림",
-      "차세대 이미지 포맷",
+      "AVIF 저장",
+      "AVIF WebP 용량 비교",
     ],
     datePublished: "2026-06-23",
-    dateModified: "2026-07-23",
-    readTime: "5분",
+    dateModified: "2027-01-01",
+    readTime: "7분",
     related: ["webp-guide", "png-vs-jpg", "image-compression-guide"],
   },
 

@@ -1288,6 +1288,428 @@
    }
   }
  },
+ "toolCheck": {
+  "measuredAt": "2026-11-22T19:08:23.435Z",
+  "engines": {
+   "Chromium": {
+    "version": "151.0.7922.34",
+    "rows": [
+     {
+      "file": "photoTortoise-q74.avif",
+      "inputBytes": 417369,
+      "format": "JPG",
+      "accepted": true,
+      "thumbnailDecoded": true,
+      "avifButton": {
+       "disabled": true,
+       "text": "AVIF 미지원"
+      },
+      "avifNotice": "이 브라우저에서는 AVIF 출력을 지원하지 않습니다. JPG 또는 PNG를 이용해주세요.",
+      "quality": 90,
+      "downloadName": "photoTortoise-q74.jpg",
+      "bytes": 639182,
+      "magic": "JPEG",
+      "resultMeta": [
+       "624.2 KB"
+      ]
+     },
+     {
+      "file": "captureDesk-q60.avif",
+      "inputBytes": 43346,
+      "format": "PNG",
+      "accepted": true,
+      "thumbnailDecoded": true,
+      "avifButton": {
+       "disabled": true,
+       "text": "AVIF 미지원"
+      },
+      "avifNotice": "이 브라우저에서는 AVIF 출력을 지원하지 않습니다. JPG 또는 PNG를 이용해주세요.",
+      "quality": null,
+      "downloadName": "captureDesk-q60.png",
+      "bytes": 279958,
+      "magic": "PNG",
+      "resultMeta": [
+       "273.4 KB"
+      ]
+     },
+     {
+      "file": "photoTortoise-q74.avif",
+      "inputBytes": 417369,
+      "format": "WebP",
+      "accepted": true,
+      "thumbnailDecoded": true,
+      "avifButton": {
+       "disabled": true,
+       "text": "AVIF 미지원"
+      },
+      "avifNotice": "이 브라우저에서는 AVIF 출력을 지원하지 않습니다. JPG 또는 PNG를 이용해주세요.",
+      "quality": 90,
+      "downloadName": "photoTortoise-q74.webp",
+      "bytes": 512062,
+      "magic": "RIFF/WEBP",
+      "resultMeta": [
+       "500.1 KB"
+      ]
+     },
+     {
+      "file": "v-alpha.avif",
+      "inputBytes": 3994,
+      "format": "PNG",
+      "accepted": true,
+      "thumbnailDecoded": true,
+      "avifButton": {
+       "disabled": true,
+       "text": "AVIF 미지원"
+      },
+      "avifNotice": "이 브라우저에서는 AVIF 출력을 지원하지 않습니다. JPG 또는 PNG를 이용해주세요.",
+      "quality": null,
+      "downloadName": "v-alpha.png",
+      "bytes": 19049,
+      "magic": "PNG",
+      "resultMeta": [
+       "18.6 KB"
+      ]
+     }
+    ]
+   },
+   "Chrome": {
+    "version": "158.0.8127.36",
+    "rows": [
+     {
+      "file": "photoTortoise-q74.avif",
+      "inputBytes": 417369,
+      "format": "JPG",
+      "accepted": true,
+      "thumbnailDecoded": true,
+      "avifButton": {
+       "disabled": true,
+       "text": "AVIF 미지원"
+      },
+      "avifNotice": "이 브라우저에서는 AVIF 출력을 지원하지 않습니다. JPG 또는 PNG를 이용해주세요.",
+      "quality": 90,
+      "downloadName": "photoTortoise-q74.jpg",
+      "bytes": 639182,
+      "magic": "JPEG",
+      "resultMeta": [
+       "624.2 KB"
+      ]
+     },
+     {
+      "file": "captureDesk-q60.avif",
+      "inputBytes": 43346,
+      "format": "PNG",
+      "accepted": true,
+      "thumbnailDecoded": true,
+      "avifButton": {
+       "disabled": true,
+       "text": "AVIF 미지원"
+      },
+      "avifNotice": "이 브라우저에서는 AVIF 출력을 지원하지 않습니다. JPG 또는 PNG를 이용해주세요.",
+      "quality": null,
+      "downloadName": "captureDesk-q60.png",
+      "bytes": 279958,
+      "magic": "PNG",
+      "resultMeta": [
+       "273.4 KB"
+      ]
+     },
+     {
+      "file": "photoTortoise-q74.avif",
+      "inputBytes": 417369,
+      "format": "WebP",
+      "accepted": true,
+      "thumbnailDecoded": true,
+      "avifButton": {
+       "disabled": true,
+       "text": "AVIF 미지원"
+      },
+      "avifNotice": "이 브라우저에서는 AVIF 출력을 지원하지 않습니다. JPG 또는 PNG를 이용해주세요.",
+      "quality": 90,
+      "downloadName": "photoTortoise-q74.webp",
+      "bytes": 512190,
+      "magic": "RIFF/WEBP",
+      "resultMeta": [
+       "500.2 KB"
+      ]
+     },
+     {
+      "file": "v-alpha.avif",
+      "inputBytes": 3994,
+      "format": "PNG",
+      "accepted": true,
+      "thumbnailDecoded": true,
+      "avifButton": {
+       "disabled": true,
+       "text": "AVIF 미지원"
+      },
+      "avifNotice": "이 브라우저에서는 AVIF 출력을 지원하지 않습니다. JPG 또는 PNG를 이용해주세요.",
+      "quality": null,
+      "downloadName": "v-alpha.png",
+      "bytes": 19049,
+      "magic": "PNG",
+      "resultMeta": [
+       "18.6 KB"
+      ]
+     }
+    ]
+   },
+   "Edge": {
+    "version": "158.0.4370.33",
+    "rows": [
+     {
+      "file": "photoTortoise-q74.avif",
+      "inputBytes": 417369,
+      "format": "JPG",
+      "accepted": true,
+      "thumbnailDecoded": true,
+      "avifButton": {
+       "disabled": true,
+       "text": "AVIF 미지원"
+      },
+      "avifNotice": "이 브라우저에서는 AVIF 출력을 지원하지 않습니다. JPG 또는 PNG를 이용해주세요.",
+      "quality": 90,
+      "downloadName": "photoTortoise-q74.jpg",
+      "bytes": 639182,
+      "magic": "JPEG",
+      "resultMeta": [
+       "624.2 KB"
+      ]
+     },
+     {
+      "file": "captureDesk-q60.avif",
+      "inputBytes": 43346,
+      "format": "PNG",
+      "accepted": true,
+      "thumbnailDecoded": true,
+      "avifButton": {
+       "disabled": true,
+       "text": "AVIF 미지원"
+      },
+      "avifNotice": "이 브라우저에서는 AVIF 출력을 지원하지 않습니다. JPG 또는 PNG를 이용해주세요.",
+      "quality": null,
+      "downloadName": "captureDesk-q60.png",
+      "bytes": 279958,
+      "magic": "PNG",
+      "resultMeta": [
+       "273.4 KB"
+      ]
+     },
+     {
+      "file": "photoTortoise-q74.avif",
+      "inputBytes": 417369,
+      "format": "WebP",
+      "accepted": true,
+      "thumbnailDecoded": true,
+      "avifButton": {
+       "disabled": true,
+       "text": "AVIF 미지원"
+      },
+      "avifNotice": "이 브라우저에서는 AVIF 출력을 지원하지 않습니다. JPG 또는 PNG를 이용해주세요.",
+      "quality": 90,
+      "downloadName": "photoTortoise-q74.webp",
+      "bytes": 512190,
+      "magic": "RIFF/WEBP",
+      "resultMeta": [
+       "500.2 KB"
+      ]
+     },
+     {
+      "file": "v-alpha.avif",
+      "inputBytes": 3994,
+      "format": "PNG",
+      "accepted": true,
+      "thumbnailDecoded": true,
+      "avifButton": {
+       "disabled": true,
+       "text": "AVIF 미지원"
+      },
+      "avifNotice": "이 브라우저에서는 AVIF 출력을 지원하지 않습니다. JPG 또는 PNG를 이용해주세요.",
+      "quality": null,
+      "downloadName": "v-alpha.png",
+      "bytes": 19049,
+      "magic": "PNG",
+      "resultMeta": [
+       "18.6 KB"
+      ]
+     }
+    ]
+   },
+   "Firefox": {
+    "version": "153.0",
+    "rows": [
+     {
+      "file": "photoTortoise-q74.avif",
+      "inputBytes": 417369,
+      "format": "JPG",
+      "accepted": true,
+      "thumbnailDecoded": true,
+      "avifButton": {
+       "disabled": true,
+       "text": "AVIF 미지원"
+      },
+      "avifNotice": "이 브라우저에서는 AVIF 출력을 지원하지 않습니다. JPG 또는 PNG를 이용해주세요.",
+      "quality": 90,
+      "downloadName": "photoTortoise-q74.jpg",
+      "bytes": 736830,
+      "magic": "JPEG",
+      "resultMeta": [
+       "719.6 KB"
+      ]
+     },
+     {
+      "file": "captureDesk-q60.avif",
+      "inputBytes": 43346,
+      "format": "PNG",
+      "accepted": true,
+      "thumbnailDecoded": true,
+      "avifButton": {
+       "disabled": true,
+       "text": "AVIF 미지원"
+      },
+      "avifNotice": "이 브라우저에서는 AVIF 출력을 지원하지 않습니다. JPG 또는 PNG를 이용해주세요.",
+      "quality": null,
+      "downloadName": "captureDesk-q60.png",
+      "bytes": 219274,
+      "magic": "PNG",
+      "resultMeta": [
+       "214.1 KB"
+      ]
+     },
+     {
+      "file": "photoTortoise-q74.avif",
+      "inputBytes": 417369,
+      "format": "WebP",
+      "accepted": true,
+      "thumbnailDecoded": true,
+      "avifButton": {
+       "disabled": true,
+       "text": "AVIF 미지원"
+      },
+      "avifNotice": "이 브라우저에서는 AVIF 출력을 지원하지 않습니다. JPG 또는 PNG를 이용해주세요.",
+      "quality": 90,
+      "downloadName": "photoTortoise-q74.webp",
+      "bytes": 517732,
+      "magic": "RIFF/WEBP",
+      "resultMeta": [
+       "505.6 KB"
+      ]
+     },
+     {
+      "file": "v-alpha.avif",
+      "inputBytes": 3994,
+      "format": "PNG",
+      "accepted": true,
+      "thumbnailDecoded": true,
+      "avifButton": {
+       "disabled": true,
+       "text": "AVIF 미지원"
+      },
+      "avifNotice": "이 브라우저에서는 AVIF 출력을 지원하지 않습니다. JPG 또는 PNG를 이용해주세요.",
+      "quality": null,
+      "downloadName": "v-alpha.png",
+      "bytes": 12600,
+      "magic": "PNG",
+      "resultMeta": [
+       "12.3 KB"
+      ]
+     }
+    ]
+   },
+   "WebKit": {
+    "version": "26.5",
+    "rows": [
+     {
+      "file": "photoTortoise-q74.avif",
+      "inputBytes": 417369,
+      "format": "JPG",
+      "accepted": true,
+      "thumbnailDecoded": false,
+      "avifButton": {
+       "disabled": true,
+       "text": "AVIF 미지원"
+      },
+      "avifNotice": "이 브라우저에서는 AVIF 출력을 지원하지 않습니다. JPG 또는 PNG를 이용해주세요.",
+      "quality": 90,
+      "failed": true,
+      "screenText": [
+       "실패",
+       "1개 중 1개를 처리하지 못했습니다.",
+       "사진을 열지 못했습니다. 파일이 손상되지 않았는지 확인한 뒤 다시 올려 주세요.",
+       "이 브라우저에서는 AVIF 출력을 지원하지 않습니다. JPG 또는 PNG를 이용해주세요.",
+       "AVIF는 WebP보다도 한 단계 더 효율적인 차세대 포맷입니다. 같은 화질을 더 작은 용량에 담아 웹사이트 로딩 속도를 한 번 더 줄이고 싶을 때 좋습니다. 다만 AVIF로 '내보내는' 인코딩은 아직 크롬·엣지 같은 일부 브라우저에서만 되기 때문에, 지원하지 않는 브라우저에서는 AVIF 버튼이 자동으로 비활성화됩니다. 반대로 웹에서 받은 AVIF나 WebP가 안 열릴 때, 그 파일을 올려 JPG·PNG로 바꾸는 건 대부분의 최신 브라우저에서 됩니다.",
+       "구글이 웹용으로 내놓은 포맷으로, 같은 장면을 JPG보다 4분의 1가량 가벼운 파일에 담습니다. 요즘 브라우저는 대부분 무리 없이 열고, 이 도구에서 JPG·PNG로 다시 꺼낼 수도 있습니다."
+      ]
+     },
+     {
+      "file": "captureDesk-q60.avif",
+      "inputBytes": 43346,
+      "format": "PNG",
+      "accepted": true,
+      "thumbnailDecoded": false,
+      "avifButton": {
+       "disabled": true,
+       "text": "AVIF 미지원"
+      },
+      "avifNotice": "이 브라우저에서는 AVIF 출력을 지원하지 않습니다. JPG 또는 PNG를 이용해주세요.",
+      "quality": null,
+      "failed": true,
+      "screenText": [
+       "실패",
+       "1개 중 1개를 처리하지 못했습니다.",
+       "사진을 열지 못했습니다. 파일이 손상되지 않았는지 확인한 뒤 다시 올려 주세요.",
+       "이 브라우저에서는 AVIF 출력을 지원하지 않습니다. JPG 또는 PNG를 이용해주세요.",
+       "AVIF는 WebP보다도 한 단계 더 효율적인 차세대 포맷입니다. 같은 화질을 더 작은 용량에 담아 웹사이트 로딩 속도를 한 번 더 줄이고 싶을 때 좋습니다. 다만 AVIF로 '내보내는' 인코딩은 아직 크롬·엣지 같은 일부 브라우저에서만 되기 때문에, 지원하지 않는 브라우저에서는 AVIF 버튼이 자동으로 비활성화됩니다. 반대로 웹에서 받은 AVIF나 WebP가 안 열릴 때, 그 파일을 올려 JPG·PNG로 바꾸는 건 대부분의 최신 브라우저에서 됩니다.",
+       "구글이 웹용으로 내놓은 포맷으로, 같은 장면을 JPG보다 4분의 1가량 가벼운 파일에 담습니다. 요즘 브라우저는 대부분 무리 없이 열고, 이 도구에서 JPG·PNG로 다시 꺼낼 수도 있습니다."
+      ]
+     },
+     {
+      "file": "photoTortoise-q74.avif",
+      "inputBytes": 417369,
+      "format": "WebP",
+      "accepted": true,
+      "thumbnailDecoded": false,
+      "avifButton": {
+       "disabled": true,
+       "text": "AVIF 미지원"
+      },
+      "avifNotice": "이 브라우저에서는 AVIF 출력을 지원하지 않습니다. JPG 또는 PNG를 이용해주세요.",
+      "quality": 90,
+      "failed": true,
+      "screenText": [
+       "실패",
+       "1개 중 1개를 처리하지 못했습니다.",
+       "사진을 열지 못했습니다. 파일이 손상되지 않았는지 확인한 뒤 다시 올려 주세요.",
+       "이 브라우저에서는 AVIF 출력을 지원하지 않습니다. JPG 또는 PNG를 이용해주세요.",
+       "AVIF는 WebP보다도 한 단계 더 효율적인 차세대 포맷입니다. 같은 화질을 더 작은 용량에 담아 웹사이트 로딩 속도를 한 번 더 줄이고 싶을 때 좋습니다. 다만 AVIF로 '내보내는' 인코딩은 아직 크롬·엣지 같은 일부 브라우저에서만 되기 때문에, 지원하지 않는 브라우저에서는 AVIF 버튼이 자동으로 비활성화됩니다. 반대로 웹에서 받은 AVIF나 WebP가 안 열릴 때, 그 파일을 올려 JPG·PNG로 바꾸는 건 대부분의 최신 브라우저에서 됩니다.",
+       "구글이 웹용으로 내놓은 포맷으로, 같은 장면을 JPG보다 4분의 1가량 가벼운 파일에 담습니다. 요즘 브라우저는 대부분 무리 없이 열고, 이 도구에서 JPG·PNG로 다시 꺼낼 수도 있습니다."
+      ]
+     },
+     {
+      "file": "v-alpha.avif",
+      "inputBytes": 3994,
+      "format": "PNG",
+      "accepted": true,
+      "thumbnailDecoded": false,
+      "avifButton": {
+       "disabled": true,
+       "text": "AVIF 미지원"
+      },
+      "avifNotice": "이 브라우저에서는 AVIF 출력을 지원하지 않습니다. JPG 또는 PNG를 이용해주세요.",
+      "quality": null,
+      "failed": true,
+      "screenText": [
+       "실패",
+       "1개 중 1개를 처리하지 못했습니다.",
+       "사진을 열지 못했습니다. 파일이 손상되지 않았는지 확인한 뒤 다시 올려 주세요.",
+       "이 브라우저에서는 AVIF 출력을 지원하지 않습니다. JPG 또는 PNG를 이용해주세요.",
+       "AVIF는 WebP보다도 한 단계 더 효율적인 차세대 포맷입니다. 같은 화질을 더 작은 용량에 담아 웹사이트 로딩 속도를 한 번 더 줄이고 싶을 때 좋습니다. 다만 AVIF로 '내보내는' 인코딩은 아직 크롬·엣지 같은 일부 브라우저에서만 되기 때문에, 지원하지 않는 브라우저에서는 AVIF 버튼이 자동으로 비활성화됩니다. 반대로 웹에서 받은 AVIF나 WebP가 안 열릴 때, 그 파일을 올려 JPG·PNG로 바꾸는 건 대부분의 최신 브라우저에서 됩니다.",
+       "구글이 웹용으로 내놓은 포맷으로, 같은 장면을 JPG보다 4분의 1가량 가벼운 파일에 담습니다. 요즘 브라우저는 대부분 무리 없이 열고, 이 도구에서 JPG·PNG로 다시 꺼낼 수도 있습니다."
+      ]
+     }
+    ]
+   }
+  }
+ },
  "sweeps": {
   "photoTortoise": {
    "jpg": [
