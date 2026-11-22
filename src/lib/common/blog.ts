@@ -177,7 +177,7 @@ export const POSTS: BlogPost[] = [
       "AVIF WebP 용량 비교",
     ],
     datePublished: "2026-06-23",
-    dateModified: "2027-01-01",
+    dateModified: "2026-12-29",
     readTime: "7분",
     related: ["webp-guide", "png-vs-jpg", "image-compression-guide"],
   },
