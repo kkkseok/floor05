@@ -4,6 +4,7 @@
 
 import { computeResizeDimensions, computeCoverCrop } from "../lib/image/resizeDims";
 import { drawImageDownscaled } from "../lib/image/downscale";
+import { assertWebpEncodable } from "../lib/common/webpLimit";
 
 type ResizeInstruction =
   | { mode: "fit"; width: number; height: number; maintainAspectRatio: boolean; cover?: boolean; noEnlarge?: boolean }
@@ -82,6 +83,7 @@ ctx.onmessage = async (e: MessageEvent<RenderMessage>) => {
     drawImageDownscaled(context, bitmap, src.sx, src.sy, src.sw, src.sh, 0, 0, w, h);
     bitmap.close();
 
+    assertWebpEncodable(op.outputFormat, w, h);
     const blob = await canvas.convertToBlob({
       type: op.outputFormat,
       quality: op.quality,

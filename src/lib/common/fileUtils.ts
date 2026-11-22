@@ -1,3 +1,4 @@
+import { assertWebpEncodable } from "./webpLimit";
 /**
  * 파일 유틸리티 함수
  */
@@ -256,6 +257,12 @@ export function canvasToBlob(
   errorMessage = "이미지를 처리할 수 없습니다."
 ): Promise<Blob> {
   return new Promise((resolve, reject) => {
+    try {
+      assertWebpEncodable(type, canvas.width, canvas.height);
+    } catch (error) {
+      reject(error);
+      return;
+    }
     canvas.toBlob(
       (blob) => {
         if (blob) resolve(blob);
