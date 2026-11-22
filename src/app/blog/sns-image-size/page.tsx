@@ -130,16 +130,6 @@ export default function SNSImageSizePage() {
               스토리·릴스는 <strong>1080×1920px(9:16)</strong>입니다. 피드 정사각형은
               1080×1080px, 프로필 사진은 320×320px를 사용하세요.
             </p>
-            <p className="text-brand-mid leading-relaxed mb-6">
-              피드·스토리·릴스·프로필별 상세 규격과 잘림·화질 저하 방지 팁은{" "}
-              <Link
-                href="/blog/instagram-image-size"
-                className="text-brand-accent hover:underline font-medium"
-              >
-                인스타그램 사진 크기 총정리
-              </Link>
-              에서 더 자세히 다룹니다.
-            </p>
 
             {/* 유튜브 */}
             <h2 className="text-2xl font-bold text-brand-black mt-12 mb-4">

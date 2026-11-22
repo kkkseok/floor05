@@ -142,7 +142,7 @@ export default function CounterTool() {
       {/* 핵심 글자수 */}
       <div className="bg-brand-black rounded-xl p-6 text-center">
         <p className="text-sm text-brand-light mb-1">글자수 (공백 포함)</p>
-        <p className="font-mono text-5xl font-bold text-brand-paper">
+        <p className="font-mono text-5xl max-sm:text-4xl font-bold text-brand-paper">
           {stats.chars.toLocaleString()}
         </p>
       </div>

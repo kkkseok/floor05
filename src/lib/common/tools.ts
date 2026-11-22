@@ -20,6 +20,7 @@ export const TOOLS: Tool[] = [
   {
     name: "이미지 압축",
     href: "/tools/image/compress",
+    lastModified: "2026-11-19",
     description: "서버 전송 없이 브라우저에서 바로. 목표 용량 설정, 일괄 압축까지.",
     shortDescription: "용량 줄이기",
     category: "image",
@@ -27,6 +28,7 @@ export const TOOLS: Tool[] = [
   {
     name: "이미지 리사이즈",
     href: "/tools/image/resize",
+    lastModified: "2026-11-19",
     description: "px, %, SNS 프리셋으로 크기 조절. 인스타, 유튜브, 네이버 블로그까지.",
     shortDescription: "크기 조절",
     category: "image",
@@ -34,6 +36,7 @@ export const TOOLS: Tool[] = [
   {
     name: "포맷 변환",
     href: "/tools/image/convert",
+    lastModified: "2026-10-15",
     description: "PNG, JPG, WebP, AVIF 자유롭게 변환. BMP·GIF·SVG·HEIC 입력까지, 투명 배경 처리도.",
     shortDescription: "PNG, JPG, WebP, AVIF",
     category: "image",
@@ -41,6 +44,7 @@ export const TOOLS: Tool[] = [
   {
     name: "HEIC → JPG",
     href: "/tools/image/heic-to-jpg",
+    lastModified: "2026-11-19",
     description: "아이폰 사진을 JPG로 변환. 회원가입 없이 무제한 무료.",
     shortDescription: "아이폰 사진",
     category: "image",
@@ -48,6 +52,7 @@ export const TOOLS: Tool[] = [
   {
     name: "이미지 크롭",
     href: "/tools/image/crop",
+    lastModified: "2026-11-19",
     description: "원하는 영역만 자르기. 1:1, 4:3, 16:9 비율 프리셋.",
     shortDescription: "자르기",
     category: "image",
@@ -55,6 +60,7 @@ export const TOOLS: Tool[] = [
   {
     name: "이미지 합치기",
     href: "/tools/image/merge",
+    lastModified: "2026-11-19",
     description: "여러 사진을 세로·가로로 한 장에. 캡처 이어붙이기까지.",
     shortDescription: "여러 장 합치기",
     category: "image",
@@ -62,6 +68,7 @@ export const TOOLS: Tool[] = [
   {
     name: "워터마크 넣기",
     href: "/tools/image/watermark",
+    lastModified: "2026-11-19",
     description: "텍스트·로고를 사진 위에. 위치·투명도·반복까지, 여러 장 일괄.",
     shortDescription: "워터마크 삽입",
     category: "image",
@@ -69,6 +76,7 @@ export const TOOLS: Tool[] = [
   {
     name: "이미지 회전·반전",
     href: "/tools/image/rotate",
+    lastModified: "2026-10-16",
     description: "세로로 찍힌 사진을 바로. 90도 회전·좌우/상하 반전, 서버 전송 없이.",
     shortDescription: "회전·반전",
     category: "image",
@@ -76,6 +84,7 @@ export const TOOLS: Tool[] = [
   {
     name: "사진 모자이크",
     href: "/tools/image/mosaic",
+    lastModified: "2026-07-23",
     description: "얼굴·차번호·개인정보를 드래그로 가리기. 모자이크·블러, 파일은 서버로 안 갑니다.",
     shortDescription: "모자이크·블러",
     category: "image",
@@ -83,6 +92,7 @@ export const TOOLS: Tool[] = [
   {
     name: "인스타 9분할",
     href: "/tools/image/grid",
+    lastModified: "2026-10-16",
     description: "한 장을 3×3으로 나눠 ZIP으로. 인스타 그리드 피드 만들기.",
     shortDescription: "9분할",
     category: "image",
@@ -90,6 +100,7 @@ export const TOOLS: Tool[] = [
   {
     name: "이미지 색상 추출",
     href: "/tools/image/color-picker",
+    lastModified: "2026-10-15",
     description: "사진을 클릭해 색을 추출. 대표 색 팔레트와 HEX 코드까지.",
     shortDescription: "색상 추출",
     category: "image",
@@ -97,6 +108,7 @@ export const TOOLS: Tool[] = [
   {
     name: "EXIF 삭제",
     href: "/tools/image/exif-remove",
+    lastModified: "2026-07-23",
     description: "사진의 위치·촬영정보(EXIF)를 제거. 올리기 전에 GPS·기기 정보를 지웁니다.",
     shortDescription: "위치정보 삭제",
     category: "image",
@@ -104,6 +116,7 @@ export const TOOLS: Tool[] = [
   {
     name: "파비콘 만들기",
     href: "/tools/image/favicon",
+    lastModified: "2026-10-15",
     description: "이미지로 favicon.ico와 각 사이즈 아이콘·매니페스트를 한 번에. ZIP으로.",
     shortDescription: "favicon 생성",
     category: "image",
@@ -111,6 +124,7 @@ export const TOOLS: Tool[] = [
   {
     name: "글자수 세기",
     href: "/tools/text/counter",
+    lastModified: "2026-07-23",
     description: "공백·바이트·원고지·자소서 글자수를 한 번에. 붙여넣으면 바로 계산.",
     shortDescription: "글자수·바이트",
     category: "text",
@@ -118,6 +132,7 @@ export const TOOLS: Tool[] = [
   {
     name: "연봉 실수령액",
     href: "/tools/calc/salary",
+    lastModified: "2026-11-19",
     description: "2026년 4대보험·세금을 떼고 매달 통장에 찍히는 금액. 부양가족까지 반영.",
     shortDescription: "월 실수령액",
     category: "calc",
@@ -125,6 +140,7 @@ export const TOOLS: Tool[] = [
   {
     name: "퇴직금 계산기",
     href: "/tools/calc/severance",
+    lastModified: "2026-10-16",
     description: "입사일·퇴사일과 월급으로 퇴직금을 바로. 평균임금·상여·연차수당 반영.",
     shortDescription: "퇴직금",
     category: "calc",
@@ -132,6 +148,7 @@ export const TOOLS: Tool[] = [
   {
     name: "주휴수당 계산기",
     href: "/tools/calc/wage",
+    lastModified: "2026-10-16",
     description: "시급과 주 근로시간으로 주휴수당·주급·월급 환산까지. 2026년 최저시급 기준.",
     shortDescription: "주휴수당",
     category: "calc",
@@ -139,6 +156,7 @@ export const TOOLS: Tool[] = [
   {
     name: "이미지 PDF 변환",
     href: "/tools/pdf/image-to-pdf",
+    lastModified: "2026-10-15",
     description: "여러 사진을 한 PDF로. 순서 조정, 용지(A4)·여백 옵션까지. 서버 전송 없이.",
     shortDescription: "사진→PDF",
     category: "pdf",
@@ -146,6 +164,7 @@ export const TOOLS: Tool[] = [
   {
     name: "PDF 합치기",
     href: "/tools/pdf/merge",
+    lastModified: "2026-10-16",
     description: "여러 PDF를 하나로 병합. 순서를 바꿔가며. 파일이 서버로 전송되지 않습니다.",
     shortDescription: "PDF 병합",
     category: "pdf",
@@ -153,6 +172,7 @@ export const TOOLS: Tool[] = [
   {
     name: "PDF 분할",
     href: "/tools/pdf/split",
+    lastModified: "2026-10-16",
     description: "원하는 페이지만 추출하거나, 모든 페이지를 낱장으로. ZIP 일괄 다운로드.",
     shortDescription: "PDF 나누기",
     category: "pdf",
@@ -166,30 +186,41 @@ export const TOOL_CATEGORIES: {
   id: ToolCategory;
   room: string;
   label: string;
+  /** 한국어 이름 — 홈 섹션 제목과 탐색 경로(breadcrumb)에 사용 */
+  name: string;
+  /** 카테고리 허브 페이지. 허브가 없는 카테고리는 생략 */
+  hubHref?: string;
   tagline: string;
 }[] = [
   {
     id: "image",
     room: "Room 01",
     label: "Image Tools",
+    name: "이미지 도구",
+    hubHref: "/tools/image",
     tagline: "파일이 서버로 전송되지 않습니다. 무제한 무료.",
   },
   {
     id: "text",
     room: "Room 02",
     label: "Text Tools",
+    name: "텍스트 도구",
     tagline: "붙여넣으면 바로. 입력 내용은 저장·전송되지 않습니다.",
   },
   {
     id: "calc",
     room: "Room 03",
     label: "Calculator",
+    name: "급여·퇴직 계산기",
+    hubHref: "/tools/calc",
     tagline: "복잡한 세금·요율은 우리가. 숫자만 넣으면 바로 계산됩니다.",
   },
   {
     id: "pdf",
     room: "Room 04",
     label: "PDF Tools",
+    name: "PDF 도구",
+    hubHref: "/tools/pdf",
     tagline: "서버에 올리지 않고 브라우저에서 바로. 파일이 전송되지 않습니다.",
   },
 ];
@@ -215,4 +246,11 @@ export function getOtherTools(currentHref?: string): Tool[] {
 export function getToolByHref(href?: string | null): Tool | undefined {
   if (!href) return undefined;
   return TOOLS.find((tool) => tool.href === href);
+}
+
+/**
+ * 카테고리 메타 조회 (탐색 경로 등에 사용)
+ */
+export function getToolCategory(id: ToolCategory) {
+  return TOOL_CATEGORIES.find((category) => category.id === id);
 }

@@ -2,6 +2,8 @@
 
 import { useState, useCallback, useMemo, useEffect, useRef } from "react";
 import FileDropzone from "@/components/common/FileDropzone";
+import { toFriendlyImageError } from "@/lib/image/errorMessage";
+import FailureSummary from "./FailureSummary";
 import ResultCompare from "@/components/common/ResultCompare";
 import DownloadButton from "@/components/common/DownloadButton";
 import {
@@ -333,10 +335,7 @@ export default function CompressTool() {
                 ? {
                     ...item,
                     status: "error" as const,
-                    error:
-                      error instanceof Error
-                        ? error.message
-                        : "압축에 실패했습니다.",
+                    error: toFriendlyImageError(error, "압축하지 못했습니다. 사진을 다시 올려 시도해 주세요."),
                   }
                 : item
             )
@@ -442,10 +441,10 @@ export default function CompressTool() {
                   )}
 
                   {img.status === "error" && (
-                    <div className="absolute inset-0 bg-red-500/20 flex items-center justify-center" title={img.error || "압축 실패"}>
+                    <div className="absolute inset-0 bg-white/85 flex items-center justify-center">
                       <div className="text-center px-2">
-                        <span className="text-red-500 text-xl block">!</span>
-                        <span className="text-red-600 text-[10px] leading-tight block mt-1">{img.error || "실패"}</span>
+                        <span className="text-red-700 text-xl font-bold block" aria-hidden="true">!</span>
+                        <span className="text-red-700 text-xs font-medium block mt-1">실패</span>
                       </div>
                     </div>
                   )}
@@ -457,7 +456,7 @@ export default function CompressTool() {
                       handleRemoveImage(img.id);
                     }}
                     aria-label={`${img.file.name} 삭제`}
-                    className="absolute top-1 right-1 w-6 h-6 bg-brand-black/70 rounded-full flex items-center justify-center text-brand-paper hover:bg-red-500 transition-colors"
+                    className="absolute top-0.5 right-0.5 w-8 h-8 bg-brand-black/70 rounded-full flex items-center justify-center text-brand-paper hover:bg-red-500 transition-colors"
                   >
                     <svg
                       className="w-3 h-3"
@@ -506,6 +505,8 @@ export default function CompressTool() {
                 </label>
               )}
             </div>
+
+            <FailureSummary items={images} fallback="압축하지 못했습니다. 사진을 다시 올려 시도해 주세요." />
           </div>
 
           {/* 압축 옵션 */}
@@ -617,7 +618,7 @@ export default function CompressTool() {
                 <label className="text-sm font-medium text-brand-black">
                   목표 용량 (KB)
                 </label>
-                <div className="flex gap-2">
+                <div className="flex flex-wrap gap-2">
                   {[100, 200, 500, 1000].map((size) => (
                     <button
                       key={size}
@@ -640,7 +641,8 @@ export default function CompressTool() {
                     onChange={(e) =>
                       setTargetSizeKB(Math.max(1, Number(e.target.value)))
                     }
-                    className="flex-1 px-3 py-2 rounded-lg border border-brand-light text-sm font-mono focus:outline-none focus:border-brand-accent"
+                    aria-label="목표 용량 직접 입력(KB)"
+                    className="min-w-[6rem] flex-1 px-3 py-2 rounded-lg border border-brand-light text-sm font-mono focus:outline-none focus:border-brand-accent"
                     placeholder="직접 입력"
                   />
                 </div>

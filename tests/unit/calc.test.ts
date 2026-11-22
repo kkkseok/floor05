@@ -196,6 +196,23 @@ describe("퇴직금 (calcSeverance)", () => {
     expect(r.eligible).toBe(false);
   });
 
+  it("1년 판정은 365일이 아니라 달력 기준 (윤년)", () => {
+    const base = { monthlyWage: 3_000_000, annualBonus: 0, annualLeaveAllowance: 0 };
+    // 2024년은 윤년: 2024-01-01 입사, 2024-12-31 퇴직은 365일 재직이지만 1년 미만
+    const short = calcSeverance({ ...base, joinDate: "2024-01-01", leaveDate: "2024-12-31" });
+    expect(short.serviceDays).toBe(365);
+    expect(short.eligible).toBe(false);
+    expect(calcSeverance({ ...base, joinDate: "2024-01-01", leaveDate: "2025-01-01" }).eligible).toBe(true);
+    // 평년: 365일 재직 = 1년
+    const plain = calcSeverance({ ...base, joinDate: "2025-01-01", leaveDate: "2026-01-01" });
+    expect(plain.serviceDays).toBe(365);
+    expect(plain.eligible).toBe(true);
+    expect(calcSeverance({ ...base, joinDate: "2025-01-01", leaveDate: "2025-12-31" }).eligible).toBe(false);
+    // 2월 29일 입사: 1년의 마지막 날은 이듬해 2월 28일, 퇴직일(다음 날)은 3월 1일
+    expect(calcSeverance({ ...base, joinDate: "2024-02-29", leaveDate: "2025-02-28" }).eligible).toBe(false);
+    expect(calcSeverance({ ...base, joinDate: "2024-02-29", leaveDate: "2025-03-01" }).eligible).toBe(true);
+  });
+
   it("잘못된 날짜(2월 30일)·역순 날짜는 invalid", () => {
     expect(
       calcSeverance({ joinDate: "2025-02-30", leaveDate: "2026-01-01", monthlyWage: 1, annualBonus: 0, annualLeaveAllowance: 0 }).valid,

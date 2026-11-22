@@ -3,6 +3,8 @@ import BlogAd from "./BlogAd";
 import SourceDisclosure from "./SourceDisclosure";
 import { buildBlogPostingSchema, getPost, getRelatedPosts } from "@/lib/common/blog";
 import { getBlogReview } from "@/lib/common/content-sources";
+import { buildBreadcrumbSchema, getBlogCrumbs } from "@/lib/common/breadcrumbs";
+import { getBlogTools } from "@/lib/common/blog-tools";
 
 /**
  * 블로그 글 하단 공통 요소.
@@ -17,6 +19,9 @@ export default function BlogExtras({ slug }: { slug: string }) {
   const post = getPost(slug);
   const related = getRelatedPosts(slug);
   const review = getBlogReview(slug);
+  const tools = getBlogTools(slug);
+  // 홈 › 블로그 › 글 (구조화 데이터만. 화면에는 각 글 상단의 블로그 링크가 있다)
+  const breadcrumbSchema = post ? buildBreadcrumbSchema(getBlogCrumbs(slug, post.title)) : null;
 
   return (
     <>
@@ -24,6 +29,13 @@ export default function BlogExtras({ slug }: { slug: string }) {
         <script
           type="application/ld+json"
           dangerouslySetInnerHTML={{ __html: JSON.stringify(schema) }}
+        />
+      )}
+
+      {breadcrumbSchema && (
+        <script
+          type="application/ld+json"
+          dangerouslySetInnerHTML={{ __html: JSON.stringify(breadcrumbSchema) }}
         />
       )}
 
@@ -43,8 +55,8 @@ export default function BlogExtras({ slug }: { slug: string }) {
               </>
             )}
           </p>
-          <p className="mt-2 text-sm leading-6 text-brand-light">
-            직접 측정한 결과와 출처를 밝힐 수 있는 공개 자료만으로 작성합니다. 틀린 내용은 문의 페이지로 알려주세요.
+          <p className="mt-2 text-sm leading-6 text-brand-subtle">
+            출처를 밝힐 수 있는 공개 자료를 바탕으로 쓰고, 직접 잰 수치가 있는 글은 본문에 측정 방법을 함께 적습니다. 틀린 내용은 문의 페이지로 알려주세요.
           </p>
         </aside>
       )}
@@ -58,6 +70,26 @@ export default function BlogExtras({ slug }: { slug: string }) {
       {/* 본문 종료 직후 인콘텐츠 광고 (마무리 CTA 다음, 관련 글 위).
           장문 글이라 콘텐츠-광고 비율이 넉넉해 정책상 안전한 위치다. */}
       <BlogAd className="mt-16" />
+
+      {tools.length > 0 && (
+        <aside className="mt-16 pt-8 border-t border-brand-light/20">
+          <h2 className="font-mono text-xs text-brand-accent uppercase tracking-widest mb-6">
+            함께 쓰는 도구
+          </h2>
+          <ul className="space-y-5">
+            {tools.map((tool) => (
+              <li key={tool.href}>
+                <Link href={tool.href} className="group block">
+                  <span className="block font-medium text-brand-black group-hover:text-brand-accent transition-colors">
+                    {tool.name}
+                  </span>
+                  <span className="mt-1 block text-sm text-brand-mid">{tool.description}</span>
+                </Link>
+              </li>
+            ))}
+          </ul>
+        </aside>
+      )}
 
       {related.length > 0 && (
         <aside className="mt-16 pt-8 border-t border-brand-light/20">

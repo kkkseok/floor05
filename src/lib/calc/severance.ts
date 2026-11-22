@@ -49,7 +49,7 @@ export interface SeveranceResult {
   ordinaryApplied: boolean;
   /** 세전 퇴직금 */
   severancePay: number;
-  /** 1년(365일) 이상 재직 — 법정 퇴직금 대상 여부 */
+  /** 계속근로기간 1년 이상(퇴직일이 입사일의 1년 뒤 날짜 이후) — 법정 퇴직금 대상 여부 */
   eligible: boolean;
   /** 입력이 유효한지 (날짜 파싱 가능·퇴직일>입사일) */
   valid: boolean;
@@ -88,6 +88,15 @@ function monthsBefore(date: Date, months: number): Date {
     d.setDate(0);
   }
   return d;
+}
+
+/**
+ * 입사일로부터 만 1년이 되는 날(= 1년을 채웠을 때의 퇴직일).
+ * 일수(365)가 아니라 달력으로 센다. 윤년이 끼면 1년이 366일이라 365일 재직은 아직 1년 미만이다.
+ * 2월 29일 입사는 이듬해 3월 1일이 된다(1년의 마지막 날이 2월 28일, 퇴직일은 그 다음 날).
+ */
+function oneYearAfter(join: Date): Date {
+  return new Date(join.getFullYear() + 1, join.getMonth(), join.getDate());
 }
 
 const EMPTY: SeveranceResult = {
@@ -147,7 +156,7 @@ export function calcSeverance(input: SeveranceInput): SeveranceResult {
     ordinaryDailyWage: Math.round(ordinaryDailyWage),
     ordinaryApplied,
     severancePay: Math.round(severancePay),
-    eligible: serviceDays >= SEVERANCE.minDays,
+    eligible: leave.getTime() >= oneYearAfter(join).getTime(),
     valid: true,
   };
 }

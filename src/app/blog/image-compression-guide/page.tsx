@@ -6,7 +6,7 @@ import BlogExtras from "@/components/common/BlogExtras";
 import BlogInlineCTA from "@/components/common/BlogInlineCTA";
 
 export const metadata: Metadata = {
-  title: "이미지 용량 줄이기 - 품질 100%부터 20%까지 직접 재본 결과",
+  title: "사진 압축 품질, 몇 %가 적당할까 - 100%부터 20%까지 실측",
   description:
     "카메라 원본 사진 두 장을 품질 11단계로 압축해 용량과 화질을 측정했습니다. 품질 100% 재저장은 원본보다 커졌고, 같은 80%라도 사진에 따라 3.6배 차이가 났습니다.",
   keywords: [
@@ -22,7 +22,7 @@ export const metadata: Metadata = {
   openGraph: {
     url: "/blog/image-compression-guide",
     images: [{ url: "/og-image.png", width: 1200, height: 630 }],
-    title: "이미지 용량 줄이기 - 품질 100%부터 20%까지 직접 재본 결과",
+    title: "사진 압축 품질, 몇 %가 적당할까 - 100%부터 20%까지 실측",
     description:
       "품질 90%에서 80%로 내리면 용량은 37~60% 줄고 화질 지표는 2dB 남짓 내려갔습니다.",
   },

@@ -8,6 +8,12 @@ export const metadata: Metadata = {
   title: "이용약관",
   description:
     "floor05의 이미지·PDF·계산·변환 도구와 콘텐츠 이용 조건, 결과의 한계, 광고 및 문의 기준을 안내합니다.",
+  openGraph: {
+    url: "/terms",
+    images: [{ url: "/og-image.png", width: 1200, height: 630 }],
+    title: "이용약관",
+    description: "도구와 콘텐츠 이용 조건, 계산·변환 결과의 한계, 광고와 문의 기준입니다.",
+  },
   alternates: { canonical: "/terms" },
 };
 
@@ -19,7 +25,7 @@ export default function TermsPage() {
       <main className="flex-1">
         <article className="max-w-3xl mx-auto px-4 sm:px-6 lg:px-8 py-16">
           <h1 className="text-3xl font-bold text-brand-black mb-2">이용약관</h1>
-          <p className="text-sm text-brand-light mb-12">시행·최종 수정일: 2026년 10월 15일</p>
+          <p className="text-sm text-brand-subtle mb-12">시행·최종 수정일: 2026년 10월 15일</p>
 
           <div className="prose prose-lg max-w-none space-y-10 text-brand-mid">
             <section>

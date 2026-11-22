@@ -50,6 +50,22 @@ const nextConfig: NextConfig = {
         destination: "/tools/calc",
         permanent: true,
       })),
+      // 2026-11 블로그 통합: 같은 주제를 다루던 글을 대표 글 하나로 모은다.
+      {
+        source: "/blog/instagram-image-size",
+        destination: "/blog/sns-image-size",
+        permanent: true,
+      },
+      {
+        source: "/blog/image-quality-vs-size",
+        destination: "/blog/image-compression-guide",
+        permanent: true,
+      },
+      {
+        source: "/blog/photo-editing-without-photoshop",
+        destination: "/tools/image",
+        permanent: true,
+      },
     ];
   },
 };

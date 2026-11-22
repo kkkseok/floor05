@@ -1,5 +1,6 @@
 {
   "framework": "nextjs",
   "buildCommand": "npm run build",
-  "installCommand": "npm install"
+  "installCommand": "npm install",
+  "ignoreCommand": "[ -n \"$VERCEL_PROJECT_ID\" ] && [ \"$VERCEL_PROJECT_ID\" != \"prj_7K6nbrmfgUhT2ZUYXRdt1T71D1CR\" ]"
 }

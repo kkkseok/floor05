@@ -233,7 +233,7 @@ export default function DownloadButton({
 
       {/* 에러 메시지 */}
       {error && (
-        <p className="text-sm text-red-500 animate-pulse">
+        <p role="alert" className="text-sm text-red-700">
           {error}
         </p>
       )}

@@ -2,6 +2,8 @@
 
 import { useState, useCallback, useMemo, useEffect, useRef } from "react";
 import FileDropzone from "@/components/common/FileDropzone";
+import { toFriendlyImageError } from "@/lib/image/errorMessage";
+import FailureSummary from "./FailureSummary";
 import ResultCompare from "@/components/common/ResultCompare";
 import DownloadButton from "@/components/common/DownloadButton";
 import {
@@ -276,10 +278,7 @@ export default function ResizeTool() {
                 ? {
                     ...item,
                     status: "error" as const,
-                    error:
-                      error instanceof Error
-                        ? error.message
-                        : "리사이즈에 실패했습니다.",
+                    error: toFriendlyImageError(error, "크기를 바꾸지 못했습니다. 사진을 다시 올려 시도해 주세요."),
                   }
                 : item
             )
@@ -396,10 +395,10 @@ export default function ResizeTool() {
                   )}
 
                   {img.status === "error" && (
-                    <div className="absolute inset-0 bg-red-500/20 flex items-center justify-center" title={img.error || "리사이즈 실패"}>
+                    <div className="absolute inset-0 bg-white/85 flex items-center justify-center">
                       <div className="text-center px-2">
-                        <span className="text-red-500 text-xl block">!</span>
-                        <span className="text-red-600 text-[10px] leading-tight block mt-1">{img.error || "실패"}</span>
+                        <span className="text-red-700 text-xl font-bold block" aria-hidden="true">!</span>
+                        <span className="text-red-700 text-xs font-medium block mt-1">실패</span>
                       </div>
                     </div>
                   )}
@@ -411,7 +410,7 @@ export default function ResizeTool() {
                       handleRemoveImage(img.id);
                     }}
                     aria-label={`${img.file.name} 삭제`}
-                    className="absolute top-1 right-1 w-6 h-6 bg-brand-black/70 rounded-full flex items-center justify-center text-brand-paper hover:bg-red-500 transition-colors"
+                    className="absolute top-0.5 right-0.5 w-8 h-8 bg-brand-black/70 rounded-full flex items-center justify-center text-brand-paper hover:bg-red-500 transition-colors"
                   >
                     <svg
                       className="w-3 h-3"
@@ -460,6 +459,8 @@ export default function ResizeTool() {
                 </label>
               )}
             </div>
+
+            <FailureSummary items={images} fallback="크기를 바꾸지 못했습니다. 사진을 다시 올려 시도해 주세요." />
           </div>
 
           {/* 원본 크기 표시 */}
@@ -470,7 +471,7 @@ export default function ResizeTool() {
                 <span className="font-mono text-brand-black">
                   {selectedImage.originalWidth} × {selectedImage.originalHeight}
                 </span>
-                <span className="text-brand-light ml-2">
+                <span className="text-brand-mid ml-2">
                   ({formatFileSize(selectedImage.file.size)})
                 </span>
               </p>
@@ -615,6 +616,7 @@ export default function ResizeTool() {
                   max="200"
                   value={percentage}
                   onChange={(e) => setPercentage(Number(e.target.value))}
+                  aria-label="크기 비율(%)"
                   className="w-full h-2 bg-brand-light rounded-lg appearance-none cursor-pointer accent-brand-accent"
                 />
                 <div className="flex justify-between text-xs text-brand-mid">

@@ -95,7 +95,7 @@ export const SEVERANCE = {
   daysPerYear: 30,
   /** 연 환산 기준일수 */
   yearDays: 365,
-  /** 퇴직금 발생 최소 재직기간(일): 1년 미만은 법정 퇴직금 대상 아님 */
+  /** 평년 기준 1년의 일수(참고용). 지급 대상 판정은 일수가 아니라 달력상 1년으로 한다(severance.ts oneYearAfter) */
   minDays: 365,
   /** 통상시급 산정용 월 소정근로시간 (주 40시간 + 주휴 8시간, 고용노동부 기준 209시간) */
   monthlyHours: 209,

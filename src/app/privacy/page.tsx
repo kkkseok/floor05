@@ -9,6 +9,12 @@ export const metadata: Metadata = {
   title: "개인정보처리방침",
   description:
     "floor05의 브라우저 처리 원칙, 문의 폼, 방문 통계와 광고 서비스에서 처리되는 정보 및 이용자 선택권을 안내합니다.",
+  openGraph: {
+    url: "/privacy",
+    images: [{ url: "/og-image.png", width: 1200, height: 630 }],
+    title: "개인정보처리방침",
+    description: "문의 폼, 방문 통계, 광고에서 처리되는 정보와 이용자가 고를 수 있는 것을 정리했습니다.",
+  },
   alternates: { canonical: "/privacy" },
 };
 
@@ -22,12 +28,12 @@ export default function PrivacyPage() {
       <main className="flex-1">
         <article className="max-w-3xl mx-auto px-4 sm:px-6 lg:px-8 py-16">
           <h1 className="text-3xl font-bold text-brand-black mb-2">개인정보처리방침</h1>
-          <p className="text-sm text-brand-light mb-12">시행·최종 수정일: 2026년 8월 25일</p>
+          <p className="text-sm text-brand-subtle mb-12">시행: 2026년 8월 25일 · 최종 수정: 2026년 11월 19일</p>
 
           <div className="prose prose-lg max-w-none space-y-10 text-brand-mid">
             <section>
               <p className="leading-relaxed">
-                floor05는 floor05 팀이 운영하는, 회원가입 없이 이용하는 서비스입니다. 도구에 넣은 파일과 계산
+                floor05는 플로어공오가 운영하는, 회원가입 없이 이용하는 서비스입니다. 도구에 넣은 파일과 계산
                 입력값은 원칙적으로 사용자의 브라우저에서 처리하지만, 문의 폼·방문 통계·광고를
                 이용할 때는 아래와 같이 제한된 정보가 외부 서비스에서 처리될 수 있습니다.
               </p>

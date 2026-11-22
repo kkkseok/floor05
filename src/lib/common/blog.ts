@@ -140,7 +140,7 @@ export const POSTS: BlogPost[] = [
     datePublished: "2026-06-29",
     dateModified: "2026-10-23",
     readTime: "6분",
-    related: ["browser-image-tools-privacy", "image-merge-guide", "photo-editing-without-photoshop"],
+    related: ["browser-image-tools-privacy", "image-merge-guide"],
   },
   {
     slug: "weekly-holiday-pay-guide",
@@ -200,7 +200,7 @@ export const POSTS: BlogPost[] = [
     datePublished: "2026-06-20",
     dateModified: "2026-06-20",
     readTime: "5분",
-    related: ["image-watermark-guide", "browser-image-tools-privacy", "photo-editing-without-photoshop"],
+    related: ["image-watermark-guide", "browser-image-tools-privacy"],
   },
   {
     slug: "image-watermark-guide",
@@ -263,7 +263,7 @@ export const POSTS: BlogPost[] = [
   },
   {
     slug: "character-count-guide",
-    title: "글자수 세기 — 사이트마다 다른 이유 실측",
+    title: "글자수가 사이트마다 다르게 나오는 이유 — 11가지 입력 실측",
     description:
       "이모지·분리된 한글·줄바꿈·특수 공백 등 11가지 입력을 방식별로 세어 봤습니다. 입력란 글자 제한은 세 브라우저 모두 UTF-16으로 세서 이모지를 중간에서 잘랐습니다.",
     keywords: [
@@ -336,25 +336,7 @@ export const POSTS: BlogPost[] = [
     datePublished: "2026-06-11",
     dateModified: "2026-07-23",
     readTime: "6분",
-    related: ["sns-image-size", "instagram-image-size", "image-crop-guide"],
-  },
-  {
-    slug: "photo-editing-without-photoshop",
-    title: "포토샵 없이 사진 편집하기",
-    description:
-      "설치도 결제도 없이, 브라우저에서 사진을 압축·리사이즈·변환·합치는 방법을 한 번에 정리했습니다.",
-    keywords: [
-      "포토샵 없이 사진 편집",
-      "무료 사진 편집",
-      "온라인 사진 편집",
-      "무료 이미지 편집 사이트",
-      "사진 편집 프로그램 무료",
-      "브라우저 사진 편집",
-    ],
-    datePublished: "2026-06-11",
-    dateModified: "2026-07-22",
-    readTime: "7분",
-    related: ["image-compression-guide", "image-merge-guide", "image-watermark-guide", "browser-image-tools-privacy"],
+    related: ["sns-image-size", "image-crop-guide"],
   },
   {
     slug: "browser-image-tools-privacy",
@@ -372,28 +354,10 @@ export const POSTS: BlogPost[] = [
     datePublished: "2026-06-11",
     dateModified: "2026-07-23",
     readTime: "5분",
-    related: ["image-compression-guide", "heic-to-jpg-guide", "photo-editing-without-photoshop"],
+    related: ["image-compression-guide", "heic-to-jpg-guide"],
   },
 
   // ── 기존 (2026-03) ──────────────────────────────────────────────
-  {
-    slug: "image-quality-vs-size",
-    title: "사진 화질 높이기 vs 용량 줄이기",
-    description: "화질과 용량의 차이점, 상황별 올바른 선택 방법을 알려드립니다.",
-    keywords: [
-      "사진 화질 높이기",
-      "이미지 용량 줄이기",
-      "화질 vs 용량",
-      "사진 해상도",
-      "이미지 압축",
-      "화질 손실",
-      "무손실 압축",
-    ],
-    datePublished: "2026-03-10",
-    dateModified: "2026-06-11",
-    readTime: "6분",
-    related: ["image-compression-guide", "png-vs-jpg", "webp-guide"],
-  },
   {
     slug: "transparent-background",
     title: "투명 배경 이미지 — 도구별 투명도 실측",
@@ -431,7 +395,7 @@ export const POSTS: BlogPost[] = [
     datePublished: "2026-03-10",
     dateModified: "2026-07-23",
     readTime: "6분",
-    related: ["instagram-image-size", "youtube-thumbnail-size", "image-crop-guide"],
+    related: ["youtube-thumbnail-size", "image-crop-guide"],
   },
   {
     slug: "image-crop-guide",
@@ -469,7 +433,7 @@ export const POSTS: BlogPost[] = [
     datePublished: "2026-03-10",
     dateModified: "2026-07-23",
     readTime: "4분",
-    related: ["id-photo-size-guide", "image-compression-guide", "image-quality-vs-size"],
+    related: ["id-photo-size-guide", "image-compression-guide"],
   },
   {
     slug: "webp-guide",
@@ -493,25 +457,6 @@ export const POSTS: BlogPost[] = [
     related: ["avif-guide", "png-vs-jpg", "transparent-background"],
   },
   {
-    slug: "instagram-image-size",
-    title: "인스타그램 사진 크기 총정리",
-    description:
-      "인스타그램 피드, 스토리, 릴스, 프로필 사진의 최적 크기와 무료 리사이즈 방법.",
-    keywords: [
-      "인스타그램 사진 크기",
-      "인스타 이미지 규격",
-      "인스타 피드 크기",
-      "인스타 스토리 크기",
-      "인스타 사진 비율",
-      "인스타그램 이미지 사이즈",
-      "인스타 정사각형",
-    ],
-    datePublished: "2026-03-10",
-    dateModified: "2026-07-23",
-    readTime: "4분",
-    related: ["sns-image-size", "youtube-thumbnail-size", "image-crop-guide"],
-  },
-  {
     slug: "png-vs-jpg",
     title: "PNG vs JPG 차이점 — 직접 재본 용량·화질",
     description:
@@ -532,7 +477,7 @@ export const POSTS: BlogPost[] = [
   },
   {
     slug: "image-compression-guide",
-    title: "이미지 용량 줄이기 — 품질별 실측",
+    title: "사진 압축 품질, 몇 %가 적당할까 — 100%부터 20%까지 실측",
     description:
       "카메라 원본 사진 두 장을 품질 11단계로 압축해 용량과 화질을 쟀습니다. 100% 재저장은 원본보다 커졌고, 80~90%가 가장 효율적이었습니다.",
     keywords: [
@@ -547,7 +492,7 @@ export const POSTS: BlogPost[] = [
     datePublished: "2026-03-07",
     dateModified: "2026-10-20",
     readTime: "8분",
-    related: ["image-quality-vs-size", "passport-photo-size", "png-vs-jpg"],
+    related: ["passport-photo-size", "png-vs-jpg"],
   },
   {
     slug: "heic-to-jpg-guide",

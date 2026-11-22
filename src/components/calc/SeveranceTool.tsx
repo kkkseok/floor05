@@ -150,8 +150,11 @@ export default function SeveranceTool() {
           <span className="absolute right-3 top-1/2 -translate-y-1/2 text-brand-mid text-xs">만원</span>
         </div>
         <p className="text-xs text-brand-mid">
-          기본급과 매달 고정으로 받는 수당의 합입니다. 휴업·결근으로 최근 3개월 급여가 줄었다면 넣어 보세요.
-          평균임금이 통상임금보다 낮으면 통상임금으로 계산합니다(주 40시간 기준, 월 209시간·하루 8시간).
+          기본급과 매달 고정으로 받는 수당의 합입니다. 비워 두면 평균임금으로만 계산합니다. 휴업·결근으로 최근
+          3개월 급여가 평소보다 줄었을 때만 채우세요. 금액을 넣으면 월 통상임금 ÷ 209시간 × 8시간을 1일
+          통상임금으로 보고(주 40시간 기준), 이 값이 1일 평균임금보다 크면 통상임금으로 계산합니다. 월급과 같은
+          금액만 넣어도 결과가 크게 달라질 수 있으니, 회사의 실제 통상임금은 급여 담당자나 고용노동부 상담으로
+          확인하세요.
         </p>
       </div>
 
@@ -165,7 +168,7 @@ export default function SeveranceTool() {
           {/* 핵심: 퇴직금 */}
           <div className="bg-brand-black rounded-xl p-6 text-center">
             <p className="text-sm text-brand-light mb-1">예상 퇴직금 (세전)</p>
-            <p className="font-mono text-5xl font-bold text-brand-paper">
+            <p className="font-mono text-5xl max-sm:text-4xl font-bold text-brand-paper">
               {won(result.severancePay)}
               <span className="text-2xl text-brand-light ml-1">원</span>
             </p>
@@ -183,7 +186,7 @@ export default function SeveranceTool() {
           {/* 1년 미만 경고 */}
           {!result.eligible && (
             <div className="bg-brand-accent/10 border border-brand-accent/30 rounded-xl p-4 text-sm text-brand-black">
-              재직기간이 1년(365일) 미만이라 법정 퇴직금 지급 대상이 아닙니다. 위 금액은 같은 산식을
+              재직기간이 1년 미만이라 법정 퇴직금 지급 대상이 아닙니다(퇴직일이 입사일의 1년 뒤 날짜보다 이릅니다). 위 금액은 같은 산식을
               재직일수만큼 비례해 계산한 참고값이며, 법으로 받을 수 있는 금액은 아닙니다.
             </div>
           )}

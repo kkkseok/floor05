@@ -192,7 +192,7 @@ export default function ContactForm() {
                 >
                   {t.label}
                 </span>
-                <span className="mt-0.5 block text-xs text-brand-light">
+                <span className="mt-0.5 block text-xs text-brand-subtle">
                   {t.hint}
                 </span>
               </button>
@@ -245,9 +245,9 @@ export default function ContactForm() {
                 ? "어떤 기능이 있으면 좋을지, 왜 필요한지 적어주세요."
                 : "문의하실 내용을 적어주세요."
           }
-          className="w-full rounded-lg border border-brand-light/40 bg-brand-white px-4 py-3 text-brand-black placeholder:text-brand-light/80 focus:border-brand-accent focus:outline-none focus:ring-1 focus:ring-brand-accent resize-y"
+          className="w-full rounded-lg border border-brand-light/40 bg-brand-white px-4 py-3 text-brand-black placeholder:text-brand-subtle focus:border-brand-accent focus:outline-none focus:ring-1 focus:ring-brand-accent resize-y"
         />
-        <p className="mt-1.5 text-xs text-brand-light">
+        <p className="mt-1.5 text-xs text-brand-subtle">
           {selectedType.hint}
         </p>
       </div>
@@ -259,7 +259,7 @@ export default function ContactForm() {
           className="block text-sm font-semibold text-brand-black mb-2"
         >
           답변받을 이메일{" "}
-          <span className="font-normal text-brand-light">(선택)</span>
+          <span className="font-normal text-brand-subtle">(선택)</span>
         </label>
         <input
           id="contact-email"
@@ -267,7 +267,7 @@ export default function ContactForm() {
           value={email}
           onChange={(e) => setEmail(e.target.value)}
           placeholder="답변이 필요하면 입력해주세요"
-          className="w-full rounded-lg border border-brand-light/40 bg-brand-white px-4 py-2.5 text-brand-black placeholder:text-brand-light/80 focus:border-brand-accent focus:outline-none focus:ring-1 focus:ring-brand-accent"
+          className="w-full rounded-lg border border-brand-light/40 bg-brand-white px-4 py-2.5 text-brand-black placeholder:text-brand-subtle focus:border-brand-accent focus:outline-none focus:ring-1 focus:ring-brand-accent"
         />
       </div>
 
@@ -293,7 +293,7 @@ export default function ContactForm() {
         >
           {status === "submitting" ? "보내는 중…" : "보내기"}
         </button>
-        <span className="text-xs text-brand-light">
+        <span className="text-xs text-brand-subtle">
           입력 내용은 저장되지 않고 문의 전달에만 사용됩니다.
         </span>
       </div>

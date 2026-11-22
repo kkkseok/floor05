@@ -67,7 +67,7 @@ export default function ContactPage() {
                   <strong className="text-brand-black">운영 시간:</strong>{" "}
                   평일 오전 10시 ~ 오후 6시 (주말/공휴일 제외)
                 </p>
-                <p className="text-sm text-brand-light">
+                <p className="text-sm text-brand-mid">
                   ※ 작은 팀이 운영하는 서비스라 답변이 다소 늦어질 수 있습니다. 양해
                   부탁드립니다.
                 </p>

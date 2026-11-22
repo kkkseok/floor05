@@ -6,12 +6,12 @@ import { SITE_URL } from "@/lib/common/constants";
 const PAGE_URL = `${SITE_URL}/tools/image/compress`;
 
 export const metadata: Metadata = {
-  title: "이미지 압축 - 서버 전송 없이 브라우저에서 바로",
+  title: "이미지 압축 - 사진 용량 줄이기, 목표 KB에 맞춰서",
   description:
     "파일이 내 기기를 떠나지 않습니다. 로그인도 설치도 없이, 목표 용량 설정과 일괄 압축, Before/After 비교까지 무료로.",
   keywords: ["이미지 압축", "사진 용량 줄이기", "JPG 압축", "PNG 압축", "무료 이미지 압축"],
   openGraph: {
-    title: "이미지 압축 - 서버 전송 없이 브라우저에서 바로",
+    title: "이미지 압축 - 사진 용량 줄이기, 목표 KB에 맞춰서",
     description: "파일이 내 기기를 떠나지 않습니다. 가입 없이, 쓰는 횟수 제한 없이 무료.",
     url: PAGE_URL,
     type: "website",
@@ -19,7 +19,7 @@ export const metadata: Metadata = {
   },
   twitter: {
     card: "summary_large_image",
-    title: "이미지 압축 - 서버 전송 없이 브라우저에서 바로",
+    title: "이미지 압축 - 사진 용량 줄이기, 목표 KB에 맞춰서",
     description: "압축은 브라우저 몫, 사진은 내 기기에. 목표 용량 설정과 일괄 압축까지 무료.",
   },
   alternates: {
@@ -29,9 +29,9 @@ export const metadata: Metadata = {
 
 const faqs = [
   {
-    question: "파일이 서버로 전송되나요?",
+    question: "압축했는데 '원본 화질'이라고 뜨고 용량이 거의 그대로입니다. 왜 그런가요?",
     answer:
-      "아니요. 압축 연산은 전부 지금 쓰고 있는 브라우저가 합니다. 원본을 올리고 결과를 내려받는 왕복이 없어 처리가 빠르고, 사진은 처음부터 끝까지 내 기기에만 있습니다.",
+      "이미 충분히 압축된 사진은 다시 압축하면 오히려 커집니다. 그럴 때는 다시 인코딩한 결과를 버리고, 원본에서 위치(GPS)·촬영 정보만 지운 파일을 내줍니다. 목표 용량 모드에서 이미 목표보다 작은 사진도 같은 방식으로 처리합니다. 화질은 원본과 같고 용량은 지워진 정보만큼만 줄어듭니다.",
   },
   {
     question: "한 번에 몇 장까지 압축할 수 있나요?",
@@ -177,7 +177,7 @@ export default function CompressPage() {
       faqs={faqs}
       workflowCTA={workflowCTA}
       currentToolHref="/tools/image/compress"
-      relatedPostSlugs={["image-compression-guide", "passport-photo-size", "image-quality-vs-size"]}
+      relatedPostSlugs={["image-compression-guide", "passport-photo-size", "png-vs-jpg"]}
       schemas={schemas}
     >
       <CompressTool />

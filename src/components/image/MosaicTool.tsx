@@ -220,7 +220,8 @@ export default function MosaicTool() {
                 max={40}
                 value={strength}
                 onChange={(e) => setStrength(Number(e.target.value))}
-                className="flex-1 accent-brand-accent"
+                aria-label="모자이크 강도"
+                className="h-6 flex-1 cursor-pointer accent-brand-accent"
               />
               <span className="w-8 text-right font-mono text-sm text-brand-mid">{strength}</span>
             </div>
@@ -267,10 +268,23 @@ export default function MosaicTool() {
               다운로드
             </button>
           </div>
+
+          <button
+            onClick={() => {
+              bitmapRef.current = null;
+              regionsRef.current = [];
+              setApplied(0);
+              setSel(null);
+              setLoaded(false);
+            }}
+            className="mx-auto block min-h-11 px-3 text-sm text-brand-mid underline underline-offset-4 transition-colors hover:text-brand-black"
+          >
+            다른 이미지 선택
+          </button>
         </>
       )}
 
-      {error && <p className="text-sm text-red-600">{error}</p>}
+      {error && <p role="alert" className="text-sm text-red-700">{error}</p>}
 
       <p className="text-xs text-brand-mid leading-relaxed">
         얼굴·차량 번호판·주소 같은 개인정보를 가릴 때 쓰세요. 가린 부분은 원본 정보가 사라져 복원할
@@ -284,6 +298,7 @@ function Seg({ active, onClick, children }: { active: boolean; onClick: () => vo
   return (
     <button
       onClick={onClick}
+      aria-pressed={active}
       className={`rounded-lg px-4 py-2 text-sm font-medium transition-all ${
         active ? "bg-brand-accent text-white" : "bg-brand-paper text-brand-mid hover:text-brand-black"
       }`}

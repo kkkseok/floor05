@@ -6,12 +6,12 @@ import { SITE_URL } from "@/lib/common/constants";
 const PAGE_URL = `${SITE_URL}/tools/image/resize`;
 
 export const metadata: Metadata = {
-  title: "이미지 리사이즈 - SNS 프리셋으로 한 번에",
+  title: "이미지 리사이즈 - 사진 크기 줄이기·SNS 규격 맞추기",
   description:
     "인스타그램, 유튜브, 네이버 블로그, 카카오톡, 당근마켓 최적 사이즈로 바로 변환. 업로드 과정이 없어 프리셋을 고르면 그 자리에서 결과가 나옵니다.",
   keywords: ["이미지 리사이즈", "사진 크기 조절", "인스타그램 사진 크기", "유튜브 썸네일", "네이버 블로그 이미지"],
   openGraph: {
-    title: "이미지 리사이즈 - SNS 프리셋으로 한 번에",
+    title: "이미지 리사이즈 - 사진 크기 줄이기·SNS 규격 맞추기",
     description: "인스타그램, 유튜브, 네이버 블로그 최적 사이즈로 바로 변환.",
     url: PAGE_URL,
     type: "website",
@@ -19,7 +19,7 @@ export const metadata: Metadata = {
   },
   twitter: {
     card: "summary_large_image",
-    title: "이미지 리사이즈 - SNS 프리셋으로 한 번에",
+    title: "이미지 리사이즈 - 사진 크기 줄이기·SNS 규격 맞추기",
     description: "SNS마다 다른 권장 크기, 프리셋 하나 고르면 끝.",
   },
   alternates: {
@@ -170,7 +170,7 @@ export default function ResizePage() {
       faqs={faqs}
       workflowCTA={workflowCTA}
       currentToolHref="/tools/image/resize"
-      relatedPostSlugs={["instagram-image-size", "sns-image-size", "youtube-thumbnail-size"]}
+      relatedPostSlugs={["sns-image-size", "youtube-thumbnail-size", "image-crop-guide"]}
       schemas={schemas}
     >
       <ResizeTool />

@@ -118,7 +118,7 @@ export default function ResultCompare({
         <img
           src={currentSrc}
           alt={currentLabel}
-          className="max-h-[480px] w-auto object-contain"
+          className="max-h-[480px] max-w-full w-auto object-contain"
           draggable={false}
         />
         {/* 현재 면 라벨 */}

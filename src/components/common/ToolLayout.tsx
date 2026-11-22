@@ -5,9 +5,11 @@ import AdSlot from "./AdSlot";
 import ToolCard from "./ToolCard";
 import ErrorBoundary from "./ErrorBoundary";
 import SourceDisclosure from "./SourceDisclosure";
+import Breadcrumbs from "./Breadcrumbs";
 import { getOtherTools, getToolByHref } from "@/lib/common/tools";
 import { getPostsBySlugs } from "@/lib/common/blog";
 import { getToolReview } from "@/lib/common/content-sources";
+import { getToolCrumbs } from "@/lib/common/breadcrumbs";
 
 interface FAQ {
   question: string;
@@ -100,6 +102,9 @@ export default function ToolLayout({
   // 공신력 있는 기준이 특히 중요한 금융·건강 도구의 검토 정보.
   const review = getToolReview(currentToolHref);
 
+  // 탐색 경로: 홈 › 카테고리 허브 › 현재 도구
+  const crumbs = getToolCrumbs(currentToolHref);
+
   // 짧은 페이지는 1개, 충분한 해설·FAQ가 있는 페이지만 2개로 제한한다.
   const showSecondAd = Boolean(
     guide && guide.sections.length >= 3 && faqs.length >= 3,
@@ -121,19 +126,21 @@ export default function ToolLayout({
 
       <main className="flex-1">
         {/* 2. 타이틀 영역 */}
-        <section className="bg-brand-black py-12 sm:py-16">
+        {/* 모바일은 여백을 줄여 도구 본체(드롭존)가 첫 화면에 들어오게 한다 */}
+        <section className="bg-brand-black py-8 sm:py-16">
           <div className="max-w-4xl mx-auto px-4 sm:px-6 lg:px-8 text-center">
-            <h1 className="text-3xl sm:text-4xl font-bold text-brand-paper mb-3">
+            <Breadcrumbs crumbs={crumbs} tone="dark" className="mb-2 sm:mb-4" />
+            <h1 className="text-3xl sm:text-4xl font-bold text-brand-paper mb-3 [word-break:keep-all]">
               {title}
             </h1>
-            <p className="text-brand-light text-lg">
+            <p className="text-brand-light text-base sm:text-lg [word-break:keep-all]">
               {description}
             </p>
           </div>
         </section>
 
         {/* 3. 도구 본체 */}
-        <section className="py-8 sm:py-12">
+        <section className="py-6 sm:py-12">
           <div className="max-w-4xl mx-auto px-4 sm:px-6 lg:px-8">
             <ErrorBoundary>
               {children}
@@ -205,7 +212,7 @@ export default function ToolLayout({
                         </table>
                       </div>
                       {section.table.caption && (
-                        <figcaption className="mt-2 text-xs text-brand-light">
+                        <figcaption className="mt-2 text-xs text-brand-subtle">
                           {section.table.caption}
                         </figcaption>
                       )}

@@ -6,7 +6,7 @@ import { SITE_URL } from "@/lib/common/constants";
 const PAGE_URL = `${SITE_URL}/tools/image/crop`;
 
 export const metadata: Metadata = {
-  title: "이미지 크롭 - 원하는 부분만 깔끔하게",
+  title: "이미지 크롭 - 사진 자르기, 1:1·4:3·16:9 비율로",
   description:
     "드래그로 간편하게 사진 자르기. 증명사진 규격·원형 크롭·고정 크기 출력, 1:1·16:9 비율 프리셋. 얼굴이 담긴 증명사진도 업로드 없이 기기 안에서만 잘립니다.",
   keywords: [
@@ -20,7 +20,7 @@ export const metadata: Metadata = {
     "1:1 크롭",
   ],
   openGraph: {
-    title: "이미지 크롭 - 원하는 부분만 깔끔하게",
+    title: "이미지 크롭 - 사진 자르기, 1:1·4:3·16:9 비율로",
     description: "드래그로 간편하게 사진 자르기. 비율 프리셋 지원.",
     url: PAGE_URL,
     type: "website",
@@ -28,7 +28,7 @@ export const metadata: Metadata = {
   },
   twitter: {
     card: "summary_large_image",
-    title: "이미지 크롭 - 원하는 부분만 깔끔하게",
+    title: "이미지 크롭 - 사진 자르기, 1:1·4:3·16:9 비율로",
     description: "증명사진 규격부터 원형 크롭까지, 브라우저에서 바로 자르기.",
   },
   alternates: {

@@ -6,7 +6,7 @@ import { SITE_URL } from "@/lib/common/constants";
 const PAGE_URL = `${SITE_URL}/tools/image/watermark`;
 
 export const metadata: Metadata = {
-  title: "사진 워터마크 넣기 - 텍스트·로고를 브라우저에서 바로",
+  title: "사진 워터마크 넣기 - 텍스트·로고를 여러 장에 한 번에",
   description:
     "사진에 텍스트나 로고 워터마크를 넣으세요. 위치·투명도·반복까지 조절, 여러 장 일괄도 무료. 도용을 막으려는 원본 사진을 남의 서버에 맡기지 않습니다.",
   keywords: [
@@ -19,7 +19,7 @@ export const metadata: Metadata = {
     "이미지 저작권 표시",
   ],
   openGraph: {
-    title: "사진 워터마크 넣기 - 텍스트·로고를 브라우저에서 바로",
+    title: "사진 워터마크 넣기 - 텍스트·로고를 여러 장에 한 번에",
     description: "사진에 텍스트·로고 워터마크를. 원본은 내 기기에만 남습니다.",
     url: PAGE_URL,
     type: "website",
@@ -27,7 +27,7 @@ export const metadata: Metadata = {
   },
   twitter: {
     card: "summary_large_image",
-    title: "사진 워터마크 넣기 - 텍스트·로고를 브라우저에서 바로",
+    title: "사진 워터마크 넣기 - 텍스트·로고를 여러 장에 한 번에",
     description: "워터마크 합성은 브라우저에서, 원본 사진은 내 기기에만.",
   },
   alternates: {
@@ -37,9 +37,9 @@ export const metadata: Metadata = {
 
 const faqs = [
   {
-    question: "원본 사진과 로고가 서버로 올라가나요?",
+    question: "'전체 반복'을 켜면 위치와 여백 설정은 어떻게 되나요?",
     answer:
-      "아니요. 도용이 걱정돼 워터마크를 넣으려는 사진을 남의 서버에 먼저 올린다면 그게 더 이상하겠죠. 사진도 로고도 브라우저 안에서만 합성되고, 어디로도 전송되지 않습니다.",
+      "전체 반복에서는 워터마크가 사진 중심을 기준으로 전면에 깔리기 때문에 9칸 위치 선택과 가장자리 여백은 쓰이지 않고 비활성화됩니다. 회전 각도는 무늬 전체에 적용됩니다. 무늬 간격은 글자 크기나 로고 크기에 비례하므로, 촘촘하게 깔고 싶으면 크기를 줄이면 됩니다.",
   },
   {
     question: "텍스트와 로고 둘 다 넣을 수 있나요?",

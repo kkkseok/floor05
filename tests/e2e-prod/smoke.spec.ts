@@ -95,7 +95,7 @@ test.describe("프로덕션 기능 smoke", () => {
     await page.goto("/tools/calc/wage");
     const main = page.locator("main");
     await expect(main.getByText("82,560").first()).toBeVisible();
-    await expect(main.getByText("2,152,339").first()).toBeVisible();
+    await expect(main.getByText("2,156,880").first()).toBeVisible();
   });
 
   test("범위 정리: 변환쌍·금융 계산기는 301, 건강 도구는 404", async ({ request }) => {
