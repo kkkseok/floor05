@@ -37,6 +37,8 @@ floor05 자기 화면 캡처: Playwright로 `https://www.floor05.com/...`를 찍
 | `crop-ratio-overlay.mjs` | 사진 위에 비율별 크롭 영역 겹침 그림 | image-crop-guide |
 | `browser-encoders.mjs` | Chromium·WebKit·Firefox 인코더 비교(서브샘플링 판별 포함) | browser-image-encoders |
 | `merge-limits.mjs` | 캡처 세로 합치기 한계, PNG/JPG 용량, 폭 맞춤 영향 | image-merge-guide |
+| `mosaic-legibility.mjs` | 모자이크·블러 강도별 칸 수, 한 자리만 다른 숫자열 구별 가짓수, 칸당 반영 픽셀 수, 사진 크기별 칸 크기 + 확대 비교 그림 | photo-mosaic-guide |
+| `mosaic-tool-check.mjs` | 실제 모자이크 도구 다운로드와 스크립트 결과의 픽셀 대조 | photo-mosaic-guide |
 | `render-check.mjs` | 빌드된 글 데스크톱·모바일 캡처와 가로 스크롤 확인 | 모든 글 |
 
 Firefox가 필요하면 `npx playwright install firefox`(로컬 설치, 저장소 변경 없음).
