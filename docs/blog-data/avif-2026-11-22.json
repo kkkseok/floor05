@@ -27,6 +27,7 @@
   "back = matched.jpg90의 AVIF를 도구 워커 경로로 되돌린 결과. jpg = [품질, bytes, 입력 AVIF 디코딩 픽셀 대비 PSNR, 무손실 기준 대비 PSNR]",
   "encodeMs·avifEncodeTiming은 인코더와 실행 환경이 달라(브라우저 vs Python) 서로 비교하지 않으며 글에 쓰지 않음",
   "variants.quality100(Pillow quality=100, 4:4:4)은 디코딩 결과 무손실이 아니었음(engines.*.decode.quality100.psnrVsRef)",
+  "toolCheck = 실제 포맷 변환 도구 화면에서 내려받은 파일(품질 기본값 90%). Chromium 151의 bytes는 backSummary의 해당 값과 일치. Chrome·Edge 158의 WebP와 Firefox 153의 JPG·PNG·WebP는 인코더가 달라 bytes가 다름. WebKit 26.5는 AVIF를 열지 못해 4건 모두 실패",
   "외부 사실: MDN HTMLCanvasElement.toBlob — 'Browsers are required to support image/png', 지원하지 않는 형식은 image/png로 저장 (https://developer.mozilla.org/en-US/docs/Web/API/HTMLCanvasElement/toBlob, 2026-11-22 확인)"
  ],
  "refs": {
