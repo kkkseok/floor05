@@ -23,6 +23,7 @@ import {
   writeTransparentWebp,
   writeQuadrantPng,
   isRedAt,
+  fillStable,
 } from "./helpers";
 
 test.describe("이미지 압축", () => {
@@ -793,7 +794,7 @@ test.describe("크롭", () => {
     assertClean(guards);
   });
 
-  test("증명사진 크기(2×2, 600px)로 큰 이미지를 줄여도 줄무늬가 남지 않음", async ({ page }, testInfo) => {
+  test("정확한 크기(600×600)로 큰 이미지를 줄여도 줄무늬가 남지 않음", async ({ page }, testInfo) => {
     // 4800px → 600px(8배): 4800→2400→1200→600으로 마지막 단계가 정확히 2배가 되는 비율.
     // 줄무늬 편차는 마지막 단계가 2배일 때만 판정에 쓸 수 있다(6.8배 같은 비율은 이상적인
     // 면적 평균 결과도 칸마다 밝기가 달라진다). 8배 실측 편차: Chromium 32 / Firefox 64 / WebKit 98,
@@ -801,7 +802,10 @@ test.describe("크롭", () => {
     const stripes = writeStripesPng(testInfo.outputPath("stripes-4800.png"), 4800);
     await page.goto("/tools/image/crop");
     await uploadToDropzone(page, [stripes]);
-    await page.getByRole("button", { name: "미국 비자 2×2" }).click();
+    await page.getByRole("button", { name: "1:1", exact: true }).click();
+    await page.getByRole("button", { name: "정확한 크기로 출력" }).click();
+    await fillStable(page.getByLabel("출력 너비(px)"), "600");
+    await fillStable(page.getByLabel("출력 높이(px)"), "600");
     await page.getByRole("button", { name: "이미지 크롭", exact: true }).click();
     await expect(page.getByText(/크롭 완료/)).toBeVisible({ timeout: 60_000 });
     const file = await saveDownload(page, testInfo, () =>

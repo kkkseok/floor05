@@ -122,8 +122,9 @@ export function isWebPSupported(): boolean {
 
 /**
  * AVIF 인코딩(출력) 지원 여부 확인.
- * 디코딩(입력)은 더 넓게 지원되지만, canvas 인코딩은 Chromium 124+(Chrome/Edge)만 가능하고
- * Firefox·Safari는 조용히 PNG로 폴백한다. WebP와 동일하게 toDataURL로 감지한다.
+ * 디코딩(입력)은 넓게 지원되지만 canvas 인코딩은 브라우저마다 다르고, 미지원이면 조용히 PNG로 폴백한다.
+ * 2026-11-22 실측(docs/blog-data/avif-2026-11-22.json): Chromium 151·Chrome 158·Edge 158·Firefox 153·
+ * WebKit 26.5 모두 PNG로 폴백했다(저장 0/5). WebP와 동일하게 toDataURL로 감지한다.
  */
 export function isAvifSupported(): boolean {
   if (typeof document === "undefined") return false;

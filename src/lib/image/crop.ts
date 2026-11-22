@@ -40,7 +40,6 @@ export interface IdPhotoPreset {
 export const ID_PHOTO_PRESETS: IdPhotoPreset[] = [
   { id: "id-3x4", name: "증명사진 3×4", ratio: 30 / 40, width: 354, height: 472, description: "3×4cm" },
   { id: "passport", name: "여권 3.5×4.5", ratio: 35 / 45, width: 413, height: 531, description: "3.5×4.5cm" },
-  { id: "visa-2x2", name: "미국 비자 2×2", ratio: 1, width: 600, height: 600, description: "2×2 inch" },
 ];
 
 export interface CropResult {

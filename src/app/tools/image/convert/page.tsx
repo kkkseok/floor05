@@ -6,9 +6,9 @@ import { SITE_URL } from "@/lib/common/constants";
 const PAGE_URL = `${SITE_URL}/tools/image/convert`;
 
 export const metadata: Metadata = {
-  title: "이미지 포맷 변환 - PNG·JPG·WebP·AVIF 다 되는 변환기",
+  title: "이미지 포맷 변환 - PNG·JPG·WebP로, AVIF·HEIC 파일도 받습니다",
   description:
-    "PNG, JPG, WebP, AVIF로 자유롭게 변환. BMP·GIF·SVG·HEIC 입력까지 한 곳에서. 변환 엔진이 서버가 아니라 브라우저에 있어, 업로드를 기다릴 일도 파일이 밖으로 나갈 일도 없습니다.",
+    "PNG, JPG, WebP로 변환. AVIF·BMP·GIF·SVG·HEIC 입력까지 한 곳에서. 변환 엔진이 서버가 아니라 브라우저에 있어, 업로드를 기다릴 일도 파일이 밖으로 나갈 일도 없습니다.",
   keywords: [
     "이미지 변환",
     "PNG JPG 변환",
@@ -21,16 +21,16 @@ export const metadata: Metadata = {
     "포맷 변환",
   ],
   openGraph: {
-    title: "이미지 포맷 변환 - PNG·JPG·WebP·AVIF 다 되는 변환기",
-    description: "PNG, JPG, WebP, AVIF 변환. BMP·GIF·SVG·HEIC 입력까지. 브라우저에서 바로.",
+    title: "이미지 포맷 변환 - PNG·JPG·WebP로, AVIF·HEIC 파일도 받습니다",
+    description: "PNG, JPG, WebP로 변환. AVIF·BMP·GIF·SVG·HEIC 입력까지. 브라우저에서 바로.",
     url: PAGE_URL,
     type: "website",
     images: [{ url: "/og-image.png", width: 1200, height: 630 }],
   },
   twitter: {
     card: "summary_large_image",
-    title: "이미지 포맷 변환 - PNG·JPG·WebP·AVIF 다 되는 변환기",
-    description: "8가지 형식을 받아 PNG·JPG·WebP·AVIF로. 변환은 브라우저가 그 자리에서 합니다.",
+    title: "이미지 포맷 변환 - PNG·JPG·WebP로, AVIF·HEIC 파일도 받습니다",
+    description: "8가지 형식을 받아 PNG·JPG·WebP로. 변환은 브라우저가 그 자리에서 합니다.",
   },
   alternates: {
     canonical: PAGE_URL,
@@ -71,12 +71,12 @@ const faqs = [
   {
     question: "AVIF는 무엇이고, 어떨 때 쓰나요?",
     answer:
-      "AVIF는 WebP보다도 더 작은 용량에 좋은 화질을 담는 차세대 이미지 포맷입니다. 웹사이트 로딩 속도를 더 줄이고 싶을 때 유리합니다. AVIF 출력(인코딩)은 크롬·엣지 등 일부 브라우저에서만 지원되어, 지원하지 않는 브라우저에서는 AVIF 버튼이 자동으로 비활성화됩니다. 반대로 'AVIF를 JPG·PNG로 여는' 변환은 대부분의 최신 브라우저에서 됩니다.",
+      "AVIF는 WebP보다도 더 작은 용량에 좋은 화질을 담는 차세대 이미지 포맷입니다. 웹사이트 로딩 속도를 더 줄이고 싶을 때 유리합니다. 다만 AVIF로 저장하려면 브라우저가 지원해야 합니다. 2026년 11월에 확인한 크롬·엣지·파이어폭스는 모두 AVIF 저장을 지원하지 않아 AVIF 버튼이 꺼져 있었습니다. 반대로 'AVIF를 JPG·PNG로 여는' 변환은 대부분의 최신 브라우저에서 됩니다.",
   },
   {
     question: "BMP, GIF, SVG, AVIF 파일도 올릴 수 있나요?",
     answer:
-      "네. JPG, PNG, WebP, HEIC에 더해 BMP, GIF, SVG, AVIF를 입력으로 받아 JPG·PNG·WebP(·AVIF)로 변환할 수 있습니다. 웹에서 받은 AVIF·WebP가 안 열릴 때, 오래된 BMP를 가볍게 줄일 때, GIF의 한 장면을 이미지로 뽑을 때(움직이는 GIF는 첫 프레임만 변환됩니다) 쓰면 됩니다.",
+      "네. JPG, PNG, WebP, HEIC에 더해 BMP, GIF, SVG, AVIF를 입력으로 받아 JPG·PNG·WebP로 변환할 수 있습니다. 웹에서 받은 AVIF·WebP가 안 열릴 때, 오래된 BMP를 가볍게 줄일 때, GIF의 한 장면을 이미지로 뽑을 때(움직이는 GIF는 첫 프레임만 변환됩니다) 쓰면 됩니다.",
   },
   {
     question: "SVG를 PNG·JPG로 바꾸면 크기는 어떻게 되나요?",
@@ -118,11 +118,11 @@ const guide = {
     {
       heading: "AVIF, 그리고 다양한 형식 입력",
       paragraphs: [
-        "AVIF는 WebP보다도 한 단계 더 효율적인 차세대 포맷입니다. 같은 화질을 더 작은 용량에 담아 웹사이트 로딩 속도를 한 번 더 줄이고 싶을 때 좋습니다. 다만 AVIF로 '내보내는' 인코딩은 아직 크롬·엣지 같은 일부 브라우저에서만 되기 때문에, 지원하지 않는 브라우저에서는 AVIF 버튼이 자동으로 비활성화됩니다. 반대로 웹에서 받은 AVIF나 WebP가 안 열릴 때, 그 파일을 올려 JPG·PNG로 바꾸는 건 대부분의 최신 브라우저에서 됩니다.",
+        "AVIF는 WebP보다도 한 단계 더 효율적인 차세대 포맷입니다. 같은 화질을 더 작은 용량에 담아 웹사이트 로딩 속도를 한 번 더 줄이고 싶을 때 좋습니다. 다만 AVIF로 '내보내는' 인코딩은 브라우저가 지원해야 합니다. 2026년 11월에 확인한 크롬·엣지·파이어폭스는 모두 AVIF 저장을 지원하지 않아 AVIF 버튼이 꺼져 있었습니다. 반대로 웹에서 받은 AVIF나 WebP가 안 열릴 때, 그 파일을 올려 JPG·PNG로 바꾸는 건 대부분의 최신 브라우저에서 됩니다.",
         "입력으로는 JPG·PNG·WebP·HEIC에 더해 BMP, GIF, SVG, AVIF도 받습니다. 오래되고 용량 큰 BMP를 가볍게 줄이거나, 움직이는 GIF에서 한 장면을 이미지로 뽑거나(움짤은 첫 프레임만 변환됩니다), 벡터 SVG 아이콘을 원하는 해상도의 PNG로 내보낼 수 있습니다. SVG는 정해진 크기가 없어 변환 옵션에서 '출력 가로(px)'를 정하면 그 크기로 또렷하게 래스터화됩니다.",
       ],
       bullets: [
-        "AVIF 출력: 크롬·엣지 등 지원 브라우저에서만 (그 외에는 버튼 비활성화)",
+        "AVIF 출력: 브라우저가 지원할 때만 (2026년 11월에 확인한 크롬·엣지·파이어폭스는 미지원, 버튼 비활성화)",
         "AVIF·WebP 입력 → JPG·PNG 출력: 최신 브라우저에서 대부분 가능 (안 열리는 파일 열기)",
         "GIF 입력: 움직이는 GIF는 첫 프레임만 변환",
         "SVG 입력: 출력 가로(px)를 지정해 원하는 해상도로 변환 (세로 자동)",
@@ -161,7 +161,7 @@ const schemas = [
     operatingSystem: "Web Browser",
     offers: { "@type": "Offer", price: "0", priceCurrency: "KRW" },
     description:
-      "PNG·JPG·WebP·AVIF 상호 변환 무료 도구. BMP·GIF·SVG·HEIC 입력 지원, 변환 엔진은 브라우저 안에 있습니다.",
+      "PNG·JPG·WebP 상호 변환 무료 도구. AVIF·BMP·GIF·SVG·HEIC 입력 지원, 변환 엔진은 브라우저 안에 있습니다.",
   },
   {
     "@context": "https://schema.org",
