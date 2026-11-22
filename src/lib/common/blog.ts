@@ -295,7 +295,7 @@ export const POSTS: BlogPost[] = [
       "증명사진 300dpi",
     ],
     datePublished: "2026-06-12",
-    dateModified: "2026-12-29",
+    dateModified: "2026-12-22",
     readTime: "7분",
     related: ["passport-photo-size", "image-crop-guide", "character-count-guide"],
   },
