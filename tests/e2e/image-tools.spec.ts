@@ -235,6 +235,21 @@ test.describe("포맷 변환", () => {
     expect(imageDims(file)).toEqual({ width: 1200, height: 900 });
   });
 
+  test("세로 16,384px PNG → WebP는 잘린 파일 대신 안내를 띄운다", async ({ page }, testInfo) => {
+    // Chromium은 한 변 16,383px를 넘는 WebP를 오류 없이 잘라 저장했다(2026-11-22 실측).
+    const src = writeQuadrantPng(testInfo.outputPath("tall.png"), 64, 16384);
+    await page.goto("/tools/image/convert");
+    await uploadToDropzone(page, [src]);
+
+    const webpBtn = page.getByRole("button", { name: /^WebP/ });
+    if (await webpBtn.isDisabled()) return; // WebP 인코딩 미지원 빌드
+
+    await page.getByRole("button", { name: "WebP", exact: true }).click();
+    await page.getByRole("button", { name: /1개 이미지 WebP로 변환/ }).click();
+    await expect(page.getByText(/WebP는 한 변이 16,383px까지만 저장됩니다/)).toBeVisible({ timeout: 30_000 });
+    await expect(page.getByRole("button", { name: "다운로드" })).toHaveCount(0);
+  });
+
   test("WebP → PNG 변환", async ({ page }, testInfo) => {
     await page.goto("/tools/image/convert");
     await uploadToDropzone(page, [fx("photo-800x600.webp")]);
