@@ -1,0 +1,155 @@
+{
+  "checkedAt": "2026-11-23",
+  "method": "외교부 여권안내(passport.go.kr)와 정부24(gov.kr) 페이지를 HTTP 요청으로 직접 받아(비로그인) HTML 본문 문장에서 수치를 읽었다. 블로그·사진관 사이트·검색 결과 요약은 근거로 쓰지 않았다. quote는 페이지에 적힌 문장 그대로다.",
+  "confirmed": [
+    {
+      "id": "print-size",
+      "item": "여권사진 크기(인화)",
+      "values": { "widthCm": 3.5, "heightCm": 4.5 },
+      "quote": "여권사진의 크기는 가로 3.5cm X 세로 4.5cm, 머리 길이는 정수리(머리카락을 제외한 머리 최상부)부터 턱까지 3.2~3.6cm 사이인 사진을 제출해야 함",
+      "url": "https://www.passport.go.kr/home/kor/contents.do?menuPos=32",
+      "pageTitle": "외교부 여권안내 홈페이지 [여권기본사항 > 여권 사진 > 여권 사진] — 여권사진 규격 안내 <2022. 10. 개정>",
+      "status": "확인"
+    },
+    {
+      "id": "head-length",
+      "item": "머리 길이(정수리~턱)",
+      "values": { "minCm": 3.2, "maxCm": 3.6 },
+      "quote": "머리 길이는 정수리(머리카락을 제외한 머리 최상부)부터 턱까지 3.2~3.6cm 사이인 사진을 제출해야 함 / 온라인 신청용 여권사진은 가로 413 X 세로 531 pixel 규격을 권장하며 사진 인화 시 머리 길이가 3.2~3.6cm 사이가 되어야 함",
+      "url": "https://www.passport.go.kr/home/kor/contents.do?menuPos=32",
+      "status": "확인"
+    },
+    {
+      "id": "background",
+      "item": "배경",
+      "values": { "color": "흰색", "border": "없어야 함" },
+      "quote": "배경은 균일하고 잉크 자국이 없는 흰색이며, 테두리가 없어야 함 / 사진 편집 프로그램(예: 포토샵 등)을 사용하여 배경을 지우거나 흰색 배경에 인물을 임의로 합성한 사진은 제출 불가함",
+      "url": "https://www.passport.go.kr/home/kor/contents.do?menuPos=32",
+      "status": "확인"
+    },
+    {
+      "id": "shooting-date",
+      "item": "촬영 시기",
+      "values": { "withinMonths": 6 },
+      "quote": "여권발급 신청일 전 6개월 이내에 모자 등을 쓰지 않고 촬영한 천연색 상반신 정면 사진을 제출해야 함",
+      "url": "https://www.passport.go.kr/home/kor/contents.do?menuPos=32",
+      "status": "확인"
+    },
+    {
+      "id": "editing",
+      "item": "보정·편집",
+      "values": { "allowed": false },
+      "quote": "본인이 직접 촬영한 사진은 여권사진 규격에 적합한 경우에만 사용 가능함 / 사진 편집 프로그램, 사진 필터 기능 등을 사용하여 임의로 보정된 사진(AI를 활용한 편집·가공·합성·창조 제작물 포함)은 허용 불가함",
+      "url": "https://www.passport.go.kr/home/kor/contents.do?menuPos=32",
+      "status": "확인"
+    },
+    {
+      "id": "print-quality",
+      "item": "인화 품질",
+      "values": { "paper": "인화지(유광 또는 무광)", "recommendedDpi": 300 },
+      "quote": "일반 종이에 인쇄된 사진은 사용할 수 없으며, 인화지(유광 또는 무광)에 인화된 선명한(해상도 300DPI 권장) 사진을 제출해야 함 / 흐릿하거나 픽셀이 깨지는 저해상도 사진, 주름(구겨짐) 또는 얼룩이 있는 사진은 사용 불가함",
+      "url": "https://www.passport.go.kr/home/kor/contents.do?menuPos=32",
+      "status": "확인"
+    },
+    {
+      "id": "infant",
+      "item": "영·유아",
+      "values": { "sameAsAdult": true, "mouthOpenAllowedUntilMonths": 36 },
+      "quote": "모든 기준은 성인과 동일함 / 입을 다물고 촬영하기 어려운 신생아 및 유아(36개월 이하)의 경우, 입을 조금 벌리는 것은 가능함",
+      "url": "https://www.passport.go.kr/home/kor/contents.do?menuPos=32",
+      "status": "확인"
+    },
+    {
+      "id": "online-file",
+      "item": "온라인 재발급용 사진 파일",
+      "values": {
+        "recommendedPx": [413, 531],
+        "allowedWidthPx": [395, 431],
+        "allowedHeightPx": [507, 550],
+        "maxFileKB": 500,
+        "formats": ["JPG", "JPEG"],
+        "recommendedDpi": 300,
+        "withinMonths": 6
+      },
+      "quote": "파일 크기 500KB 이하, 파일 형식 JPG/JPEG / 가로 413 픽셀(pixel), 세로 531 픽셀 사이즈 권장(가로 395~431 픽셀, 세로 507~550 픽셀 이내만 업로드 가능) / 해상도는 300dpi 권장 / 6개월 이내에 촬영된 사진",
+      "url": "https://www.passport.go.kr/home/kor/contents.do?menuPos=12",
+      "pageTitle": "외교부 여권안내 홈페이지 [여권신청·발급 > 온라인 재발급 > 온라인용 사진파일 안내]",
+      "status": "확인"
+    },
+    {
+      "id": "online-file-rejects",
+      "item": "온라인용 제출 불가 사진",
+      "values": {},
+      "quote": "배경이 흰색이 아니거나, 배경색을 사진 편집 프로그램으로 제거하여 사진이 변형된 경우 / 사진 내 머리길이가 정수리(머리카락을 제외한 머리 최상부)부터 턱까지 길이가 지나치게 짧거나 긴 경우, 시스템 사전 품질검사를 통과했더라도 여권 발급 심사시 반려될 수 있음 (머리길이는 사진파일을 가로 3.5cm, 세로 4.5cm로 인화했다는 가정하에 3.2~3.6cm가 될 수 있도록 촬영해야 함) / 다른 용도의 사진을 재사용하여 해상도가 낮아졌거나 흐릿해진 경우 / 사진을 인위적으로 편집하여 얼굴이 좌우 또는 상하로 납작하게 변형된 경우 / 써클렌즈. 색안경 등을 착용한 경우",
+      "note": "같은 페이지 유의사항: 휴대폰 등 모바일 기기로 촬영된 사진, 사진 편집 프로그램 등으로 과도한 보정을 한 사진은 여권 발급 시 사진이 실물과 다르게 표현될 수 있으므로 권장하지 않음",
+      "url": "https://www.passport.go.kr/home/kor/contents.do?menuPos=12",
+      "status": "확인"
+    },
+    {
+      "id": "gov24-file",
+      "item": "정부24 여권 재발급 온라인 신청의 사진 파일",
+      "values": {
+        "recommendedPx": [413, 531],
+        "allowedWidthPx": [395, 431],
+        "allowedHeightPx": [507, 550],
+        "failLimitPer24h": 10,
+        "autoRefundDays": 7
+      },
+      "quote": "업로드 하는 사진의 규격은 413 x 531 pixel 을 권장하며, 가로 395~431 pixel, 세로 507~550 pixel 이내 범위 사진으로만 신청이 가능합니다. / 사진품질 및 안면비교로 인한 실패 횟수가 24시간 내 10회를 초과한 경우 여권 재발급 신청 접수 진행이 제한됩니다. / 특히 신분증(주민등록증, 운전면허증, 여권)에 사용하셨던 사진 중 접수일 기준으로 촬영 일자가 6개월이 경과한 사진은 재 사용이 불가능하며 / 여권 재발급 신청이 여권사진 규격 등에 부합하지 않아 심사 시 반려된 경우, 신청일로 7일이내 자동환불 됩니다.",
+      "note": "이 페이지에는 파일 용량(KB)과 파일 형식이 적혀 있지 않다. 용량·형식의 근거는 online-file 항목이다.",
+      "url": "https://www.gov.kr/portal/service/serviceInfo/126200000030",
+      "pageTitle": "여권 재발급 온라인 신청 | 민원 안내 및 신청 | 정부24",
+      "status": "확인"
+    },
+    {
+      "id": "official-tools",
+      "item": "외교부 여권안내의 사진 도구",
+      "values": { "resizeToolInputMaxMB": 10, "resizeToolInputFormats": ["jpg", "png"] },
+      "quote": "[온라인 여권 사진 크기 조정] 10M 미만의 jpg, png 파일만 가능합니다. / 업로드 된 이미지를 확대/축소/이동을 통해 붉은색 점선내에 얼굴이 들어가도록 맞춰주세요. / 증명사진,반명함사진,비자 사진 등은 사용 할 수 없으니 유의하시기 바랍니다. / [온라인 여권 사진 검증] ※ 해당 프로그램은 참고용일 뿐이며 실제 심사결과와 다를 수 있습니다.",
+      "note": "크기 조정 페이지에는 '모바일에서 지원하지 않는 기능입니다. PC를 통해 확인 부탁드립니다.'라는 문구가 들어 있다.",
+      "url": "https://www.passport.go.kr/home/kor/photoVerify/index.do?menuPos=34",
+      "urlVerify": "https://www.passport.go.kr/home/kor/onlinePhotoVerify/index.do?menuPos=33",
+      "status": "확인"
+    }
+  ],
+  "discrepancies": [
+    {
+      "item": "온라인용 파일 형식",
+      "detail": "온라인용 사진파일 안내(menuPos=12)는 '파일 형식 JPG/JPEG'만 적고, 온라인 여권 사진 검증 페이지(menuPos=33)의 기본사항에는 '파일 크기 500KB 이하, 파일 형식 JPG/JPEG 또는 PNG 가능'이라고 적혀 있다. 두 페이지 모두 허용하는 형식은 JPG다. 글에서는 JPG로 안내하고 이 차이를 밝힌다."
+    }
+  ],
+  "failed": [
+    {
+      "item": "500KB를 500,000바이트로 세는지 512,000바이트(1,024 기준)로 세는지",
+      "status": "확인 실패",
+      "reason": "공식 페이지에 '500KB 이하'라고만 적혀 있다."
+    },
+    {
+      "item": "업로드 시스템이 파일 안의 dpi 표기(JFIF 밀도)를 검사하는지",
+      "status": "확인 실패",
+      "reason": "공식 페이지에는 '해상도는 300dpi 권장'이라고만 적혀 있다. 로그인이 필요한 실제 신청 화면은 확인하지 않았다."
+    },
+    {
+      "item": "방문 신청 시 사진 제출 매수",
+      "status": "확인 실패",
+      "reason": "확인한 세 페이지 본문에서 매수를 적은 문장을 찾지 못했다. 글에 쓰지 않는다."
+    },
+    {
+      "item": "눈 위치·얼굴 너비 같은 세부 수치",
+      "status": "확인 실패",
+      "reason": "여권사진 규격 안내 본문에 수치로 적힌 것은 사진 크기와 머리 길이뿐이다. 첨부 PDF·JPG는 열어 보지 않았다."
+    }
+  ],
+  "derived": {
+    "note": "아래는 공식 수치로 직접 계산한 값이다. 공식 페이지에 적힌 숫자가 아니다.",
+    "ratio": "3.5 / 4.5 = 0.7778, 413 / 531 = 0.7778",
+    "dpiAt413px": "413px / (3.5cm / 2.54) = 299.7dpi, 531px / (4.5cm / 2.54) = 299.7dpi",
+    "headLengthPctOfHeight": "3.2 / 4.5 = 71.1%, 3.6 / 4.5 = 80.0%",
+    "headLengthPxAt531": "531 × 3.2 / 4.5 = 377.6px, 531 × 3.6 / 4.5 = 424.8px (약 378~425px)",
+    "idPhoto3x4At300dpi": "floor05 크롭의 '증명사진 3×4' 프리셋 354×472px는 가로 354 < 395, 세로 472 < 507로 업로드 허용 범위 밖"
+  },
+  "removedFromPreviousVersion": [
+    "잡코리아 1MB·사람인 10MB, 공무원 원서접수 100KB 미만·137×177px, 대학 원서접수 300~500KB, 토익 115×150px, 운전면허 350×450px·250KB, 비자/영주권 5×5cm·600×600px: 이번에 공식 페이지를 확인하지 않았고 여권사진 글의 범위도 아니어서 뺐다.",
+    "'사진관에서 받은 증명사진은 보통 2~5MB', '증명사진은 70% 정도에서도 충분히 깨끗합니다': 근거 없는 서술이라 뺐다."
+  ]
+}

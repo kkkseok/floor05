@@ -1,0 +1,334 @@
+{
+  "measuredAt": "2026-11-22T16:35:07.322Z",
+  "measuredDateLocal": "2026-11-23 (KST)",
+  "browser": "Playwright Chromium 151.0.7922.34",
+  "script": "scripts/blog-measure/passport-size.mjs (그림: passport-upscale-tiles.mjs, 도구 대조: passport-tool-check.mjs)",
+  "method": "도구 코드를 esbuild로 묶어(src/lib/image/crop.ts의 cropImage·calculateMaxCropArea, src/lib/image/compress.ts의 compressToTargetSize) 빈 페이지에 주입해 그대로 호출했다. 크롭은 이미지 크롭의 '여권 3.5×4.5' 프리셋과 같은 호출이다: 35:45 최대 영역(가운데) → 원본 크기로 자름 → drawImageDownscaled로 413×531 → canvas.toBlob JPG 품질 0.92.",
+  "units": "bytes. 글에서는 1KB=1,000B, 1MB=1,000,000B로 환산. 한도 대비 %는 500KB=500,000B로 계산(공식 페이지는 '500KB 이하'라고만 적어 1,000/1,024 기준은 확인 못 함)",
+  "specs": "규격 수치의 출처는 docs/blog-data/passport-specs-2026-11-23.json",
+  "sources": {
+    "tortoise": "NASA KSC-20210121-PH-JBS01_0079 (public domain), 5522x4312, 15,781,842B. 잔무늬가 많은 사진",
+    "flower": "NASA KSC-20230613-PH-FMX01-0075 (public domain), 8192x5464, 9,177,109B. 배경이 흐린 사진",
+    "shapes": "스크립트가 그린 그림 3024x4032(12MP 세로 4:3 휴대폰 사진 크기). 옅은 회색 배경(#F6F6F6→#ECECEC) + 타원 + 어깨 모양 + 채널별 ±4 잡음(시드 고정)을 JPG 92%로 저장한 것. 얼굴이 아닌 도형이다"
+  },
+  "fields": {
+    "preset.jpgBytes": "35:45 최대 영역을 413×531 JPG 92%로 저장한 용량",
+    "preset.keptPct": "잘라낸 영역 면적 / 원본 면적 × 100",
+    "preset.scaleDown": "잘라낸 영역 너비 / 413",
+    "preset.psnr / quality[].psnr / upscale[].psnr": "기준 = 같은 413×531 캔버스를 PNG로 저장한 무손실 픽셀. 결과 파일을 다시 열어 RGB 3채널로 비교(dB)",
+    "preset.jfifDensity": "저장된 JPG의 JFIF APP0 밀도 표기. units 0 = 단위 없음(가로세로 화소 비율만), x:y = 1:1 → dpi 값이 기록되지 않음",
+    "pngBytes": "같은 캔버스를 PNG로 저장한 용량(PNG를 넣으면 크롭 도구가 PNG로 저장한다: outputTypeFor)",
+    "rangeMax": "업로드 허용 범위에서 가장 큰 431×550으로 저장한 JPG 92% 용량",
+    "upscale": "413×531 대신 from 크기 JPG 92%로 저장한 작은 파일을 도구 경로로 413×531로 키워 JPG 92%로 저장한 결과",
+    "target500": "자르지 않은 원본을 이미지 압축의 목표 용량 500KB에 넣은 결과(compressToTargetSize, JPG). 도구는 1KB=1,024B로 계산하므로 목표는 512,000B",
+    "limitPct": "용량 / 500,000B × 100"
+  },
+  "limitPct": {
+    "tortoise": {
+      "jpg92": 14.1,
+      "jpg100": 53.4,
+      "png": 94.1,
+      "rangeMaxJpg92": 15.1,
+      "target500": 101.1
+    },
+    "flower": {
+      "jpg92": 5.9,
+      "jpg100": 36.7,
+      "png": 71.9,
+      "rangeMaxJpg92": 6.2,
+      "target500": 101.8
+    },
+    "shapes": {
+      "jpg92": 2.1,
+      "jpg100": 16.9,
+      "png": 50.7,
+      "rangeMaxJpg92": 2.1,
+      "target500": 86.5
+    }
+  },
+  "notMeasured": "얼굴 비율(머리 길이 3.2~3.6cm)·배경색·표정 판정, 정부24 업로드 시스템의 사전 품질검사, 사람 얼굴 사진의 용량(초상권이 깨끗한 소스가 없어 쓰지 않음), Firefox·Safari 결과",
+  "photos": {
+    "tortoise": {
+      "width": 5522,
+      "height": 4312,
+      "fileBytes": 15781842,
+      "preset": {
+        "width": 413,
+        "height": 531,
+        "cropAreaPx": [
+          3354,
+          4312
+        ],
+        "keptPct": 60.7,
+        "scaleDown": 8.12,
+        "jpgBytes": 70400,
+        "psnr": 36.99,
+        "jfifDensity": {
+          "units": 0,
+          "x": 1,
+          "y": 1
+        }
+      },
+      "pngBytes": 470366,
+      "quality": [
+        {
+          "quality": 1,
+          "bytes": 266814,
+          "psnr": 50.91
+        },
+        {
+          "quality": 0.92,
+          "bytes": 70400,
+          "psnr": 36.99
+        },
+        {
+          "quality": 0.8,
+          "bytes": 44052,
+          "psnr": 33.99
+        },
+        {
+          "quality": 0.6,
+          "bytes": 29825,
+          "psnr": 31.76
+        },
+        {
+          "quality": 0.4,
+          "bytes": 22917,
+          "psnr": 30.39
+        }
+      ],
+      "rangeMax": {
+        "width": 431,
+        "height": 550,
+        "jpgBytes": 75450
+      },
+      "upscale": [
+        {
+          "from": [
+            310,
+            398
+          ],
+          "factor": 1.33,
+          "smallBytes": 42316,
+          "upscaledBytes": 56028,
+          "psnr": 30.22
+        },
+        {
+          "from": [
+            207,
+            266
+          ],
+          "factor": 2,
+          "smallBytes": 20718,
+          "upscaledBytes": 45533,
+          "psnr": 26.79
+        },
+        {
+          "from": [
+            138,
+            177
+          ],
+          "factor": 2.99,
+          "smallBytes": 10595,
+          "upscaledBytes": 37580,
+          "psnr": 24.45
+        }
+      ],
+      "target500": {
+        "width": 2485,
+        "height": 1940,
+        "bytes": 505620
+      }
+    },
+    "flower": {
+      "width": 8192,
+      "height": 5464,
+      "fileBytes": 9177109,
+      "preset": {
+        "width": 413,
+        "height": 531,
+        "cropAreaPx": [
+          4250,
+          5464
+        ],
+        "keptPct": 51.9,
+        "scaleDown": 10.29,
+        "jpgBytes": 29566,
+        "psnr": 40.38,
+        "jfifDensity": {
+          "units": 0,
+          "x": 1,
+          "y": 1
+        }
+      },
+      "pngBytes": 359590,
+      "quality": [
+        {
+          "quality": 1,
+          "bytes": 183284,
+          "psnr": 50.63
+        },
+        {
+          "quality": 0.92,
+          "bytes": 29566,
+          "psnr": 40.38
+        },
+        {
+          "quality": 0.8,
+          "bytes": 18793,
+          "psnr": 37.9
+        },
+        {
+          "quality": 0.6,
+          "bytes": 12715,
+          "psnr": 35.97
+        },
+        {
+          "quality": 0.4,
+          "bytes": 9899,
+          "psnr": 34.77
+        }
+      ],
+      "rangeMax": {
+        "width": 431,
+        "height": 550,
+        "jpgBytes": 31024
+      },
+      "upscale": [
+        {
+          "from": [
+            310,
+            398
+          ],
+          "factor": 1.33,
+          "smallBytes": 19289,
+          "upscaledBytes": 27093,
+          "psnr": 36
+        },
+        {
+          "from": [
+            207,
+            266
+          ],
+          "factor": 2,
+          "smallBytes": 10793,
+          "upscaledBytes": 24507,
+          "psnr": 32.99
+        },
+        {
+          "from": [
+            138,
+            177
+          ],
+          "factor": 2.99,
+          "smallBytes": 6174,
+          "upscaledBytes": 22377,
+          "psnr": 29.99
+        }
+      ],
+      "target500": {
+        "width": 7373,
+        "height": 4918,
+        "bytes": 508843
+      }
+    },
+    "shapes": {
+      "width": 3024,
+      "height": 4032,
+      "fileBytes": 1017653,
+      "preset": {
+        "width": 413,
+        "height": 531,
+        "cropAreaPx": [
+          3024,
+          3888
+        ],
+        "keptPct": 96.4,
+        "scaleDown": 7.32,
+        "jpgBytes": 10266,
+        "psnr": 47.2,
+        "jfifDensity": {
+          "units": 0,
+          "x": 1,
+          "y": 1
+        }
+      },
+      "pngBytes": 253565,
+      "quality": [
+        {
+          "quality": 1,
+          "bytes": 84303,
+          "psnr": 53.76
+        },
+        {
+          "quality": 0.92,
+          "bytes": 10266,
+          "psnr": 47.2
+        },
+        {
+          "quality": 0.8,
+          "bytes": 6445,
+          "psnr": 44.48
+        },
+        {
+          "quality": 0.6,
+          "bytes": 5120,
+          "psnr": 41.7
+        },
+        {
+          "quality": 0.4,
+          "bytes": 4390,
+          "psnr": 40.38
+        }
+      ],
+      "rangeMax": {
+        "width": 431,
+        "height": 550,
+        "jpgBytes": 10404
+      },
+      "upscale": [
+        {
+          "from": [
+            310,
+            398
+          ],
+          "factor": 1.33,
+          "smallBytes": 7163,
+          "upscaledBytes": 11046,
+          "psnr": 40.95
+        },
+        {
+          "from": [
+            207,
+            266
+          ],
+          "factor": 2,
+          "smallBytes": 4746,
+          "upscaledBytes": 10196,
+          "psnr": 37.24
+        },
+        {
+          "from": [
+            138,
+            177
+          ],
+          "factor": 2.99,
+          "smallBytes": 3242,
+          "upscaledBytes": 9904,
+          "psnr": 34.46
+        }
+      ],
+      "target500": {
+        "width": 3024,
+        "height": 4032,
+        "bytes": 432546
+      }
+    }
+  },
+  "toolCheck": {
+    "browser": "Playwright Chromium 151.0.7922.34",
+    "file": "tortoise_cropped.jpg",
+    "bytes": 70400,
+    "doneText": "크롭 완료 · 413 × 531"
+  }
+}
