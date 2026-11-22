@@ -353,7 +353,7 @@ export const POSTS: BlogPost[] = [
       "오프라인 이미지 압축",
     ],
     datePublished: "2026-06-11",
-    dateModified: "2026-12-18",
+    dateModified: "2026-12-25",
     readTime: "8분",
     related: ["image-compression-guide", "heic-to-jpg-guide"],
   },
