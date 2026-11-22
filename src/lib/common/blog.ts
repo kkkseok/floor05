@@ -509,7 +509,7 @@ export const POSTS: BlogPost[] = [
       "HEIC 파일 열기",
     ],
     datePublished: "2026-03-07",
-    dateModified: "2026-12-25",
+    dateModified: "2027-01-01",
     readTime: "7분",
     related: ["png-vs-jpg", "image-compression-guide", "browser-image-tools-privacy"],
   },
