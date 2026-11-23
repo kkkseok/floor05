@@ -2,18 +2,23 @@
  * 블로그 실측용(heic-to-jpg-guide): 실제 도구 화면(/tools/image/heic-to-jpg)에서
  *  1) 한 장을 변환해 내려받은 JPG가 heic-convert.mjs 결과와 바이트 단위로 같은지(sha256)
  *  2) 1·5·10장을 한꺼번에 올렸을 때 "변환" 클릭부터 완료 문구까지 걸린 시간(회당 새 페이지, 3회)
- * 를 확인한다. 도구는 여러 장을 Promise.all로 동시에 변환한다.
+ * 를 확인한다. 도구는 여러 장을 Promise.all로 동시에 변환한다(HEIC 디코딩은 libheif-js, 메인 스레드).
+ * 회마다 새 컨텍스트라 시간에는 libheif-js 청크 내려받기·WASM 준비 시간이 들어간다(처음 변환하는 사용자와 같은 조건).
  *
  * 사용: npm run build → npx next start -p <포트> 를 띄운 뒤
- *   node scripts/blog-measure/heic-ui-check.mjs <소스폴더> <결과폴더> <출력.json> [포트=3123]
- * 10장은 가진 HEIC 7개에 3개를 이름만 바꿔 복사해 채운다(<결과폴더>/batch/).
+ *   node scripts/blog-measure/heic-ui-check.mjs <소스폴더> <결과폴더> <출력.json> [포트=3123] [브라우저=chromium|firefox|webkit]
+ * <결과폴더>에는 heic-convert.mjs 결과(<브라우저>-<이름>-jq90.jpg)가 있어야 한다.
+ * 10장은 가진 HEIC 8개에 2개를 이름만 바꿔 복사해 채운다(<결과폴더>/batch/).
  */
 import fs from "node:fs";
 import path from "node:path";
 import crypto from "node:crypto";
-import { chromium } from "@playwright/test";
+import { chromium, firefox, webkit } from "@playwright/test";
 
-const [, , srcDir, outDir, outJson, port = "3123"] = process.argv;
+const [, , srcDir, outDir, outJson, port = "3123", engineName = "chromium"] = process.argv;
+const engine = { chromium, firefox, webkit }[engineName];
+const label = { chromium: "Chromium", firefox: "Firefox", webkit: "WebKit" }[engineName];
+if (!engine) throw new Error("브라우저는 chromium|firefox|webkit");
 const URL_ = `http://127.0.0.1:${port}/tools/image/heic-to-jpg`;
 const sha = (buf) => crypto.createHash("sha256").update(buf).digest("hex");
 
@@ -30,8 +35,8 @@ for (const f of ["tortoise-q70.heic", "flower-q70.heic", "tortoise-q90.heic"]) {
 // 5장은 품질 70 두 장을 앞에 두고 섞는다
 const five = ["tortoise-q70.heic", "flower-q70.heic", "tortoise-q50.heic", "flower-q90.heic", "tortoise-q90.heic"].map((f) => path.join(srcDir, f));
 
-const b = await chromium.launch();
-const result = { browser: b.version(), url: URL_, single: null, batch: [] };
+const b = await engine.launch();
+const result = { engine: label, browser: b.version(), url: URL_, tenFiles: ten.map((f) => path.basename(f)), single: null, batch: [] };
 
 async function run(files, download) {
   const ctx = await b.newContext({ acceptDownloads: true, viewport: { width: 1280, height: 900 } });
@@ -66,7 +71,7 @@ async function run(files, download) {
     const dl = p.waitForEvent("download", { timeout: 120_000 });
     await p.getByRole("button", { name: /다운로드/ }).first().click();
     const d = await dl;
-    const save = path.join(outDir, "ui-" + d.suggestedFilename());
+    const save = path.join(outDir, `ui-${label}-${files.length}-` + d.suggestedFilename());
     await d.saveAs(save);
     row.download = { name: d.suggestedFilename(), bytes: fs.statSync(save).size, sha256: sha(fs.readFileSync(save)) };
   }
@@ -77,7 +82,7 @@ async function run(files, download) {
 // 1) 한 장: 내려받은 파일 ↔ 측정 스크립트 결과
 for (const stem of ["tortoise-q70", "flower-q70"]) {
   const row = await run([path.join(srcDir, `${stem}.heic`)], true);
-  const measured = path.join(outDir, `Chromium-${stem}-jq90.jpg`);
+  const measured = path.join(outDir, `${label}-${stem}-jq90.jpg`);
   row.measuredSha256 = sha(fs.readFileSync(measured));
   row.measuredBytes = fs.statSync(measured).size;
   row.identical = row.download?.sha256 === row.measuredSha256;

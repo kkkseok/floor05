@@ -1,8 +1,10 @@
 """
-블로그 시각 자료(heic-to-jpg-guide): 같은 영역을 기준 이미지 / 도구 결과(전체 범위 HEIC) / 도구 결과(제한 범위 HEIC)
-로 잘라 나란히 볼 수 있게 저장한다. 영역은 "도구 결과에서만 완전한 검정(0,0,0)이 된 픽셀"이 가장 많은 1200x900 칸을 고른다.
+블로그 시각 자료(heic-to-jpg-guide): 같은 영역을 기준 이미지 / 고치기 전 도구 결과(heic2any 0.0.4) / 고친 뒤 도구 결과(libheif-js)
+로 잘라 나란히 볼 수 있게 저장한다. 셋 다 거북이 품질 70(전체 범위) HEIC를 도구로 JPG 90% 변환한 결과다(기준 제외).
+영역은 "고치기 전 결과에서만 완전한 검정(0,0,0)이 된 픽셀"이 가장 많은 1200x900 칸을 고른다(첫 측정과 같은 규칙이라 같은 칸이 나온다).
 1200x900을 600x450으로 줄여 JPG(품질 90)로 저장한다. 밝기 차이를 보는 그림이라 축소해도 된다.
-사용: venv/Scripts/python -I -X utf8 scripts/blog-measure/heic-level-crops.py <소스폴더> <결과폴더> public/images/blog/heic-to-jpg-guide
+사용: venv/Scripts/python -I -X utf8 scripts/blog-measure/heic-level-crops.py <소스폴더> <고친뒤결과폴더> <고치기전결과폴더> public/images/blog/heic-to-jpg-guide
+출력: levels-ref.jpg, levels-before.jpg, levels-after.jpg 와 콘솔 JSON(영역, 영역 평균 밝기, 새로 검정이 된 픽셀 비율)
 """
 import json
 import sys
@@ -12,14 +14,14 @@ import numpy as np
 from PIL import Image
 
 Image.MAX_IMAGE_PIXELS = None
-SRC, OUT, DEST = Path(sys.argv[1]), Path(sys.argv[2]), Path(sys.argv[3])
+SRC, NEW, OLD, DEST = Path(sys.argv[1]), Path(sys.argv[2]), Path(sys.argv[3]), Path(sys.argv[4])
 DEST.mkdir(parents=True, exist_ok=True)
 CW, CH = 1200, 900
 
 ref = Image.open(SRC / "ref-tortoise.png").convert("RGB")
-full = Image.open(OUT / "Chromium-tortoise-q70-jq90.jpg").convert("RGB")
-lim = Image.open(OUT / "Chromium-tortoise-q70-limited-jq90.jpg").convert("RGB")
-r, f = np.asarray(ref), np.asarray(full)
+before = Image.open(OLD / "Chromium-tortoise-q70-jq90.jpg").convert("RGB")
+after = Image.open(NEW / "Chromium-tortoise-q70-jq90.jpg").convert("RGB")
+r, f = np.asarray(ref), np.asarray(before)
 newly_black = (f.max(axis=2) == 0) & (r.max(axis=2) > 0)
 best, box = -1, None
 for y in range(0, r.shape[0] - CH + 1, 150):
@@ -27,9 +29,14 @@ for y in range(0, r.shape[0] - CH + 1, 150):
         n = int(newly_black[y:y + CH, x:x + CW].sum())
         if n > best:
             best, box = n, (x, y, x + CW, y + CH)
-info = {"box": box, "newlyBlackPixelsInBox": best, "boxPixels": CW * CH, "meanLuma": {}}
-for name, im in (("ref", ref), ("full", full), ("limited", lim)):
+x0, y0, x1, y1 = box
+info = {"box": box, "boxPixels": CW * CH, "meanLuma": {}, "newlyBlackPctInBox": {}}
+for name, im in (("ref", ref), ("before", before), ("after", after)):
     crop = im.crop(box)
+    a = np.asarray(crop)
     info["meanLuma"][name] = round(float(np.asarray(crop.convert("L")).mean()), 1)
+    if name != "ref":
+        nb = (a.max(axis=2) == 0) & (r[y0:y1, x0:x1].max(axis=2) > 0)
+        info["newlyBlackPctInBox"][name] = round(float(nb.mean() * 100), 2)
     crop.resize((600, 450), Image.LANCZOS).save(DEST / f"levels-{name}.jpg", quality=90)
 print(json.dumps(info))
