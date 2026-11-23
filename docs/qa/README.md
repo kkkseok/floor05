@@ -72,7 +72,7 @@ npm run test:e2e:prod
 
 - **WebKit flaky**: hydration 완료 전 입력 시 값이 되돌아가는 경합 → 입력에는
   `fillStable()` 헬퍼 사용, WebKit은 `--workers=2` 권장. retries=1로 잔여 흡수.
-- **HEIC 변환 E2E**: heic2any 디코딩이 느려 Chromium 계열에서만 실행 (WebKit은 skip).
+- **HEIC 변환 E2E**: libheif-js 디코딩으로 모든 프로젝트(Chromium·모바일·WebKit)에서 실행. `tests/fixtures/static/range-full-256x128.heic`(전체 범위, `scripts/qa/make-heic-range-fixtures.py`로 생성, 커밋됨)로 어두운 면이 0으로 뭉개지지 않는지 검사.
 - **WebP 출력**: 브라우저 인코딩 지원을 감지해 버튼이 비활성화되는 설계 —
   테스트는 실제 버튼 상태에 따라 분기.
 - **프로덕션 smoke의 자동광고**: AdSense auto ads가 주입하는 `<ins>`는 `data-ad-slot`이

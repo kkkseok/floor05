@@ -277,8 +277,7 @@ test.describe("포맷 변환", () => {
     expect(imageDims(file)).toEqual({ width: 1200, height: 900 });
   });
 
-  test("HEIC → JPG 변환 (실물 HEIC 파일)", async ({ page, browserName }, testInfo) => {
-    test.skip(browserName !== "chromium", "heic2any 디코딩은 대표로 Chromium에서 검증");
+  test("HEIC → JPG 변환 (실물 HEIC 파일)", async ({ page }, testInfo) => {
     test.skip(!fs.existsSync(fx("sample.heic")), "실물 HEIC 선택 fixture가 있는 환경에서 검증");
     test.setTimeout(120_000);
     const guards = await installGuards(page);
@@ -293,6 +292,40 @@ test.describe("포맷 변환", () => {
     expect(detectKind(file)).toBe("jpeg");
     expect(imageDims(file)).toEqual({ width: 1440, height: 960 });
     assertClean(guards);
+  });
+
+  test("전체 범위(full range) HEIC의 어두운 면이 검게 뭉개지지 않는다", async ({ page }, testInfo) => {
+    // fixture: 왼쪽 RGB(8,8,8)·오른쪽 RGB(240,240,240)를 전체 범위로 인코딩(scripts/qa/make-heic-range-fixtures.py).
+    // 예전 디코더(heic2any 0.0.4)는 제한 범위 식으로 풀어 왼쪽이 0, 오른쪽이 255가 됐다.
+    test.setTimeout(120_000);
+    const src = path.join(__dirname, "..", "fixtures", "static", "range-full-256x128.heic");
+    await page.goto("/tools/image/convert");
+    await uploadToDropzone(page, [src]);
+    await page.getByRole("button", { name: "PNG", exact: true }).click();
+    await page.getByRole("button", { name: /1개 이미지 PNG로 변환/ }).click();
+    await expect(page.getByRole("button", { name: "다운로드" })).toBeVisible({ timeout: 90_000 });
+    const file = await saveDownload(page, testInfo, () => page.getByRole("button", { name: "다운로드" }).click());
+    expect(detectKind(file)).toBe("png");
+    const px = pngPixels(file);
+    expect({ width: px.width, height: px.height }).toEqual({ width: 256, height: 128 });
+    const mean = (x0: number, x1: number) => {
+      let sum = 0;
+      let n = 0;
+      for (let y = 8; y < 120; y++) {
+        for (let x = x0; x < x1; x++) {
+          const i = (y * px.width + x) * 4;
+          sum += px.data[i] + px.data[i + 1] + px.data[i + 2];
+          n += 3;
+        }
+      }
+      return sum / n;
+    };
+    const dark = mean(8, 120);
+    const light = mean(136, 248);
+    expect(dark, "어두운 면(8)이 0으로 뭉개지면 안 됨").toBeGreaterThan(5);
+    expect(dark).toBeLessThan(11);
+    expect(light, "밝은 면(240)이 255로 날아가면 안 됨").toBeGreaterThan(236);
+    expect(light).toBeLessThan(244);
   });
 });
 

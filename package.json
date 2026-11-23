@@ -17,9 +17,9 @@
   "dependencies": {
     "@vercel/analytics": "^1.6.1",
     "file-saver": "^2.0.5",
-    "heic2any": "^0.0.4",
     "jszip": "^3.10.1",
     "korean-lunar-calendar": "^0.4.0",
+    "libheif-js": "1.23.5",
     "next": "^16.1.6",
     "pdf-lib": "^1.17.1",
     "react": "^19.0.0",
