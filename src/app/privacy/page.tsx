@@ -28,7 +28,7 @@ export default function PrivacyPage() {
       <main className="flex-1">
         <article className="max-w-3xl mx-auto px-4 sm:px-6 lg:px-8 py-16">
           <h1 className="text-3xl font-bold text-brand-black mb-2">개인정보처리방침</h1>
-          <p className="text-sm text-brand-subtle mb-12">시행: 2026년 8월 25일 · 최종 수정: 2026년 11월 22일</p>
+          <p className="text-sm text-brand-subtle mb-12">시행: 2026년 8월 25일 · 최종 수정: 2026년 11월 23일</p>
 
           <div className="prose prose-lg max-w-none space-y-10 text-brand-mid">
             <section>
@@ -57,6 +57,12 @@ export default function PrivacyPage() {
                   파악에 사용합니다.
                 </li>
                 <li>
+                  <strong className="text-brand-black">도구 사용 기록:</strong> 도구를 쓰거나 결과를
+                  내려받을 때 도구 이름, 처리한 파일 수, 고른 모드나 출력 형식, 내려받기 방식(낱개·ZIP)을
+                  방문 통계와 함께 집계합니다. 어떤 도구가 실제로 쓰이는지 보고 고칠 곳을 정하는 데
+                  씁니다. 파일 이름·크기·내용과 계산기에 넣은 값은 포함하지 않습니다.
+                </li>
+                <li>
                   <strong className="text-brand-black">광고:</strong> Google은 광고 제공, 빈도 제한,
                   측정, 부정 사용 방지와 이용자가 동의한 경우 개인화를 위해 쿠키·기기 정보·IP 주소
                   등의 정보를 처리할 수 있습니다.
@@ -82,8 +88,9 @@ export default function PrivacyPage() {
                 <div>
                   <h3 className="font-semibold text-brand-black">Vercel Web Analytics</h3>
                   <p className="mt-1 leading-relaxed">
-                    쿠키를 사용하지 않는 집계형 방문 통계를 제공합니다. Vercel은 방문자 식별용
-                    해시와 세션 정보를 24시간 이내 폐기한다고 안내합니다. 자세한 내용은 {" "}
+                    쿠키를 사용하지 않는 집계형 방문 통계와 위의 도구 사용 기록을 처리합니다. 이 정보는
+                    floor05 주소(/_vercel/insights)를 거쳐 Vercel로 전달됩니다. Vercel은 방문자
+                    식별용 해시와 세션 정보를 24시간 이내 폐기한다고 안내합니다. 자세한 내용은 {" "}
                     <a href="https://vercel.com/docs/analytics/privacy-policy" target="_blank" rel="noopener noreferrer" className={externalLinkClass}>
                       Vercel Analytics 개인정보 안내
                     </a>
