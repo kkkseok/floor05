@@ -162,16 +162,19 @@ async function isHeifContainer(file: File): Promise<boolean> {
 }
 
 /**
- * HEIC를 브라우저가 그릴 수 있는 무손실 PNG로 디코딩 (libheif-js 동적 로드).
+ * HEIC를 디코딩해 픽셀을 담은 캔버스로 돌려준다 (libheif-js 동적 로드).
  *
  * 예전에 쓰던 heic2any(0.0.4)는 모든 파일을 제한 범위 식(1.164*(Y-16))으로 풀어, 전체 범위(full range)
  * HEIC는 그늘이 검게 뭉개지고 사진 전체가 진해졌다(2026-11-23 실측: 화질 지표 43.9dB → 28.5dB).
  * libheif는 파일의 색 범위·행렬 표시를 따라 RGB로 바꾸고, 회전(irot) 같은 변환도 적용한다.
  *
- * 이름만 .heic인 JPG 등은 원본을 그대로 돌려줘 브라우저가 직접 읽게 한다.
+ * 디코딩 결과를 PNG로 한 번 저장했다가 다시 읽던 단계를 없앴다. 그 단계가 12MP 한 장에
+ * WebKit 약 6초, Chromium 약 1.1초를 차지했다(2026-11-23 실측).
+ *
+ * 이름만 .heic인 JPG 등 HEIF 컨테이너가 아니면 null을 돌려줘 일반 경로로 읽게 한다.
  */
-async function decodeHeic(file: File): Promise<Blob> {
-  if (!(await isHeifContainer(file))) return file;
+async function decodeHeicToCanvas(file: File): Promise<HTMLCanvasElement | null> {
+  if (!(await isHeifContainer(file))) return null;
 
   const libheif = await getLibheif();
   const decoder = new libheif.HeifDecoder();
@@ -191,7 +194,7 @@ async function decodeHeic(file: File): Promise<Blob> {
     const decoded = await new Promise<boolean>((resolve) => image.display(imageData, (r) => resolve(Boolean(r))));
     if (!decoded) throw new Error(HEIC_READ_ERROR);
     ctx.putImageData(imageData, 0, 0);
-    return await canvasToBlob(canvas, "image/png");
+    return canvas;
   } finally {
     for (const img of images) img.free();
     if (decoder.decoder) {
@@ -202,11 +205,43 @@ async function decodeHeic(file: File): Promise<Blob> {
 }
 
 /**
+ * HEIC 변환은 한 번에 한 장씩만 돌린다. 12MP 한 장이 디코딩 중 RGBA만 약 48MB를 쓰고,
+ * WASM 메모리는 한 번 늘면 줄지 않아 여러 장을 동시에 풀면 메모리가 크게 치솟는다
+ * (2026-11-23 Firefox에서 10장 동시 변환 중 메모리 부족으로 측정이 중단됨).
+ */
+let heicQueue: Promise<unknown> = Promise.resolve();
+function runHeicExclusive<T>(task: () => Promise<T>): Promise<T> {
+  const run = heicQueue.then(task, task);
+  heicQueue = run.catch(() => undefined);
+  return run;
+}
+
+/** 캔버스 메모리를 바로 돌려준다(특히 WebKit은 참조가 끊겨도 늦게 회수한다). */
+function releaseCanvas(canvas: HTMLCanvasElement): void {
+  canvas.width = 0;
+  canvas.height = 0;
+}
+
+/**
  * 이미지 포맷 변환 (단일 파일)
  */
 export async function convertImage(
   file: File,
   options: ConvertOptions
+): Promise<ConvertResult> {
+  if (isHeicFile(file)) {
+    return runHeicExclusive(async () => {
+      const source = await decodeHeicToCanvas(file);
+      return convertFromSource(file, options, source);
+    });
+  }
+  return convertFromSource(file, options, null);
+}
+
+async function convertFromSource(
+  file: File,
+  options: ConvertOptions,
+  heicCanvas: HTMLCanvasElement | null,
 ): Promise<ConvertResult> {
   const {
     outputFormat,
@@ -215,25 +250,10 @@ export async function convertImage(
     svgWidth,
   } = options;
 
-  let dataUrl: string;
-  let originalFormat = file.type;
+  const originalFormat = isHeicFile(file) ? "image/heic" : file.type;
 
-  // HEIC 파일 처리
-  if (isHeicFile(file)) {
-    originalFormat = "image/heic";
-    const decoded = await decodeHeic(file);
-    dataUrl = await new Promise<string>((resolve, reject) => {
-      const reader = new FileReader();
-      reader.onload = () => resolve(reader.result as string);
-      reader.onerror = () => reject(new Error("HEIC 파일을 읽을 수 없습니다."));
-      reader.readAsDataURL(decoded);
-    });
-  } else {
-    dataUrl = await fileToDataUrl(file);
-  }
-
-  // 이미지 로드
-  const img = await loadImage(dataUrl);
+  // HEIC는 디코딩한 캔버스를 바로 그린다. 그 밖(이름만 .heic인 JPG 포함)은 브라우저가 읽는다.
+  const img: HTMLCanvasElement | HTMLImageElement = heicCanvas ?? (await loadImage(await fileToDataUrl(file)));
 
   // 출력 캔버스 크기 결정.
   // 래스터 입력은 원본 크기 그대로, SVG는 벡터라 본질 크기가 없을 수 있어
@@ -268,6 +288,7 @@ export async function convertImage(
   }
 
   ctx.drawImage(img, 0, 0, outWidth, outHeight);
+  if (heicCanvas) releaseCanvas(heicCanvas);
 
   // Blob 생성
   const blob = await canvasToBlob(
@@ -276,6 +297,7 @@ export async function convertImage(
     quality,
     "이미지 변환에 실패했습니다."
   );
+  if (heicCanvas) releaseCanvas(canvas);
   // 미지원 포맷이 PNG로 조용히 폴백됐는지 검증 (확장자 불일치 방지)
   assertEncodedFormat(blob, outputFormat);
 

@@ -10,7 +10,7 @@ const INFO_PAGES: Record<string, string> = {
   "/about": "2026-11-22",
   "/contact": "2026-11-22",
   "/privacy": "2026-11-23",
-  "/terms": "2026-10-15",
+  "/terms": "2026-11-23",
 };
 
 function latestToolDate(category: ToolCategory) {

@@ -17,6 +17,17 @@ export const metadata: Metadata = {
   alternates: { canonical: "/terms" },
 };
 
+const LICENSES = [
+  { name: "libheif-js", url: "https://github.com/catdad-experiments/libheif-js", use: "HEIC 사진 읽기 (libheif·libde265 포함)", license: "LGPL-3.0" },
+  { name: "pdf-lib", url: "https://github.com/Hopding/pdf-lib", use: "PDF 만들기·합치기·나누기", license: "MIT" },
+  { name: "JSZip", url: "https://github.com/Stuk/jszip", use: "여러 결과를 ZIP으로 묶기", license: "MIT (또는 GPL-3.0 중 선택, MIT로 사용)" },
+  { name: "FileSaver.js", url: "https://github.com/eligrey/FileSaver.js", use: "결과 파일 내려받기", license: "MIT" },
+  { name: "UPNG.js", url: "https://github.com/photopea/UPNG.js", use: "PNG 압축", license: "MIT" },
+  { name: "@vercel/analytics", url: "https://github.com/vercel/analytics", use: "방문 통계·도구 사용 기록", license: "MPL-2.0" },
+  { name: "React", url: "https://github.com/facebook/react", use: "화면 구성", license: "MIT" },
+  { name: "Next.js", url: "https://github.com/vercel/next.js", use: "사이트 구성", license: "MIT" },
+];
+
 export default function TermsPage() {
   return (
     <div className="min-h-screen flex flex-col bg-brand-white">
@@ -25,7 +36,7 @@ export default function TermsPage() {
       <main className="flex-1">
         <article className="max-w-3xl mx-auto px-4 sm:px-6 lg:px-8 py-16">
           <h1 className="text-3xl font-bold text-brand-black mb-2">이용약관</h1>
-          <p className="text-sm text-brand-subtle mb-12">시행·최종 수정일: 2026년 10월 15일</p>
+          <p className="text-sm text-brand-subtle mb-12">시행: 2026년 10월 15일 · 최종 수정: 2026년 11월 23일 (9조 오픈소스 라이선스 추가)</p>
 
           <div className="prose prose-lg max-w-none space-y-10 text-brand-mid">
             <section>
@@ -126,6 +137,47 @@ export default function TermsPage() {
                   {CONTACT_EMAIL}
                 </a>
                 로 보내주세요. 약관이 바뀌면 시행일과 함께 이 페이지에 게시합니다.
+              </p>
+            </section>
+
+            <section>
+              <h2 className="text-xl font-bold text-brand-black mb-4">9. 오픈소스 라이선스</h2>
+              <p className="leading-relaxed mb-4">
+                floor05의 도구는 아래 오픈소스 소프트웨어를 이용자의 브라우저로 내려보내 실행합니다. 각
+                소프트웨어의 권리는 원저작자에게 있으며, 해당 라이선스에 따라 사용합니다.
+              </p>
+              <div className="overflow-x-auto">
+                <table className="w-full text-sm border-collapse">
+                  <thead>
+                    <tr className="border-b border-brand-light/40 text-left">
+                      <th className="py-2 pr-4 text-brand-black">소프트웨어</th>
+                      <th className="py-2 pr-4 text-brand-black">쓰는 곳</th>
+                      <th className="py-2 text-brand-black">라이선스</th>
+                    </tr>
+                  </thead>
+                  <tbody>
+                    {LICENSES.map((item) => (
+                      <tr key={item.name} className="border-b border-brand-light/20 align-top">
+                        <td className="py-2 pr-4">
+                          <a href={item.url} target="_blank" rel="noopener noreferrer" className="font-medium text-brand-accent hover:underline">
+                            {item.name}
+                          </a>
+                        </td>
+                        <td className="py-2 pr-4">{item.use}</td>
+                        <td className="py-2">{item.license}</td>
+                      </tr>
+                    ))}
+                  </tbody>
+                </table>
+              </div>
+              <p className="leading-relaxed mt-4">
+                HEIC 변환에 쓰는 libheif-js 1.23.5는 HEIF 디코더 libheif와 HEVC 디코더 libde265를 담고
+                있으며 GNU 약소 일반 공중 사용 허가서(LGPL) 3.0을 따릅니다. floor05는 이 라이브러리를 수정하지
+                않고 별도 파일로 불러 쓰며, 원본 소스는 위 링크의 저장소에서 받을 수 있습니다. 라이선스 전문은{" "}
+                <a href="https://www.gnu.org/licenses/lgpl-3.0.html" target="_blank" rel="noopener noreferrer" className="font-medium text-brand-accent hover:underline">
+                  GNU 웹사이트
+                </a>
+                에서 볼 수 있습니다.
               </p>
             </section>
           </div>
