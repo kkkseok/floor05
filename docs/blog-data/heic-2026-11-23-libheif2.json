@@ -1,0 +1,4150 @@
+{
+ "measuredAt": "2026-11-23",
+ "post": "heic-to-jpg-guide",
+ "code": "main 8277750: decodeHeicToCanvas(PNG 중간 저장 없음) + runHeicExclusive(HEIC 한 장씩) + 캔버스 크기 0으로 해제",
+ "previous": {
+  "file": "docs/blog-data/heic-2026-11-23-libheif.json",
+  "code": "main e4f6af7: libheif-js → PNG 저장 → <img> 로드, 여러 장 동시 처리"
+ },
+ "machine": "Windows 11 PC(Intel Core i5-1340P, RAM 16GB), Playwright 1.62.1 기본 브라우저(headless). 서버·브라우저는 한 번에 하나만, 빌드와 겹치지 않게 순서대로 실행",
+ "load": [
+  {
+   "label": "r2 convert 시작 직전",
+   "at": "2026-11-23T15:56:04.1649886+09:00",
+   "cpuLoadPctSamples": [
+    26.0,
+    22.0,
+    29.0,
+    15.0,
+    13.0
+   ],
+   "freeMemMB": 3126.0,
+   "totalMemMB": 15944.0,
+   "busyProcesses": [
+    "claude#14 54%",
+    "WmiPrvSE#2 36%",
+    "claude#6 36%",
+    "claude#3 14%",
+    "ctfmon 14%"
+   ],
+   "nodeProcesses": 1
+  },
+  {
+   "label": "r2 ui 시작 직전(새 코드 서버 3147만)",
+   "at": "2026-11-23T16:12:54.8053610+09:00",
+   "cpuLoadPctSamples": [
+    28.0,
+    29.0,
+    25.0,
+    39.0,
+    30.0
+   ],
+   "freeMemMB": 3000.0,
+   "totalMemMB": 15944.0,
+   "busyProcesses": [
+    "WmiPrvSE 106%",
+    "wpmsvc 41%",
+    "WmiPrvSE#2 34%",
+    "chrome#14 22%",
+    "dwm 11%"
+   ],
+   "nodeProcesses": 4
+  },
+  {
+   "label": "r2 ui 강제 종료(약 16:35)",
+   "note": "WebKit 10장 메모리 측정 2회째 도중 시스템 메모리 부족으로 Claude Code가 서버·측정 셸을 강제 종료. WebKit 메모리는 1회만 남음. 종료 직후 여유 메모리 2318MB. 예전 코드(e4f6af7) 메모리 비교는 서버 재시작 금지 안내에 따라 하지 않음"
+  }
+ ],
+ "units": "시간 ms. 메모리 MB(1MB=1,048,576B, Windows 표기와 같게)",
+ "notes": [
+  "화질(PSNR)은 다시 계산하지 않았다. 디코딩 픽셀 해시·JPG 90%(Chromium은 100%도) sha256이 직전 측정과 모두 같으면 직전 psnr 값이 그대로 유효하다(derived.allSameAsPrevious)",
+  "용량 비교군(direct)과 PNG 출력은 디코더 경로와 무관해 다시 재지 않았다(직전 json 참조)",
+  "stages: parseMs=decoder.decode, displayMs=image.display(HEVC 디코딩+RGB 변환), putImageDataMs=캔버스에 쓰기. PNG 저장 단계는 없어졌다",
+  "메모리: scripts/blog-measure/proc-mem-sampler.ps1 로 Playwright launchServer 루트 프로세스와 자손 전체의 WorkingSetSize·PrivatePageCount 합을 500ms마다 읽은 최대치. 시간 측정과 따로 돈 10장 회차에서만 쟀다. 작업 관리자 수준의 근사치",
+  "uiOldCode: 같은 워크트리에 e4f6af7의 convert.ts 만 되돌려 빌드한 사이트로 잰 10장 메모리(비교용, 측정 후 원복)"
+ ],
+ "derived": {
+  "errors": {
+   "Chromium": {},
+   "Firefox": {},
+   "WebKit": {}
+  },
+  "timeMsPerFile": {
+   "Chromium": {
+    "version": "151.0.7922.34",
+    "initMs": [
+     53
+    ],
+    "perFile": {
+     "flower-q50": {
+      "min": 279,
+      "median": 289,
+      "max": 292,
+      "n": 3
+     },
+     "flower-q70": {
+      "min": 2629,
+      "median": 2835,
+      "max": 2893,
+      "n": 5
+     },
+     "flower-q90": {
+      "min": 3738,
+      "median": 3765,
+      "max": 4014,
+      "n": 3
+     },
+     "tortoise-q50": {
+      "min": 2719,
+      "median": 2845,
+      "max": 2990,
+      "n": 3
+     },
+     "tortoise-q70-limited": {
+      "min": 3542,
+      "median": 3588,
+      "max": 3716,
+      "n": 3
+     },
+     "tortoise-q70-rot": {
+      "min": 3549,
+      "median": 3583,
+      "max": 3639,
+      "n": 3
+     },
+     "tortoise-q70": {
+      "min": 2974,
+      "median": 3288,
+      "max": 3496,
+      "n": 5
+     },
+     "tortoise-q90": {
+      "min": 4051,
+      "median": 4216,
+      "max": 4239,
+      "n": 3
+     }
+    },
+    "sixFiles": {
+     "min": 279,
+     "median": 2982.0,
+     "max": 4239,
+     "n": 22
+    },
+    "withoutFlowerQ50": {
+     "min": 2629,
+     "median": 3247,
+     "max": 4239,
+     "n": 19
+    },
+    "decodeToCanvasMs": {
+     "min": 200,
+     "median": 2742.0,
+     "max": 3819,
+     "n": 6
+    },
+    "stagesSixFiles": {
+     "parseMs": {
+      "min": 3,
+      "median": 25.5,
+      "max": 68,
+      "n": 18
+     },
+     "displayMs": {
+      "min": 180,
+      "median": 2588.5,
+      "max": 3747,
+      "n": 18
+     },
+     "putImageDataMs": {
+      "min": 16,
+      "median": 40.5,
+      "max": 48,
+      "n": 18
+     }
+    },
+    "pngStage": "없음(8277750에서 제거)"
+   },
+   "Firefox": {
+    "version": "153.0",
+    "initMs": [
+     49
+    ],
+    "perFile": {
+     "flower-q50": {
+      "min": 1516,
+      "median": 1546,
+      "max": 1548,
+      "n": 3
+     },
+     "flower-q70": {
+      "min": 4983,
+      "median": 5043,
+      "max": 6118,
+      "n": 5
+     },
+     "flower-q90": {
+      "min": 6553,
+      "median": 6637,
+      "max": 6898,
+      "n": 3
+     },
+     "tortoise-q50": {
+      "min": 4928,
+      "median": 5232,
+      "max": 5279,
+      "n": 3
+     },
+     "tortoise-q70-limited": {
+      "min": 6067,
+      "median": 6082,
+      "max": 6100,
+      "n": 3
+     },
+     "tortoise-q70-rot": {
+      "min": 6061,
+      "median": 6105,
+      "max": 6327,
+      "n": 3
+     },
+     "tortoise-q70": {
+      "min": 5918,
+      "median": 6073,
+      "max": 6540,
+      "n": 5
+     },
+     "tortoise-q90": {
+      "min": 7203,
+      "median": 7297,
+      "max": 7800,
+      "n": 3
+     }
+    },
+    "sixFiles": {
+     "min": 1516,
+     "median": 5929.0,
+     "max": 7800,
+     "n": 22
+    },
+    "withoutFlowerQ50": {
+     "min": 4928,
+     "median": 6073,
+     "max": 7800,
+     "n": 19
+    },
+    "decodeToCanvasMs": {
+     "min": 1439,
+     "median": 5688.5,
+     "max": 6969,
+     "n": 6
+    },
+    "stagesSixFiles": {
+     "parseMs": {
+      "min": 1,
+      "median": 12.0,
+      "max": 36,
+      "n": 18
+     },
+     "displayMs": {
+      "min": 1425,
+      "median": 5642.5,
+      "max": 7175,
+      "n": 18
+     },
+     "putImageDataMs": {
+      "min": 16,
+      "median": 18.0,
+      "max": 23,
+      "n": 18
+     }
+    },
+    "pngStage": "없음(8277750에서 제거)"
+   },
+   "WebKit": {
+    "version": "26.5",
+    "initMs": [
+     38
+    ],
+    "perFile": {
+     "flower-q50": {
+      "min": 414,
+      "median": 423,
+      "max": 423,
+      "n": 3
+     },
+     "flower-q70": {
+      "min": 3494,
+      "median": 3577,
+      "max": 3642,
+      "n": 5
+     },
+     "flower-q90": {
+      "min": 5062,
+      "median": 5166,
+      "max": 5385,
+      "n": 3
+     },
+     "tortoise-q50": {
+      "min": 3652,
+      "median": 3723,
+      "max": 3753,
+      "n": 3
+     },
+     "tortoise-q70-limited": {
+      "min": 4425,
+      "median": 4541,
+      "max": 4675,
+      "n": 3
+     },
+     "tortoise-q70-rot": {
+      "min": 4588,
+      "median": 4720,
+      "max": 4907,
+      "n": 3
+     },
+     "tortoise-q70": {
+      "min": 4554,
+      "median": 4726,
+      "max": 4855,
+      "n": 5
+     },
+     "tortoise-q90": {
+      "min": 5098,
+      "median": 5132,
+      "max": 5178,
+      "n": 3
+     }
+    },
+    "sixFiles": {
+     "min": 414,
+     "median": 4153.5,
+     "max": 5385,
+     "n": 22
+    },
+    "withoutFlowerQ50": {
+     "min": 3494,
+     "median": 4698,
+     "max": 5385,
+     "n": 19
+    },
+    "decodeToCanvasMs": {
+     "min": 304,
+     "median": 3664.5,
+     "max": 4805,
+     "n": 6
+    },
+    "stagesSixFiles": {
+     "parseMs": {
+      "min": 5,
+      "median": 16.5,
+      "max": 30,
+      "n": 18
+     },
+     "displayMs": {
+      "min": 243,
+      "median": 3462.5,
+      "max": 4828,
+      "n": 18
+     },
+     "putImageDataMs": {
+      "min": 21,
+      "median": 75.5,
+      "max": 87,
+      "n": 18
+     }
+    },
+    "pngStage": "없음(8277750에서 제거)"
+   }
+  },
+  "sameAsPrevious": {
+   "Chromium": {
+    "flower-q50": {
+     "pixelSha256Same": true,
+     "canvasEqualsDecodedPixels": true,
+     "jpg90Sha256Same": true,
+     "jpg100Sha256Same": true
+    },
+    "flower-q70": {
+     "pixelSha256Same": true,
+     "canvasEqualsDecodedPixels": true,
+     "jpg90Sha256Same": true,
+     "jpg100Sha256Same": true
+    },
+    "flower-q90": {
+     "pixelSha256Same": true,
+     "canvasEqualsDecodedPixels": true,
+     "jpg90Sha256Same": true,
+     "jpg100Sha256Same": true
+    },
+    "tortoise-q50": {
+     "pixelSha256Same": true,
+     "canvasEqualsDecodedPixels": true,
+     "jpg90Sha256Same": true,
+     "jpg100Sha256Same": true
+    },
+    "tortoise-q70": {
+     "pixelSha256Same": true,
+     "canvasEqualsDecodedPixels": true,
+     "jpg90Sha256Same": true,
+     "jpg100Sha256Same": true
+    },
+    "tortoise-q70-limited": {
+     "pixelSha256Same": true,
+     "canvasEqualsDecodedPixels": true,
+     "jpg90Sha256Same": true,
+     "jpg100Sha256Same": true
+    },
+    "tortoise-q70-rot": {
+     "pixelSha256Same": true,
+     "canvasEqualsDecodedPixels": true,
+     "jpg90Sha256Same": true,
+     "jpg100Sha256Same": true
+    },
+    "tortoise-q90": {
+     "pixelSha256Same": true,
+     "canvasEqualsDecodedPixels": true,
+     "jpg90Sha256Same": true,
+     "jpg100Sha256Same": true
+    }
+   },
+   "Firefox": {
+    "flower-q50": {
+     "pixelSha256Same": true,
+     "canvasEqualsDecodedPixels": true,
+     "jpg90Sha256Same": true
+    },
+    "flower-q70": {
+     "pixelSha256Same": true,
+     "canvasEqualsDecodedPixels": true,
+     "jpg90Sha256Same": true
+    },
+    "flower-q90": {
+     "pixelSha256Same": true,
+     "canvasEqualsDecodedPixels": true,
+     "jpg90Sha256Same": true
+    },
+    "tortoise-q50": {
+     "pixelSha256Same": true,
+     "canvasEqualsDecodedPixels": true,
+     "jpg90Sha256Same": true
+    },
+    "tortoise-q70": {
+     "pixelSha256Same": true,
+     "canvasEqualsDecodedPixels": true,
+     "jpg90Sha256Same": true
+    },
+    "tortoise-q70-limited": {
+     "pixelSha256Same": true,
+     "canvasEqualsDecodedPixels": true,
+     "jpg90Sha256Same": true
+    },
+    "tortoise-q70-rot": {
+     "pixelSha256Same": true,
+     "canvasEqualsDecodedPixels": true,
+     "jpg90Sha256Same": true
+    },
+    "tortoise-q90": {
+     "pixelSha256Same": true,
+     "canvasEqualsDecodedPixels": true,
+     "jpg90Sha256Same": true
+    }
+   },
+   "WebKit": {
+    "flower-q50": {
+     "pixelSha256Same": true,
+     "canvasEqualsDecodedPixels": true,
+     "jpg90Sha256Same": true
+    },
+    "flower-q70": {
+     "pixelSha256Same": true,
+     "canvasEqualsDecodedPixels": true,
+     "jpg90Sha256Same": true
+    },
+    "flower-q90": {
+     "pixelSha256Same": true,
+     "canvasEqualsDecodedPixels": true,
+     "jpg90Sha256Same": true
+    },
+    "tortoise-q50": {
+     "pixelSha256Same": true,
+     "canvasEqualsDecodedPixels": true,
+     "jpg90Sha256Same": true
+    },
+    "tortoise-q70": {
+     "pixelSha256Same": true,
+     "canvasEqualsDecodedPixels": true,
+     "jpg90Sha256Same": true
+    },
+    "tortoise-q70-limited": {
+     "pixelSha256Same": true,
+     "canvasEqualsDecodedPixels": true,
+     "jpg90Sha256Same": true
+    },
+    "tortoise-q70-rot": {
+     "pixelSha256Same": true,
+     "canvasEqualsDecodedPixels": true,
+     "jpg90Sha256Same": true
+    },
+    "tortoise-q90": {
+     "pixelSha256Same": true,
+     "canvasEqualsDecodedPixels": true,
+     "jpg90Sha256Same": true
+    }
+   }
+  },
+  "allSameAsPrevious": true,
+  "ui": {
+   "Chromium": {
+    "browser": "151.0.7922.34",
+    "batchMs": {
+     "1": {
+      "min": 3894,
+      "median": 3966,
+      "max": 4017,
+      "n": 3,
+      "runs": [
+       4017,
+       3894,
+       3966
+      ],
+      "medianPerFile": 3966
+     },
+     "5": {
+      "min": 16406,
+      "median": 16610,
+      "max": 17396,
+      "n": 3,
+      "runs": [
+       16610,
+       17396,
+       16406
+      ],
+      "medianPerFile": 3322
+     },
+     "10": {
+      "min": 32123,
+      "median": 32431,
+      "max": 32831,
+      "n": 3,
+      "runs": [
+       32123,
+       32831,
+       32431
+      ],
+      "medianPerFile": 3243
+     }
+    },
+    "allDone": true,
+    "downloadIdentical": {
+     "tortoise-q70": true,
+     "flower-q70": true
+    },
+    "memory10": [
+     {
+      "maxWorkingSetMB": 723,
+      "maxPrivateMB": 616,
+      "maxProcs": 4,
+      "minSystemFreeMB": 1892,
+      "ms": 31307,
+      "done": 10,
+      "beforeClickWsMB": 350
+     },
+     {
+      "maxWorkingSetMB": 657,
+      "maxPrivateMB": 587,
+      "maxProcs": 4,
+      "minSystemFreeMB": 1951,
+      "ms": 31736,
+      "done": 10,
+      "beforeClickWsMB": 351
+     }
+    ]
+   },
+   "Firefox": {
+    "browser": "153.0",
+    "batchMs": {
+     "1": {
+      "min": 6398,
+      "median": 6427,
+      "max": 6427,
+      "n": 3,
+      "runs": [
+       6398,
+       6427,
+       6427
+      ],
+      "medianPerFile": 6427
+     },
+     "5": {
+      "min": 30173,
+      "median": 33274,
+      "max": 33278,
+      "n": 3,
+      "runs": [
+       33274,
+       33278,
+       30173
+      ],
+      "medianPerFile": 6655
+     },
+     "10": {
+      "min": 55370,
+      "median": 57317,
+      "max": 57567,
+      "n": 3,
+      "runs": [
+       55370,
+       57317,
+       57567
+      ],
+      "medianPerFile": 5732
+     }
+    },
+    "allDone": true,
+    "downloadIdentical": {
+     "tortoise-q70": true,
+     "flower-q70": true
+    },
+    "memory10": [
+     {
+      "maxWorkingSetMB": 1243,
+      "maxPrivateMB": 1172,
+      "maxProcs": 7,
+      "minSystemFreeMB": 1669,
+      "ms": 56196,
+      "done": 10,
+      "beforeClickWsMB": 665
+     },
+     {
+      "maxWorkingSetMB": 1271,
+      "maxPrivateMB": 1196,
+      "maxProcs": 7,
+      "minSystemFreeMB": 1489,
+      "ms": 55597,
+      "done": 10,
+      "beforeClickWsMB": 695
+     }
+    ]
+   },
+   "WebKit": {
+    "browser": "26.5",
+    "batchMs": {
+     "1": {
+      "min": 5950,
+      "median": 6269,
+      "max": 6373,
+      "n": 3,
+      "runs": [
+       5950,
+       6373,
+       6269
+      ],
+      "medianPerFile": 6269
+     },
+     "5": {
+      "min": 23703,
+      "median": 24323,
+      "max": 25890,
+      "n": 3,
+      "runs": [
+       23703,
+       25890,
+       24323
+      ],
+      "medianPerFile": 4865
+     },
+     "10": {
+      "min": 39421,
+      "median": 43521,
+      "max": 44502,
+      "n": 3,
+      "runs": [
+       43521,
+       44502,
+       39421
+      ],
+      "medianPerFile": 4352
+     }
+    },
+    "allDone": true,
+    "downloadIdentical": {
+     "tortoise-q70": true,
+     "flower-q70": true
+    },
+    "memory10": [
+     {
+      "maxWorkingSetMB": 941,
+      "maxPrivateMB": 1642,
+      "maxProcs": 7,
+      "minSystemFreeMB": 1076,
+      "ms": 44903,
+      "done": 10,
+      "beforeClickWsMB": 403
+     }
+    ]
+   }
+  },
+  "uiOldCode": {},
+  "changeVsPrevious": {
+   "timeWithoutFlowerQ50": {
+    "Chromium": {
+     "previous": {
+      "min": 3641,
+      "median": 4411,
+      "max": 5552,
+      "n": 19
+     },
+     "now": {
+      "min": 2629,
+      "median": 3247,
+      "max": 4239,
+      "n": 19
+     }
+    },
+    "Firefox": {
+     "previous": {
+      "min": 5207,
+      "median": 6401,
+      "max": 7556,
+      "n": 19
+     },
+     "now": {
+      "min": 4928,
+      "median": 6073,
+      "max": 7800,
+      "n": 19
+     }
+    },
+    "WebKit": {
+     "previous": {
+      "min": 9396,
+      "median": 11417,
+      "max": 13238,
+      "n": 19
+     },
+     "now": {
+      "min": 3494,
+      "median": 4698,
+      "max": 5385,
+      "n": 19
+     }
+    }
+   },
+   "flowerQ50": {
+    "Chromium": {
+     "previous": {
+      "min": 591,
+      "median": 1427,
+      "max": 1597,
+      "n": 3
+     },
+     "now": {
+      "min": 279,
+      "median": 289,
+      "max": 292,
+      "n": 3
+     }
+    },
+    "Firefox": {
+     "previous": {
+      "min": 1631,
+      "median": 1663,
+      "max": 1667,
+      "n": 3
+     },
+     "now": {
+      "min": 1516,
+      "median": 1546,
+      "max": 1548,
+      "n": 3
+     }
+    },
+    "WebKit": {
+     "previous": {
+      "min": 3318,
+      "median": 3574,
+      "max": 3634,
+      "n": 3
+     },
+     "now": {
+      "min": 414,
+      "median": 423,
+      "max": 423,
+      "n": 3
+     }
+    }
+   },
+   "decodeStageMedianMs": {
+    "Chromium": {
+     "previousDisplay": 2588.5,
+     "previousPng": 1131.5,
+     "nowDisplay": 2588.5,
+     "nowPng": "없음"
+    },
+    "Firefox": {
+     "previousDisplay": 5351.5,
+     "previousPng": 351.5,
+     "nowDisplay": 5642.5,
+     "nowPng": "없음"
+    },
+    "WebKit": {
+     "previousDisplay": 3563.0,
+     "previousPng": 5954.0,
+     "nowDisplay": 3462.5,
+     "nowPng": "없음"
+    }
+   },
+   "ui": {
+    "Chromium": {
+     "1": {
+      "previous": {
+       "min": 5237,
+       "median": 5773,
+       "max": 5945,
+       "n": 3,
+       "runs": [
+        5237,
+        5773,
+        5945
+       ],
+       "medianPerFile": 5773
+      },
+      "now": {
+       "min": 3894,
+       "median": 3966,
+       "max": 4017,
+       "n": 3,
+       "runs": [
+        4017,
+        3894,
+        3966
+       ],
+       "medianPerFile": 3966
+      }
+     },
+     "5": {
+      "previous": {
+       "min": 25103,
+       "median": 26188,
+       "max": 27684,
+       "n": 3,
+       "runs": [
+        27684,
+        26188,
+        25103
+       ],
+       "medianPerFile": 5238
+      },
+      "now": {
+       "min": 16406,
+       "median": 16610,
+       "max": 17396,
+       "n": 3,
+       "runs": [
+        16610,
+        17396,
+        16406
+       ],
+       "medianPerFile": 3322
+      }
+     },
+     "10": {
+      "previous": {
+       "min": 47126,
+       "median": 49016,
+       "max": 49402,
+       "n": 3,
+       "runs": [
+        47126,
+        49402,
+        49016
+       ],
+       "medianPerFile": 4902
+      },
+      "now": {
+       "min": 32123,
+       "median": 32431,
+       "max": 32831,
+       "n": 3,
+       "runs": [
+        32123,
+        32831,
+        32431
+       ],
+       "medianPerFile": 3243
+      }
+     }
+    },
+    "Firefox": {
+     "1": {
+      "previous": {
+       "min": 6887,
+       "median": 6938,
+       "max": 7035,
+       "n": 3,
+       "runs": [
+        7035,
+        6938,
+        6887
+       ],
+       "medianPerFile": 6938
+      },
+      "now": {
+       "min": 6398,
+       "median": 6427,
+       "max": 6427,
+       "n": 3,
+       "runs": [
+        6398,
+        6427,
+        6427
+       ],
+       "medianPerFile": 6427
+      }
+     },
+     "5": {
+      "previous": {
+       "min": 30710,
+       "median": 31040,
+       "max": 32054,
+       "n": 3,
+       "runs": [
+        31040,
+        30710,
+        32054
+       ],
+       "medianPerFile": 6208
+      },
+      "now": {
+       "min": 30173,
+       "median": 33274,
+       "max": 33278,
+       "n": 3,
+       "runs": [
+        33274,
+        33278,
+        30173
+       ],
+       "medianPerFile": 6655
+      }
+     },
+     "10": {
+      "previous": {
+       "min": 57707,
+       "median": 58054.5,
+       "max": 58402,
+       "n": 2,
+       "runs": [
+        58402,
+        57707
+       ],
+       "medianPerFile": 5805
+      },
+      "now": {
+       "min": 55370,
+       "median": 57317,
+       "max": 57567,
+       "n": 3,
+       "runs": [
+        55370,
+        57317,
+        57567
+       ],
+       "medianPerFile": 5732
+      }
+     }
+    },
+    "WebKit": {
+     "1": {
+      "previous": null,
+      "now": {
+       "min": 5950,
+       "median": 6269,
+       "max": 6373,
+       "n": 3,
+       "runs": [
+        5950,
+        6373,
+        6269
+       ],
+       "medianPerFile": 6269
+      }
+     },
+     "5": {
+      "previous": null,
+      "now": {
+       "min": 23703,
+       "median": 24323,
+       "max": 25890,
+       "n": 3,
+       "runs": [
+        23703,
+        25890,
+        24323
+       ],
+       "medianPerFile": 4865
+      }
+     },
+     "10": {
+      "previous": null,
+      "now": {
+       "min": 39421,
+       "median": 43521,
+       "max": 44502,
+       "n": 3,
+       "runs": [
+        43521,
+        44502,
+        39421
+       ],
+       "medianPerFile": 4352
+      }
+     }
+    }
+   }
+  }
+ },
+ "browsers": {
+  "Chromium": {
+   "version": "151.0.7922.34",
+   "initMs": [
+    53
+   ],
+   "rows": [
+    {
+     "name": "flower-q50.heic",
+     "type": "",
+     "bytes": 184510,
+     "outputs": [
+      {
+       "quality": 0.9,
+       "bytes": 437956,
+       "ms": 352,
+       "width": 4032,
+       "height": 3024,
+       "segments": [
+        {
+         "marker": "FFE0",
+         "bytes": 18
+        },
+        {
+         "marker": "FFE2",
+         "bytes": 474
+        },
+        {
+         "marker": "FFDB",
+         "bytes": 69
+        },
+        {
+         "marker": "FFDB",
+         "bytes": 69
+        },
+        {
+         "marker": "FFC0",
+         "bytes": 19
+        },
+        {
+         "marker": "FFC4",
+         "bytes": 31
+        },
+        {
+         "marker": "FFC4",
+         "bytes": 74
+        },
+        {
+         "marker": "FFC4",
+         "bytes": 30
+        },
+        {
+         "marker": "FFC4",
+         "bytes": 56
+        },
+        {
+         "marker": "FFDA",
+         "bytes": 14
+        }
+       ],
+       "jpegSize": [
+        4032,
+        3024
+       ]
+      },
+      {
+       "quality": 1,
+       "bytes": 2057555,
+       "ms": 344,
+       "width": 4032,
+       "height": 3024,
+       "segments": [
+        {
+         "marker": "FFE0",
+         "bytes": 18
+        },
+        {
+         "marker": "FFE2",
+         "bytes": 474
+        },
+        {
+         "marker": "FFDB",
+         "bytes": 69
+        },
+        {
+         "marker": "FFDB",
+         "bytes": 69
+        },
+        {
+         "marker": "FFC0",
+         "bytes": 19
+        },
+        {
+         "marker": "FFC4",
+         "bytes": 33
+        },
+        {
+         "marker": "FFC4",
+         "bytes": 86
+        },
+        {
+         "marker": "FFC4",
+         "bytes": 31
+        },
+        {
+         "marker": "FFC4",
+         "bytes": 103
+        },
+        {
+         "marker": "FFDA",
+         "bytes": 14
+        }
+       ],
+       "jpegSize": [
+        4032,
+        3024
+       ]
+      }
+     ],
+     "repsMs": [
+      289,
+      279,
+      292
+     ],
+     "decode": {
+      "decodeToCanvasMs": 200,
+      "width": 4032,
+      "height": 3024,
+      "canvasPixelSha256": "4394d934d41f7e8b1c644b3cde7c0db2d671d03b0e27b86033919235b8713cfa",
+      "pixelSha256": "4394d934d41f7e8b1c644b3cde7c0db2d671d03b0e27b86033919235b8713cfa",
+      "stages": [
+       {
+        "parseMs": 3,
+        "displayMs": 183,
+        "putImageDataMs": 16,
+        "pngMs": "없음(8277750에서 제거)"
+       },
+       {
+        "parseMs": 8,
+        "displayMs": 180,
+        "putImageDataMs": 17,
+        "pngMs": "없음(8277750에서 제거)"
+       },
+       {
+        "parseMs": 6,
+        "displayMs": 233,
+        "putImageDataMs": 38,
+        "pngMs": "없음(8277750에서 제거)"
+       }
+      ]
+     }
+    },
+    {
+     "name": "flower-q70.heic",
+     "type": "",
+     "bytes": 2715496,
+     "outputs": [
+      {
+       "quality": 0.9,
+       "bytes": 635922,
+       "ms": 2638,
+       "width": 4032,
+       "height": 3024,
+       "segments": [
+        {
+         "marker": "FFE0",
+         "bytes": 18
+        },
+        {
+         "marker": "FFE2",
+         "bytes": 474
+        },
+        {
+         "marker": "FFDB",
+         "bytes": 69
+        },
+        {
+         "marker": "FFDB",
+         "bytes": 69
+        },
+        {
+         "marker": "FFC0",
+         "bytes": 19
+        },
+        {
+         "marker": "FFC4",
+         "bytes": 31
+        },
+        {
+         "marker": "FFC4",
+         "bytes": 72
+        },
+        {
+         "marker": "FFC4",
+         "bytes": 30
+        },
+        {
+         "marker": "FFC4",
+         "bytes": 59
+        },
+        {
+         "marker": "FFDA",
+         "bytes": 14
+        }
+       ],
+       "jpegSize": [
+        4032,
+        3024
+       ]
+      },
+      {
+       "quality": 1,
+       "bytes": 6130305,
+       "ms": 3332,
+       "width": 4032,
+       "height": 3024,
+       "segments": [
+        {
+         "marker": "FFE0",
+         "bytes": 18
+        },
+        {
+         "marker": "FFE2",
+         "bytes": 474
+        },
+        {
+         "marker": "FFDB",
+         "bytes": 69
+        },
+        {
+         "marker": "FFDB",
+         "bytes": 69
+        },
+        {
+         "marker": "FFC0",
+         "bytes": 19
+        },
+        {
+         "marker": "FFC4",
+         "bytes": 33
+        },
+        {
+         "marker": "FFC4",
+         "bytes": 85
+        },
+        {
+         "marker": "FFC4",
+         "bytes": 31
+        },
+        {
+         "marker": "FFC4",
+         "bytes": 101
+        },
+        {
+         "marker": "FFDA",
+         "bytes": 14
+        }
+       ],
+       "jpegSize": [
+        4032,
+        3024
+       ]
+      }
+     ],
+     "repsMs": [
+      2885,
+      2775,
+      2835,
+      2893,
+      2629
+     ],
+     "decode": {
+      "decodeToCanvasMs": 2367,
+      "width": 4032,
+      "height": 3024,
+      "canvasPixelSha256": "d7f17c619dd647be62d829a176dfb804078c43cacf47a5eff620aec44ea50e9b",
+      "pixelSha256": "d7f17c619dd647be62d829a176dfb804078c43cacf47a5eff620aec44ea50e9b",
+      "stages": [
+       {
+        "parseMs": 13,
+        "displayMs": 2348,
+        "putImageDataMs": 41,
+        "pngMs": "없음(8277750에서 제거)"
+       },
+       {
+        "parseMs": 25,
+        "displayMs": 2423,
+        "putImageDataMs": 44,
+        "pngMs": "없음(8277750에서 제거)"
+       },
+       {
+        "parseMs": 15,
+        "displayMs": 2395,
+        "putImageDataMs": 39,
+        "pngMs": "없음(8277750에서 제거)"
+       }
+      ]
+     }
+    },
+    {
+     "name": "flower-q90.heic",
+     "type": "",
+     "bytes": 5138566,
+     "outputs": [
+      {
+       "quality": 0.9,
+       "bytes": 627568,
+       "ms": 3824,
+       "width": 4032,
+       "height": 3024,
+       "segments": [
+        {
+         "marker": "FFE0",
+         "bytes": 18
+        },
+        {
+         "marker": "FFE2",
+         "bytes": 474
+        },
+        {
+         "marker": "FFDB",
+         "bytes": 69
+        },
+        {
+         "marker": "FFDB",
+         "bytes": 69
+        },
+        {
+         "marker": "FFC0",
+         "bytes": 19
+        },
+        {
+         "marker": "FFC4",
+         "bytes": 31
+        },
+        {
+         "marker": "FFC4",
+         "bytes": 69
+        },
+        {
+         "marker": "FFC4",
+         "bytes": 30
+        },
+        {
+         "marker": "FFC4",
+         "bytes": 56
+        },
+        {
+         "marker": "FFDA",
+         "bytes": 14
+        }
+       ],
+       "jpegSize": [
+        4032,
+        3024
+       ]
+      },
+      {
+       "quality": 1,
+       "bytes": 6823704,
+       "ms": 4472,
+       "width": 4032,
+       "height": 3024,
+       "segments": [
+        {
+         "marker": "FFE0",
+         "bytes": 18
+        },
+        {
+         "marker": "FFE2",
+         "bytes": 474
+        },
+        {
+         "marker": "FFDB",
+         "bytes": 69
+        },
+        {
+         "marker": "FFDB",
+         "bytes": 69
+        },
+        {
+         "marker": "FFC0",
+         "bytes": 19
+        },
+        {
+         "marker": "FFC4",
+         "bytes": 33
+        },
+        {
+         "marker": "FFC4",
+         "bytes": 79
+        },
+        {
+         "marker": "FFC4",
+         "bytes": 31
+        },
+        {
+         "marker": "FFC4",
+         "bytes": 97
+        },
+        {
+         "marker": "FFDA",
+         "bytes": 14
+        }
+       ],
+       "jpegSize": [
+        4032,
+        3024
+       ]
+      }
+     ],
+     "repsMs": [
+      4014,
+      3765,
+      3738
+     ],
+     "decode": {
+      "decodeToCanvasMs": 3639,
+      "width": 4032,
+      "height": 3024,
+      "canvasPixelSha256": "10b0acfad9e0350fb8354a401d8447decd9544631c7f9cc81bc37fc4340057a3",
+      "pixelSha256": "10b0acfad9e0350fb8354a401d8447decd9544631c7f9cc81bc37fc4340057a3",
+      "stages": [
+       {
+        "parseMs": 43,
+        "displayMs": 3414,
+        "putImageDataMs": 39,
+        "pngMs": "없음(8277750에서 제거)"
+       },
+       {
+        "parseMs": 39,
+        "displayMs": 3394,
+        "putImageDataMs": 45,
+        "pngMs": "없음(8277750에서 제거)"
+       },
+       {
+        "parseMs": 55,
+        "displayMs": 3450,
+        "putImageDataMs": 45,
+        "pngMs": "없음(8277750에서 제거)"
+       }
+      ]
+     }
+    },
+    {
+     "name": "tortoise-q50.heic",
+     "type": "",
+     "bytes": 1707890,
+     "outputs": [
+      {
+       "quality": 0.9,
+       "bytes": 2821568,
+       "ms": 2721,
+       "width": 4032,
+       "height": 3024,
+       "segments": [
+        {
+         "marker": "FFE0",
+         "bytes": 18
+        },
+        {
+         "marker": "FFE2",
+         "bytes": 474
+        },
+        {
+         "marker": "FFDB",
+         "bytes": 69
+        },
+        {
+         "marker": "FFDB",
+         "bytes": 69
+        },
+        {
+         "marker": "FFC0",
+         "bytes": 19
+        },
+        {
+         "marker": "FFC4",
+         "bytes": 31
+        },
+        {
+         "marker": "FFC4",
+         "bytes": 93
+        },
+        {
+         "marker": "FFC4",
+         "bytes": 30
+        },
+        {
+         "marker": "FFC4",
+         "bytes": 64
+        },
+        {
+         "marker": "FFDA",
+         "bytes": 14
+        }
+       ],
+       "jpegSize": [
+        4032,
+        3024
+       ]
+      },
+      {
+       "quality": 1,
+       "bytes": 8447285,
+       "ms": 3245,
+       "width": 4032,
+       "height": 3024,
+       "segments": [
+        {
+         "marker": "FFE0",
+         "bytes": 18
+        },
+        {
+         "marker": "FFE2",
+         "bytes": 474
+        },
+        {
+         "marker": "FFDB",
+         "bytes": 69
+        },
+        {
+         "marker": "FFDB",
+         "bytes": 69
+        },
+        {
+         "marker": "FFC0",
+         "bytes": 19
+        },
+        {
+         "marker": "FFC4",
+         "bytes": 33
+        },
+        {
+         "marker": "FFC4",
+         "bytes": 114
+        },
+        {
+         "marker": "FFC4",
+         "bytes": 32
+        },
+        {
+         "marker": "FFC4",
+         "bytes": 115
+        },
+        {
+         "marker": "FFDA",
+         "bytes": 14
+        }
+       ],
+       "jpegSize": [
+        4032,
+        3024
+       ]
+      }
+     ],
+     "repsMs": [
+      2990,
+      2719,
+      2845
+     ],
+     "decode": {
+      "decodeToCanvasMs": 2487,
+      "width": 4032,
+      "height": 3024,
+      "canvasPixelSha256": "2f2dc005d5f20ad09b9cbe5e85f63ca2dc8f0c85f34279af4f2078b085431ac6",
+      "pixelSha256": "2f2dc005d5f20ad09b9cbe5e85f63ca2dc8f0c85f34279af4f2078b085431ac6",
+      "stages": [
+       {
+        "parseMs": 15,
+        "displayMs": 2394,
+        "putImageDataMs": 40,
+        "pngMs": "없음(8277750에서 제거)"
+       },
+       {
+        "parseMs": 17,
+        "displayMs": 2338,
+        "putImageDataMs": 42,
+        "pngMs": "없음(8277750에서 제거)"
+       },
+       {
+        "parseMs": 11,
+        "displayMs": 2227,
+        "putImageDataMs": 48,
+        "pngMs": "없음(8277750에서 제거)"
+       }
+      ]
+     }
+    },
+    {
+     "name": "tortoise-q70-limited.heic",
+     "type": "",
+     "bytes": 4489494,
+     "outputs": [
+      {
+       "quality": 0.9,
+       "bytes": 3011799,
+       "ms": 3866,
+       "width": 4032,
+       "height": 3024,
+       "segments": [
+        {
+         "marker": "FFE0",
+         "bytes": 18
+        },
+        {
+         "marker": "FFE2",
+         "bytes": 474
+        },
+        {
+         "marker": "FFDB",
+         "bytes": 69
+        },
+        {
+         "marker": "FFDB",
+         "bytes": 69
+        },
+        {
+         "marker": "FFC0",
+         "bytes": 19
+        },
+        {
+         "marker": "FFC4",
+         "bytes": 31
+        },
+        {
+         "marker": "FFC4",
+         "bytes": 81
+        },
+        {
+         "marker": "FFC4",
+         "bytes": 30
+        },
+        {
+         "marker": "FFC4",
+         "bytes": 64
+        },
+        {
+         "marker": "FFDA",
+         "bytes": 14
+        }
+       ],
+       "jpegSize": [
+        4032,
+        3024
+       ]
+      },
+      {
+       "quality": 1,
+       "bytes": 10930495,
+       "ms": 4091,
+       "width": 4032,
+       "height": 3024,
+       "segments": [
+        {
+         "marker": "FFE0",
+         "bytes": 18
+        },
+        {
+         "marker": "FFE2",
+         "bytes": 474
+        },
+        {
+         "marker": "FFDB",
+         "bytes": 69
+        },
+        {
+         "marker": "FFDB",
+         "bytes": 69
+        },
+        {
+         "marker": "FFC0",
+         "bytes": 19
+        },
+        {
+         "marker": "FFC4",
+         "bytes": 33
+        },
+        {
+         "marker": "FFC4",
+         "bytes": 90
+        },
+        {
+         "marker": "FFC4",
+         "bytes": 32
+        },
+        {
+         "marker": "FFC4",
+         "bytes": 117
+        },
+        {
+         "marker": "FFDA",
+         "bytes": 14
+        }
+       ],
+       "jpegSize": [
+        4032,
+        3024
+       ]
+      }
+     ],
+     "repsMs": [
+      3716,
+      3588,
+      3542
+     ],
+     "decode": {
+      "decodeToCanvasMs": 3280,
+      "width": 4032,
+      "height": 3024,
+      "canvasPixelSha256": "90aa5d237f25512c71c0d04ba19c4b5a63c5c73c2df6111a8780cce213540b4d",
+      "pixelSha256": "90aa5d237f25512c71c0d04ba19c4b5a63c5c73c2df6111a8780cce213540b4d",
+      "stages": [
+       {
+        "parseMs": 25,
+        "displayMs": 3192,
+        "putImageDataMs": 43,
+        "pngMs": "없음(8277750에서 제거)"
+       },
+       {
+        "parseMs": 29,
+        "displayMs": 2966,
+        "putImageDataMs": 32,
+        "pngMs": "없음(8277750에서 제거)"
+       },
+       {
+        "parseMs": 20,
+        "displayMs": 3083,
+        "putImageDataMs": 47,
+        "pngMs": "없음(8277750에서 제거)"
+       }
+      ]
+     }
+    },
+    {
+     "name": "tortoise-q70-rot.heic",
+     "type": "",
+     "bytes": 4724408,
+     "outputs": [
+      {
+       "quality": 0.9,
+       "bytes": 3010257,
+       "ms": 3459,
+       "width": 3024,
+       "height": 4032,
+       "segments": [
+        {
+         "marker": "FFE0",
+         "bytes": 18
+        },
+        {
+         "marker": "FFE2",
+         "bytes": 474
+        },
+        {
+         "marker": "FFDB",
+         "bytes": 69
+        },
+        {
+         "marker": "FFDB",
+         "bytes": 69
+        },
+        {
+         "marker": "FFC0",
+         "bytes": 19
+        },
+        {
+         "marker": "FFC4",
+         "bytes": 31
+        },
+        {
+         "marker": "FFC4",
+         "bytes": 83
+        },
+        {
+         "marker": "FFC4",
+         "bytes": 31
+        },
+        {
+         "marker": "FFC4",
+         "bytes": 63
+        },
+        {
+         "marker": "FFDA",
+         "bytes": 14
+        }
+       ],
+       "jpegSize": [
+        3024,
+        4032
+       ]
+      },
+      {
+       "quality": 1,
+       "bytes": 9665551,
+       "ms": 3894,
+       "width": 3024,
+       "height": 4032,
+       "segments": [
+        {
+         "marker": "FFE0",
+         "bytes": 18
+        },
+        {
+         "marker": "FFE2",
+         "bytes": 474
+        },
+        {
+         "marker": "FFDB",
+         "bytes": 69
+        },
+        {
+         "marker": "FFDB",
+         "bytes": 69
+        },
+        {
+         "marker": "FFC0",
+         "bytes": 19
+        },
+        {
+         "marker": "FFC4",
+         "bytes": 33
+        },
+        {
+         "marker": "FFC4",
+         "bytes": 92
+        },
+        {
+         "marker": "FFC4",
+         "bytes": 32
+        },
+        {
+         "marker": "FFC4",
+         "bytes": 118
+        },
+        {
+         "marker": "FFDA",
+         "bytes": 14
+        }
+       ],
+       "jpegSize": [
+        3024,
+        4032
+       ]
+      }
+     ],
+     "repsMs": [
+      3549,
+      3639,
+      3583
+     ],
+     "decode": {
+      "decodeToCanvasMs": 3232,
+      "width": 3024,
+      "height": 4032,
+      "canvasPixelSha256": "8a331b619151b788e7da1ef3710f4ba937ebd0ae0457e44e9b2534bb50714c88",
+      "pixelSha256": "8a331b619151b788e7da1ef3710f4ba937ebd0ae0457e44e9b2534bb50714c88",
+      "stages": [
+       {
+        "parseMs": 23,
+        "displayMs": 2898,
+        "putImageDataMs": 33,
+        "pngMs": "없음(8277750에서 제거)"
+       },
+       {
+        "parseMs": 41,
+        "displayMs": 3150,
+        "putImageDataMs": 42,
+        "pngMs": "없음(8277750에서 제거)"
+       },
+       {
+        "parseMs": 33,
+        "displayMs": 3076,
+        "putImageDataMs": 40,
+        "pngMs": "없음(8277750에서 제거)"
+       }
+      ]
+     }
+    },
+    {
+     "name": "tortoise-q70.heic",
+     "type": "",
+     "bytes": 4742008,
+     "outputs": [
+      {
+       "quality": 0.9,
+       "bytes": 3001870,
+       "ms": 3457,
+       "width": 4032,
+       "height": 3024,
+       "segments": [
+        {
+         "marker": "FFE0",
+         "bytes": 18
+        },
+        {
+         "marker": "FFE2",
+         "bytes": 474
+        },
+        {
+         "marker": "FFDB",
+         "bytes": 69
+        },
+        {
+         "marker": "FFDB",
+         "bytes": 69
+        },
+        {
+         "marker": "FFC0",
+         "bytes": 19
+        },
+        {
+         "marker": "FFC4",
+         "bytes": 31
+        },
+        {
+         "marker": "FFC4",
+         "bytes": 82
+        },
+        {
+         "marker": "FFC4",
+         "bytes": 30
+        },
+        {
+         "marker": "FFC4",
+         "bytes": 64
+        },
+        {
+         "marker": "FFDA",
+         "bytes": 14
+        }
+       ],
+       "jpegSize": [
+        4032,
+        3024
+       ]
+      },
+      {
+       "quality": 1,
+       "bytes": 9645466,
+       "ms": 3652,
+       "width": 4032,
+       "height": 3024,
+       "segments": [
+        {
+         "marker": "FFE0",
+         "bytes": 18
+        },
+        {
+         "marker": "FFE2",
+         "bytes": 474
+        },
+        {
+         "marker": "FFDB",
+         "bytes": 69
+        },
+        {
+         "marker": "FFDB",
+         "bytes": 69
+        },
+        {
+         "marker": "FFC0",
+         "bytes": 19
+        },
+        {
+         "marker": "FFC4",
+         "bytes": 33
+        },
+        {
+         "marker": "FFC4",
+         "bytes": 93
+        },
+        {
+         "marker": "FFC4",
+         "bytes": 32
+        },
+        {
+         "marker": "FFC4",
+         "bytes": 118
+        },
+        {
+         "marker": "FFDA",
+         "bytes": 14
+        }
+       ],
+       "jpegSize": [
+        4032,
+        3024
+       ]
+      }
+     ],
+     "repsMs": [
+      3496,
+      3247,
+      2974,
+      3463,
+      3288
+     ],
+     "decode": {
+      "decodeToCanvasMs": 2997,
+      "width": 4032,
+      "height": 3024,
+      "canvasPixelSha256": "7d26ef30d9221121513982e3d5f930483a146aecb5779e5b84ff5998e751f17c",
+      "pixelSha256": "7d26ef30d9221121513982e3d5f930483a146aecb5779e5b84ff5998e751f17c",
+      "stages": [
+       {
+        "parseMs": 26,
+        "displayMs": 2993,
+        "putImageDataMs": 42,
+        "pngMs": "없음(8277750에서 제거)"
+       },
+       {
+        "parseMs": 36,
+        "displayMs": 2947,
+        "putImageDataMs": 37,
+        "pngMs": "없음(8277750에서 제거)"
+       },
+       {
+        "parseMs": 27,
+        "displayMs": 2754,
+        "putImageDataMs": 41,
+        "pngMs": "없음(8277750에서 제거)"
+       }
+      ]
+     }
+    },
+    {
+     "name": "tortoise-q90.heic",
+     "type": "",
+     "bytes": 8385266,
+     "outputs": [
+      {
+       "quality": 0.9,
+       "bytes": 3004320,
+       "ms": 3695,
+       "width": 4032,
+       "height": 3024,
+       "segments": [
+        {
+         "marker": "FFE0",
+         "bytes": 18
+        },
+        {
+         "marker": "FFE2",
+         "bytes": 474
+        },
+        {
+         "marker": "FFDB",
+         "bytes": 69
+        },
+        {
+         "marker": "FFDB",
+         "bytes": 69
+        },
+        {
+         "marker": "FFC0",
+         "bytes": 19
+        },
+        {
+         "marker": "FFC4",
+         "bytes": 31
+        },
+        {
+         "marker": "FFC4",
+         "bytes": 82
+        },
+        {
+         "marker": "FFC4",
+         "bytes": 30
+        },
+        {
+         "marker": "FFC4",
+         "bytes": 65
+        },
+        {
+         "marker": "FFDA",
+         "bytes": 14
+        }
+       ],
+       "jpegSize": [
+        4032,
+        3024
+       ]
+      },
+      {
+       "quality": 1,
+       "bytes": 11079609,
+       "ms": 4516,
+       "width": 4032,
+       "height": 3024,
+       "segments": [
+        {
+         "marker": "FFE0",
+         "bytes": 18
+        },
+        {
+         "marker": "FFE2",
+         "bytes": 474
+        },
+        {
+         "marker": "FFDB",
+         "bytes": 69
+        },
+        {
+         "marker": "FFDB",
+         "bytes": 69
+        },
+        {
+         "marker": "FFC0",
+         "bytes": 19
+        },
+        {
+         "marker": "FFC4",
+         "bytes": 33
+        },
+        {
+         "marker": "FFC4",
+         "bytes": 79
+        },
+        {
+         "marker": "FFC4",
+         "bytes": 32
+        },
+        {
+         "marker": "FFC4",
+         "bytes": 114
+        },
+        {
+         "marker": "FFDA",
+         "bytes": 14
+        }
+       ],
+       "jpegSize": [
+        4032,
+        3024
+       ]
+      }
+     ],
+     "repsMs": [
+      4051,
+      4216,
+      4239
+     ],
+     "decode": {
+      "decodeToCanvasMs": 3819,
+      "width": 4032,
+      "height": 3024,
+      "canvasPixelSha256": "d2f6130b77dc2bbda4b5dd63e212a105eb0b2573bacc901986e1c64b9301d283",
+      "pixelSha256": "d2f6130b77dc2bbda4b5dd63e212a105eb0b2573bacc901986e1c64b9301d283",
+      "stages": [
+       {
+        "parseMs": 65,
+        "displayMs": 3436,
+        "putImageDataMs": 41,
+        "pngMs": "없음(8277750에서 제거)"
+       },
+       {
+        "parseMs": 58,
+        "displayMs": 3747,
+        "putImageDataMs": 34,
+        "pngMs": "없음(8277750에서 제거)"
+       },
+       {
+        "parseMs": 68,
+        "displayMs": 3544,
+        "putImageDataMs": 35,
+        "pngMs": "없음(8277750에서 제거)"
+       }
+      ]
+     }
+    }
+   ]
+  },
+  "Firefox": {
+   "version": "153.0",
+   "initMs": [
+    49
+   ],
+   "rows": [
+    {
+     "name": "flower-q50.heic",
+     "type": "",
+     "bytes": 184510,
+     "outputs": [
+      {
+       "quality": 0.9,
+       "bytes": 719966,
+       "ms": 1652,
+       "width": 4032,
+       "height": 3024,
+       "segments": [
+        {
+         "marker": "FFE0",
+         "bytes": 18
+        },
+        {
+         "marker": "FFDB",
+         "bytes": 69
+        },
+        {
+         "marker": "FFDB",
+         "bytes": 69
+        },
+        {
+         "marker": "FFC0",
+         "bytes": 19
+        },
+        {
+         "marker": "FFC4",
+         "bytes": 33
+        },
+        {
+         "marker": "FFC4",
+         "bytes": 183
+        },
+        {
+         "marker": "FFC4",
+         "bytes": 33
+        },
+        {
+         "marker": "FFC4",
+         "bytes": 183
+        },
+        {
+         "marker": "FFDA",
+         "bytes": 14
+        }
+       ],
+       "jpegSize": [
+        4032,
+        3024
+       ]
+      }
+     ],
+     "repsMs": [
+      1516,
+      1548,
+      1546
+     ],
+     "decode": {
+      "decodeToCanvasMs": 1439,
+      "width": 4032,
+      "height": 3024,
+      "canvasPixelSha256": "4394d934d41f7e8b1c644b3cde7c0db2d671d03b0e27b86033919235b8713cfa",
+      "pixelSha256": "4394d934d41f7e8b1c644b3cde7c0db2d671d03b0e27b86033919235b8713cfa",
+      "stages": [
+       {
+        "parseMs": 1,
+        "displayMs": 1425,
+        "putImageDataMs": 19,
+        "pngMs": "없음(8277750에서 제거)"
+       },
+       {
+        "parseMs": 3,
+        "displayMs": 1438,
+        "putImageDataMs": 19,
+        "pngMs": "없음(8277750에서 제거)"
+       },
+       {
+        "parseMs": 2,
+        "displayMs": 1473,
+        "putImageDataMs": 19,
+        "pngMs": "없음(8277750에서 제거)"
+       }
+      ]
+     }
+    },
+    {
+     "name": "flower-q70.heic",
+     "type": "",
+     "bytes": 2715496,
+     "outputs": [
+      {
+       "quality": 0.9,
+       "bytes": 1102083,
+       "ms": 5316,
+       "width": 4032,
+       "height": 3024,
+       "segments": [
+        {
+         "marker": "FFE0",
+         "bytes": 18
+        },
+        {
+         "marker": "FFDB",
+         "bytes": 69
+        },
+        {
+         "marker": "FFDB",
+         "bytes": 69
+        },
+        {
+         "marker": "FFC0",
+         "bytes": 19
+        },
+        {
+         "marker": "FFC4",
+         "bytes": 33
+        },
+        {
+         "marker": "FFC4",
+         "bytes": 183
+        },
+        {
+         "marker": "FFC4",
+         "bytes": 33
+        },
+        {
+         "marker": "FFC4",
+         "bytes": 183
+        },
+        {
+         "marker": "FFDA",
+         "bytes": 14
+        }
+       ],
+       "jpegSize": [
+        4032,
+        3024
+       ]
+      }
+     ],
+     "repsMs": [
+      5043,
+      5292,
+      6118,
+      4983,
+      5024
+     ],
+     "decode": {
+      "decodeToCanvasMs": 5001,
+      "width": 4032,
+      "height": 3024,
+      "canvasPixelSha256": "d7f17c619dd647be62d829a176dfb804078c43cacf47a5eff620aec44ea50e9b",
+      "pixelSha256": "d7f17c619dd647be62d829a176dfb804078c43cacf47a5eff620aec44ea50e9b",
+      "stages": [
+       {
+        "parseMs": 8,
+        "displayMs": 5374,
+        "putImageDataMs": 23,
+        "pngMs": "없음(8277750에서 제거)"
+       },
+       {
+        "parseMs": 10,
+        "displayMs": 4868,
+        "putImageDataMs": 16,
+        "pngMs": "없음(8277750에서 제거)"
+       },
+       {
+        "parseMs": 8,
+        "displayMs": 4857,
+        "putImageDataMs": 17,
+        "pngMs": "없음(8277750에서 제거)"
+       }
+      ]
+     }
+    },
+    {
+     "name": "flower-q90.heic",
+     "type": "",
+     "bytes": 5138566,
+     "outputs": [
+      {
+       "quality": 0.9,
+       "bytes": 1084984,
+       "ms": 7142,
+       "width": 4032,
+       "height": 3024,
+       "segments": [
+        {
+         "marker": "FFE0",
+         "bytes": 18
+        },
+        {
+         "marker": "FFDB",
+         "bytes": 69
+        },
+        {
+         "marker": "FFDB",
+         "bytes": 69
+        },
+        {
+         "marker": "FFC0",
+         "bytes": 19
+        },
+        {
+         "marker": "FFC4",
+         "bytes": 33
+        },
+        {
+         "marker": "FFC4",
+         "bytes": 183
+        },
+        {
+         "marker": "FFC4",
+         "bytes": 33
+        },
+        {
+         "marker": "FFC4",
+         "bytes": 183
+        },
+        {
+         "marker": "FFDA",
+         "bytes": 14
+        }
+       ],
+       "jpegSize": [
+        4032,
+        3024
+       ]
+      }
+     ],
+     "repsMs": [
+      6637,
+      6898,
+      6553
+     ],
+     "decode": {
+      "decodeToCanvasMs": 6452,
+      "width": 4032,
+      "height": 3024,
+      "canvasPixelSha256": "10b0acfad9e0350fb8354a401d8447decd9544631c7f9cc81bc37fc4340057a3",
+      "pixelSha256": "10b0acfad9e0350fb8354a401d8447decd9544631c7f9cc81bc37fc4340057a3",
+      "stages": [
+       {
+        "parseMs": 14,
+        "displayMs": 6441,
+        "putImageDataMs": 17,
+        "pngMs": "없음(8277750에서 제거)"
+       },
+       {
+        "parseMs": 36,
+        "displayMs": 6521,
+        "putImageDataMs": 16,
+        "pngMs": "없음(8277750에서 제거)"
+       },
+       {
+        "parseMs": 15,
+        "displayMs": 6699,
+        "putImageDataMs": 18,
+        "pngMs": "없음(8277750에서 제거)"
+       }
+      ]
+     }
+    },
+    {
+     "name": "tortoise-q50.heic",
+     "type": "",
+     "bytes": 1707890,
+     "outputs": [
+      {
+       "quality": 0.9,
+       "bytes": 3139539,
+       "ms": 5078,
+       "width": 4032,
+       "height": 3024,
+       "segments": [
+        {
+         "marker": "FFE0",
+         "bytes": 18
+        },
+        {
+         "marker": "FFDB",
+         "bytes": 69
+        },
+        {
+         "marker": "FFDB",
+         "bytes": 69
+        },
+        {
+         "marker": "FFC0",
+         "bytes": 19
+        },
+        {
+         "marker": "FFC4",
+         "bytes": 33
+        },
+        {
+         "marker": "FFC4",
+         "bytes": 183
+        },
+        {
+         "marker": "FFC4",
+         "bytes": 33
+        },
+        {
+         "marker": "FFC4",
+         "bytes": 183
+        },
+        {
+         "marker": "FFDA",
+         "bytes": 14
+        }
+       ],
+       "jpegSize": [
+        4032,
+        3024
+       ]
+      }
+     ],
+     "repsMs": [
+      5232,
+      5279,
+      4928
+     ],
+     "decode": {
+      "decodeToCanvasMs": 4987,
+      "width": 4032,
+      "height": 3024,
+      "canvasPixelSha256": "2f2dc005d5f20ad09b9cbe5e85f63ca2dc8f0c85f34279af4f2078b085431ac6",
+      "pixelSha256": "2f2dc005d5f20ad09b9cbe5e85f63ca2dc8f0c85f34279af4f2078b085431ac6",
+      "stages": [
+       {
+        "parseMs": 5,
+        "displayMs": 5003,
+        "putImageDataMs": 21,
+        "pngMs": "없음(8277750에서 제거)"
+       },
+       {
+        "parseMs": 9,
+        "displayMs": 4932,
+        "putImageDataMs": 21,
+        "pngMs": "없음(8277750에서 제거)"
+       },
+       {
+        "parseMs": 7,
+        "displayMs": 4778,
+        "putImageDataMs": 18,
+        "pngMs": "없음(8277750에서 제거)"
+       }
+      ]
+     }
+    },
+    {
+     "name": "tortoise-q70-limited.heic",
+     "type": "",
+     "bytes": 4489494,
+     "outputs": [
+      {
+       "quality": 0.9,
+       "bytes": 3420006,
+       "ms": 6105,
+       "width": 4032,
+       "height": 3024,
+       "segments": [
+        {
+         "marker": "FFE0",
+         "bytes": 18
+        },
+        {
+         "marker": "FFDB",
+         "bytes": 69
+        },
+        {
+         "marker": "FFDB",
+         "bytes": 69
+        },
+        {
+         "marker": "FFC0",
+         "bytes": 19
+        },
+        {
+         "marker": "FFC4",
+         "bytes": 33
+        },
+        {
+         "marker": "FFC4",
+         "bytes": 183
+        },
+        {
+         "marker": "FFC4",
+         "bytes": 33
+        },
+        {
+         "marker": "FFC4",
+         "bytes": 183
+        },
+        {
+         "marker": "FFDA",
+         "bytes": 14
+        }
+       ],
+       "jpegSize": [
+        4032,
+        3024
+       ]
+      }
+     ],
+     "repsMs": [
+      6100,
+      6082,
+      6067
+     ],
+     "decode": {
+      "decodeToCanvasMs": 5985,
+      "width": 4032,
+      "height": 3024,
+      "canvasPixelSha256": "90aa5d237f25512c71c0d04ba19c4b5a63c5c73c2df6111a8780cce213540b4d",
+      "pixelSha256": "90aa5d237f25512c71c0d04ba19c4b5a63c5c73c2df6111a8780cce213540b4d",
+      "stages": [
+       {
+        "parseMs": 15,
+        "displayMs": 5977,
+        "putImageDataMs": 18,
+        "pngMs": "없음(8277750에서 제거)"
+       },
+       {
+        "parseMs": 15,
+        "displayMs": 5963,
+        "putImageDataMs": 18,
+        "pngMs": "없음(8277750에서 제거)"
+       },
+       {
+        "parseMs": 13,
+        "displayMs": 5981,
+        "putImageDataMs": 19,
+        "pngMs": "없음(8277750에서 제거)"
+       }
+      ]
+     }
+    },
+    {
+     "name": "tortoise-q70-rot.heic",
+     "type": "",
+     "bytes": 4724408,
+     "outputs": [
+      {
+       "quality": 0.9,
+       "bytes": 3435559,
+       "ms": 6063,
+       "width": 3024,
+       "height": 4032,
+       "segments": [
+        {
+         "marker": "FFE0",
+         "bytes": 18
+        },
+        {
+         "marker": "FFDB",
+         "bytes": 69
+        },
+        {
+         "marker": "FFDB",
+         "bytes": 69
+        },
+        {
+         "marker": "FFC0",
+         "bytes": 19
+        },
+        {
+         "marker": "FFC4",
+         "bytes": 33
+        },
+        {
+         "marker": "FFC4",
+         "bytes": 183
+        },
+        {
+         "marker": "FFC4",
+         "bytes": 33
+        },
+        {
+         "marker": "FFC4",
+         "bytes": 183
+        },
+        {
+         "marker": "FFDA",
+         "bytes": 14
+        }
+       ],
+       "jpegSize": [
+        3024,
+        4032
+       ]
+      }
+     ],
+     "repsMs": [
+      6061,
+      6327,
+      6105
+     ],
+     "decode": {
+      "decodeToCanvasMs": 5900,
+      "width": 3024,
+      "height": 4032,
+      "canvasPixelSha256": "8a331b619151b788e7da1ef3710f4ba937ebd0ae0457e44e9b2534bb50714c88",
+      "pixelSha256": "8a331b619151b788e7da1ef3710f4ba937ebd0ae0457e44e9b2534bb50714c88",
+      "stages": [
+       {
+        "parseMs": 13,
+        "displayMs": 5980,
+        "putImageDataMs": 18,
+        "pngMs": "없음(8277750에서 제거)"
+       },
+       {
+        "parseMs": 13,
+        "displayMs": 5924,
+        "putImageDataMs": 18,
+        "pngMs": "없음(8277750에서 제거)"
+       },
+       {
+        "parseMs": 15,
+        "displayMs": 5927,
+        "putImageDataMs": 21,
+        "pngMs": "없음(8277750에서 제거)"
+       }
+      ]
+     }
+    },
+    {
+     "name": "tortoise-q70.heic",
+     "type": "",
+     "bytes": 4742008,
+     "outputs": [
+      {
+       "quality": 0.9,
+       "bytes": 3409530,
+       "ms": 6032,
+       "width": 4032,
+       "height": 3024,
+       "segments": [
+        {
+         "marker": "FFE0",
+         "bytes": 18
+        },
+        {
+         "marker": "FFDB",
+         "bytes": 69
+        },
+        {
+         "marker": "FFDB",
+         "bytes": 69
+        },
+        {
+         "marker": "FFC0",
+         "bytes": 19
+        },
+        {
+         "marker": "FFC4",
+         "bytes": 33
+        },
+        {
+         "marker": "FFC4",
+         "bytes": 183
+        },
+        {
+         "marker": "FFC4",
+         "bytes": 33
+        },
+        {
+         "marker": "FFC4",
+         "bytes": 183
+        },
+        {
+         "marker": "FFDA",
+         "bytes": 14
+        }
+       ],
+       "jpegSize": [
+        4032,
+        3024
+       ]
+      }
+     ],
+     "repsMs": [
+      6083,
+      5940,
+      5918,
+      6073,
+      6540
+     ],
+     "decode": {
+      "decodeToCanvasMs": 6376,
+      "width": 4032,
+      "height": 3024,
+      "canvasPixelSha256": "7d26ef30d9221121513982e3d5f930483a146aecb5779e5b84ff5998e751f17c",
+      "pixelSha256": "7d26ef30d9221121513982e3d5f930483a146aecb5779e5b84ff5998e751f17c",
+      "stages": [
+       {
+        "parseMs": 20,
+        "displayMs": 5911,
+        "putImageDataMs": 19,
+        "pngMs": "없음(8277750에서 제거)"
+       },
+       {
+        "parseMs": 17,
+        "displayMs": 6753,
+        "putImageDataMs": 18,
+        "pngMs": "없음(8277750에서 제거)"
+       },
+       {
+        "parseMs": 20,
+        "displayMs": 6730,
+        "putImageDataMs": 19,
+        "pngMs": "없음(8277750에서 제거)"
+       }
+      ]
+     }
+    },
+    {
+     "name": "tortoise-q90.heic",
+     "type": "",
+     "bytes": 8385266,
+     "outputs": [
+      {
+       "quality": 0.9,
+       "bytes": 3481980,
+       "ms": 7339,
+       "width": 4032,
+       "height": 3024,
+       "segments": [
+        {
+         "marker": "FFE0",
+         "bytes": 18
+        },
+        {
+         "marker": "FFDB",
+         "bytes": 69
+        },
+        {
+         "marker": "FFDB",
+         "bytes": 69
+        },
+        {
+         "marker": "FFC0",
+         "bytes": 19
+        },
+        {
+         "marker": "FFC4",
+         "bytes": 33
+        },
+        {
+         "marker": "FFC4",
+         "bytes": 183
+        },
+        {
+         "marker": "FFC4",
+         "bytes": 33
+        },
+        {
+         "marker": "FFC4",
+         "bytes": 183
+        },
+        {
+         "marker": "FFDA",
+         "bytes": 14
+        }
+       ],
+       "jpegSize": [
+        4032,
+        3024
+       ]
+      }
+     ],
+     "repsMs": [
+      7297,
+      7203,
+      7800
+     ],
+     "decode": {
+      "decodeToCanvasMs": 6969,
+      "width": 4032,
+      "height": 3024,
+      "canvasPixelSha256": "d2f6130b77dc2bbda4b5dd63e212a105eb0b2573bacc901986e1c64b9301d283",
+      "pixelSha256": "d2f6130b77dc2bbda4b5dd63e212a105eb0b2573bacc901986e1c64b9301d283",
+      "stages": [
+       {
+        "parseMs": 22,
+        "displayMs": 7171,
+        "putImageDataMs": 16,
+        "pngMs": "없음(8277750에서 제거)"
+       },
+       {
+        "parseMs": 28,
+        "displayMs": 6909,
+        "putImageDataMs": 18,
+        "pngMs": "없음(8277750에서 제거)"
+       },
+       {
+        "parseMs": 23,
+        "displayMs": 7175,
+        "putImageDataMs": 18,
+        "pngMs": "없음(8277750에서 제거)"
+       }
+      ]
+     }
+    }
+   ]
+  },
+  "WebKit": {
+   "version": "26.5",
+   "initMs": [
+    38
+   ],
+   "rows": [
+    {
+     "name": "flower-q50.heic",
+     "type": "",
+     "bytes": 184510,
+     "outputs": [
+      {
+       "quality": 0.9,
+       "bytes": 437956,
+       "ms": 548,
+       "width": 4032,
+       "height": 3024,
+       "segments": [
+        {
+         "marker": "FFE0",
+         "bytes": 18
+        },
+        {
+         "marker": "FFE2",
+         "bytes": 474
+        },
+        {
+         "marker": "FFDB",
+         "bytes": 69
+        },
+        {
+         "marker": "FFDB",
+         "bytes": 69
+        },
+        {
+         "marker": "FFC0",
+         "bytes": 19
+        },
+        {
+         "marker": "FFC4",
+         "bytes": 31
+        },
+        {
+         "marker": "FFC4",
+         "bytes": 74
+        },
+        {
+         "marker": "FFC4",
+         "bytes": 30
+        },
+        {
+         "marker": "FFC4",
+         "bytes": 56
+        },
+        {
+         "marker": "FFDA",
+         "bytes": 14
+        }
+       ],
+       "jpegSize": [
+        4032,
+        3024
+       ]
+      }
+     ],
+     "repsMs": [
+      423,
+      423,
+      414
+     ],
+     "decode": {
+      "decodeToCanvasMs": 304,
+      "width": 4032,
+      "height": 3024,
+      "canvasPixelSha256": "4394d934d41f7e8b1c644b3cde7c0db2d671d03b0e27b86033919235b8713cfa",
+      "pixelSha256": "4394d934d41f7e8b1c644b3cde7c0db2d671d03b0e27b86033919235b8713cfa",
+      "stages": [
+       {
+        "parseMs": 6,
+        "displayMs": 243,
+        "putImageDataMs": 21,
+        "pngMs": "없음(8277750에서 제거)"
+       },
+       {
+        "parseMs": 9,
+        "displayMs": 854,
+        "putImageDataMs": 62,
+        "pngMs": "없음(8277750에서 제거)"
+       },
+       {
+        "parseMs": 5,
+        "displayMs": 865,
+        "putImageDataMs": 70,
+        "pngMs": "없음(8277750에서 제거)"
+       }
+      ]
+     }
+    },
+    {
+     "name": "flower-q70.heic",
+     "type": "",
+     "bytes": 2715496,
+     "outputs": [
+      {
+       "quality": 0.9,
+       "bytes": 635922,
+       "ms": 3563,
+       "width": 4032,
+       "height": 3024,
+       "segments": [
+        {
+         "marker": "FFE0",
+         "bytes": 18
+        },
+        {
+         "marker": "FFE2",
+         "bytes": 474
+        },
+        {
+         "marker": "FFDB",
+         "bytes": 69
+        },
+        {
+         "marker": "FFDB",
+         "bytes": 69
+        },
+        {
+         "marker": "FFC0",
+         "bytes": 19
+        },
+        {
+         "marker": "FFC4",
+         "bytes": 31
+        },
+        {
+         "marker": "FFC4",
+         "bytes": 72
+        },
+        {
+         "marker": "FFC4",
+         "bytes": 30
+        },
+        {
+         "marker": "FFC4",
+         "bytes": 59
+        },
+        {
+         "marker": "FFDA",
+         "bytes": 14
+        }
+       ],
+       "jpegSize": [
+        4032,
+        3024
+       ]
+      }
+     ],
+     "repsMs": [
+      3642,
+      3494,
+      3572,
+      3622,
+      3577
+     ],
+     "decode": {
+      "decodeToCanvasMs": 3239,
+      "width": 4032,
+      "height": 3024,
+      "canvasPixelSha256": "d7f17c619dd647be62d829a176dfb804078c43cacf47a5eff620aec44ea50e9b",
+      "pixelSha256": "d7f17c619dd647be62d829a176dfb804078c43cacf47a5eff620aec44ea50e9b",
+      "stages": [
+       {
+        "parseMs": 11,
+        "displayMs": 3086,
+        "putImageDataMs": 77,
+        "pngMs": "없음(8277750에서 제거)"
+       },
+       {
+        "parseMs": 18,
+        "displayMs": 3039,
+        "putImageDataMs": 74,
+        "pngMs": "없음(8277750에서 제거)"
+       },
+       {
+        "parseMs": 14,
+        "displayMs": 3451,
+        "putImageDataMs": 87,
+        "pngMs": "없음(8277750에서 제거)"
+       }
+      ]
+     }
+    },
+    {
+     "name": "flower-q90.heic",
+     "type": "",
+     "bytes": 5138566,
+     "outputs": [
+      {
+       "quality": 0.9,
+       "bytes": 627568,
+       "ms": 5385,
+       "width": 4032,
+       "height": 3024,
+       "segments": [
+        {
+         "marker": "FFE0",
+         "bytes": 18
+        },
+        {
+         "marker": "FFE2",
+         "bytes": 474
+        },
+        {
+         "marker": "FFDB",
+         "bytes": 69
+        },
+        {
+         "marker": "FFDB",
+         "bytes": 69
+        },
+        {
+         "marker": "FFC0",
+         "bytes": 19
+        },
+        {
+         "marker": "FFC4",
+         "bytes": 31
+        },
+        {
+         "marker": "FFC4",
+         "bytes": 69
+        },
+        {
+         "marker": "FFC4",
+         "bytes": 30
+        },
+        {
+         "marker": "FFC4",
+         "bytes": 56
+        },
+        {
+         "marker": "FFDA",
+         "bytes": 14
+        }
+       ],
+       "jpegSize": [
+        4032,
+        3024
+       ]
+      }
+     ],
+     "repsMs": [
+      5385,
+      5166,
+      5062
+     ],
+     "decode": {
+      "decodeToCanvasMs": 4411,
+      "width": 4032,
+      "height": 3024,
+      "canvasPixelSha256": "10b0acfad9e0350fb8354a401d8447decd9544631c7f9cc81bc37fc4340057a3",
+      "pixelSha256": "10b0acfad9e0350fb8354a401d8447decd9544631c7f9cc81bc37fc4340057a3",
+      "stages": [
+       {
+        "parseMs": 20,
+        "displayMs": 4632,
+        "putImageDataMs": 79,
+        "pngMs": "없음(8277750에서 제거)"
+       },
+       {
+        "parseMs": 20,
+        "displayMs": 4626,
+        "putImageDataMs": 86,
+        "pngMs": "없음(8277750에서 제거)"
+       },
+       {
+        "parseMs": 30,
+        "displayMs": 4522,
+        "putImageDataMs": 78,
+        "pngMs": "없음(8277750에서 제거)"
+       }
+      ]
+     }
+    },
+    {
+     "name": "tortoise-q50.heic",
+     "type": "",
+     "bytes": 1707890,
+     "outputs": [
+      {
+       "quality": 0.9,
+       "bytes": 2821568,
+       "ms": 3778,
+       "width": 4032,
+       "height": 3024,
+       "segments": [
+        {
+         "marker": "FFE0",
+         "bytes": 18
+        },
+        {
+         "marker": "FFE2",
+         "bytes": 474
+        },
+        {
+         "marker": "FFDB",
+         "bytes": 69
+        },
+        {
+         "marker": "FFDB",
+         "bytes": 69
+        },
+        {
+         "marker": "FFC0",
+         "bytes": 19
+        },
+        {
+         "marker": "FFC4",
+         "bytes": 31
+        },
+        {
+         "marker": "FFC4",
+         "bytes": 93
+        },
+        {
+         "marker": "FFC4",
+         "bytes": 30
+        },
+        {
+         "marker": "FFC4",
+         "bytes": 64
+        },
+        {
+         "marker": "FFDA",
+         "bytes": 14
+        }
+       ],
+       "jpegSize": [
+        4032,
+        3024
+       ]
+      }
+     ],
+     "repsMs": [
+      3723,
+      3652,
+      3753
+     ],
+     "decode": {
+      "decodeToCanvasMs": 3329,
+      "width": 4032,
+      "height": 3024,
+      "canvasPixelSha256": "2f2dc005d5f20ad09b9cbe5e85f63ca2dc8f0c85f34279af4f2078b085431ac6",
+      "pixelSha256": "2f2dc005d5f20ad09b9cbe5e85f63ca2dc8f0c85f34279af4f2078b085431ac6",
+      "stages": [
+       {
+        "parseMs": 17,
+        "displayMs": 2976,
+        "putImageDataMs": 77,
+        "pngMs": "없음(8277750에서 제거)"
+       },
+       {
+        "parseMs": 13,
+        "displayMs": 3176,
+        "putImageDataMs": 79,
+        "pngMs": "없음(8277750에서 제거)"
+       },
+       {
+        "parseMs": 14,
+        "displayMs": 3245,
+        "putImageDataMs": 60,
+        "pngMs": "없음(8277750에서 제거)"
+       }
+      ]
+     }
+    },
+    {
+     "name": "tortoise-q70-limited.heic",
+     "type": "",
+     "bytes": 4489494,
+     "outputs": [
+      {
+       "quality": 0.9,
+       "bytes": 3011799,
+       "ms": 4981,
+       "width": 4032,
+       "height": 3024,
+       "segments": [
+        {
+         "marker": "FFE0",
+         "bytes": 18
+        },
+        {
+         "marker": "FFE2",
+         "bytes": 474
+        },
+        {
+         "marker": "FFDB",
+         "bytes": 69
+        },
+        {
+         "marker": "FFDB",
+         "bytes": 69
+        },
+        {
+         "marker": "FFC0",
+         "bytes": 19
+        },
+        {
+         "marker": "FFC4",
+         "bytes": 31
+        },
+        {
+         "marker": "FFC4",
+         "bytes": 81
+        },
+        {
+         "marker": "FFC4",
+         "bytes": 30
+        },
+        {
+         "marker": "FFC4",
+         "bytes": 64
+        },
+        {
+         "marker": "FFDA",
+         "bytes": 14
+        }
+       ],
+       "jpegSize": [
+        4032,
+        3024
+       ]
+      }
+     ],
+     "repsMs": [
+      4675,
+      4541,
+      4425
+     ],
+     "decode": {
+      "decodeToCanvasMs": 4271,
+      "width": 4032,
+      "height": 3024,
+      "canvasPixelSha256": "90aa5d237f25512c71c0d04ba19c4b5a63c5c73c2df6111a8780cce213540b4d",
+      "pixelSha256": "90aa5d237f25512c71c0d04ba19c4b5a63c5c73c2df6111a8780cce213540b4d",
+      "stages": [
+       {
+        "parseMs": 16,
+        "displayMs": 4178,
+        "putImageDataMs": 81,
+        "pngMs": "없음(8277750에서 제거)"
+       },
+       {
+        "parseMs": 17,
+        "displayMs": 4137,
+        "putImageDataMs": 76,
+        "pngMs": "없음(8277750에서 제거)"
+       },
+       {
+        "parseMs": 16,
+        "displayMs": 4164,
+        "putImageDataMs": 105,
+        "pngMs": "없음(8277750에서 제거)"
+       }
+      ]
+     }
+    },
+    {
+     "name": "tortoise-q70-rot.heic",
+     "type": "",
+     "bytes": 4724408,
+     "outputs": [
+      {
+       "quality": 0.9,
+       "bytes": 3010257,
+       "ms": 4967,
+       "width": 3024,
+       "height": 4032,
+       "segments": [
+        {
+         "marker": "FFE0",
+         "bytes": 18
+        },
+        {
+         "marker": "FFE2",
+         "bytes": 474
+        },
+        {
+         "marker": "FFDB",
+         "bytes": 69
+        },
+        {
+         "marker": "FFDB",
+         "bytes": 69
+        },
+        {
+         "marker": "FFC0",
+         "bytes": 19
+        },
+        {
+         "marker": "FFC4",
+         "bytes": 31
+        },
+        {
+         "marker": "FFC4",
+         "bytes": 83
+        },
+        {
+         "marker": "FFC4",
+         "bytes": 31
+        },
+        {
+         "marker": "FFC4",
+         "bytes": 63
+        },
+        {
+         "marker": "FFDA",
+         "bytes": 14
+        }
+       ],
+       "jpegSize": [
+        3024,
+        4032
+       ]
+      }
+     ],
+     "repsMs": [
+      4907,
+      4588,
+      4720
+     ],
+     "decode": {
+      "decodeToCanvasMs": 4305,
+      "width": 3024,
+      "height": 4032,
+      "canvasPixelSha256": "8a331b619151b788e7da1ef3710f4ba937ebd0ae0457e44e9b2534bb50714c88",
+      "pixelSha256": "8a331b619151b788e7da1ef3710f4ba937ebd0ae0457e44e9b2534bb50714c88",
+      "stages": [
+       {
+        "parseMs": 19,
+        "displayMs": 4019,
+        "putImageDataMs": 74,
+        "pngMs": "없음(8277750에서 제거)"
+       },
+       {
+        "parseMs": 15,
+        "displayMs": 4169,
+        "putImageDataMs": 72,
+        "pngMs": "없음(8277750에서 제거)"
+       },
+       {
+        "parseMs": 21,
+        "displayMs": 4280,
+        "putImageDataMs": 85,
+        "pngMs": "없음(8277750에서 제거)"
+       }
+      ]
+     }
+    },
+    {
+     "name": "tortoise-q70.heic",
+     "type": "",
+     "bytes": 4742008,
+     "outputs": [
+      {
+       "quality": 0.9,
+       "bytes": 3001870,
+       "ms": 4482,
+       "width": 4032,
+       "height": 3024,
+       "segments": [
+        {
+         "marker": "FFE0",
+         "bytes": 18
+        },
+        {
+         "marker": "FFE2",
+         "bytes": 474
+        },
+        {
+         "marker": "FFDB",
+         "bytes": 69
+        },
+        {
+         "marker": "FFDB",
+         "bytes": 69
+        },
+        {
+         "marker": "FFC0",
+         "bytes": 19
+        },
+        {
+         "marker": "FFC4",
+         "bytes": 31
+        },
+        {
+         "marker": "FFC4",
+         "bytes": 82
+        },
+        {
+         "marker": "FFC4",
+         "bytes": 30
+        },
+        {
+         "marker": "FFC4",
+         "bytes": 64
+        },
+        {
+         "marker": "FFDA",
+         "bytes": 14
+        }
+       ],
+       "jpegSize": [
+        4032,
+        3024
+       ]
+      }
+     ],
+     "repsMs": [
+      4698,
+      4855,
+      4554,
+      4726,
+      4753
+     ],
+     "decode": {
+      "decodeToCanvasMs": 4000,
+      "width": 4032,
+      "height": 3024,
+      "canvasPixelSha256": "7d26ef30d9221121513982e3d5f930483a146aecb5779e5b84ff5998e751f17c",
+      "pixelSha256": "7d26ef30d9221121513982e3d5f930483a146aecb5779e5b84ff5998e751f17c",
+      "stages": [
+       {
+        "parseMs": 20,
+        "displayMs": 3746,
+        "putImageDataMs": 72,
+        "pngMs": "없음(8277750에서 제거)"
+       },
+       {
+        "parseMs": 15,
+        "displayMs": 4074,
+        "putImageDataMs": 69,
+        "pngMs": "없음(8277750에서 제거)"
+       },
+       {
+        "parseMs": 16,
+        "displayMs": 3474,
+        "putImageDataMs": 72,
+        "pngMs": "없음(8277750에서 제거)"
+       }
+      ]
+     }
+    },
+    {
+     "name": "tortoise-q90.heic",
+     "type": "",
+     "bytes": 8385266,
+     "outputs": [
+      {
+       "quality": 0.9,
+       "bytes": 3004320,
+       "ms": 4925,
+       "width": 4032,
+       "height": 3024,
+       "segments": [
+        {
+         "marker": "FFE0",
+         "bytes": 18
+        },
+        {
+         "marker": "FFE2",
+         "bytes": 474
+        },
+        {
+         "marker": "FFDB",
+         "bytes": 69
+        },
+        {
+         "marker": "FFDB",
+         "bytes": 69
+        },
+        {
+         "marker": "FFC0",
+         "bytes": 19
+        },
+        {
+         "marker": "FFC4",
+         "bytes": 31
+        },
+        {
+         "marker": "FFC4",
+         "bytes": 82
+        },
+        {
+         "marker": "FFC4",
+         "bytes": 30
+        },
+        {
+         "marker": "FFC4",
+         "bytes": 65
+        },
+        {
+         "marker": "FFDA",
+         "bytes": 14
+        }
+       ],
+       "jpegSize": [
+        4032,
+        3024
+       ]
+      }
+     ],
+     "repsMs": [
+      5178,
+      5132,
+      5098
+     ],
+     "decode": {
+      "decodeToCanvasMs": 4805,
+      "width": 4032,
+      "height": 3024,
+      "canvasPixelSha256": "d2f6130b77dc2bbda4b5dd63e212a105eb0b2573bacc901986e1c64b9301d283",
+      "pixelSha256": "d2f6130b77dc2bbda4b5dd63e212a105eb0b2573bacc901986e1c64b9301d283",
+      "stages": [
+       {
+        "parseMs": 21,
+        "displayMs": 4828,
+        "putImageDataMs": 73,
+        "pngMs": "없음(8277750에서 제거)"
+       },
+       {
+        "parseMs": 20,
+        "displayMs": 4715,
+        "putImageDataMs": 81,
+        "pngMs": "없음(8277750에서 제거)"
+       },
+       {
+        "parseMs": 24,
+        "displayMs": 4556,
+        "putImageDataMs": 79,
+        "pngMs": "없음(8277750에서 제거)"
+       }
+      ]
+     }
+    }
+   ]
+  }
+ },
+ "ui": {
+  "chromium": {
+   "measuredAt": "2026-11-23T07:18:36.419Z",
+   "engine": "Chromium",
+   "browser": "151.0.7922.34",
+   "url": "http://127.0.0.1:3147/tools/image/heic-to-jpg",
+   "mode": "full",
+   "rootPid": 54604,
+   "tenFiles": [
+    "flower-q50.heic",
+    "flower-q70.heic",
+    "flower-q90.heic",
+    "tortoise-q50.heic",
+    "tortoise-q70-limited.heic",
+    "tortoise-q70-rot.heic",
+    "tortoise-q70.heic",
+    "tortoise-q90.heic",
+    "tortoise-q70-copy.heic",
+    "flower-q70-copy.heic"
+   ],
+   "single": {
+    "tortoise-q70": {
+     "files": 1,
+     "inputBytes": 4742008,
+     "ms": 4138,
+     "done": 1,
+     "pageErrors": [],
+     "download": {
+      "name": "tortoise-q70.jpg",
+      "bytes": 3001870,
+      "sha256": "0e0dd6f7b552eb8a4620fe27cd7171c31196f57d754db454e356af1ba2318aec"
+     },
+     "measuredSha256": "0e0dd6f7b552eb8a4620fe27cd7171c31196f57d754db454e356af1ba2318aec",
+     "measuredBytes": 3001870,
+     "identical": true
+    },
+    "flower-q70": {
+     "files": 1,
+     "inputBytes": 2715496,
+     "ms": 3473,
+     "done": 1,
+     "pageErrors": [],
+     "download": {
+      "name": "flower-q70.jpg",
+      "bytes": 635922,
+      "sha256": "01c6c535a266e465f45a258209b1163775d844b1a6d3619bf3b15857435b9b97"
+     },
+     "measuredSha256": "01c6c535a266e465f45a258209b1163775d844b1a6d3619bf3b15857435b9b97",
+     "measuredBytes": 635922,
+     "identical": true
+    }
+   },
+   "batch": [
+    {
+     "files": 1,
+     "inputBytes": 4742008,
+     "ms": 4017,
+     "done": 1,
+     "pageErrors": []
+    },
+    {
+     "files": 1,
+     "inputBytes": 4742008,
+     "ms": 3894,
+     "done": 1,
+     "pageErrors": []
+    },
+    {
+     "files": 1,
+     "inputBytes": 4742008,
+     "ms": 3966,
+     "done": 1,
+     "pageErrors": []
+    },
+    {
+     "files": 5,
+     "inputBytes": 22689226,
+     "ms": 16610,
+     "done": 5,
+     "pageErrors": [],
+     "download": {
+      "name": "floor05-converted-images.zip",
+      "bytes": 10091802,
+      "sha256": "21c85d423fb92ff3529492befc7bc6a6e36710a72bcf4e29a32dbed3b84f1c0a"
+     }
+    },
+    {
+     "files": 5,
+     "inputBytes": 22689226,
+     "ms": 17396,
+     "done": 5,
+     "pageErrors": []
+    },
+    {
+     "files": 5,
+     "inputBytes": 22689226,
+     "ms": 16406,
+     "done": 5,
+     "pageErrors": []
+    },
+    {
+     "files": 10,
+     "inputBytes": 39545142,
+     "ms": 32123,
+     "done": 10,
+     "pageErrors": [],
+     "download": {
+      "name": "floor05-converted-images.zip",
+      "bytes": 20190182,
+      "sha256": "19e34b446ab128c91aef993d3f9d54e9b02645babf25eb05394cec65a1aa4f2c"
+     }
+    },
+    {
+     "files": 10,
+     "inputBytes": 39545142,
+     "ms": 32831,
+     "done": 10,
+     "pageErrors": []
+    },
+    {
+     "files": 10,
+     "inputBytes": 39545142,
+     "ms": 32431,
+     "done": 10,
+     "pageErrors": []
+    }
+   ],
+   "memory": [
+    {
+     "files": 10,
+     "inputBytes": 39545142,
+     "ms": 31307,
+     "done": 10,
+     "pageErrors": [],
+     "memory": {
+      "method": "Win32_Process 자손 합산(WorkingSetSize, PrivatePageCount), 500 ms 간격",
+      "maxWorkingSetMB": 723,
+      "maxPrivateMB": 616,
+      "maxProcs": 4,
+      "minSystemFreeMB": 1892,
+      "beforeClick": {
+       "t": 0.6,
+       "wsMB": 350,
+       "privateMB": 211,
+       "procs": 4,
+       "freeMB": 2471
+      },
+      "samples": 32,
+      "file": "mem-Chromium-1795418233491.json"
+     }
+    },
+    {
+     "files": 10,
+     "inputBytes": 39545142,
+     "ms": 31736,
+     "done": 10,
+     "pageErrors": [],
+     "memory": {
+      "method": "Win32_Process 자손 합산(WorkingSetSize, PrivatePageCount), 500 ms 간격",
+      "maxWorkingSetMB": 657,
+      "maxPrivateMB": 587,
+      "maxProcs": 4,
+      "minSystemFreeMB": 1951,
+      "beforeClick": {
+       "t": 0.6,
+       "wsMB": 351,
+       "privateMB": 213,
+       "procs": 4,
+       "freeMB": 2214
+      },
+      "samples": 32,
+      "file": "mem-Chromium-1795418279553.json"
+     }
+    }
+   ]
+  },
+  "firefox": {
+   "measuredAt": "2026-11-23T07:27:31.275Z",
+   "engine": "Firefox",
+   "browser": "153.0",
+   "url": "http://127.0.0.1:3147/tools/image/heic-to-jpg",
+   "mode": "full",
+   "rootPid": 53300,
+   "tenFiles": [
+    "flower-q50.heic",
+    "flower-q70.heic",
+    "flower-q90.heic",
+    "tortoise-q50.heic",
+    "tortoise-q70-limited.heic",
+    "tortoise-q70-rot.heic",
+    "tortoise-q70.heic",
+    "tortoise-q90.heic",
+    "tortoise-q70-copy.heic",
+    "flower-q70-copy.heic"
+   ],
+   "single": {
+    "tortoise-q70": {
+     "files": 1,
+     "inputBytes": 4742008,
+     "ms": 6352,
+     "done": 1,
+     "pageErrors": [],
+     "download": {
+      "name": "tortoise-q70.jpg",
+      "bytes": 3409530,
+      "sha256": "811c2bdcc1d87512c6de14f02e647acdfbd6e5231278c2469b866eaa9bf9ef10"
+     },
+     "measuredSha256": "811c2bdcc1d87512c6de14f02e647acdfbd6e5231278c2469b866eaa9bf9ef10",
+     "measuredBytes": 3409530,
+     "identical": true
+    },
+    "flower-q70": {
+     "files": 1,
+     "inputBytes": 2715496,
+     "ms": 5460,
+     "done": 1,
+     "pageErrors": [],
+     "download": {
+      "name": "flower-q70.jpg",
+      "bytes": 1102083,
+      "sha256": "4578e0ba2e660fa043a214e87b9512e02f804047e982dba545d4ce964124fb0a"
+     },
+     "measuredSha256": "4578e0ba2e660fa043a214e87b9512e02f804047e982dba545d4ce964124fb0a",
+     "measuredBytes": 1102083,
+     "identical": true
+    }
+   },
+   "batch": [
+    {
+     "files": 1,
+     "inputBytes": 4742008,
+     "ms": 6398,
+     "done": 1,
+     "pageErrors": []
+    },
+    {
+     "files": 1,
+     "inputBytes": 4742008,
+     "ms": 6427,
+     "done": 1,
+     "pageErrors": []
+    },
+    {
+     "files": 1,
+     "inputBytes": 4742008,
+     "ms": 6427,
+     "done": 1,
+     "pageErrors": []
+    },
+    {
+     "files": 5,
+     "inputBytes": 22689226,
+     "ms": 33274,
+     "done": 5,
+     "pageErrors": [],
+     "download": {
+      "name": "floor05-converted-images.zip",
+      "bytes": 12218670,
+      "sha256": "1d44e6990704f549c04e698c3ce5db20e1576e33d086209acbe849c21d04ddff"
+     }
+    },
+    {
+     "files": 5,
+     "inputBytes": 22689226,
+     "ms": 33278,
+     "done": 5,
+     "pageErrors": []
+    },
+    {
+     "files": 5,
+     "inputBytes": 22689226,
+     "ms": 30173,
+     "done": 5,
+     "pageErrors": []
+    },
+    {
+     "files": 10,
+     "inputBytes": 39545142,
+     "ms": 55370,
+     "done": 10,
+     "pageErrors": [],
+     "download": {
+      "name": "floor05-converted-images.zip",
+      "bytes": 24306390,
+      "sha256": "e1fb93ae1a4735317a2125363fece01a598f3b9436bc7bf8f09fc76a2511b750"
+     }
+    },
+    {
+     "files": 10,
+     "inputBytes": 39545142,
+     "ms": 57317,
+     "done": 10,
+     "pageErrors": []
+    },
+    {
+     "files": 10,
+     "inputBytes": 39545142,
+     "ms": 57567,
+     "done": 10,
+     "pageErrors": []
+    }
+   ],
+   "memory": [
+    {
+     "files": 10,
+     "inputBytes": 39545142,
+     "ms": 56196,
+     "done": 10,
+     "pageErrors": [],
+     "memory": {
+      "method": "Win32_Process 자손 합산(WorkingSetSize, PrivatePageCount), 500 ms 간격",
+      "maxWorkingSetMB": 1243,
+      "maxPrivateMB": 1172,
+      "maxProcs": 7,
+      "minSystemFreeMB": 1669,
+      "beforeClick": {
+       "t": 0.8,
+       "wsMB": 665,
+       "privateMB": 506,
+       "procs": 7,
+       "freeMB": 2613
+      },
+      "samples": 55,
+      "file": "mem-Firefox-1795418718629.json"
+     }
+    },
+    {
+     "files": 10,
+     "inputBytes": 39545142,
+     "ms": 55597,
+     "done": 10,
+     "pageErrors": [],
+     "memory": {
+      "method": "Win32_Process 자손 합산(WorkingSetSize, PrivatePageCount), 500 ms 간격",
+      "maxWorkingSetMB": 1271,
+      "maxPrivateMB": 1196,
+      "maxProcs": 7,
+      "minSystemFreeMB": 1489,
+      "beforeClick": {
+       "t": 0.7,
+       "wsMB": 695,
+       "privateMB": 553,
+       "procs": 7,
+       "freeMB": 1891
+      },
+      "samples": 55,
+      "file": "mem-Firefox-1795418789800.json"
+     }
+    }
+   ]
+  },
+  "webkit": {
+   "measuredAt": "2026-11-23T07:34:11.365Z",
+   "engine": "WebKit",
+   "browser": "26.5",
+   "url": "http://127.0.0.1:3147/tools/image/heic-to-jpg",
+   "mode": "full",
+   "rootPid": 1440,
+   "tenFiles": [
+    "flower-q50.heic",
+    "flower-q70.heic",
+    "flower-q90.heic",
+    "tortoise-q50.heic",
+    "tortoise-q70-limited.heic",
+    "tortoise-q70-rot.heic",
+    "tortoise-q70.heic",
+    "tortoise-q90.heic",
+    "tortoise-q70-copy.heic",
+    "flower-q70-copy.heic"
+   ],
+   "single": {
+    "tortoise-q70": {
+     "files": 1,
+     "inputBytes": 4742008,
+     "ms": 6316,
+     "done": 1,
+     "pageErrors": [],
+     "download": {
+      "name": "tortoise-q70.jpg",
+      "bytes": 3001870,
+      "sha256": "0e0dd6f7b552eb8a4620fe27cd7171c31196f57d754db454e356af1ba2318aec"
+     },
+     "measuredSha256": "0e0dd6f7b552eb8a4620fe27cd7171c31196f57d754db454e356af1ba2318aec",
+     "measuredBytes": 3001870,
+     "identical": true
+    },
+    "flower-q70": {
+     "files": 1,
+     "inputBytes": 2715496,
+     "ms": 5384,
+     "done": 1,
+     "pageErrors": [],
+     "download": {
+      "name": "flower-q70.jpg",
+      "bytes": 635922,
+      "sha256": "01c6c535a266e465f45a258209b1163775d844b1a6d3619bf3b15857435b9b97"
+     },
+     "measuredSha256": "01c6c535a266e465f45a258209b1163775d844b1a6d3619bf3b15857435b9b97",
+     "measuredBytes": 635922,
+     "identical": true
+    }
+   },
+   "batch": [
+    {
+     "files": 1,
+     "inputBytes": 4742008,
+     "ms": 5950,
+     "done": 1,
+     "pageErrors": []
+    },
+    {
+     "files": 1,
+     "inputBytes": 4742008,
+     "ms": 6373,
+     "done": 1,
+     "pageErrors": []
+    },
+    {
+     "files": 1,
+     "inputBytes": 4742008,
+     "ms": 6269,
+     "done": 1,
+     "pageErrors": []
+    },
+    {
+     "files": 5,
+     "inputBytes": 22689226,
+     "ms": 23703,
+     "done": 5,
+     "pageErrors": [],
+     "download": {
+      "name": "floor05-converted-images.zip",
+      "bytes": 10091802,
+      "sha256": "48d62b6789b869d4a2fc626d8ecbb17b43f90ea7d69ee2088c1521dba24b934b"
+     }
+    },
+    {
+     "files": 5,
+     "inputBytes": 22689226,
+     "ms": 25890,
+     "done": 5,
+     "pageErrors": []
+    },
+    {
+     "files": 5,
+     "inputBytes": 22689226,
+     "ms": 24323,
+     "done": 5,
+     "pageErrors": []
+    },
+    {
+     "files": 10,
+     "inputBytes": 39545142,
+     "ms": 43521,
+     "done": 10,
+     "pageErrors": [],
+     "download": {
+      "name": "floor05-converted-images.zip",
+      "bytes": 20190182,
+      "sha256": "7e4c14bbd30c0b863293a3530180ef070600f1f3f307430fa957921b53628bd5"
+     }
+    },
+    {
+     "files": 10,
+     "inputBytes": 39545142,
+     "ms": 44502,
+     "done": 10,
+     "pageErrors": []
+    },
+    {
+     "files": 10,
+     "inputBytes": 39545142,
+     "ms": 39421,
+     "done": 10,
+     "pageErrors": []
+    }
+   ],
+   "memory": [
+    {
+     "files": 10,
+     "inputBytes": 39545142,
+     "ms": 44903,
+     "done": 10,
+     "pageErrors": [],
+     "memory": {
+      "method": "Win32_Process 자손 합산(WorkingSetSize, PrivatePageCount), 500 ms 간격",
+      "maxWorkingSetMB": 941,
+      "maxPrivateMB": 1642,
+      "maxProcs": 7,
+      "minSystemFreeMB": 1076,
+      "beforeClick": {
+       "t": 0.7,
+       "wsMB": 403,
+       "privateMB": 1205,
+       "procs": 7,
+       "freeMB": 1610
+      },
+      "samples": 42,
+      "file": "mem-WebKit-1795419201067.json"
+     }
+    }
+   ]
+  }
+ },
+ "uiOldCode": {}
+}
