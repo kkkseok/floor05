@@ -174,7 +174,7 @@ export async function resizeImageSmart(
 }
 
 /**
- * 포맷 변환. HEIC는 heic2any(메인스레드), SVG는 출력 크기를 적용한 래스터화가 필요해
+ * 포맷 변환. HEIC는 libheif-js(메인스레드), SVG는 출력 크기를 적용한 래스터화가 필요해
  * 메인 스레드에서 처리한다. 그 외 래스터 입력은 워커 우선, 실패 시 메인 스레드 폴백.
  */
 export async function convertImageSmart(

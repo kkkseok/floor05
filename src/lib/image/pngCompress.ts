@@ -42,7 +42,7 @@ export async function compressPng(
 
   const { data } = ctx.getImageData(0, 0, width, height);
 
-  // UPNG는 동적 로드 (초기 번들 영향 0 — heic2any 패턴과 동일)
+  // UPNG는 동적 로드 (초기 번들 영향 0 — HEIC 디코더 패턴과 동일)
   const { default: UPNG } = await import("upng-js");
 
   // 무손실(cnum 0)을 항상 후보로 둔다.

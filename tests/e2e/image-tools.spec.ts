@@ -23,6 +23,7 @@ import {
   writeTransparentWebp,
   writeQuadrantPng,
   isRedAt,
+  fillStable,
 } from "./helpers";
 
 test.describe("이미지 압축", () => {
@@ -276,8 +277,7 @@ test.describe("포맷 변환", () => {
     expect(imageDims(file)).toEqual({ width: 1200, height: 900 });
   });
 
-  test("HEIC → JPG 변환 (실물 HEIC 파일)", async ({ page, browserName }, testInfo) => {
-    test.skip(browserName !== "chromium", "heic2any 디코딩은 대표로 Chromium에서 검증");
+  test("HEIC → JPG 변환 (실물 HEIC 파일)", async ({ page }, testInfo) => {
     test.skip(!fs.existsSync(fx("sample.heic")), "실물 HEIC 선택 fixture가 있는 환경에서 검증");
     test.setTimeout(120_000);
     const guards = await installGuards(page);
@@ -292,6 +292,40 @@ test.describe("포맷 변환", () => {
     expect(detectKind(file)).toBe("jpeg");
     expect(imageDims(file)).toEqual({ width: 1440, height: 960 });
     assertClean(guards);
+  });
+
+  test("전체 범위(full range) HEIC의 어두운 면이 검게 뭉개지지 않는다", async ({ page }, testInfo) => {
+    // fixture: 왼쪽 RGB(8,8,8)·오른쪽 RGB(240,240,240)를 전체 범위로 인코딩(scripts/qa/make-heic-range-fixtures.py).
+    // 예전 디코더(heic2any 0.0.4)는 제한 범위 식으로 풀어 왼쪽이 0, 오른쪽이 255가 됐다.
+    test.setTimeout(120_000);
+    const src = path.join(__dirname, "..", "fixtures", "static", "range-full-256x128.heic");
+    await page.goto("/tools/image/convert");
+    await uploadToDropzone(page, [src]);
+    await page.getByRole("button", { name: "PNG", exact: true }).click();
+    await page.getByRole("button", { name: /1개 이미지 PNG로 변환/ }).click();
+    await expect(page.getByRole("button", { name: "다운로드" })).toBeVisible({ timeout: 90_000 });
+    const file = await saveDownload(page, testInfo, () => page.getByRole("button", { name: "다운로드" }).click());
+    expect(detectKind(file)).toBe("png");
+    const px = pngPixels(file);
+    expect({ width: px.width, height: px.height }).toEqual({ width: 256, height: 128 });
+    const mean = (x0: number, x1: number) => {
+      let sum = 0;
+      let n = 0;
+      for (let y = 8; y < 120; y++) {
+        for (let x = x0; x < x1; x++) {
+          const i = (y * px.width + x) * 4;
+          sum += px.data[i] + px.data[i + 1] + px.data[i + 2];
+          n += 3;
+        }
+      }
+      return sum / n;
+    };
+    const dark = mean(8, 120);
+    const light = mean(136, 248);
+    expect(dark, "어두운 면(8)이 0으로 뭉개지면 안 됨").toBeGreaterThan(5);
+    expect(dark).toBeLessThan(11);
+    expect(light, "밝은 면(240)이 255로 날아가면 안 됨").toBeGreaterThan(236);
+    expect(light).toBeLessThan(244);
   });
 });
 
@@ -793,7 +827,7 @@ test.describe("크롭", () => {
     assertClean(guards);
   });
 
-  test("증명사진 크기(2×2, 600px)로 큰 이미지를 줄여도 줄무늬가 남지 않음", async ({ page }, testInfo) => {
+  test("정확한 크기(600×600)로 큰 이미지를 줄여도 줄무늬가 남지 않음", async ({ page }, testInfo) => {
     // 4800px → 600px(8배): 4800→2400→1200→600으로 마지막 단계가 정확히 2배가 되는 비율.
     // 줄무늬 편차는 마지막 단계가 2배일 때만 판정에 쓸 수 있다(6.8배 같은 비율은 이상적인
     // 면적 평균 결과도 칸마다 밝기가 달라진다). 8배 실측 편차: Chromium 32 / Firefox 64 / WebKit 98,
@@ -801,7 +835,10 @@ test.describe("크롭", () => {
     const stripes = writeStripesPng(testInfo.outputPath("stripes-4800.png"), 4800);
     await page.goto("/tools/image/crop");
     await uploadToDropzone(page, [stripes]);
-    await page.getByRole("button", { name: "미국 비자 2×2" }).click();
+    await page.getByRole("button", { name: "1:1", exact: true }).click();
+    await page.getByRole("button", { name: "정확한 크기로 출력" }).click();
+    await fillStable(page.getByLabel("출력 너비(px)"), "600");
+    await fillStable(page.getByLabel("출력 높이(px)"), "600");
     await page.getByRole("button", { name: "이미지 크롭", exact: true }).click();
     await expect(page.getByText(/크롭 완료/)).toBeVisible({ timeout: 60_000 });
     const file = await saveDownload(page, testInfo, () =>

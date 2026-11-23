@@ -1,7 +1,7 @@
 /**
  * 이미지 포맷 변환 로직
  * Canvas toBlob(mimeType) 사용
- * HEIC 변환: heic2any 라이브러리 (동적 로드)
+ * HEIC 변환: libheif-js(libheif WASM) 동적 로드
  */
 
 import { loadImage, fileToDataUrl, canvasToBlob } from "../common/fileUtils";
@@ -19,7 +19,7 @@ export interface ConvertOptions {
  * 변환기가 받는 입력 포맷(드롭존 accept + 검증 단일 진실 공급원).
  * 디코드는 브라우저 네이티브 범위가 넓어 입력은 출력보다 폭넓게 받는다.
  * - JPG/PNG/WebP/AVIF/BMP/GIF/SVG: createImageBitmap·<img> 네이티브 디코드(SVG는 래스터화)
- * - HEIC/HEIF: heic2any로 메인스레드 디코드(동적 로드)
+ * - HEIC/HEIF: libheif-js로 메인스레드 디코드(동적 로드)
  * MIME이 비어 오는 경우(HEIC 등)를 위해 확장자 토큰도 함께 둔다.
  */
 export const CONVERT_INPUT_ACCEPT =
@@ -122,8 +122,9 @@ export function isWebPSupported(): boolean {
 
 /**
  * AVIF 인코딩(출력) 지원 여부 확인.
- * 디코딩(입력)은 더 넓게 지원되지만, canvas 인코딩은 Chromium 124+(Chrome/Edge)만 가능하고
- * Firefox·Safari는 조용히 PNG로 폴백한다. WebP와 동일하게 toDataURL로 감지한다.
+ * 디코딩(입력)은 넓게 지원되지만 canvas 인코딩은 브라우저마다 다르고, 미지원이면 조용히 PNG로 폴백한다.
+ * 2026-11-22 실측(docs/blog-data/avif-2026-11-22.json): Chromium 151·Chrome 158·Edge 158·Firefox 153·
+ * WebKit 26.5 모두 PNG로 폴백했다(저장 0/5). WebP와 동일하게 toDataURL로 감지한다.
  */
 export function isAvifSupported(): boolean {
   if (typeof document === "undefined") return false;
@@ -135,34 +136,68 @@ export function isAvifSupported(): boolean {
   return canvas.toDataURL("image/avif").indexOf("data:image/avif") === 0;
 }
 
-// heic2any 모듈 캐싱
-let cachedHeic2any: ((options: { blob: Blob; toType: string; quality: number }) => Promise<Blob | Blob[]>) | null = null;
+// libheif-js 모듈 캐싱 (HEIC 변환 페이지에서만 동적 로드. 번들 약 2MB, wasm 포함)
+type Libheif = import("libheif-js/libheif-wasm/libheif-bundle.mjs").LibheifModule;
+let libheifPromise: Promise<Libheif> | null = null;
 
-async function getHeic2any() {
-  if (!cachedHeic2any) {
-    cachedHeic2any = (await import("heic2any")).default;
+function getLibheif(): Promise<Libheif> {
+  if (!libheifPromise) {
+    libheifPromise = import("libheif-js/libheif-wasm/libheif-bundle.mjs")
+      .then((m) => m.default())
+      .catch((err) => {
+        libheifPromise = null; // 네트워크 오류 등은 다음 시도에서 다시 받는다
+        throw err;
+      });
   }
-  return cachedHeic2any;
+  return libheifPromise;
+}
+
+const HEIC_READ_ERROR =
+  "HEIC 사진을 읽지 못했습니다. 파일이 손상됐거나 지원하지 않는 형식일 수 있어요. 사진 앱에서 JPG로 내보내거나, 아이폰 설정 → 카메라 → 포맷 → '높은 호환성'으로 찍은 사진을 써 주세요.";
+
+/** HEIF 계열 컨테이너인지(4~8바이트가 'ftyp') 본다. 이름만 .heic인 JPG·PNG를 걸러낸다. */
+async function isHeifContainer(file: File): Promise<boolean> {
+  const head = new Uint8Array(await file.slice(0, 12).arrayBuffer());
+  return head.length >= 8 && String.fromCharCode(head[4], head[5], head[6], head[7]) === "ftyp";
 }
 
 /**
- * HEIC를 브라우저가 그릴 수 있는 이미지로 디코딩 (heic2any 동적 로드).
- * 중간 결과는 무손실 PNG로 받는다. 예전에는 JPEG 92%로 받은 뒤 사용자가 고른 품질로 한 번 더 저장해
- * 품질 100%·PNG 출력도 92% 위로 올라가지 못했다.
- * heic2any는 실패 시 Error가 아니라 { code, message } 객체를 던진다. 이름만 .heic인 JPG 등은
- * "already browser readable"로 실패하므로 원본을 그대로 쓴다.
+ * HEIC를 브라우저가 그릴 수 있는 무손실 PNG로 디코딩 (libheif-js 동적 로드).
+ *
+ * 예전에 쓰던 heic2any(0.0.4)는 모든 파일을 제한 범위 식(1.164*(Y-16))으로 풀어, 전체 범위(full range)
+ * HEIC는 그늘이 검게 뭉개지고 사진 전체가 진해졌다(2026-11-23 실측: 화질 지표 43.9dB → 28.5dB).
+ * libheif는 파일의 색 범위·행렬 표시를 따라 RGB로 바꾸고, 회전(irot) 같은 변환도 적용한다.
+ *
+ * 이름만 .heic인 JPG 등은 원본을 그대로 돌려줘 브라우저가 직접 읽게 한다.
  */
 async function decodeHeic(file: File): Promise<Blob> {
-  const heic2any = await getHeic2any();
+  if (!(await isHeifContainer(file))) return file;
+
+  const libheif = await getLibheif();
+  const decoder = new libheif.HeifDecoder();
+  const images = decoder.decode(new Uint8Array(await file.arrayBuffer()));
   try {
-    const result = await heic2any({ blob: file, toType: "image/png", quality: 1 }); // PNG는 quality를 쓰지 않음(타입상 필수)
-    return Array.isArray(result) ? result[0] : result;
-  } catch (err) {
-    const message = typeof err === "object" && err && "message" in err ? String(err.message) : String(err);
-    if (/already browser readable/i.test(message)) return file;
-    throw new Error(
-      "HEIC 사진을 읽지 못했습니다. 파일이 손상됐거나 지원하지 않는 형식일 수 있어요. 사진 앱에서 JPG로 내보내거나, 아이폰 설정 → 카메라 → 포맷 → '높은 호환성'으로 찍은 사진을 써 주세요."
-    );
+    const image = images[0];
+    if (!image) throw new Error(HEIC_READ_ERROR);
+    const width = image.get_width();
+    const height = image.get_height();
+
+    const canvas = document.createElement("canvas");
+    canvas.width = width;
+    canvas.height = height;
+    const ctx = canvas.getContext("2d");
+    if (!ctx) throw new Error("Canvas 컨텍스트를 생성할 수 없습니다.");
+    const imageData = ctx.createImageData(width, height);
+    const decoded = await new Promise<boolean>((resolve) => image.display(imageData, (r) => resolve(Boolean(r))));
+    if (!decoded) throw new Error(HEIC_READ_ERROR);
+    ctx.putImageData(imageData, 0, 0);
+    return await canvasToBlob(canvas, "image/png");
+  } finally {
+    for (const img of images) img.free();
+    if (decoder.decoder) {
+      libheif.heif_context_free(decoder.decoder);
+      decoder.decoder = null;
+    }
   }
 }
 

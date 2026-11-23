@@ -435,7 +435,7 @@ export default function ConvertTool({
             <div className="bg-brand-accent/10 border border-brand-accent/30 rounded-lg p-4">
               <p className="text-sm text-brand-black">
                 <span className="font-medium">HEIC 파일 감지됨.</span>{" "}
-                아이폰 사진을 JPG, PNG, WebP, AVIF로 변환할 수 있습니다.
+                아이폰 사진을 JPG, PNG, WebP로 변환할 수 있습니다.
               </p>
             </div>
           )}
@@ -487,7 +487,7 @@ export default function ConvertTool({
                   {[!webpSupported && "WebP", !avifSupported && "AVIF"]
                     .filter(Boolean)
                     .join(", ")}{" "}
-                  출력을 지원하지 않습니다. JPG 또는 PNG를 이용해주세요.
+                  출력을 지원하지 않습니다. 켜져 있는 다른 형식을 이용해주세요.
                 </p>
               )}
             </div>

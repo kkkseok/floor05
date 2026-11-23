@@ -414,7 +414,7 @@ export default function PngVsJpgPage() {
                 내 파일로 직접 비교해 보기
               </h3>
               <p className="text-brand-light mb-6">
-                PNG·JPG·WebP·AVIF 사이를 오가며 결과 용량을 바로 확인할 수 있습니다.
+                PNG·JPG·WebP 사이를 오가며 결과 용량을 바로 확인할 수 있습니다.
                 <br />
                 변환은 이 브라우저 안에서 끝납니다.
               </p>

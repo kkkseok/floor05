@@ -3,7 +3,8 @@ import { track } from "@vercel/analytics";
 /**
  * 도구 사용 트래킹 (Vercel Analytics 커스텀 이벤트)
  *
- * 서버 전송 없이 익명 집계만 한다. 대시보드:
+ * 사용자 파일·입력값은 보내지 않고, 이벤트 이름과 아래 속성만 /_vercel/insights 로 전송해
+ * Vercel에서 집계한다(개인정보처리방침 '도구 사용 기록' 항목과 맞출 것). 대시보드:
  *   Vercel 프로젝트 → Analytics → Events
  *
  * 이벤트:

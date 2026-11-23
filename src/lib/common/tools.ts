@@ -20,7 +20,7 @@ export const TOOLS: Tool[] = [
   {
     name: "이미지 압축",
     href: "/tools/image/compress",
-    lastModified: "2026-11-19",
+    lastModified: "2026-11-23",
     description: "서버 전송 없이 브라우저에서 바로. 목표 용량 설정, 일괄 압축까지.",
     shortDescription: "용량 줄이기",
     category: "image",
@@ -36,9 +36,9 @@ export const TOOLS: Tool[] = [
   {
     name: "포맷 변환",
     href: "/tools/image/convert",
-    lastModified: "2026-10-15",
-    description: "PNG, JPG, WebP, AVIF 자유롭게 변환. BMP·GIF·SVG·HEIC 입력까지, 투명 배경 처리도.",
-    shortDescription: "PNG, JPG, WebP, AVIF",
+    lastModified: "2026-11-23",
+    description: "PNG, JPG, WebP로 변환. AVIF·BMP·GIF·SVG·HEIC 입력까지, 투명 배경 처리도.",
+    shortDescription: "PNG, JPG, WebP",
     category: "image",
   },
   {
@@ -52,7 +52,7 @@ export const TOOLS: Tool[] = [
   {
     name: "이미지 크롭",
     href: "/tools/image/crop",
-    lastModified: "2026-11-19",
+    lastModified: "2026-11-23",
     description: "원하는 영역만 자르기. 1:1, 4:3, 16:9 비율 프리셋.",
     shortDescription: "자르기",
     category: "image",
@@ -84,7 +84,7 @@ export const TOOLS: Tool[] = [
   {
     name: "사진 모자이크",
     href: "/tools/image/mosaic",
-    lastModified: "2026-07-23",
+    lastModified: "2026-11-23",
     description: "얼굴·차번호·개인정보를 드래그로 가리기. 모자이크·블러, 파일은 서버로 안 갑니다.",
     shortDescription: "모자이크·블러",
     category: "image",
