@@ -432,13 +432,13 @@ export default function BrowserImageToolsPrivacyPage() {
               압축 한 번에 나간 본문은 방문 기록을 빼고 417바이트였습니다.
             </p>
             <p className="text-brand-mid leading-relaxed mb-4">
-              파일 이름, 파일 크기, 파일 내용, 계산기에 넣은 금액은 14건 어디에도 없었습니다. 다만
-              사용 이벤트가 집계된다는 점은{" "}
+              파일 이름, 파일 크기, 파일 내용, 계산기에 넣은 금액은 14건 어디에도 없었습니다. 측정할
+              때는 이 사용 이벤트가{" "}
               <Link href="/privacy" className="text-brand-accent hover:underline">
                 개인정보처리방침
               </Link>
-              의 방문 통계 항목에 아직 따로 적혀 있지 않습니다. 방침에는 페이지 주소와 유입 경로 같은
-              방문 정보만 나열되어 있습니다.
+              에 따로 적혀 있지 않았습니다. 이 측정을 하고 나서 방침의 처리하는 정보에 &lsquo;도구
+              사용 기록&rsquo; 항목을 넣었습니다(2026-11-23 수정).
             </p>
             <p className="text-brand-mid leading-relaxed mb-4">
               브라우저 밖에서 일어나는 일은 이 방법으로 잴 수 없습니다. 요청을 받은 서버는 IP 주소와
