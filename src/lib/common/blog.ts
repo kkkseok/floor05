@@ -498,7 +498,7 @@ export const POSTS: BlogPost[] = [
     slug: "heic-to-jpg-guide",
     title: "HEIC를 JPG로 바꾸면 — 밝기 문제를 고치고 다시 잰 용량·시간",
     description:
-      "NASA 사진을 HEIC로 직접 인코딩해 브라우저에서 JPG로 바꿔 봤습니다. JPG는 HEIC의 0.12~2.37배였고, 1,200만 화소 한 장에 브라우저별로 3.6~13.2초가 걸렸습니다. 재다가 찾은, 그늘이 검게 뭉치던 문제는 디코더를 바꿔 고쳤습니다.",
+      "NASA 사진을 HEIC로 직접 인코딩해 브라우저에서 JPG로 바꿔 봤습니다. JPG는 HEIC의 0.12~2.37배였고, 1,200만 화소 한 장에 브라우저별로 2.6~7.8초가 걸렸습니다. 재다가 찾은, 그늘이 검게 뭉치던 문제는 디코더를 바꿔 고쳤습니다.",
     keywords: [
       "HEIC JPG 변환",
       "HEIC 변환",
