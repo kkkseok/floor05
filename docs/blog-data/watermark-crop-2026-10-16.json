@@ -1,0 +1,139 @@
+{
+ "measuredAt": "2026-10-15T15:49:38.016Z",
+ "browser": "151.0.7922.34",
+ "result": {
+  "size": [
+   1920,
+   1499
+  ],
+  "crop": {
+   "모서리(오른쪽 아래)": {
+    "maskPixelsPct": 0.77,
+    "90%": {
+     "crops": 441,
+     "watermarkGone": 0,
+     "gonePct": 0
+    },
+    "75%": {
+     "crops": 441,
+     "watermarkGone": 259,
+     "gonePct": 58.7
+    },
+    "60%": {
+     "crops": 441,
+     "watermarkGone": 366,
+     "gonePct": 83
+    },
+    "50%": {
+     "crops": 441,
+     "watermarkGone": 389,
+     "gonePct": 88.2
+    }
+   },
+   "전체 반복": {
+    "maskPixelsPct": 9.92,
+    "90%": {
+     "crops": 441,
+     "watermarkGone": 0,
+     "gonePct": 0
+    },
+    "75%": {
+     "crops": 441,
+     "watermarkGone": 0,
+     "gonePct": 0
+    },
+    "60%": {
+     "crops": 441,
+     "watermarkGone": 0,
+     "gonePct": 0
+    },
+    "50%": {
+     "crops": 441,
+     "watermarkGone": 0,
+     "gonePct": 0
+    }
+   },
+   "전체 반복 + 30° 회전": {
+    "maskPixelsPct": 11.18,
+    "90%": {
+     "crops": 441,
+     "watermarkGone": 0,
+     "gonePct": 0
+    },
+    "75%": {
+     "crops": 441,
+     "watermarkGone": 0,
+     "gonePct": 0
+    },
+    "60%": {
+     "crops": 441,
+     "watermarkGone": 0,
+     "gonePct": 0
+    },
+    "50%": {
+     "crops": 441,
+     "watermarkGone": 0,
+     "gonePct": 0
+    }
+   }
+  },
+  "cover": {
+   "모서리(오른쪽 아래)": {
+    "20%": {
+     "psnr": 45.82,
+     "changedPct": 0.47
+    },
+    "30%": {
+     "psnr": 41.93,
+     "changedPct": 0.53
+    },
+    "50%": {
+     "psnr": 37.02,
+     "changedPct": 0.59
+    },
+    "80%": {
+     "psnr": 32.36,
+     "changedPct": 0.64
+    }
+   },
+   "전체 반복": {
+    "20%": {
+     "psnr": 34.06,
+     "changedPct": 6.24
+    },
+    "30%": {
+     "psnr": 30.26,
+     "changedPct": 6.92
+    },
+    "50%": {
+     "psnr": 25.46,
+     "changedPct": 7.54
+    },
+    "80%": {
+     "psnr": 20.93,
+     "changedPct": 8.29
+    }
+   },
+   "전체 반복 + 30° 회전": {
+    "20%": {
+     "psnr": 32.87,
+     "changedPct": 6.94
+    },
+    "30%": {
+     "psnr": 29.09,
+     "changedPct": 7.64
+    },
+    "50%": {
+     "psnr": 24.33,
+     "changedPct": 8.46
+    },
+    "80%": {
+     "psnr": 19.87,
+     "changedPct": 9.19
+    }
+   }
+  }
+ },
+ "source": "NASA KSC-20210121-PH-JBS01_0079 (public domain), 1920px로 축소",
+ "method": "crop: 원본의 90/75/60/50% 크기 창을 가로세로 5% 간격 441곳에 놓고 워터마크 픽셀이 하나도 없으면 '사라짐'. cover: 투명도별 합성 결과를 원본과 비교(PSNR, 채널 차이 >2인 픽셀 비율)"
+}
