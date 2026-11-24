@@ -1,12 +1,16 @@
-# 예약 발행: 화·금 09:00(KST)에 날짜가 된 scheduled/YYYY-MM-DD-<slug> 브랜치를 main에 병합한다.
+# 예약 발행: 화·금 오전(KST)에 날짜가 된 scheduled/YYYY-MM-DD-<slug> 브랜치를 main에 병합한다.
 # - 한 번 실행에 한 편만 발행한다(하루 대량 발행 방지).
 # - 병합 결과가 lint·tsc·build를 통과해야만 push한다. 실패하면 job이 실패로 남는다.
 # - 브랜치는 이전 예약 브랜치 위에 쌓아(stack) 만들어 blog.ts 충돌을 피한다.
 name: Scheduled publish
 
 on:
+  # GitHub 예약 실행은 정각에 몰려 늦거나 버려진다(2026-11-24 화요일 00:00 UTC 실행 누락).
+  # 그래서 정각을 피하고, 같은 날 보조 실행을 하나 더 둔다. 오늘 날짜까지의 브랜치만 고르므로
+  # 본 실행이 이미 발행했으면 보조 실행은 할 일이 없고, 본 실행이 빠졌으면 보조 실행이 채운다.
   schedule:
-    - cron: "0 0 * * 2,5" # UTC 00:00 = KST 09:00, 화·금
+    - cron: "17 23 * * 1,4" # 본 실행: UTC 월·목 23:17 = KST 화·금 08:17
+    - cron: "43 3 * * 2,5" # 보조 실행: UTC 화·금 03:43 = KST 화·금 12:43
   workflow_dispatch:
 
 permissions:
