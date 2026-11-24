@@ -161,7 +161,7 @@ export default function BrowserImageToolsPrivacyPage() {
                 적었습니다. 웹소켓 연결도 셌고 0건이었습니다.
               </li>
               <li>
-                <strong className="text-brand-black">장소</strong>: 운영 사이트(www.floor05.com)와,
+                <strong className="text-brand-black">장소</strong>: 운영 사이트(측정 당시 주소 www.floor05.com)와,
                 같은 코드를 내 컴퓨터에서 빌드한 로컬 사이트. 어느 쪽 숫자인지는 표마다 적었습니다.
               </li>
             </ul>
@@ -257,7 +257,7 @@ export default function BrowserImageToolsPrivacyPage() {
               </table>
             </div>
             <p className="text-sm text-brand-subtle mb-8">
-              운영 사이트, Chromium 151, 2026-11-22. 1MB=1,000,000바이트. &ldquo;자사&rdquo;는 www.floor05.com의
+              운영 사이트, Chromium 151, 2026-11-22. 1MB=1,000,000바이트. &ldquo;자사&rdquo;는 측정 당시 주소인 www.floor05.com의
               페이지·스크립트·글꼴 파일, &ldquo;통계&rdquo;는 통계 스크립트 파일을 받는 요청, &ldquo;사용 중&rdquo;은
               파일을 고른 뒤부터 내려받기까지 새로 생긴 요청 수입니다.
             </p>
@@ -315,7 +315,7 @@ export default function BrowserImageToolsPrivacyPage() {
             </h2>
             <p className="text-brand-mid leading-relaxed mb-4">
               파일을 고른 뒤에 새로 생긴 요청은 압축에서 2건, 변환에서 2건이었습니다. 둘 다
-              www.floor05.com의 /_next/static/ 아래 스크립트 파일을 받는 GET입니다. 압축과 변환은 화면이
+              측정 당시 주소인 www.floor05.com의 /_next/static/ 아래 스크립트 파일을 받는 GET입니다. 압축과 변환은 화면이
               멈추지 않도록 이미지 처리를 별도 작업 스레드(워커)에 맡기는데, 그 워커의 코드를 처음 처리할
               때 받아 오는 것입니다. 받는 요청이라 본문은 없습니다.
             </p>
