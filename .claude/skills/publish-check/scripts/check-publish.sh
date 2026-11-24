@@ -53,8 +53,16 @@ git branch -r | grep -q "origin/$branch$" && bad "원격 브랜치 남아 있음
 
 # 3) Vercel (statuses 목록은 이력이라 pending이 섞인다 → 합산 status 사용)
 echo "== Vercel"
-vs=$(gh api repos/$REPO/commits/$sha/status --jq '.state + " | " + ([.statuses[] | .context + ": " + .description] | join(", "))')
-case "$vs" in success*) ok "배포 $vs";; pending*) info "배포 진행 중 $vs";; *) bad "배포 $vs";; esac
+# 옛 프로젝트(kkkseok/floor05)와 운영 프로젝트가 같은 context 이름("Vercel – floor05")을 써서
+# 합산 status는 옛 프로젝트의 "Canceled by Ignored Build Step"이 운영 쪽을 가린다 → 운영 프로젝트 것만 본다.
+VERCEL_PROJECT="assagaori00-6665s-projects/floor05"
+vs=$(gh api "repos/$REPO/commits/$sha/statuses?per_page=100" --jq "[.[] | select((.target_url // \"\") | test(\"vercel.com/$VERCEL_PROJECT/\"))] | sort_by(.created_at) | last | if . == null then \"none\" else .state + \" | \" + .description end")
+case "$vs" in
+  success*) ok "배포($VERCEL_PROJECT) $vs";;
+  pending*) info "배포 진행 중($VERCEL_PROJECT) $vs";;
+  none)     bad "운영 프로젝트($VERCEL_PROJECT) 배포 기록 없음";;
+  *)        bad "배포($VERCEL_PROJECT) $vs";;
+esac
 
 # 4) 운영 페이지
 echo "== 운영 페이지 /blog/$slug"

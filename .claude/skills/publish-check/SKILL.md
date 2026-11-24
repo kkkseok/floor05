@@ -82,8 +82,10 @@ gh run watch <id> -R kkkseok/floor05 --exit-status --interval 20
 ## 알려진 함정
 
 - **Git Bash 시간대**: `TZ=Asia/Seoul`이 무시되고 UTC로 계산된다. `TZ=KST-9`를 쓴다.
-- **커밋 status**: `commits/<sha>/statuses`는 이력 목록이라 pending과 success가 같이 나온다. 판정에는 합산 값인 `commits/<sha>/status`의 `.state`를 쓴다.
-- **Vercel "Canceled by Ignored Build Step"**: 앱 코드가 아닌 커밋(워크플로·문서)은 빌드를 건너뛴다. 정상이다.
+- **커밋 status — 합산 값을 믿지 않는다**: 옛 Vercel 프로젝트 `kkkseok/floor05`와 운영 프로젝트 `assagaori00-6665s-projects/floor05`가 같은 context 이름("Vercel – floor05")으로 상태를 남긴다. 그래서 합산 `commits/<sha>/status`에는 옛 프로젝트의 "Canceled by Ignored Build Step"(success)이 먼저 찍혀, 운영 쪽이 아직 pending이어도 success로 보인다.
+  - 판정은 `commits/<sha>/statuses`에서 `target_url`이 `vercel.com/assagaori00-6665s-projects/floor05/`인 것만 골라 가장 최근 값으로 한다(스크립트가 그렇게 한다).
+  - 2026-11-24에 이 착오로 "빌드를 건너뛰었다"고 잘못 보고한 적이 있다.
+- **"Canceled by Ignored Build Step"**: 옛 프로젝트가 `vercel.json`의 `ignoreCommand`로 빌드를 건너뛴 기록이다. 운영 배포와는 관계없다.
 - **본문 이미지 경로**: `/images/blog/<slug>/`에 있다. HTML 안 RSC 데이터에는 같은 경로가 `\` 붙은 형태로 한 번 더 나온다(스크립트가 거른다).
 - **PowerShell·cp949 출력 오류**: python 출력은 `-X utf8` 또는 `PYTHONIOENCODING=utf-8`로 돌린다.
 - **과거 날짜 점검**: 나중에 그 글을 리라이트해서 `dateModified`가 바뀌면 sitemap 항목이 FAIL로 나온다. 정상이다.
